@@ -46,7 +46,7 @@ void setup()
   s_led_strip = new LedStrip(6, 16, 2);
   //s_web_server = new WebServer();
 
-  s_led_strip->ShowOfficeTableWW(100);
+  s_led_strip->ShowOfficeTableWW(20);
 }
 
 
