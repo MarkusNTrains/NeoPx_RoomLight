@@ -34,17 +34,17 @@ class LedStrip
 	public:
    typedef enum 
    {
-      POWER_ON = 0,
+      OFFICE_TABLE_WW = 0,
       IDLE,
     } state_t;
     
 		LedStrip(uint8_t px_pin, uint16_t nof_px, uint8_t nof_row);
 		~LedStrip();
     void Tasks(void);
-		void ShowOfficeTableWarmWhite(uint16_t brightness);
+		void ShowOfficeTableWW(uint16_t brightness);
 		
 	private:	
-    const uint32_t TMO_TILL_NEXT_UPDATE_MS = 100;
+    const uint32_t TMO_TILL_NEXT_UPDATE_MS = 20;
     
     Adafruit_NeoPixel* m_pixel;	
     uint16_t m_nof_px;
@@ -54,6 +54,7 @@ class LedStrip
     uint8_t m_desired_brightness;
     uint32_t m_update_time_ms;
 
+    void ShowOfficeTableWW_Task(void);
     void SetPixel(uint16_t start_pos, uint16_t width, uint16_t space, uint16_t nof_repeat, uint32_t color);
 };
 

@@ -32,7 +32,7 @@ LedStrip::LedStrip(uint8_t px_pin, uint16_t nof_px, uint8_t nof_row)
 {
   m_nof_px = nof_px;
   m_nof_row = nof_row;
-  m_state = POWER_ON;
+  m_state = IDLE;
   m_current_brightness = 0;
   m_desired_brightness = 20;
   m_update_time_ms = millis();
@@ -67,14 +67,8 @@ void LedStrip::Tasks()
     
     switch (this->m_state)
     {
-      case POWER_ON:
-        this->m_current_brightness++;
-        ShowOfficeTableWarmWhite(this->m_current_brightness);
-        
-        if (this->m_current_brightness >= this->m_desired_brightness)
-        {
-          this->m_state = IDLE;
-        }
+      case OFFICE_TABLE_WW:
+        ShowOfficeTableWW_Task();
         break;
         
       case IDLE:
@@ -91,10 +85,28 @@ void LedStrip::Tasks()
 // description:
 //   Show White Pixel
 //*****************************************************************************
-void LedStrip::ShowOfficeTableWarmWhite(uint16_t brightness)
+void LedStrip::ShowOfficeTableWW(uint16_t brightness)
 {
-  uint32_t color = m_pixel->Color(0, 0, brightness);
+  this->m_desired_brightness = brightness;
+  this->m_state = OFFICE_TABLE_WW;
+}
+
+
+//*****************************************************************************
+// description:
+//   Show White Pixel
+//*****************************************************************************
+void LedStrip::ShowOfficeTableWW_Task(void)
+{
+  this->m_current_brightness++;
+  
+  uint32_t color = m_pixel->Color(0, 0, this->m_current_brightness);
   this->SetPixel(2, 2, 0, 1, color);
+  
+  if (this->m_current_brightness >= this->m_desired_brightness)
+  {
+    this->m_state = IDLE;
+  }
 }
 
 

@@ -43,10 +43,10 @@ void setup()
   Serial.begin(115200);
 #endif
 
-  s_led_strip = new LedStrip(6, 16, 1);
+  s_led_strip = new LedStrip(6, 16, 2);
   //s_web_server = new WebServer();
 
-  s_led_strip->ShowOfficeTableWarmWhite(10);
+  s_led_strip->ShowOfficeTableWW(100);
 }
 
 
