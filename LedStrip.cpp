@@ -59,7 +59,7 @@ void LedStrip::Tasks()
 
 //*****************************************************************************
 // description:
-//   Statemachine
+//   Show White Pixel
 //*****************************************************************************
 void LedStrip::ShowWhite(uint16_t start_pos, uint16_t width, uint8_t brightness)
 {
