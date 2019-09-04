@@ -41,6 +41,7 @@ class WebServer
 		
 		
 	private:		
+    EthernetServer* m_server;
 		File webFile;                     // the web page file on the SD card
 		char HTTP_req[REQ_BUF_SZ] = {0};  // buffered HTTP request stored as null terminated string
 		char req_index = 0;               // index into HTTP_req buffer

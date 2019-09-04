@@ -20,6 +20,7 @@ $Id:  $
 
 //-----------------------------------------------------------------------------
 // static module variable
+//static Adafruit_NeoPixel m_pixel(16, 6, NEO_GRB + NEO_KHZ800);
 
 
 
@@ -31,10 +32,17 @@ LedStrip::LedStrip(uint8_t px_pin, uint16_t nof_px, uint8_t nof_row)
 {
   m_nof_px = nof_px;
   m_nof_row = nof_row;
+  m_state = POWER_ON;
+  m_current_brightness = 0;
+  m_desired_brightness = 20;
+  m_update_time_ms = millis();
   
   //Adafruit_NeoPixel pixels(num_of_neo_px, neo_px_pin, NEO_GRB + NEO_KHZ800);
-  m_pixel = new Adafruit_NeoPixel(nof_px, px_pin, NEO_GRBW + NEO_KHZ800);
-  m_pixel.begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
+  m_pixel = new Adafruit_NeoPixel(nof_px, px_pin, NEO_GRB + NEO_KHZ800);
+  m_pixel->begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
+  m_pixel->clear();
+  m_pixel->show();            // Turn OFF all pixels ASAP
+  m_pixel->setBrightness(255); // Set brigthness for all neo pixels
 }
 
 
@@ -44,7 +52,6 @@ LedStrip::LedStrip(uint8_t px_pin, uint16_t nof_px, uint8_t nof_row)
 //*****************************************************************************
 LedStrip::~LedStrip()
 {
-
 }
 
 
@@ -54,6 +61,29 @@ LedStrip::~LedStrip()
 //*****************************************************************************
 void LedStrip::Tasks()
 {
+  if (millis() > this->m_update_time_ms + TMO_TILL_NEXT_UPDATE_MS)
+  {
+    this->m_update_time_ms = millis();
+    
+    switch (this->m_state)
+    {
+      case POWER_ON:
+        this->m_current_brightness++;
+        ShowOfficeTableWarmWhite(this->m_current_brightness);
+        
+        if (this->m_current_brightness >= this->m_desired_brightness)
+        {
+          this->m_state = IDLE;
+        }
+        break;
+        
+      case IDLE:
+        break;
+        
+      default:
+        break;
+    }
+  }
 }
 
 
@@ -61,14 +91,27 @@ void LedStrip::Tasks()
 // description:
 //   Show White Pixel
 //*****************************************************************************
-void LedStrip::ShowWhite(uint16_t start_pos, uint16_t width, uint8_t brightness)
+void LedStrip::ShowOfficeTableWarmWhite(uint16_t brightness)
+{
+  uint32_t color = m_pixel->Color(0, 0, brightness);
+  this->SetPixel(2, 2, 0, 1, color);
+}
+
+
+//*****************************************************************************
+// description:
+//   Show White Pixel
+//*****************************************************************************
+void LedStrip::SetPixel(uint16_t start_pos, uint16_t width, uint16_t space, uint16_t nof_repeat, uint32_t color)
 {
   uint16_t px = 0;
   uint16_t idx = 0;
-  uint8_t row = 0;
+  uint16_t row = 0;
+  uint16_t cnt = 0;
+  uint16_t offset = 0;
   uint16_t row_length = m_nof_px / m_nof_row;
   
-  m_pixel.clear();
+  m_pixel->clear();
 
   if (start_pos >= row_length)
   { return; }
@@ -78,21 +121,32 @@ void LedStrip::ShowWhite(uint16_t start_pos, uint16_t width, uint8_t brightness)
     width = row_length - start_pos;
   }
 
-  for (row = 0; row < m_nof_row; row+2)
+  for (row = 0; row < m_nof_row; row++)
   {
-    for (px = 0; px < width; px++)
+    offset = start_pos;
+    for (cnt = 0; cnt < nof_repeat; cnt++)
     {
-      if (row % 2)
+      for (px = 0; px < width; px++)
       {
-        idx = (row * row_length) + start_pos + px;  // this is required if the pixel signal is zigzagged through the LED strips        
+        // check if position is further than the rowlength
+        if ((offset + px) >= row_length) { break; } 
+        
+        if (row % 2)
+        {
+          idx = ((row + 1) * row_length) - 1 - offset - px;  // this is required if the pixel signal is zigzagged through the LED strips        
+        }
+        else
+        {
+          idx = (row * row_length) + offset + px;
+        }
+        m_pixel->setPixelColor(idx, color);    
       }
-      else
-      {
-        idx = (row * row_length) + start_pos + px;
-      }
-      m_pixel.setPixelColor(idx, m_pixel.Color(0, 0, 0, brightness));    
+      
+      offset += space + width;      
+      // check if offset is further than the rowlength
+      if (offset >= row_length) { break; }
     }
   }
   
-  m_pixel.show();   // Send the updated pixel colors to the hardware.
+  m_pixel->show();   // Send the updated pixel colors to the hardware.
 }

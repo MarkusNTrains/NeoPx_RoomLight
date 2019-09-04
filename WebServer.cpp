@@ -42,8 +42,6 @@
 
 //-----------------------------------------------------------------------------
 // static module variable
-// MAC address from Ethernet shield sticker under board
-EthernetServer m_server(80);            // server
 
 
 
@@ -57,6 +55,7 @@ WebServer::WebServer(void)
 		
     byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x49 }; // MAC address from Ethernet shield sticker under board
     IPAddress ip(192, 168, 1, 250);    // IP address, may need to change depending on network
+    m_server = new EthernetServer(80);            // server
     
     // disable Ethernet chip
     pinMode(10, OUTPUT);
@@ -91,7 +90,7 @@ WebServer::WebServer(void)
 
 
     // start the server
-    m_server.begin();           // start to listen for clients
+    m_server->begin();           // start to listen for clients
     Serial.print("server is at ");
     Serial.println(Ethernet.localIP());     
 }
@@ -113,7 +112,7 @@ WebServer::~WebServer()
 //*****************************************************************************
 void WebServer::Tasks()
 {
-    EthernetClient client = m_server.available();  // try to get client
+    EthernetClient client = m_server->available();  // try to get client
 
     if (client)   // got client?
 	  {

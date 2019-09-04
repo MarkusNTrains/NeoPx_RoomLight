@@ -21,6 +21,11 @@ $Id:  $
 
 
 //-----------------------------------------------------------------------------
+// defines
+#define IS_DEBUG_MODE
+
+
+//-----------------------------------------------------------------------------
 // static module variable
 // MAC address from Ethernet shield sticker under board
 static WebServer* s_web_server;
@@ -34,8 +39,14 @@ static LedStrip* s_led_strip;
 //*****************************************************************************
 void setup()
 {
-  s_led_strip = new LedStrip(6, 16, 2);
-  s_web_server = new WebServer();
+#ifdef IS_DEBUG_MODE
+  Serial.begin(115200);
+#endif
+
+  s_led_strip = new LedStrip(6, 16, 1);
+  //s_web_server = new WebServer();
+
+  s_led_strip->ShowOfficeTableWarmWhite(10);
 }
 
 
@@ -46,5 +57,5 @@ void setup()
 void loop()
 {
   s_led_strip->Tasks();
-  s_web_server->Tasks();
+  //s_web_server->Tasks();
 }
