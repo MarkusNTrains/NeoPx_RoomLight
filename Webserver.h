@@ -13,8 +13,8 @@ $Id:  $
 *******************************************************************************/
 
 
-#ifndef _TIMETABLE_DISPLAY_H
-#define _TIMETABLE_DISPLAY_H
+#ifndef _WEBSERVER_H
+#define _WEBSERVER_H
 
 
 //----------------------------------------------------------------------------
@@ -52,4 +52,4 @@ class Webserver
 		char StrContains(char *str, char *sfind);
 };
 
-#endif
+#endif  // _WEBSERVER_H
