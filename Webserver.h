@@ -13,8 +13,8 @@ $Id:  $
 *******************************************************************************/
 
 
-#ifndef _WEBSERVER_H
-#define _WEBSERVER_H
+#ifndef _WEB_SERVER_H
+#define _WEB_SERVER_H
 
 
 //----------------------------------------------------------------------------
@@ -32,11 +32,11 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // class
-class Webserver
+class WebServer
 {
 	public:
-		Webserver(void);
-		~Webserver();
+		WebServer(void);
+		~WebServer();
     void Tasks(void);
 		
 		
@@ -52,4 +52,4 @@ class Webserver
 		char StrContains(char *str, char *sfind);
 };
 
-#endif  // _WEBSERVER_H
+#endif  // _WEB_SERVER_H

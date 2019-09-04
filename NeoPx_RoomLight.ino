@@ -16,13 +16,14 @@ $Id:  $
 
 //-----------------------------------------------------------------------------
 // includes
-#include "Webserver.h"
+#include "LedStrip.h"
+#include "WebServer.h"
 
 
 //-----------------------------------------------------------------------------
 // static module variable
 // MAC address from Ethernet shield sticker under board
-static Webserver* s_webserver;
+static WebServer* s_web_server;
 
 
 
@@ -32,7 +33,7 @@ static Webserver* s_webserver;
 //*****************************************************************************
 void setup()
 {
-    s_webserver = new Webserver();
+    s_web_server = new WebServer();
 }
 
 
@@ -42,5 +43,5 @@ void setup()
 //*****************************************************************************
 void loop()
 {
-    s_webserver->Tasks();
+    s_web_server->Tasks();
 }

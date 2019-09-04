@@ -36,7 +36,7 @@
 
 //-----------------------------------------------------------------------------
 // includes
-#include "Webserver.h"
+#include "WebServer.h"
 
 
 //-----------------------------------------------------------------------------
@@ -50,7 +50,7 @@ EthernetServer m_server(80);            // server
 // description:
 //   constructor
 //*****************************************************************************
-Webserver::Webserver(void)
+WebServer::WebServer(void)
 {
     int i;
 		
@@ -110,7 +110,7 @@ Webserver::Webserver(void)
 // description:
 //   destructor
 //*****************************************************************************
-Webserver::~Webserver()
+WebServer::~WebServer()
 {
 
 }
@@ -120,7 +120,7 @@ Webserver::~Webserver()
 // description:
 //   Statemachine
 //*****************************************************************************
-void Webserver::Tasks()
+void WebServer::Tasks()
 {
     EthernetClient client = m_server.available();  // try to get client
 
@@ -208,7 +208,7 @@ void Webserver::Tasks()
 //   checks if received HTTP request is switching on/off LEDs
 //   also saves the state of the LEDs
 //*****************************************************************************
-void Webserver::SetLEDs(void)
+void WebServer::SetLEDs(void)
 {
     char str_on[12] = {0};
     char str_off[12] = {0};
@@ -246,7 +246,7 @@ void Webserver::SetLEDs(void)
 // description:
 //   send the XML file with analog values, switch status and LED status
 //*****************************************************************************
-void Webserver::XML_response(EthernetClient cl)
+void WebServer::XML_response(EthernetClient cl)
 {
     unsigned char i;
     unsigned int  j;
@@ -278,7 +278,7 @@ void Webserver::XML_response(EthernetClient cl)
 // description:
 //   sets every element of str to 0 (clears array)
 //*****************************************************************************
-void Webserver::StrClear(char *str, char length)
+void WebServer::StrClear(char *str, char length)
 {
     for (int i = 0; i < length; i++) 
 	  {
@@ -294,7 +294,7 @@ void Webserver::StrClear(char *str, char length)
 //   returns 1 if string found
 //   returns 0 if string not found
 //*****************************************************************************
-char Webserver::StrContains(char *str, char *sfind)
+char WebServer::StrContains(char *str, char *sfind)
 {
     char found = 0;
     char index = 0;
