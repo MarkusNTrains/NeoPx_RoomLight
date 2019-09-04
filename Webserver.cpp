@@ -28,9 +28,10 @@
                   tutorial:
                   http://startingelectronics.org/tutorials/arduino/ethernet-shield-web-server-tutorial/SD-card-IO/
 
-  Date:         30 March 2015
+  Date:         4. September 2019
  
   Author:       W.A. Smith, http://startingelectronics.org
+                enhanced by MarkusNTrains
 --------------------------------------------------------------*/
 
 
