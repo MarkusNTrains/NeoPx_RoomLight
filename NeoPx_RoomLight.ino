@@ -24,6 +24,7 @@ $Id:  $
 // static module variable
 // MAC address from Ethernet shield sticker under board
 static WebServer* s_web_server;
+static LedStrip* s_led_strip;
 
 
 
@@ -33,7 +34,8 @@ static WebServer* s_web_server;
 //*****************************************************************************
 void setup()
 {
-    s_web_server = new WebServer();
+  s_led_strip = new LedStrip(6, 16, 2);
+  s_web_server = new WebServer();
 }
 
 
@@ -43,5 +45,6 @@ void setup()
 //*****************************************************************************
 void loop()
 {
-    s_web_server->Tasks();
+  s_led_strip->Tasks();
+  s_web_server->Tasks();
 }

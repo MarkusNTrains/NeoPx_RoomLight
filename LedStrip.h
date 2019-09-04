@@ -19,7 +19,8 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // include
-
+#include "Arduino.h"
+#include <Adafruit_NeoPixel.h>
 
 
 //----------------------------------------------------------------------------
@@ -31,12 +32,15 @@ $Id:  $
 class LedStrip
 {
 	public:
-		LedStrip();
+		LedStrip(uint8_t px_pin, uint16_t nof_px, uint8_t nof_row);
 		~LedStrip();
     void Tasks(void);
+		void ShowWhite(uint16_t start_pos, uint16_t width, uint8_t brightness);
 		
-		
-	private:		
+	private:	
+    Adafruit_NeoPixel m_pixel;	
+    uint16_t m_nof_px;
+    uint8_t m_nof_row;
 };
 
 #endif  // _LED_STRIP_H
