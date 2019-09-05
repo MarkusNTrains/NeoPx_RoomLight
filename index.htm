@@ -1,8 +1,22 @@
 <!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8"/>
 <html>
     <head>
         <title>MoBa Room Light</title>
-        <script>
+		<script type="text/javascript" charset="utf-8">
+		const LightScene = 
+		{
+			OFFICE_TABLE_WW: 0,
+			DISCO: 1,
+			SUNSET: 2,
+			SUNRISE: 3,
+			POWER_OFF: 4,
+			IDLE: 5
+		};
+		
+		
 		strLED = "";
 
 		function GetArduinoIO()
@@ -53,11 +67,47 @@
 			}
 		}
 		
-		function ButtonPushed(id)
+		function LightSceneButtonPushed(scene)
 		{
-			strLED += ("&" + id + "=1");			
+			document.getElementById("office_table_ww_button").classList.remove("active-class");
+			document.getElementById("disco_button").classList.remove("active-class");
+			document.getElementById("sunset_button").classList.remove("active-class");
+			document.getElementById("sunrise_button").classList.remove("active-class");
+			document.getElementById("power_off").classList.remove("active-class");
+					
+			switch (scene)
+			{
+				case LightScene.OFFICE_TABLE_WW:
+					document.getElementById("office_table_ww_button").classList.add("active-class");
+					strLED += ("&" + "LED4" + "=1");			
+					break;
+					
+				case LightScene.DISCO: 
+					document.getElementById("disco_button").classList.add("active-class");
+					strLED += ("&" + "LED5" + "=1");			
+					break;
+					
+				case LightScene.SUNSET:
+					document.getElementById("sunset_button").classList.add("active-class");
+					strLED += ("&" + "LED6" + "=1");			
+					break;
+					
+				case LightScene.SUNRISE:
+					document.getElementById("sunrise_button").classList.add("active-class");
+					strLED += ("&" + "LED7" + "=1");			
+					break;
+					
+				case LightScene.POWER_OFF:
+					document.getElementById("power_off").classList.add("active-class");
+					strLED += ("&" + "LED8" + "=1");			
+					break;
+					
+				default:
+					strLED += ("&" + scene + "=1");			
+					break;
+			}
 		}
-		
+				
 	</script>
 	<style>
 		.out_box {
@@ -115,12 +165,17 @@
 
 		.button:hover {
 			background-color: #4CAF50;
-			color: white;
+			color: black;
 		}
 		.button:active {
-			background-color: #3e8e41;
+			background-color: #337536;
+			color: white;
 			transform: translateY(2px);
 		}		
+		.active-class {
+			background-color: #337536;
+			color: white;
+		}
 		
 	</style>
     </head>
@@ -175,10 +230,11 @@
 			</form>
 		</div>
 		
-		<button class="button" onclick="ButtonPushed('LED1')">B&uuml;rotisch</button>
-		<button class="button" onclick="ButtonPushed('LED2')">Disco</button>
-		<button class="button" onclick="ButtonPushed('LED3')">Sunset</button>
-		<button class="button" onclick="ButtonPushed('LED4')">Sunrise</button>
+		<button class="button" id="office_table_ww_button" onclick="LightSceneButtonPushed(LightScene.OFFICE_TABLE_WW)">B&uuml;rotisch</button>
+		<button class="button" id="disco_button" onclick="LightSceneButtonPushed(LightScene.DISCO)">Disco</button>
+		<button class="button" id="sunset_button" onclick="LightSceneButtonPushed(LightScene.SUNSET)">Sunset</button>
+		<button class="button" id="sunrise_button" onclick="LightSceneButtonPushed(LightScene.SUNRISE)">Sunrise</button>
+		<button class="button" id="power_off" onclick="LightSceneButtonPushed(LightScene.POWER_OFF)">Power Off</button>
 
     </body>
 </html>

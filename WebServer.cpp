@@ -71,6 +71,7 @@ WebServer::WebServer(void)
         return;    // init failed
     }
     Serial.println("SUCCESS - SD card initialized.");
+    
     // check for index.htm file
     if (!SD.exists("index.htm")) 
 	  {
@@ -78,6 +79,7 @@ WebServer::WebServer(void)
         return;  // can't find index file
     }
     Serial.println("SUCCESS - Found index.htm file.");
+    
     
     // pins 26 to 49 are outputs
     for (i = 26; i <= 49; i++) 
