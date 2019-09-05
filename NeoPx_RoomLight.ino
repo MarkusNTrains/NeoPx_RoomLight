@@ -39,14 +39,10 @@ static LedStrip* s_led_strip;
 //*****************************************************************************
 void setup()
 {
-#ifdef IS_DEBUG_MODE
-  Serial.begin(115200);
-#endif
-
-  s_led_strip = new LedStrip(6, 16, 2);
+  s_led_strip = new LedStrip(40, 600, 2);
   s_web_server = new WebServer();
 
-  s_led_strip->ShowOfficeTableWW(20);
+  s_led_strip->ShowOfficeTableWW(5);
 }
 
 

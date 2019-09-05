@@ -39,6 +39,7 @@ class LedStrip
       SUNSET,
       SUNRISE,
       POWER_OFF,
+      MOVING_DOT,
       IDLE,
     } state_t;
     
@@ -57,9 +58,11 @@ class LedStrip
     uint8_t m_current_brightness;
     uint8_t m_desired_brightness;
     uint32_t m_update_time_ms;
+    uint16_t m_px;
 
     void ShowOfficeTableWW_Task(void);
     void PowerOff_Task(void);
+    void MovingDot_Task(void);
     void SetPixel(uint16_t start_pos, uint16_t width, uint16_t space, uint16_t nof_repeat, uint32_t color);
 };
 

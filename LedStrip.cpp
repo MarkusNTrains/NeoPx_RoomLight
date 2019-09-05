@@ -38,11 +38,11 @@ LedStrip::LedStrip(uint8_t px_pin, uint16_t nof_px, uint8_t nof_row)
   m_update_time_ms = millis();
   
   //Adafruit_NeoPixel pixels(num_of_neo_px, neo_px_pin, NEO_GRB + NEO_KHZ800);
-  m_pixel = new Adafruit_NeoPixel(nof_px, px_pin, NEO_GRB + NEO_KHZ800);
+  m_pixel = new Adafruit_NeoPixel(nof_px, px_pin, NEO_GRBW + NEO_KHZ800);
   m_pixel->begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
   m_pixel->clear();
-  m_pixel->show();            // Turn OFF all pixels ASAP
   m_pixel->setBrightness(255); // Set brigthness for all neo pixels
+  m_pixel->show();            // Turn OFF all pixels ASAP
 }
 
 
@@ -74,6 +74,10 @@ void LedStrip::Tasks()
       case POWER_OFF:
         PowerOff_Task();
         break;
+
+      case MOVING_DOT:
+        MovingDot_Task();
+        break;
         
       case IDLE:
         break;
@@ -102,14 +106,31 @@ void LedStrip::ShowOfficeTableWW(uint16_t brightness)
 //*****************************************************************************
 void LedStrip::ShowOfficeTableWW_Task(void)
 {
-  this->m_current_brightness++;
-  
-  uint32_t color = m_pixel->Color(0, 0, this->m_current_brightness);
-  this->SetPixel(2, 2, 0, 1, color);
+  this->m_current_brightness++;  
+  this->m_pixel->setBrightness(this->m_current_brightness); // Set brigthness for all neo pixels
+  uint32_t color = this->m_pixel->Color(0, 0, 0, 255);
+  this->SetPixel(3, 10, 5, 5, color);
   
   if (this->m_current_brightness >= this->m_desired_brightness)
   {
-    this->m_state = IDLE;
+    this->m_state = POWER_OFF;
+  }
+}
+
+
+//*****************************************************************************
+// description:
+//   MovingDot_Task
+//*****************************************************************************
+void LedStrip::MovingDot_Task(void)
+{
+  m_pixel->clear();
+  m_pixel->setPixelColor(m_px, m_pixel->Color(0, 0, 0, 255));
+  m_pixel->show();
+  m_px++;
+  if (m_px >= m_nof_px)
+  {
+    m_px = 0;
   }
 }
 
@@ -120,7 +141,17 @@ void LedStrip::ShowOfficeTableWW_Task(void)
 //*****************************************************************************
 void LedStrip::PowerOff_Task(void)
 {
-  
+  if (this->m_current_brightness == 0)
+  {
+    this->m_pixel->setBrightness(20); // Set brigthness for all neo pixels
+    this->m_state = MOVING_DOT;
+  }
+  else
+  {
+    this->m_current_brightness--;
+    this->m_pixel->setBrightness(this->m_current_brightness); // Set brigthness for all neo pixels
+    this->m_pixel->show();
+  }
 }
 
 
@@ -137,7 +168,7 @@ void LedStrip::SetPixel(uint16_t start_pos, uint16_t width, uint16_t space, uint
   uint16_t offset = 0;
   uint16_t row_length = m_nof_px / m_nof_row;
   
-  m_pixel->clear();
+  this->m_pixel->clear();
 
   if (start_pos >= row_length)
   { return; }
