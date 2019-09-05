@@ -70,6 +70,10 @@ void LedStrip::Tasks()
       case OFFICE_TABLE_WW:
         ShowOfficeTableWW_Task();
         break;
+
+      case POWER_OFF:
+        PowerOff_Task();
+        break;
         
       case IDLE:
         break;
@@ -107,6 +111,16 @@ void LedStrip::ShowOfficeTableWW_Task(void)
   {
     this->m_state = IDLE;
   }
+}
+
+
+//*****************************************************************************
+// description:
+//   Power Off
+//*****************************************************************************
+void LedStrip::PowerOff_Task(void)
+{
+  
 }
 
 

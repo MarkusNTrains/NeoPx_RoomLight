@@ -35,6 +35,10 @@ class LedStrip
    typedef enum 
    {
       OFFICE_TABLE_WW = 0,
+      DISCO,
+      SUNSET,
+      SUNRISE,
+      POWER_OFF,
       IDLE,
     } state_t;
     
