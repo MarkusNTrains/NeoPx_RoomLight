@@ -35,18 +35,19 @@ class LedStrip
    typedef enum 
    {
       OFFICE_TABLE_WW = 0,
+      LIGHT_ON_WW,
       DISCO,
       SUNSET,
       SUNRISE,
       POWER_OFF,
       MOVING_DOT,
       IDLE,
-    } state_t;
+    } light_scene_t;
     
 		LedStrip(uint8_t px_pin, uint16_t nof_px, uint8_t nof_row);
 		~LedStrip();
     void Tasks(void);
-		void ShowOfficeTableWW(uint16_t brightness);
+    void ChangeLightScene(light_scene_t scene);
 		
 	private:	
     const uint32_t TMO_TILL_NEXT_UPDATE_MS = 20;
@@ -54,13 +55,17 @@ class LedStrip
     Adafruit_NeoPixel* m_pixel;	
     uint16_t m_nof_px;
     uint8_t m_nof_row;
-    state_t m_state;
+    light_scene_t m_state;
     uint8_t m_current_brightness;
     uint8_t m_desired_brightness;
     uint32_t m_update_time_ms;
     uint16_t m_px;
 
+    void ShowOfficeTableWW_Enter(uint16_t brightness);
     void ShowOfficeTableWW_Task(void);
+    void LightOnWW_Enter(uint16_t brightness);
+    void LightOnWW_Task(void);
+    void Sunrise_Task(void);
     void PowerOff_Task(void);
     void MovingDot_Task(void);
     void SetPixel(uint16_t start_pos, uint16_t width, uint16_t space, uint16_t nof_repeat, uint32_t color);

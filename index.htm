@@ -9,55 +9,63 @@
 		const LightScene = 
 		{
 			OFFICE_TABLE_WW: 0,
-			DISCO: 1,
-			SUNSET: 2,
-			SUNRISE: 3,
-			POWER_OFF: 4,
-			IDLE: 5
+			LIGHT_ON_WW: 1,
+			DISCO: 2,
+			SUNSET: 3,
+			SUNRISE: 4,
+			POWER_OFF: 5,
+			IDLE: 6
 		};
 		
 		
-		strLED = "";
+		var strButtonPushed = "";
 
-		function GetArduinoIO()
+		function SendDataToArduino()
 		{
 			nocache = "&nocache=" + Math.random() * 1000000;
 			var request = new XMLHttpRequest();
 			request.onreadystatechange = function()
 			{
-				if (this.readyState == 4) {
-					if (this.status == 200) {
-						if (this.responseXML != null) {
+				if (this.readyState == 4) 
+				{
+					if (this.status == 200) 
+					{
+						if (this.responseXML != null) 
+						{
 							// XML file received - contains LED states
 							var re;
 							var num_LEDs;
 							var i;
 							var ledstr = "";
 							
-							re = this.responseXML.getElementsByTagName('LED');
+							/*re = this.responseXML.getElementsByTagName('LED');
 							num_LEDs = re.length;
 							
-							for (i = 0; i < num_LEDs; i++) {
+							for (i = 0; i < num_LEDs; i++) 
+							{
 								ledstr = "LED" + (i + 1);
-								if (re[i].childNodes[0].nodeValue === "checked") {
+								if (re[i].childNodes[0].nodeValue === "checked") 
+								{
 									document.getElementsByName(ledstr)[0].checked = true;
 								}
-								else {
+								else 
+								{
 									document.getElementsByName(ledstr)[0].checked = false;
 								}
-							}
+							}*/
 						}
 					}
 				}
 			}
 			// send HTTP GET request with LEDs to switch on/off if any
-			request.open("GET", "ajax_inputs" + strLED + nocache, true);
+			request.open("GET", "ajax_inputs" + strButtonPushed + nocache, true);
 			request.send(null);
-			setTimeout('GetArduinoIO()', 1000);
-			strLED = "";
+			//setTimeout('SendDataToArduino()', 1000);
+			strButtonPushed = "";
 		}
+		
 		// service LEDs when checkbox checked/unchecked
-		function GetCheck(led_num_str, cb)
+		/*function GetCheck(led_num_str, cb)
 		{
 			if (cb.checked) {
 				strLED += ("&" + led_num_str + "=1");
@@ -65,47 +73,21 @@
 			else {
 				strLED += ("&" + led_num_str + "=0");
 			}
-		}
+		}*/
 		
-		function LightSceneButtonPushed(scene)
+		function LightSceneButtonPushed(scene, bt)
 		{
-			document.getElementById("office_table_ww_button").classList.remove("active-class");
-			document.getElementById("disco_button").classList.remove("active-class");
-			document.getElementById("sunset_button").classList.remove("active-class");
-			document.getElementById("sunrise_button").classList.remove("active-class");
-			document.getElementById("power_off").classList.remove("active-class");
-					
-			switch (scene)
+			var matches = document.getElementsByClassName('active-class');
+
+			for (var cnt = 0; cnt < matches.length; cnt++) 
 			{
-				case LightScene.OFFICE_TABLE_WW:
-					document.getElementById("office_table_ww_button").classList.add("active-class");
-					strLED += ("&" + "LED4" + "=1");			
-					break;
-					
-				case LightScene.DISCO: 
-					document.getElementById("disco_button").classList.add("active-class");
-					strLED += ("&" + "LED5" + "=1");			
-					break;
-					
-				case LightScene.SUNSET:
-					document.getElementById("sunset_button").classList.add("active-class");
-					strLED += ("&" + "LED6" + "=1");			
-					break;
-					
-				case LightScene.SUNRISE:
-					document.getElementById("sunrise_button").classList.add("active-class");
-					strLED += ("&" + "LED7" + "=1");			
-					break;
-					
-				case LightScene.POWER_OFF:
-					document.getElementById("power_off").classList.add("active-class");
-					strLED += ("&" + "LED8" + "=1");			
-					break;
-					
-				default:
-					strLED += ("&" + scene + "=1");			
-					break;
+				matches[cnt].classList.remove('active-class');
 			}
+			
+			bt.classList.add("active-class");
+			
+			strButtonPushed = ("&LightScene" + scene);
+			SendDataToArduino();
 		}
 				
 	</script>
@@ -179,9 +161,10 @@
 		
 	</style>
     </head>
-    <body onload="GetArduinoIO()">
+    <!--<body onload="GetArduinoIO()">-->
+    <body>
         <h1>MoBa Licht Steuerung</h1>
-		<div class="out_box">
+		<!--<div class="out_box">
 			<form class="check_LEDs" name="LED_form1">
 				<input type="checkbox" name="LED1" value="0" onclick="GetCheck('LED1', this)" />LED 1 (D26)
 				<input type="checkbox" name="LED2" value="0" onclick="GetCheck('LED2', this)" />LED 2 (D27)<br />
@@ -228,13 +211,14 @@
 				<input type="checkbox" name="LED23" value="0" onclick="GetCheck('LED23', this)" />LED 23 (D48)
 				<input type="checkbox" name="LED24" value="0" onclick="GetCheck('LED24', this)" />LED 24 (D49)
 			</form>
-		</div>
+		</div>-->
 		
-		<button class="button" id="office_table_ww_button" onclick="LightSceneButtonPushed(LightScene.OFFICE_TABLE_WW)">B&uuml;rotisch</button>
-		<button class="button" id="disco_button" onclick="LightSceneButtonPushed(LightScene.DISCO)">Disco</button>
-		<button class="button" id="sunset_button" onclick="LightSceneButtonPushed(LightScene.SUNSET)">Sunset</button>
-		<button class="button" id="sunrise_button" onclick="LightSceneButtonPushed(LightScene.SUNRISE)">Sunrise</button>
-		<button class="button" id="power_off" onclick="LightSceneButtonPushed(LightScene.POWER_OFF)">Power Off</button>
+		<button class="button" id="office_table_ww_button" onclick="LightSceneButtonPushed(LightScene.OFFICE_TABLE_WW, this)">B&uuml;rotisch</button>
+		<button class="button" id="light_on_ww_button" onclick="LightSceneButtonPushed(LightScene.LIGHT_ON_WW, this)">Licht warm Weiss</button>
+		<button class="button" id="disco_button" onclick="LightSceneButtonPushed(LightScene.DISCO, this)">Disco</button>
+		<button class="button" id="sunset_button" onclick="LightSceneButtonPushed(LightScene.SUNSET, this)">Sunset</button>
+		<button class="button" id="sunrise_button" onclick="LightSceneButtonPushed(LightScene.SUNRISE, this)">Sunrise</button>
+		<button class="button" id="power_off" onclick="LightSceneButtonPushed(LightScene.POWER_OFF, this)">Power Off</button>
 
     </body>
 </html>

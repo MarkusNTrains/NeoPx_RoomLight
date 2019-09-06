@@ -49,13 +49,14 @@
 // description:
 //   constructor
 //*****************************************************************************
-WebServer::WebServer(void)
+WebServer::WebServer(LedStrip* led_strip)
 {
-    int i;
+    int cnt;
 		
     byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x49 }; // MAC address from Ethernet shield sticker under board
-    IPAddress ip(192, 168, 1, 250);    // IP address, may need to change depending on network
+    IPAddress ip(192, 168, 0, 250);    // IP address, may need to change depending on network
     m_server = new EthernetServer(80);            // server
+    m_led_strip = led_strip;
     
     // disable Ethernet chip
     pinMode(10, OUTPUT);
@@ -82,11 +83,11 @@ WebServer::WebServer(void)
     
     
     // pins 26 to 49 are outputs
-    for (i = 26; i <= 49; i++) 
+/*    for (cnt = 26; cnt <= 49; cnt++) 
 	  {
         pinMode(i, OUTPUT);    // set pins as outputs
         digitalWrite(i, LOW);  // switch the output pins off
-    }
+    }*/
 
     Ethernet.begin(mac, ip);  // initialize Ethernet device
 
@@ -202,13 +203,38 @@ void WebServer::Tasks()
 //*****************************************************************************
 void WebServer::SetLEDs(void)
 {
-    char str_on[12] = {0};
-    char str_off[12] = {0};
-    unsigned char i;
-    unsigned int  j;
-    int LED_num = 1;
+    //char str_on[12] = {0};
+    //char str_off[12] = {0};
+    //unsigned char i;
+    //unsigned int  j;
+    //int LED_num = 1;
+    char scene_c[8];
+    uint16_t scene = 0;
+    char* start_pos = 0;
+    char* end_pos = 0;
+    uint16_t cnt = 0;
     
-    for (i = 0; i < 3; i++) 
+    start_pos = strstr(HTTP_req, "LightScene");
+    end_pos = strstr(HTTP_req, "&");
+    Serial.println(HTTP_req);
+    Serial.println(start_pos[0]);
+    Serial.println(end_pos[0]);
+
+    if ((start_pos == 0) || (end_pos == 0)) return;
+        
+    start_pos = &start_pos[10];
+    for (cnt = 0; cnt < end_pos - start_pos; cnt++)
+    {
+      scene_c[cnt] = start_pos[cnt];
+      scene_c[cnt+1] = '\0';
+    }
+    scene += atoi(scene_c);
+    Serial.print("Light Scene: ");
+    Serial.println(scene);
+    m_led_strip->ChangeLightScene(scene);
+
+    
+    /*for (i = 0; i < 3; i++) 
 	  {
         for (j = 1; j <= 0x80; j <<= 1) 
 		    {
@@ -230,7 +256,8 @@ void WebServer::SetLEDs(void)
             }
             LED_num++;
         }
-    }
+    }*/
+    
 }
 
 
@@ -243,7 +270,7 @@ void WebServer::XML_response(EthernetClient cl)
     unsigned char i;
     unsigned int  j;
     
-    cl.print("<?xml version = \"1.0\" ?>");
+    /*cl.print("<?xml version = \"1.0\" ?>");
     cl.print("<inputs>");
     for (i = 0; i < 3; i++) 
 	  {
@@ -262,7 +289,7 @@ void WebServer::XML_response(EthernetClient cl)
             cl.println("</LED>");
         }
     }
-    cl.print("</inputs>");
+    cl.print("</inputs>");*/
 }
 
 

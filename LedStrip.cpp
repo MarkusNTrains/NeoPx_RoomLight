@@ -32,7 +32,7 @@ LedStrip::LedStrip(uint8_t px_pin, uint16_t nof_px, uint8_t nof_row)
 {
   m_nof_px = nof_px;
   m_nof_row = nof_row;
-  m_state = IDLE;
+  m_state = OFFICE_TABLE_WW;
   m_current_brightness = 0;
   m_desired_brightness = 20;
   m_update_time_ms = millis();
@@ -57,6 +57,42 @@ LedStrip::~LedStrip()
 
 //*****************************************************************************
 // description:
+//   ChangeLightScene
+//*****************************************************************************
+void LedStrip::ChangeLightScene(light_scene_t scene)
+{
+  m_state = scene;
+  
+  switch (scene)
+  {
+    case OFFICE_TABLE_WW:
+      ShowOfficeTableWW_Enter(10);
+      break;
+
+    case LIGHT_ON_WW:
+      LightOnWW_Enter(20);
+      break;
+
+    case SUNRISE:
+      m_pixel->setBrightness(50); // Set brigthness for all neo pixels
+      break;
+      
+    case POWER_OFF:
+      break;
+
+    case DISCO:
+    case MOVING_DOT:
+      this->m_state = MOVING_DOT;
+      break;
+      
+    default:
+      break;
+  }
+}
+
+
+//*****************************************************************************
+// description:
 //   Statemachine
 //*****************************************************************************
 void LedStrip::Tasks()
@@ -71,10 +107,19 @@ void LedStrip::Tasks()
         ShowOfficeTableWW_Task();
         break;
 
+      case LIGHT_ON_WW:
+        LightOnWW_Task();
+        break;
+        
+      case SUNRISE:
+        Sunrise_Task();
+        break;
+        
       case POWER_OFF:
         PowerOff_Task();
         break;
-
+        
+      case DISCO:
       case MOVING_DOT:
         MovingDot_Task();
         break;
@@ -93,10 +138,9 @@ void LedStrip::Tasks()
 // description:
 //   Show White Pixel
 //*****************************************************************************
-void LedStrip::ShowOfficeTableWW(uint16_t brightness)
+void LedStrip::ShowOfficeTableWW_Enter(uint16_t brightness)
 {
   this->m_desired_brightness = brightness;
-  this->m_state = OFFICE_TABLE_WW;
 }
 
 
@@ -113,8 +157,99 @@ void LedStrip::ShowOfficeTableWW_Task(void)
   
   if (this->m_current_brightness >= this->m_desired_brightness)
   {
-    this->m_state = POWER_OFF;
+    this->m_state = IDLE;
   }
+}
+
+
+//*****************************************************************************
+// description:
+//   Show White Pixel
+//*****************************************************************************
+void LedStrip::LightOnWW_Enter(uint16_t brightness)
+{
+  this->m_desired_brightness = brightness;
+}
+
+
+//*****************************************************************************
+// description:
+//   Show White Pixel
+//*****************************************************************************
+void LedStrip::LightOnWW_Task(void)
+{
+  this->m_current_brightness++;  
+  this->m_pixel->setBrightness(this->m_current_brightness); // Set brigthness for all neo pixels
+
+  uint32_t color = this->m_pixel->Color(0, 0, 0, 255);
+  this->SetPixel(0, m_nof_px, 0, 1, color);
+  
+  if (this->m_current_brightness >= this->m_desired_brightness)
+  {
+    this->m_state = IDLE;
+  }
+}
+
+
+//*****************************************************************************
+// description:
+//   Sunrise_Task
+//*****************************************************************************
+#define PIXEL_DISTANCE_MM 30  // distance between neo pixels in mm
+#define PIXEL_BRIGHTNESS 100
+#define SUN_MAX_HEIGHT 1000
+static int32_t s_sun_height = 0;
+static uint32_t s_sun_pos = 0;
+void LedStrip::Sunrise_Task(void)
+{
+  uint16_t pixel;
+  uint16_t cnt;
+  uint8_t red[m_nof_px];
+  uint8_t green[m_nof_px];
+  uint8_t blue[m_nof_px];
+  float brightness = 0;
+  float asin_alpha = 0;
+  uint32_t hypothenuse = 0;
+
+  for (cnt = 0; cnt < ((m_nof_px + 1) / 2); cnt++)
+  {
+    hypothenuse = sqrt(pow(s_sun_height, 2) + pow(PIXEL_DISTANCE_MM * cnt, 2));
+    asin_alpha = (255 * s_sun_height) / hypothenuse;
+    brightness = asin_alpha / 255;
+    
+    red[cnt] = 255 * brightness;
+    red[(m_nof_px - 1) - cnt] = red[cnt];
+    
+    green[cnt] = asin_alpha * brightness;
+    green[(m_nof_px - 1) - cnt] = green[cnt];
+    
+    blue[cnt] = ((green[cnt] * s_sun_height) / (SUN_MAX_HEIGHT * 2)) * brightness;
+    blue[(m_nof_px - 1) - cnt] =  blue[cnt];
+    
+#ifdef IS_DEBUG_MODE
+    Serial.print("c ");
+    Serial.print(hypothenuse);
+    Serial.print("  brigth ");
+    Serial.print(brightness);
+    Serial.print("  green ");
+    Serial.println(green[cnt]);
+#endif
+  }
+  
+  for (cnt = 0; cnt < m_nof_px; cnt++)
+  {
+    pixel = (s_sun_pos + cnt) % m_nof_px;
+    m_pixel->setPixelColor(pixel, m_pixel->Color(red[cnt], green[cnt], blue[cnt]));
+  }
+
+  m_pixel->show();   // Send the updated pixel colors to the hardware.  
+
+  if (s_sun_height < SUN_MAX_HEIGHT)
+  {
+    s_sun_height++;
+  }
+  s_sun_pos = s_sun_pos % m_nof_px;
+
 }
 
 
@@ -144,7 +279,7 @@ void LedStrip::PowerOff_Task(void)
   if (this->m_current_brightness == 0)
   {
     this->m_pixel->setBrightness(20); // Set brigthness for all neo pixels
-    this->m_state = MOVING_DOT;
+    this->m_state = IDLE;
   }
   else
   {
