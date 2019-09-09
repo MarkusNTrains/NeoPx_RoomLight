@@ -86,7 +86,7 @@
 			
 			bt.classList.add("active-class");
 			
-			strButtonPushed = ("&LightScene" + scene);
+			strButtonPushed = ("&LightScene=" + scene);
 			SendDataToArduino();
 		}
 				
@@ -106,9 +106,13 @@
 			vertical-align: -3px;
 		}
 		h1 {
-			font-size: 120%;
-			color: blue;
+			font-size: 150%;
+			color: black;
 			margin: 0 0 10px 0;
+			width: 100% - 32px;
+			border-radius: 4px;
+			padding: 8px 16px 8px 16px;
+			border: 2px solid #000000;
 		}
 		h2 {
 			font-size: 85%;
@@ -164,6 +168,7 @@
     <!--<body onload="GetArduinoIO()">-->
     <body>
         <h1>MoBa Licht Steuerung</h1>
+		<br>
 		<!--<div class="out_box">
 			<form class="check_LEDs" name="LED_form1">
 				<input type="checkbox" name="LED1" value="0" onclick="GetCheck('LED1', this)" />LED 1 (D26)

@@ -54,7 +54,7 @@ WebServer::WebServer(LedStrip* led_strip)
     int cnt;
 		
     byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x49 }; // MAC address from Ethernet shield sticker under board
-    IPAddress ip(192, 168, 0, 250);    // IP address, may need to change depending on network
+    IPAddress ip(192, 168, 1, 250);    // IP address, may need to change depending on network
     m_server = new EthernetServer(80);            // server
     m_led_strip = led_strip;
     
@@ -133,6 +133,7 @@ void WebServer::Tasks()
                     HTTP_req[req_index] = c;          // save HTTP request character
                     req_index++;
                 }
+                
                 // last line of client request is blank and ends with \n
                 // respond to client only after last line received
                 if (c == '\n' && currentLineIsBlank) 
@@ -142,6 +143,7 @@ void WebServer::Tasks()
                     // remainder of header follows below, depending on if
                     // web page or XML page is requested
                     // Ajax request - send XML file
+                    Serial.println(HTTP_req);
                     if (StrContains(HTTP_req, "ajax_inputs")) 
 					          {
                         // send rest of HTTP header
@@ -149,6 +151,7 @@ void WebServer::Tasks()
                         client.println("Connection: keep-alive");
                         client.println();
                         SetLEDs();
+                        
                         // send XML file containing input states
                         XML_response(client);
                     }
@@ -169,6 +172,7 @@ void WebServer::Tasks()
                             webFile.close();
                         }
                     }
+                    
                     // display received HTTP request on serial port
                     //Serial.print(HTTP_req);
                     // reset buffer index and all buffer elements to 0
@@ -176,6 +180,7 @@ void WebServer::Tasks()
                     StrClear(HTTP_req, REQ_BUF_SZ);
                     break;
                 }
+                
                 // every line of text received from the client ends with \r\n
                 if (c == '\n') 
 				        {
@@ -190,6 +195,7 @@ void WebServer::Tasks()
                 }
             } // end if (client.available())
         } // end while (client.connected())
+        
         delay(1);      // give the web browser time to receive the data
         client.stop(); // close the connection
     } // end if (client)
@@ -213,25 +219,28 @@ void WebServer::SetLEDs(void)
     char* start_pos = 0;
     char* end_pos = 0;
     uint16_t cnt = 0;
-    
-    start_pos = strstr(HTTP_req, "LightScene");
-    end_pos = strstr(HTTP_req, "&");
-    Serial.println(HTTP_req);
-    Serial.println(start_pos[0]);
-    Serial.println(end_pos[0]);
+    char needle[] = "LightScene=";
 
-    if ((start_pos == 0) || (end_pos == 0)) return;
-        
-    start_pos = &start_pos[10];
-    for (cnt = 0; cnt < end_pos - start_pos; cnt++)
+    // find LightScene
+    if (StrContains(HTTP_req, needle))
     {
-      scene_c[cnt] = start_pos[cnt];
-      scene_c[cnt+1] = '\0';
+        start_pos = strstr(HTTP_req, needle);
+        if (start_pos == 0) return;  // no String found
+
+        end_pos = strstr(start_pos, "&");
+        if (end_pos == 0) return;  // no String found
+
+        start_pos += sizeof(needle) - 1;
+
+        for (cnt = 0; cnt < end_pos - start_pos; cnt++)
+        {
+            scene_c[cnt] = start_pos[cnt];
+            scene_c[cnt+1] = '\0';
+        }
+        scene = atoi(scene_c);
+        Serial.print("Light Scene: ");
+        Serial.println(scene);        
     }
-    scene += atoi(scene_c);
-    Serial.print("Light Scene: ");
-    Serial.println(scene);
-    m_led_strip->ChangeLightScene(scene);
 
     
     /*for (i = 0; i < 3; i++) 
@@ -270,9 +279,9 @@ void WebServer::XML_response(EthernetClient cl)
     unsigned char i;
     unsigned int  j;
     
-    /*cl.print("<?xml version = \"1.0\" ?>");
+    cl.print("<?xml version = \"1.0\" ?>");
     cl.print("<inputs>");
-    for (i = 0; i < 3; i++) 
+    /*for (i = 0; i < 3; i++) 
 	  {
         for (j = 1; j <= 0x80; j <<= 1) 
 		    {
@@ -289,7 +298,8 @@ void WebServer::XML_response(EthernetClient cl)
             cl.println("</LED>");
         }
     }
-    cl.print("</inputs>");*/
+*/
+    cl.print("</inputs>");
 }
 
 
@@ -325,7 +335,8 @@ char WebServer::StrContains(char *str, char *sfind)
     {
         return 0;
     }
-    while (index < len) {
+    while (index < len) 
+    {
         if (str[index] == sfind[found]) 
         {
             found++;
