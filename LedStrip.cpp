@@ -34,7 +34,7 @@ LedStrip::LedStrip(uint8_t px_pin, uint16_t nof_px, uint8_t nof_row)
   m_nof_row = nof_row;
   m_state = OFFICE_TABLE_WW;
   m_current_brightness = 0;
-  m_desired_brightness = 20;
+  m_desired_brightness = 50;
   m_update_time_ms = millis();
   
   //Adafruit_NeoPixel pixels(num_of_neo_px, neo_px_pin, NEO_GRB + NEO_KHZ800);
@@ -59,18 +59,18 @@ LedStrip::~LedStrip()
 // description:
 //   ChangeLightScene
 //*****************************************************************************
-void LedStrip::ChangeLightScene(light_scene_t scene)
+void LedStrip::ChangeLightScene(light_scene_t scene, uint8_t brightness)
 {
   m_state = scene;
   
   switch (scene)
   {
     case OFFICE_TABLE_WW:
-      ShowOfficeTableWW_Enter(10);
+      ShowOfficeTableWW_Enter(brightness);
       break;
 
     case LIGHT_ON_WW:
-      LightOnWW_Enter(20);
+      LightOnWW_Enter(brightness);
       break;
 
     case SUNRISE:
@@ -153,7 +153,7 @@ void LedStrip::ShowOfficeTableWW_Task(void)
   this->m_current_brightness++;  
   this->m_pixel->setBrightness(this->m_current_brightness); // Set brigthness for all neo pixels
   uint32_t color = this->m_pixel->Color(0, 0, 0, 255);
-  this->SetPixel(3, 10, 5, 5, color);
+  this->SetPixel(15, 120, 0, 1, color);
   
   if (this->m_current_brightness >= this->m_desired_brightness)
   {
@@ -195,7 +195,7 @@ void LedStrip::LightOnWW_Task(void)
 // description:
 //   Sunrise_Task
 //*****************************************************************************
-#define PIXEL_DISTANCE_MM 30  // distance between neo pixels in mm
+#define PIXEL_DISTANCE_MM 16  // distance between neo pixels in mm
 #define PIXEL_BRIGHTNESS 100
 #define SUN_MAX_HEIGHT 1000
 static int32_t s_sun_height = 0;
@@ -341,4 +341,14 @@ void LedStrip::SetPixel(uint16_t start_pos, uint16_t width, uint16_t space, uint
   }
   
   m_pixel->show();   // Send the updated pixel colors to the hardware.
+}
+
+
+//*****************************************************************************
+// description:
+//   Set Brightness
+//*****************************************************************************
+void LedStrip::SetBrightness(uint8_t brightness)
+{
+  this->ChangeLightScene(m_state, brightness);
 }

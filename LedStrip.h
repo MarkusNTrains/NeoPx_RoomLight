@@ -47,7 +47,8 @@ class LedStrip
 		LedStrip(uint8_t px_pin, uint16_t nof_px, uint8_t nof_row);
 		~LedStrip();
     void Tasks(void);
-    void ChangeLightScene(light_scene_t scene);
+    void ChangeLightScene(light_scene_t scene, uint8_t brightness);
+    void SetBrightness(uint8_t brightness);
 		
 	private:	
     const uint32_t TMO_TILL_NEXT_UPDATE_MS = 20;

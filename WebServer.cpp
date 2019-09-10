@@ -54,7 +54,7 @@ WebServer::WebServer(LedStrip* led_strip)
     int cnt;
 		
     byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x49 }; // MAC address from Ethernet shield sticker under board
-    IPAddress ip(192, 168, 1, 250);    // IP address, may need to change depending on network
+    IPAddress ip(192, 168, 0, 250);    // IP address, may need to change depending on network
     m_server = new EthernetServer(80);            // server
     m_led_strip = led_strip;
     
@@ -143,7 +143,6 @@ void WebServer::Tasks()
                     // remainder of header follows below, depending on if
                     // web page or XML page is requested
                     // Ajax request - send XML file
-                    Serial.println(HTTP_req);
                     if (StrContains(HTTP_req, "ajax_inputs")) 
 					          {
                         // send rest of HTTP header
@@ -214,32 +213,55 @@ void WebServer::SetLEDs(void)
     //unsigned char i;
     //unsigned int  j;
     //int LED_num = 1;
-    char scene_c[8];
-    uint16_t scene = 0;
+    char param_c[8];
+    uint16_t param = 0;
     char* start_pos = 0;
     char* end_pos = 0;
     uint16_t cnt = 0;
-    char needle[] = "LightScene=";
+    char needle_scene[] = "LightScene";
+    char needle_brightness[] = "SetBrightness";
+    char needle_color[] = "SetColor";
 
     // find LightScene
-    if (StrContains(HTTP_req, needle))
+    if (StrContains(HTTP_req, needle_scene))
     {
-        start_pos = strstr(HTTP_req, needle);
+        start_pos = strstr(HTTP_req, needle_scene);
         if (start_pos == 0) return;  // no String found
 
         end_pos = strstr(start_pos, "&");
         if (end_pos == 0) return;  // no String found
 
-        start_pos += sizeof(needle) - 1;
+        start_pos += sizeof(needle_scene);
 
         for (cnt = 0; cnt < end_pos - start_pos; cnt++)
         {
-            scene_c[cnt] = start_pos[cnt];
-            scene_c[cnt+1] = '\0';
+            param_c[cnt] = start_pos[cnt];
+            param_c[cnt+1] = '\0';
         }
-        scene = atoi(scene_c);
+        param = atoi(param_c);
         Serial.print("Light Scene: ");
-        Serial.println(scene);        
+        Serial.println(param);  
+
+        m_led_strip->ChangeLightScene(param, 255);
+    }
+    else if(StrContains(HTTP_req, needle_brightness))
+    {
+        start_pos = strstr(HTTP_req, needle_brightness);
+        if (start_pos == 0) return;  // no String found
+
+        end_pos = strstr(start_pos, "&");
+        if (end_pos == 0) return;  // no String found
+
+        start_pos += sizeof(needle_brightness);      
+
+        for (cnt = 0; cnt < end_pos - start_pos; cnt++)
+        {
+            param_c[cnt] = start_pos[cnt];
+            param_c[cnt+1] = '\0';
+        }
+        param = atoi(param_c);
+
+        m_led_strip->SetBrightness(param);
     }
 
     
@@ -265,9 +287,9 @@ void WebServer::SetLEDs(void)
             }
             LED_num++;
         }
-    }*/
-    
+    }*/    
 }
+
 
 
 //*****************************************************************************
