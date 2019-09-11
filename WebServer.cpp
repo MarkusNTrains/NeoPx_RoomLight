@@ -261,6 +261,8 @@ void WebServer::SetLEDs(void)
         }
         param = atoi(param_c);
 
+        Serial.print("Birghtness: ");
+        Serial.println(param);  
         m_led_strip->SetBrightness(param);
     }
 

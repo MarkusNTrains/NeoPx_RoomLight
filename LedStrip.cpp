@@ -61,20 +61,22 @@ LedStrip::~LedStrip()
 //*****************************************************************************
 void LedStrip::ChangeLightScene(light_scene_t scene, uint8_t brightness)
 {
+  m_light_scene = scene;
   m_state = scene;
+  m_desired_brightness = brightness;
   
   switch (scene)
   {
     case OFFICE_TABLE_WW:
-      ShowOfficeTableWW_Enter(brightness);
+      //ShowOfficeTableWW_Enter(brightness);
       break;
 
     case LIGHT_ON_WW:
-      LightOnWW_Enter(brightness);
+      //LightOnWW_Enter(brightness);
       break;
 
     case SUNRISE:
-      m_pixel->setBrightness(50); // Set brigthness for all neo pixels
+      m_pixel->setBrightness(brightness); // Set brigthness for all neo pixels
       break;
       
     case POWER_OFF:
@@ -134,42 +136,37 @@ void LedStrip::Tasks()
 }
 
 
-//*****************************************************************************
+/*//*****************************************************************************
 // description:
 //   Show White Pixel
 //*****************************************************************************
 void LedStrip::ShowOfficeTableWW_Enter(uint16_t brightness)
 {
   this->m_desired_brightness = brightness;
-}
+}*/
 
 
 //*****************************************************************************
 // description:
-//   Show White Pixel
+//   ShowOfficeTableWW_Task
 //*****************************************************************************
 void LedStrip::ShowOfficeTableWW_Task(void)
 {
-  this->m_current_brightness++;  
-  this->m_pixel->setBrightness(this->m_current_brightness); // Set brigthness for all neo pixels
   uint32_t color = this->m_pixel->Color(0, 0, 0, 255);
+
+  this->UpdateBrightness();
   this->SetPixel(15, 120, 0, 1, color);
-  
-  if (this->m_current_brightness >= this->m_desired_brightness)
-  {
-    this->m_state = IDLE;
-  }
 }
 
 
-//*****************************************************************************
+/*//*****************************************************************************
 // description:
 //   Show White Pixel
 //*****************************************************************************
 void LedStrip::LightOnWW_Enter(uint16_t brightness)
 {
   this->m_desired_brightness = brightness;
-}
+}*/
 
 
 //*****************************************************************************
@@ -178,16 +175,10 @@ void LedStrip::LightOnWW_Enter(uint16_t brightness)
 //*****************************************************************************
 void LedStrip::LightOnWW_Task(void)
 {
-  this->m_current_brightness++;  
-  this->m_pixel->setBrightness(this->m_current_brightness); // Set brigthness for all neo pixels
-
   uint32_t color = this->m_pixel->Color(0, 0, 0, 255);
-  this->SetPixel(0, m_nof_px, 0, 1, color);
-  
-  if (this->m_current_brightness >= this->m_desired_brightness)
-  {
-    this->m_state = IDLE;
-  }
+
+  this->UpdateBrightness();
+  this->SetPixel(0, m_nof_px, 0, 1, color);  
 }
 
 
@@ -260,7 +251,7 @@ void LedStrip::Sunrise_Task(void)
 void LedStrip::MovingDot_Task(void)
 {
   m_pixel->clear();
-  m_pixel->setPixelColor(m_px, m_pixel->Color(0, 0, 0, 255));
+  m_pixel->setPixelColor(m_px, m_pixel->Color(0, 0, 0, m_desired_brightness));
   m_pixel->show();
   m_px++;
   if (m_px >= m_nof_px)
@@ -276,17 +267,8 @@ void LedStrip::MovingDot_Task(void)
 //*****************************************************************************
 void LedStrip::PowerOff_Task(void)
 {
-  if (this->m_current_brightness == 0)
-  {
-    this->m_pixel->setBrightness(20); // Set brigthness for all neo pixels
-    this->m_state = IDLE;
-  }
-  else
-  {
-    this->m_current_brightness--;
-    this->m_pixel->setBrightness(this->m_current_brightness); // Set brigthness for all neo pixels
-    this->m_pixel->show();
-  }
+  this->UpdateBrightness();  
+  this->m_pixel->show();
 }
 
 
@@ -350,5 +332,44 @@ void LedStrip::SetPixel(uint16_t start_pos, uint16_t width, uint16_t space, uint
 //*****************************************************************************
 void LedStrip::SetBrightness(uint8_t brightness)
 {
-  this->ChangeLightScene(m_state, brightness);
+  ChangeLightScene(m_light_scene, brightness);
+}
+
+
+//*****************************************************************************
+// description:
+//   Update Brightness
+//*****************************************************************************
+void LedStrip::UpdateBrightness(void)
+{
+  uint8_t factor = 20;
+  
+  if (this->m_current_brightness < this->m_desired_brightness)
+  {
+    if (((this->m_current_brightness + ((this->m_current_brightness / factor) + 1))) < this->m_desired_brightness)
+    {
+      this->m_current_brightness += (this->m_current_brightness / factor) + 1;
+    }
+    else
+    {
+      this->m_current_brightness = this->m_desired_brightness;
+    }
+  }
+  else if (this->m_current_brightness > this->m_desired_brightness)
+  {
+    if (((this->m_current_brightness - ((this->m_current_brightness / factor) + 1))) > this->m_desired_brightness)
+    {
+      this->m_current_brightness -= (this->m_current_brightness / factor) + 1;
+    }
+    else
+    {
+      this->m_current_brightness = this->m_desired_brightness;      
+    }
+  }
+  else
+  {
+    this->m_state = IDLE;
+  }    
+
+  this->m_pixel->setBrightness(this->m_current_brightness); // Set brigthness for all neo pixels
 }
