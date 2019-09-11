@@ -80,6 +80,7 @@ void LedStrip::ChangeLightScene(light_scene_t scene, uint8_t brightness)
       break;
       
     case POWER_OFF:
+      this->m_desired_brightness = 0;
       break;
 
     case DISCO:
