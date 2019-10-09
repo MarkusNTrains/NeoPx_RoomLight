@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="de">
-<head>
-<meta charset="utf-8"/>
-<html>
+    <meta charset="utf-8"/>
     <head>
         <title>MoBa Room Light</title>
 		<script type="text/javascript" charset="utf-8">
@@ -90,7 +88,7 @@
 			SendDataToArduino();
 		}
 		
-		function BirghntessSliderChanged()
+		function BrighntessSliderChanged()
 		{
 			var slider = document.getElementById("brightness_slider");
 			var output = document.getElementById("brightness_value");
@@ -283,7 +281,7 @@
 
 		<h2>Helligkeit einstellen</h2>
 		<div class="slidecontainer">
-			<input type="range" min="0" max="255" value="50" class="slider" id="brightness_slider" onchange="BirghntessSliderChanged()">
+			<input type="range" min="0" max="255" value="50" class="slider" id="brightness_slider" onchange="BrighntessSliderChanged()">
 			<p>Value: <span id="brightness_value"></span></p>
 		</div>
 		
