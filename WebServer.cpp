@@ -198,7 +198,7 @@ void WebServer::Tasks()
             } // end if (client.available())
         } // end while (client.connected())
         
-        delay(1);      // give the web browser time to receive the data
+        delay(100);      // give the web browser time to receive the data
         client.stop(); // close the connection
     } // end if (client)
 }

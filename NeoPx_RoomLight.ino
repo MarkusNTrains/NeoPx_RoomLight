@@ -39,6 +39,7 @@ static WebServer* s_web_server;
 //*****************************************************************************
 void setup()
 {
+  delay(50);
   s_led_strip = new LedStrip(22, 600, 2);
   s_web_server = new WebServer(s_led_strip);
 
