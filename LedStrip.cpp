@@ -20,7 +20,6 @@ $Id:  $
 
 //-----------------------------------------------------------------------------
 // static module variable
-//static Adafruit_NeoPixel m_pixel(16, 6, NEO_GRB + NEO_KHZ800);
 
 
 
@@ -34,7 +33,7 @@ LedStrip::LedStrip(uint8_t px_pin, uint16_t nof_px, uint8_t nof_row)
   m_nof_row = nof_row;
   m_state = OFFICE_TABLE_WW;
   m_current_brightness = 0;
-  m_desired_brightness = 50;
+  m_desired_brightness = 100;
   m_update_time_ms = millis();
   
   //Adafruit_NeoPixel pixels(num_of_neo_px, neo_px_pin, NEO_GRB + NEO_KHZ800);
@@ -43,6 +42,12 @@ LedStrip::LedStrip(uint8_t px_pin, uint16_t nof_px, uint8_t nof_row)
   m_pixel->clear();
   m_pixel->setBrightness(255); // Set brigthness for all neo pixels
   m_pixel->show();            // Turn OFF all pixels ASAP
+
+  m_pixel_sbh = new Adafruit_NeoPixel(300, 24, NEO_GRBW + NEO_KHZ800);
+  m_pixel_sbh->begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
+  m_pixel_sbh->clear();
+  m_pixel_sbh->setBrightness(255); // Set brigthness for all neo pixels
+  m_pixel_sbh->show();            // Turn OFF all pixels ASAP
 }
 
 
@@ -73,6 +78,10 @@ void LedStrip::ChangeLightScene(light_scene_t scene, uint8_t brightness)
 
     case LIGHT_ON_WW:
       //LightOnWW_Enter(brightness);
+      break;
+
+    case SBH:
+      //
       break;
 
     case SUNRISE:
@@ -112,6 +121,10 @@ void LedStrip::Tasks()
 
       case LIGHT_ON_WW:
         LightOnWW_Task();
+        break;
+
+      case SBH:
+        SbhWW_Task();
         break;
         
       case SUNRISE:
@@ -156,7 +169,7 @@ void LedStrip::ShowOfficeTableWW_Task(void)
   uint32_t color = this->m_pixel->Color(0, 0, 0, 255);
 
   this->UpdateBrightness();
-  this->SetPixel(15, 120, 0, 1, color);
+  this->SetPixel(0, 120, 0, 1, color);
 }
 
 
@@ -180,6 +193,19 @@ void LedStrip::LightOnWW_Task(void)
 
   this->UpdateBrightness();
   this->SetPixel(0, m_nof_px, 0, 1, color);  
+}
+
+
+//*****************************************************************************
+// description:
+//   Show White Pixel
+//*****************************************************************************
+void LedStrip::SbhWW_Task(void)
+{
+  uint32_t color = this->m_pixel->Color(0, 0, 0, 255);
+
+  this->UpdateBrightness();
+  this->SetPixel(0, m_nof_px, 0, 1, color);    
 }
 
 
@@ -270,6 +296,7 @@ void LedStrip::PowerOff_Task(void)
 {
   this->UpdateBrightness();  
   this->m_pixel->show();
+  this->m_pixel_sbh->show();
 }
 
 
@@ -287,6 +314,7 @@ void LedStrip::SetPixel(uint16_t start_pos, uint16_t width, uint16_t space, uint
   uint16_t row_length = m_nof_px / m_nof_row;
   
   this->m_pixel->clear();
+  this->m_pixel_sbh->clear();
 
   if (start_pos >= row_length)
   { return; }
@@ -315,6 +343,7 @@ void LedStrip::SetPixel(uint16_t start_pos, uint16_t width, uint16_t space, uint
           idx = (row * row_length) + offset + px;
         }
         m_pixel->setPixelColor(idx, color);    
+        m_pixel_sbh->setPixelColor(idx, color);
       }
       
       offset += space + width;      
@@ -324,6 +353,7 @@ void LedStrip::SetPixel(uint16_t start_pos, uint16_t width, uint16_t space, uint
   }
   
   m_pixel->show();   // Send the updated pixel colors to the hardware.
+  m_pixel_sbh->show();   // Send the updated pixel colors to the hardware.
 }
 
 
@@ -373,4 +403,5 @@ void LedStrip::UpdateBrightness(void)
   }    
 
   this->m_pixel->setBrightness(this->m_current_brightness); // Set brigthness for all neo pixels
+  this->m_pixel_sbh->setBrightness(this->m_current_brightness); // Set brigthness for all neo pixels
 }

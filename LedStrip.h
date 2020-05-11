@@ -41,6 +41,7 @@ class LedStrip
       SUNRISE,
       POWER_OFF,
       MOVING_DOT,
+      SBH,
       IDLE,
     } light_scene_t;
     
@@ -61,6 +62,7 @@ class LedStrip
     uint16_t m_px;
 
     Adafruit_NeoPixel* m_pixel;  
+    Adafruit_NeoPixel* m_pixel_sbh;  
     uint16_t m_nof_px;
     uint8_t m_nof_row;
 
@@ -69,6 +71,7 @@ class LedStrip
     void ShowOfficeTableWW_Task(void);
     //void LightOnWW_Enter(uint16_t brightness);
     void LightOnWW_Task(void);
+    void SbhWW_Task(void);
     void Sunrise_Task(void);
     void PowerOff_Task(void);
     void MovingDot_Task(void);
