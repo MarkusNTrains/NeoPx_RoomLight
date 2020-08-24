@@ -49,14 +49,14 @@
 // description:
 //   constructor
 //*****************************************************************************
-WebServer::WebServer(LedStrip* led_strip)
+WebServer::WebServer(LedScene* led_scene)
 {
     int pin;
 		
     byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x49 }; // MAC address from Ethernet shield sticker under board
-    IPAddress ip(192, 168, 0, 250);    // IP address, may need to change depending on network
+    IPAddress ip(192, 168, 1, 250);    // IP address, may need to change depending on network
     m_server = new EthernetServer(80);            // server
-    m_led_strip = led_strip;
+    m_led_scene = led_scene;
     
     // disable Ethernet chip slave select
     pinMode(10, OUTPUT);
@@ -245,7 +245,7 @@ void WebServer::SetLEDs(void)
         Serial.print("Light Scene: ");
         Serial.println(param);  
 
-        m_led_strip->ChangeLightScene(param, 255);
+        m_led_scene->ChangeLightScene(param, 255);
     }
     else if(StrContains(HTTP_req, needle_brightness))
     {
@@ -266,7 +266,7 @@ void WebServer::SetLEDs(void)
 
         Serial.print("Birghtness: ");
         Serial.println(param);  
-        m_led_strip->SetBrightness(param);
+        m_led_scene->SetBrightness(param);
     }
 
     

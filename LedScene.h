@@ -1,20 +1,20 @@
 /*******************************************************************************
-Project   Train TimeTable
+Project   RoomLight
 
   This is an OpenSource Project.
   You can use, share or improve this project. If you improve this source code
   please share with the comunity or at least with the author of the original 
   source code
   
-  Created 09. May 2019 by MarkusNTrains
+  Created 24. August 2020 by MarkusNTrains
 ================================================================================
 $HeadURL:  $
 $Id:  $
 *******************************************************************************/
 
 
-#ifndef _LED_STRIP_H
-#define _LED_STRIP_H
+#ifndef _LED_SCENE_H
+#define _LED_SCENE_H
 
 
 //----------------------------------------------------------------------------
@@ -29,7 +29,7 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // class
-class LedStrip
+class LedScene
 {
 	public:
    typedef enum 
@@ -45,8 +45,8 @@ class LedStrip
       IDLE,
     } light_scene_t;
     
-		LedStrip(uint8_t px_pin, uint16_t nof_px, uint8_t nof_row);
-		~LedStrip();
+		LedScene(void);
+		~LedScene();
     void Tasks(void);
     void ChangeLightScene(light_scene_t scene, uint8_t brightness);
     void SetBrightness(uint8_t brightness);
@@ -61,11 +61,6 @@ class LedStrip
     uint32_t m_update_time_ms;
     uint16_t m_px;
 
-    Adafruit_NeoPixel* m_pixel;  
-    Adafruit_NeoPixel* m_pixel_sbh;  
-    uint16_t m_nof_px;
-    uint8_t m_nof_row;
-
 
     //void ShowOfficeTableWW_Enter(uint16_t brightness);
     void ShowOfficeTableWW_Task(void);
@@ -79,4 +74,4 @@ class LedStrip
     void UpdateBrightness(void);
 };
 
-#endif  // _LED_STRIP_H
+#endif  // _LED_SCENE_H

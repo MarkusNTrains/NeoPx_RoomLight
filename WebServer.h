@@ -22,7 +22,7 @@ $Id:  $
 #include <SPI.h>
 #include <Ethernet.h>
 #include <SD.h>
-#include "LedStrip.h"
+#include "LedScene.h"
 
 
 
@@ -36,7 +36,7 @@ $Id:  $
 class WebServer
 {
 	public:
-		WebServer(LedStrip* led_strip);
+		WebServer(LedScene* led_scene);
 		~WebServer();
     void Tasks(void);
 		
@@ -47,7 +47,7 @@ class WebServer
 		char HTTP_req[REQ_BUF_SZ] = {0};  // buffered HTTP request stored as null terminated string
 		char req_index = 0;               // index into HTTP_req buffer
 		unsigned char LED_state[3] = {0}; // stores the states of the LEDs, 1 bit per LED
-    LedStrip* m_led_strip;
+    LedScene* m_led_scene;
 
 		void SetLEDs(void);
 		void XML_response(EthernetClient cl);
