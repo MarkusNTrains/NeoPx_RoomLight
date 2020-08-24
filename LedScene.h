@@ -45,7 +45,7 @@ class LedScene
       IDLE,
     } light_scene_t;
     
-		LedScene(void);
+		LedScene();
 		~LedScene();
     void Tasks(void);
     void ChangeLightScene(light_scene_t scene, uint8_t brightness);
