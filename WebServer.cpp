@@ -84,7 +84,7 @@ WebServer::WebServer(LedScene* led_scene)
     
     // pins 26 to 49 are outputs
     for (pin = 26; pin <= 49; pin++) 
-	  {
+    {
         pinMode(pin, OUTPUT);    // set pins as outputs
         digitalWrite(pin, LOW);  // switch the output pins off
     }

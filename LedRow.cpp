@@ -34,10 +34,10 @@ $Id:  $
 //*****************************************************************************
 LedRow::LedRow(Adafruit_NeoPixel* led_strip_p, uint16_t* lookup_table_p, uint16_t start_px, uint16_t end_px)
 {
-  m_led_strip_p = led_strip_p;
-  m_start_px = start_px;
-  m_end_px = end_px;
-  m_lookup_table_p = lookup_table_p;
+    m_led_strip_p = led_strip_p;
+    m_start_px = start_px;
+    m_end_px = end_px;
+    m_lookup_table_p = lookup_table_p;
 }
 
 
@@ -56,8 +56,8 @@ LedRow::~LedRow()
 //*****************************************************************************
 void LedRow::SetPixel(uint16_t idx, uint32_t color)
 {
-  m_led_strip_p->setPixelColor(m_lookup_table_p[idx], color);
-  m_led_strip_p->show();
+    m_led_strip_p->setPixelColor(m_lookup_table_p[idx], color);
+    m_led_strip_p->show();
 }
 
 

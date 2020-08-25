@@ -39,10 +39,10 @@ class LedRow
     void SetPixel(uint16_t start_idx, uint16_t width, uint16_t space, uint16_t nof_repeat, uint32_t color);
 		
 	private:	
-    Adafruit_NeoPixel* m_led_strip_p;
-    uint16_t m_start_px;
-    uint16_t m_end_px;
-    uint16_t* m_lookup_table_p;
+        Adafruit_NeoPixel* m_led_strip_p;
+        uint16_t m_start_px;
+        uint16_t m_end_px;
+        uint16_t* m_lookup_table_p;
 };
 
 #endif  // _LED_ROW_H
