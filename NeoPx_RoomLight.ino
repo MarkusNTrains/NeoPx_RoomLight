@@ -40,7 +40,7 @@ static WebServer* s_web_server;
 void setup()
 {
   delay(50);
-  s_led_scene = new LedScene();
+  //s_led_scene = new LedScene();
   s_web_server = new WebServer(s_led_scene);
 }
 

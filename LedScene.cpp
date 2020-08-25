@@ -45,7 +45,7 @@ LedScene::LedScene()
   m_desired_brightness = 100;
   m_update_time_ms = millis();
 
-  //LedMatrix* led_matrix = new LedMatrix();
+  LedMatrix* led_matrix = new LedMatrix();
   //uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
   //led_matrix->SetPixel(1, 0, color);
 }
