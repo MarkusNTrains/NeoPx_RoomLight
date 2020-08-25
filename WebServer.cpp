@@ -63,21 +63,31 @@ WebServer::WebServer(LedScene* led_scene)
     digitalWrite(10, HIGH);
     
     // initialize SD card
+  #ifdef IS_DEBUG_MODE
     Serial.println("Initializing SD card...");
+  #endif
     if (!SD.begin(4)) 
-	  {
+    {
+      #ifdef IS_DEBUG_MODE
         Serial.println("ERROR - SD card initialization failed!");
+      #endif
         return;    // init failed
     }
+  #ifdef IS_DEBUG_MODE
     Serial.println("SUCCESS - SD card initialized.");
+  #endif
     
     // check for index.htm file
     if (!SD.exists("index.htm")) 
-	  {
+    {
+      #ifdef IS_DEBUG_MODE
         Serial.println("ERROR - Can't find index.htm file!");
+      #endif
         return;  // can't find index file
     }
+  #ifdef IS_DEBUG_MODE    
     Serial.println("SUCCESS - Found index.htm file.");
+  #endif
     
     
     // pins 26 to 49 are outputs

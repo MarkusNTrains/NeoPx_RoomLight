@@ -32,12 +32,11 @@ $Id:  $
 // description:
 //   constructor
 //*****************************************************************************
-LedRow::LedRow(Adafruit_NeoPixel* led_strip_p, uint16_t* lookup_table_p, uint16_t start_px, uint16_t end_px)
+LedRow::LedRow(Adafruit_NeoPixel* led_strip_p, uint16_t* lookup_table_p, uint16_t row_length)
 {
-    m_led_strip_p = led_strip_p;
-    m_start_px = start_px;
-    m_end_px = end_px;
-    m_lookup_table_p = lookup_table_p;
+    this->m_led_strip_p = led_strip_p;
+    this->m_lookup_table_p = lookup_table_p;
+    this->m_length = row_length;
 }
 
 
@@ -52,12 +51,23 @@ LedRow::~LedRow()
 
 //*****************************************************************************
 // description:
+//   Send the updated pixel colors to the hardware.
+//*****************************************************************************
+void LedRow::Show(void)
+{
+    this->m_led_strip_p->show();    
+}
+
+
+//*****************************************************************************
+// description:
 //   Set Pixel
 //*****************************************************************************
 void LedRow::SetPixel(uint16_t idx, uint32_t color)
 {
-    m_led_strip_p->setPixelColor(m_lookup_table_p[idx], color);
-    m_led_strip_p->show();
+    this->m_led_strip_p->setPixelColor(this->m_lookup_table_p[idx], color);
+        Serial.println(idx);
+        Serial.println(this->m_lookup_table_p[idx]);
 }
 
 
@@ -67,53 +77,52 @@ void LedRow::SetPixel(uint16_t idx, uint32_t color)
 //*****************************************************************************
 void LedRow::SetPixel(uint16_t start_idx, uint16_t width, uint16_t space, uint16_t nof_repeat, uint32_t color)
 {
-/*  uint16_t px = 0;
-  uint16_t idx = 0;
-  uint16_t row = 0;
-  uint16_t cnt = 0;
-  uint16_t offset = 0;
-  uint16_t row_length = m_nof_px / m_nof_row;
-  
-  this->m_pixel->clear();
-  this->m_pixel_sbh->clear();
-
-  if (start_idx >= row_length)
-  { return; }
-  
-  if ((start_idx + width) > row_length)
-  {
-    width = row_length - start_pos;
-  }
-
-  for (row = 0; row < m_nof_row; row++)
-  {
+    uint16_t px = 0;
+    uint16_t idx = 0;
+    uint16_t cnt = 0;
+    uint16_t offset = 0;
+    uint16_t nof_px_to_fill = 0;
+    
+    if (start_idx >= this->m_length)
+    { return; }
+    
+    if ((start_idx + width) > this->m_length)
+    {
+        width = this->m_length - start_idx;
+    }
+    
     offset = start_idx;
     for (cnt = 0; cnt < nof_repeat; cnt++)
     {
-      for (px = 0; px < width; px++)
-      {
-        // check if position is further than the rowlength
-        if ((offset + px) >= row_length) { break; } 
-        
-        if (row % 2)
+        /*for (px = 0; px < width; px++)
         {
-          idx = ((row + 1) * row_length) - 1 - offset - px;  // this is required if the pixel signal is zigzagged through the LED strips        
+            // check if position is further than the rowlength
+            if ((offset + px) >= this->m_length) { break; }
+            
+            idx = offset + px;
+        Serial.println(idx);
+            this->m_led_strip_p->setPixelColor(this->m_lookup_table_p[idx], color);    
+        }*/
+        if (this->m_lookup_table_p[offset] <= this->m_lookup_table_p[(offset + width)])
+        {
+            idx = this->m_lookup_table_p[offset];
+            nof_px_to_fill = (this->m_lookup_table_p[(offset + width)] - idx);
         }
         else
         {
-          idx = (row * row_length) + offset + px;
+            idx = this->m_lookup_table_p[(offset + width)];
+            nof_px_to_fill = (this->m_lookup_table_p[(offset)] - idx);            
         }
-        m_pixel->setPixelColor(idx, color);    
-        m_pixel_sbh->setPixelColor(idx, color);
-      }
+        this->m_led_strip_p->fill(color, idx, nof_px_to_fill);
+        Serial.println(nof_px_to_fill);
+        Serial.println(offset);
+        Serial.println(m_lookup_table_p[offset]);
+        //Serial.println(idx);
+        //Serial.println((this->m_lookup_table_p[offset + (width)] - idx));
+        Serial.println("end");
       
-      offset += space + width;      
-      // check if offset is further than the rowlength
-      if (offset >= row_length) { break; }
+        offset += space + width;      
+        // check if offset is further than the rowlength
+        if (offset >= this->m_length) { break; }
     }
-  }
-  
-  m_pixel->show();   // Send the updated pixel colors to the hardware.
-  m_pixel_sbh->show();   // Send the updated pixel colors to the hardware.
-  */
 }
