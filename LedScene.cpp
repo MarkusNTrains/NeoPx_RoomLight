@@ -45,9 +45,20 @@ LedScene::LedScene()
     m_desired_brightness = 100;
     m_update_time_ms = millis();
     
-    LedMatrix* led_matrix = new LedMatrix();
-    uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
-    led_matrix->SetPixel(1, 0, color);
+   // LedMatrix* led_matrix = new LedMatrix();
+    //uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
+    //led_matrix->SetPixel(1, 0, color);
+
+    //Adafruit_NeoPixel* m_led_strip4 = new Adafruit_NeoPixel(900, 24, NEO_GRBW + NEO_KHZ800);
+
+    Adafruit_NeoPixel* m_led_strip3 = new Adafruit_NeoPixel(900, 22, NEO_GRBW + NEO_KHZ800);
+    m_led_strip3->begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
+    m_led_strip3->clear();
+    m_led_strip3->setBrightness(255); // Set brigthness for all neo pixels
+    m_led_strip3->show();            // Turn OFF all pixels ASAP
+    
+    m_led_strip3->setPixelColor(4, m_led_strip3->Color(0,25,0,0));
+    m_led_strip3->show();
 }
 
 
