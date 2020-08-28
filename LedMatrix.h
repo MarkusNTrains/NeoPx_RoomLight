@@ -26,8 +26,6 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // define
-#define LED_MATRIX_NOF_ROW 4
-#define LED_MATRIX_NOF_COL 285
 
 
 //----------------------------------------------------------------------------
@@ -46,7 +44,7 @@ class LedMatrix
     private:  
         Adafruit_NeoPixel* m_led_strip;  
         Adafruit_NeoPixel* m_led_strip_2;
-        LedRow* m_led_row[LED_MATRIX_NOF_ROW];
+        LedRow* m_led_row[LED_ROW_NOF];
 };
 
 

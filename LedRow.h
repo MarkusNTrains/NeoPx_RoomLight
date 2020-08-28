@@ -25,6 +25,8 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // define
+#define LED_ROW_NOF 4
+#define LED_ROW_LENGTH 285
 
 
 //----------------------------------------------------------------------------
@@ -32,7 +34,7 @@ $Id:  $
 class LedRow
 {
 	public:
-		LedRow(Adafruit_NeoPixel* led_strip_p, uint16_t* lookup_table_p, uint16_t row_length);
+		LedRow(Adafruit_NeoPixel* led_strip_p, uint8_t row_idx);
 		~LedRow();
     void SetBrightness(uint8_t brightness);
     void Show(void);
@@ -41,8 +43,9 @@ class LedRow
 		
 	private:	
         Adafruit_NeoPixel* m_led_strip_p;
-        uint16_t* m_lookup_table_p;
-        uint16_t m_length;
+        uint8_t m_row_idx;
+
+        uint16_t GetLedIdxOfLut(uint16_t idx);
 };
 
 #endif  // _LED_ROW_H

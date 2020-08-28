@@ -48,7 +48,7 @@ LedScene::LedScene()
     LedMatrix* led_matrix = new LedMatrix();
     uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 32);
     //led_matrix->SetPixel(0, 1, color);
-    led_matrix->SetPixelArray(15, 120, 0, 3, color);
+    led_matrix->SetPixelArray(0, 150, 0, 3, color);
 }
 
 
