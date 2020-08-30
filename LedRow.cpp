@@ -105,9 +105,9 @@ void LedRow::SetPixel(uint16_t start_idx, uint16_t width, uint16_t space, uint16
     if (start_idx >= LED_ROW_LENGTH)
     { return; }
     
-    if ((start_idx + width) > LED_ROW_LENGTH)
+    if ((start_idx + width) >= LED_ROW_LENGTH)
     {
-        width = LED_ROW_LENGTH - start_idx;
+        width = LED_ROW_LENGTH - (start_idx + 1);
     }
     
     offset = start_idx;

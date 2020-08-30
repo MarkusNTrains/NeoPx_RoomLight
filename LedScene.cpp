@@ -46,9 +46,9 @@ LedScene::LedScene()
     m_update_time_ms = millis();
     
     LedMatrix* led_matrix = new LedMatrix();
-    uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 32);
+    uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 200);
     //led_matrix->SetPixel(0, 1, color);
-    led_matrix->SetPixelArray(0, 150, 0, 3, color);
+    led_matrix->SetPixelArray(0, LED_ROW_LENGTH, 1, 3, color);
 }
 
 

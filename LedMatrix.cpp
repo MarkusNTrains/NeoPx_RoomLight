@@ -93,7 +93,7 @@ void LedMatrix::SetPixelArray(uint16_t xs, uint16_t xe, uint8_t ys, uint8_t ye, 
     this->Clear();
     for (row = ys; row <= ye; row++)
     {
-        m_led_row[row]->SetPixel(xs, xe-xs, 0, 1, color);
+        m_led_row[row]->SetPixel(xs, ((xe+1)-xs), 0, 1, color);
     }
     this->Show();
 }
