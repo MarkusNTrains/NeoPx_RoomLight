@@ -86,6 +86,8 @@ void LedRow::Show(void)
 //*****************************************************************************
 void LedRow::SetPixel(uint16_t idx, uint32_t color)
 {
+    Serial.print("LUT idx ");
+    Serial.println(this->GetLedIdxOfLut(idx));
     this->m_led_strip_p->setPixelColor(this->GetLedIdxOfLut(idx), color);
 }
 
@@ -105,11 +107,13 @@ void LedRow::SetPixel(uint16_t start_idx, uint16_t width, uint16_t space, uint16
     if (start_idx >= LED_ROW_LENGTH)
     { return; }
     
-    if ((start_idx + width) >= LED_ROW_LENGTH)
+    if ((start_idx + width) > LED_ROW_LENGTH)
     {
-        width = LED_ROW_LENGTH - (start_idx + 1);
+        width = LED_ROW_LENGTH - start_idx;
     }
-    
+
+    width -= 1;
+
     offset = start_idx;
     for (cnt = 0; cnt < nof_repeat; cnt++)
     {
@@ -125,13 +129,21 @@ void LedRow::SetPixel(uint16_t start_idx, uint16_t width, uint16_t space, uint16
         if (this->GetLedIdxOfLut(offset) <= this->GetLedIdxOfLut(offset + width))
         {
             idx = this->GetLedIdxOfLut(offset);
-            nof_px_to_fill = (this->GetLedIdxOfLut(offset + width) - idx);
+            nof_px_to_fill = (this->GetLedIdxOfLut(offset + width) - idx) + 1;
         }
         else
         {
-            idx = this->GetLedIdxOfLut(offset + width);
-            nof_px_to_fill = (this->GetLedIdxOfLut(offset) - idx);  
+            idx = this->GetLedIdxOfLut((offset + width));
+            nof_px_to_fill = (this->GetLedIdxOfLut(offset) - idx) + 1;  
         }
+    Serial.print("offset ");
+    Serial.println(offset);
+    Serial.print("width ");
+    Serial.println(width);
+    Serial.print("idx ");
+    Serial.println(idx);
+    Serial.print("nof_px_to_fill ");
+    Serial.println(nof_px_to_fill);
         this->m_led_strip_p->fill(color, idx, nof_px_to_fill);
       
         offset += space + width;      

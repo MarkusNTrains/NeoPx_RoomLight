@@ -53,7 +53,8 @@ class LedScene
     		
 	private:	
         const uint32_t TMO_TILL_NEXT_UPDATE_MS = 20;
-        
+
+        LedMatrix* m_led_matrix;
         light_scene_t m_light_scene;
         light_scene_t m_state;
         uint8_t m_current_brightness;
@@ -62,9 +63,9 @@ class LedScene
         uint16_t m_px;
     
     
-        //void ShowOfficeTableWW_Enter(uint16_t brightness);
+        void ShowOfficeTableWW_Enter(uint16_t brightness);
         void ShowOfficeTableWW_Task(void);
-        //void LightOnWW_Enter(uint16_t brightness);
+        void LightOnWW_Enter(uint16_t brightness);
         void LightOnWW_Task(void);
         void SbhWW_Task(void);
         void Sunrise_Task(void);

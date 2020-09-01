@@ -38,17 +38,13 @@ $Id:  $
 //*****************************************************************************
 LedScene::LedScene()
 {
-    //m_nof_px = nof_px;
-    //m_nof_row = nof_row;
     m_state = OFFICE_TABLE_WW;
     m_current_brightness = 0;
-    m_desired_brightness = 100;
+    m_desired_brightness = 0;
     m_update_time_ms = millis();
-    
-    LedMatrix* led_matrix = new LedMatrix();
-    uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 200);
-    //led_matrix->SetPixel(0, 1, color);
-    led_matrix->SetPixelArray(0, LED_ROW_LENGTH, 1, 3, color);
+    m_led_matrix = new LedMatrix();
+
+    this->ChangeLightScene(OFFICE_TABLE_WW, 128);
 }
 
 
@@ -67,40 +63,40 @@ LedScene::~LedScene()
 //*****************************************************************************
 void LedScene::ChangeLightScene(light_scene_t scene, uint8_t brightness)
 {
-  m_light_scene = scene;
-  m_state = scene;
-  m_desired_brightness = brightness;
-  
-  switch (scene)
-  {
-    case OFFICE_TABLE_WW:
-      //ShowOfficeTableWW_Enter(brightness);
-      break;
-
-    case LIGHT_ON_WW:
-      //LightOnWW_Enter(brightness);
-      break;
-
-    case SBH:
-      //
-      break;
-
-    case SUNRISE:
-      //m_pixel->setBrightness(brightness); // Set brigthness for all neo pixels
-      break;
-      
-    case POWER_OFF:
-      this->m_desired_brightness = 0;
-      break;
-
-    case DISCO:
-    case MOVING_DOT:
-      this->m_state = MOVING_DOT;
-      break;
-      
-    default:
-      break;
-  }
+    m_light_scene = scene;
+    m_state = scene;
+    m_desired_brightness = brightness;
+    
+    switch (scene)
+    {
+        case OFFICE_TABLE_WW:
+            this->ShowOfficeTableWW_Enter(brightness);
+            break;
+        
+        case LIGHT_ON_WW:
+            this->LightOnWW_Enter(brightness);
+            break;
+        
+        case SBH:
+            //
+            break;
+        
+        case SUNRISE:
+            //m_pixel->setBrightness(brightness); // Set brigthness for all neo pixels
+            break;
+          
+        case POWER_OFF:
+            this->m_desired_brightness = 0;
+            break;
+        
+        case DISCO:
+        case MOVING_DOT:
+            this->m_state = MOVING_DOT;
+            break;
+          
+        default:
+            break;
+    }
 }
 
 
@@ -110,55 +106,58 @@ void LedScene::ChangeLightScene(light_scene_t scene, uint8_t brightness)
 //*****************************************************************************
 void LedScene::Tasks()
 {
-  if (millis() > this->m_update_time_ms + TMO_TILL_NEXT_UPDATE_MS)
-  {
-    this->m_update_time_ms = millis();
-    
-    switch (this->m_state)
+    if (millis() > this->m_update_time_ms + TMO_TILL_NEXT_UPDATE_MS)
     {
-      case OFFICE_TABLE_WW:
-        ShowOfficeTableWW_Task();
-        break;
-
-      case LIGHT_ON_WW:
-        LightOnWW_Task();
-        break;
-
-      case SBH:
-        SbhWW_Task();
-        break;
+        this->m_update_time_ms = millis();
+    
+        switch (this->m_state)
+        {
+            case OFFICE_TABLE_WW:
+                ShowOfficeTableWW_Task();
+                break;
         
-      case SUNRISE:
-        Sunrise_Task();
-        break;
+            case LIGHT_ON_WW:
+                LightOnWW_Task();
+                break;
         
-      case POWER_OFF:
-        PowerOff_Task();
-        break;
-        
-      case DISCO:
-      case MOVING_DOT:
-        MovingDot_Task();
-        break;
-        
-      case IDLE:
-        break;
-        
-      default:
-        break;
+            case SBH:
+                SbhWW_Task();
+                break;
+            
+            case SUNRISE:
+                Sunrise_Task();
+                break;
+            
+            case POWER_OFF:
+                PowerOff_Task();
+                break;
+            
+            case DISCO:
+            case MOVING_DOT:
+                MovingDot_Task();
+                break;
+            
+            case IDLE:
+                break;
+            
+            default:
+                break;
+        }
     }
-  }
 }
 
 
-/*//*****************************************************************************
+//*****************************************************************************
 // description:
 //   Show White Pixel
 //*****************************************************************************
 void LedScene::ShowOfficeTableWW_Enter(uint16_t brightness)
 {
-  this->m_desired_brightness = brightness;
-}*/
+    this->m_desired_brightness = brightness;
+    
+    uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
+    this->m_led_matrix->SetPixelArray(0, 120, 0, 3, color);  
+}
 
 
 //*****************************************************************************
@@ -167,21 +166,21 @@ void LedScene::ShowOfficeTableWW_Enter(uint16_t brightness)
 //*****************************************************************************
 void LedScene::ShowOfficeTableWW_Task(void)
 {
-  /*uint32_t color = this->m_pixel->Color(0, 0, 0, 255);
-
-  this->UpdateBrightness();
-  this->SetPixel(0, 120, 0, 1, color);*/
+    this->UpdateBrightness();
+    this->m_led_matrix->Show();
+    uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
+    //this->m_led_matrix->SetPixel(1, 284, color);
 }
 
 
-/*//*****************************************************************************
+//*****************************************************************************
 // description:
 //   Show White Pixel
 //*****************************************************************************
 void LedScene::LightOnWW_Enter(uint16_t brightness)
 {
-  this->m_desired_brightness = brightness;
-}*/
+    this->m_desired_brightness = brightness;
+}
 
 
 //*****************************************************************************
@@ -190,10 +189,10 @@ void LedScene::LightOnWW_Enter(uint16_t brightness)
 //*****************************************************************************
 void LedScene::LightOnWW_Task(void)
 {
-  /*uint32_t color = this->m_pixel->Color(0, 0, 0, 255);
+    uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
 
-  this->UpdateBrightness();
-  this->SetPixel(0, m_nof_px, 0, 1, color);  */
+    this->UpdateBrightness();
+    this->m_led_matrix->SetPixelArray(0, LED_ROW_LENGTH, 0, 3, color);  
 }
 
 
@@ -364,7 +363,7 @@ void LedScene::SetPixel(uint16_t start_pos, uint16_t width, uint16_t space, uint
 //*****************************************************************************
 void LedScene::SetBrightness(uint8_t brightness)
 {
-  ChangeLightScene(m_light_scene, brightness);
+    ChangeLightScene(m_light_scene, brightness);
 }
 
 
@@ -374,35 +373,34 @@ void LedScene::SetBrightness(uint8_t brightness)
 //*****************************************************************************
 void LedScene::UpdateBrightness(void)
 {
-  /*uint8_t factor = 20;
-  
-  if (this->m_current_brightness < this->m_desired_brightness)
-  {
-    if (((this->m_current_brightness + ((this->m_current_brightness / factor) + 1))) < this->m_desired_brightness)
+    uint8_t factor = 10;
+    
+    if (this->m_current_brightness < this->m_desired_brightness)
     {
-      this->m_current_brightness += (this->m_current_brightness / factor) + 1;
+        if (((this->m_current_brightness + ((this->m_current_brightness / factor) + 1))) < this->m_desired_brightness)
+        {
+            this->m_current_brightness += (this->m_current_brightness / factor) + 1;
+        }
+        else
+        {
+            this->m_current_brightness = this->m_desired_brightness;
+        }
+    }
+    else if (this->m_current_brightness > this->m_desired_brightness)
+    {
+        if (((this->m_current_brightness - ((this->m_current_brightness / factor) + 1))) > this->m_desired_brightness)
+        {
+            this->m_current_brightness -= (this->m_current_brightness / factor) + 1;
+        }
+        else
+        {
+            this->m_current_brightness = this->m_desired_brightness;      
+        }
     }
     else
     {
-      this->m_current_brightness = this->m_desired_brightness;
-    }
-  }
-  else if (this->m_current_brightness > this->m_desired_brightness)
-  {
-    if (((this->m_current_brightness - ((this->m_current_brightness / factor) + 1))) > this->m_desired_brightness)
-    {
-      this->m_current_brightness -= (this->m_current_brightness / factor) + 1;
-    }
-    else
-    {
-      this->m_current_brightness = this->m_desired_brightness;      
-    }
-  }
-  else
-  {
-    this->m_state = IDLE;
-  }    
-
-  this->m_pixel->setBrightness(this->m_current_brightness); // Set brigthness for all neo pixels
-  this->m_pixel_sbh->setBrightness(this->m_current_brightness); // Set brigthness for all neo pixels*/
+        this->m_state = IDLE;
+    }    
+    
+    this->m_led_matrix->SetBrightness(this->m_current_brightness); // Set brigthness for all neo pixels
 }
