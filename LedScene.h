@@ -70,7 +70,6 @@ class LedScene
         void Sunrise_Task(void);
         void PowerOff_Task(void);
         void MovingDot_Task(void);
-        void SetPixel(uint16_t start_pos, uint16_t width, uint16_t space, uint16_t nof_repeat, uint32_t color);
         void UpdateBrightness(void);
 };
 

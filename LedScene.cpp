@@ -262,7 +262,7 @@ void LedScene::Sunrise_Task(void)
 void LedScene::MovingDot_Task(void)
 {
   /*m_pixel->clear();
-  m_pixel->setPixelColor(m_px, m_pixel->Color(0, 0, 0, m_desired_brightness));
+  m_pixel->setPixelColor(m_px, Adafruit_NeoPixel::Color(0, 0, 0, m_desired_brightness));
   m_pixel->show();
   m_px++;
   if (m_px >= m_nof_px)
@@ -280,63 +280,6 @@ void LedScene::PowerOff_Task(void)
 {
     this->UpdateBrightness();  
     this->m_led_matrix->Show();
-}
-
-
-//*****************************************************************************
-// description:
-//   Show White Pixel
-//*****************************************************************************
-void LedScene::SetPixel(uint16_t start_pos, uint16_t width, uint16_t space, uint16_t nof_repeat, uint32_t color)
-{
- /* uint16_t px = 0;
-  uint16_t idx = 0;
-  uint16_t row = 0;
-  uint16_t cnt = 0;
-  uint16_t offset = 0;
-  uint16_t row_length = m_nof_px / m_nof_row;
-  
-  this->m_pixel->clear();
-  this->m_pixel_sbh->clear();
-
-  if (start_pos >= row_length)
-  { return; }
-  
-  if ((start_pos + width) > row_length)
-  {
-    width = row_length - start_pos;
-  }
-
-  for (row = 0; row < m_nof_row; row++)
-  {
-    offset = start_pos;
-    for (cnt = 0; cnt < nof_repeat; cnt++)
-    {
-      for (px = 0; px < width; px++)
-      {
-        // check if position is further than the rowlength
-        if ((offset + px) >= row_length) { break; } 
-        
-        if (row % 2)
-        {
-          idx = ((row + 1) * row_length) - 1 - offset - px;  // this is required if the pixel signal is zigzagged through the LED strips        
-        }
-        else
-        {
-          idx = (row * row_length) + offset + px;
-        }
-        m_pixel->setPixelColor(idx, color);    
-        m_pixel_sbh->setPixelColor(idx, color);
-      }
-      
-      offset += space + width;      
-      // check if offset is further than the rowlength
-      if (offset >= row_length) { break; }
-    }
-  }
-  
-  m_pixel->show();   // Send the updated pixel colors to the hardware.
-  m_pixel_sbh->show();   // Send the updated pixel colors to the hardware.*/
 }
 
 
