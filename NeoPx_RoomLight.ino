@@ -55,6 +55,6 @@ void setup()
 //*****************************************************************************
 void loop()
 {
-    //s_led_scene->Tasks();
+    s_led_scene->Tasks();
     s_web_server->Tasks();
 }

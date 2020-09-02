@@ -67,7 +67,6 @@ class LedScene
         void ShowOfficeTableWW_Task(void);
         void LightOnWW_Enter(uint16_t brightness);
         void LightOnWW_Task(void);
-        void SbhWW_Task(void);
         void Sunrise_Task(void);
         void PowerOff_Task(void);
         void MovingDot_Task(void);

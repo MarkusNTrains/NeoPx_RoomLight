@@ -49,7 +49,7 @@ class WebServer
 		unsigned char LED_state[3] = {0}; // stores the states of the LEDs, 1 bit per LED
     LedScene* m_led_scene;
 
-		void SetLEDs(void);
+		void SetLightScene(void);
 		void XML_response(EthernetClient cl);
 		void StrClear(char *str, char length);
 		char StrContains(char *str, char *sfind);   

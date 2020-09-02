@@ -37,26 +37,26 @@ $Id:  $
 //*****************************************************************************
 LedMatrix::LedMatrix()
 {
-    m_led_strip = new Adafruit_NeoPixel(900, 22, NEO_GRBW + NEO_KHZ800);
-    m_led_strip->begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
+    this->m_led_strip = new Adafruit_NeoPixel(900, 22, NEO_GRBW + NEO_KHZ800);
+    this->m_led_strip->begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
     //m_led_strip->clear();
     //m_led_strip->setBrightness(0); // Set brigthness for all neo pixels
     //m_led_strip->show();            // Turn OFF all pixels ASAP
     
-    m_led_strip_2 = new Adafruit_NeoPixel(284, 24, NEO_GRBW + NEO_KHZ800);
-    m_led_strip_2->begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
+    this->m_led_strip_2 = new Adafruit_NeoPixel(284, 24, NEO_GRBW + NEO_KHZ800);
+    this->m_led_strip_2->begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
     //m_led_strip_2->clear();
     //m_led_strip_2->setBrightness(0); // Set brigthness for all neo pixels
     //m_led_strip_2->show();            // Turn OFF all pixels ASAP
 
-    Clear();
-    SetBrightness(128);
-    Show();
+    this->Clear();
+    this->SetBrightness(0);
+    this->Show();
     
-    m_led_row[0] = new LedRow(m_led_strip, 0);
-    m_led_row[1] = new LedRow(m_led_strip, 1);
-    m_led_row[2] = new LedRow(m_led_strip, 2);
-    m_led_row[3] = new LedRow(m_led_strip_2, 3);
+    this->m_led_row[0] = new LedRow(m_led_strip, 0);
+    this->m_led_row[1] = new LedRow(m_led_strip, 1);
+    this->m_led_row[2] = new LedRow(m_led_strip, 2);
+    this->m_led_row[3] = new LedRow(m_led_strip_2, 3);
 }
 
 
@@ -94,12 +94,10 @@ void LedMatrix::SetPixelArray(uint16_t xs, uint16_t xe, uint8_t ys, uint8_t ye, 
 {
     uint16_t row = 0;
 
-    this->Clear();
     for (row = ys; row <= ye; row++)
     {
         m_led_row[row]->SetPixel(xs, ((xe+1)-xs), 0, 1, color);
     }
-    this->Show();
 }
 
 

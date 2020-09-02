@@ -85,7 +85,7 @@ WebServer::WebServer(LedScene* led_scene)
       #endif
         return;  // can't find index file
     }
-  #ifdef IS_DEBUG_MODE    
+  #ifdef IS_DEBUG_MODE
     Serial.println("SUCCESS - Found index.htm file.");
   #endif
     
@@ -102,6 +102,7 @@ WebServer::WebServer(LedScene* led_scene)
 
     // start the server
     m_server->begin();           // start to listen for clients
+
     Serial.print("server is at ");
     Serial.println(Ethernet.localIP());     
 }
@@ -133,7 +134,9 @@ void WebServer::Tasks()
             if (client.available())    // client data available to read
 			{
                 char c = client.read(); // read 1 byte (character) from client
+  #ifdef IS_DEBUG_MODE
                 Serial.print(c);
+  #endif
                 // limit the size of the stored received HTTP request
                 // buffer first part of HTTP request in HTTP_req array (string)
                 // leave last element in array as 0 to null terminate string (REQ_BUF_SZ - 1)
@@ -147,8 +150,6 @@ void WebServer::Tasks()
                 // respond to client only after last line received
                 if (c == '\n' && currentLineIsBlank) 
 			    {
-                    Serial.println("last_line");
-
                     // send a standard http response header
                     client.println("HTTP/1.1 200 OK");
                     // remainder of header follows below, depending on if
@@ -160,7 +161,8 @@ void WebServer::Tasks()
                         client.println("Content-Type: text/xml");
                         client.println("Connection: keep-alive");
                         client.println();
-                        SetLEDs();
+
+                        SetLightScene();
                         
                         // send XML file containing input states
                         XML_response(client);
@@ -171,6 +173,7 @@ void WebServer::Tasks()
                         client.println("Content-Type: text/html");
                         client.println("Connection: keep-alive");
                         client.println();
+
                         // send web page
                         webFile = SD.open("index.htm");        // open web page file
                         if (webFile) 
@@ -206,7 +209,7 @@ void WebServer::Tasks()
             } // end if (client.available())
         } // end while (client.connected())
         
-        delay(100);      // give the web browser time to receive the data
+        delay(20);      // give the web browser time to receive the data
         client.stop(); // close the connection
     } // end if (client)
 }
@@ -217,7 +220,7 @@ void WebServer::Tasks()
 //   checks if received HTTP request is switching on/off LEDs
 //   also saves the state of the LEDs
 //*****************************************************************************
-void WebServer::SetLEDs(void)
+void WebServer::SetLightScene(void)
 {
     //char str_on[12] = {0};
     //char str_off[12] = {0};
@@ -250,8 +253,10 @@ void WebServer::SetLEDs(void)
             param_c[cnt+1] = '\0';
         }
         param = atoi(param_c);
+      #ifdef IS_DEBUG_MODE
         Serial.print("Light Scene: ");
         Serial.println(param);  
+      #endif
 
         m_led_scene->ChangeLightScene(param, 255);
     }
@@ -272,8 +277,10 @@ void WebServer::SetLEDs(void)
         }
         param = atoi(param_c);
 
+      #ifdef IS_DEBUG_MODE
         Serial.print("Birghtness: ");
         Serial.println(param);  
+      #endif
         m_led_scene->SetBrightness(param);
     }
 

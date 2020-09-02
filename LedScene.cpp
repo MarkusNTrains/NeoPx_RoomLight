@@ -120,10 +120,6 @@ void LedScene::Tasks()
                 LightOnWW_Task();
                 break;
         
-            case SBH:
-                SbhWW_Task();
-                break;
-            
             case SUNRISE:
                 Sunrise_Task();
                 break;
@@ -154,9 +150,7 @@ void LedScene::Tasks()
 void LedScene::ShowOfficeTableWW_Enter(uint16_t brightness)
 {
     this->m_desired_brightness = brightness;
-    
-    uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
-    this->m_led_matrix->SetPixelArray(0, 120, 0, 3, color);  
+    this->m_led_matrix->Clear();
 }
 
 
@@ -166,10 +160,12 @@ void LedScene::ShowOfficeTableWW_Enter(uint16_t brightness)
 //*****************************************************************************
 void LedScene::ShowOfficeTableWW_Task(void)
 {
+    uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
+    this->m_led_matrix->SetPixelArray(0, 20, 0, 0, color);  
+    this->m_led_matrix->SetPixelArray(120, 140, 0, 0, color);  
+    this->m_led_matrix->SetPixelArray(0, 120, 1, 3, color);  
     this->UpdateBrightness();
     this->m_led_matrix->Show();
-    uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
-    //this->m_led_matrix->SetPixel(1, 284, color);
 }
 
 
@@ -180,6 +176,7 @@ void LedScene::ShowOfficeTableWW_Task(void)
 void LedScene::LightOnWW_Enter(uint16_t brightness)
 {
     this->m_desired_brightness = brightness;
+    this->m_led_matrix->Clear();
 }
 
 
@@ -190,22 +187,9 @@ void LedScene::LightOnWW_Enter(uint16_t brightness)
 void LedScene::LightOnWW_Task(void)
 {
     uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
-
-    this->UpdateBrightness();
     this->m_led_matrix->SetPixelArray(0, LED_ROW_LENGTH, 0, 3, color);  
-}
-
-
-//*****************************************************************************
-// description:
-//   Show White Pixel
-//*****************************************************************************
-void LedScene::SbhWW_Task(void)
-{
-  /*uint32_t color = this->m_pixel->Color(0, 0, 0, 255);
-
-  this->UpdateBrightness();
-  this->SetPixel(0, m_nof_px, 0, 1, color);    */
+    this->UpdateBrightness();
+    this->m_led_matrix->Show();
 }
 
 
@@ -294,9 +278,8 @@ void LedScene::MovingDot_Task(void)
 //*****************************************************************************
 void LedScene::PowerOff_Task(void)
 {
-  /*this->UpdateBrightness();  
-  this->m_pixel->show();
-  this->m_pixel_sbh->show();*/
+    this->UpdateBrightness();  
+    this->m_led_matrix->Show();
 }
 
 
