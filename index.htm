@@ -1,9 +1,13 @@
-<!DOCTYPE html>
-<html lang="de">
-    <meta charset="utf-8"/>
-    <head>
-        <title>MoBa Room Light</title>
-		<script type="text/javascript" charset="utf-8">
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>MoBa Room Light</title>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script type="text/javascript" charset="utf-8">
 		const LightScene = 
 		{
 			OFFICE_TABLE_WW: 0,
@@ -51,6 +55,16 @@
 									document.getElementsByName(ledstr)[0].checked = false;
 								}
 							}*/
+
+
+
+							//re = this.responseXML.getElementsByTagName('scene');
+							
+							
+							re = this.responseXML.getElementsByTagName('brightness');
+							document.getElementById("brightness_slider").value = re[0].childNodes[0].nodeValue;
+							document.getElementById("brightness_value").innerHTML = re[0].childNodes[0].nodeValue;
+
 						}
 					}
 				}
@@ -102,7 +116,44 @@
 			xml_request = "&SetBrightness=" + slider.value;
 			SendDataToArduino();
 		}
-				
+		
+		// 2 thumb slider column
+		$( function() {
+			$( "#slider-column" ).slider({
+				range: true,
+				min: 0,
+				max: 284,
+				values: [ 10, 120 ],
+				orientation: "horizontal",
+				slide: function( event, ui ) {
+					$( "#led_column" ).val( ui.values[0] + " - " + ui.values[1] );
+					xml_request = "&SetArea=" + ui.values[0];
+					SendDataToArduino();
+				}
+			});
+			$( "#led_column" ).val( $( "#slider-column" ).slider( "values", 0 ) + " - " + $( "#slider-column" ).slider( "values", 1 ) );
+		} );
+	  
+		// 2 thumb slider row
+		$( function() {
+			$( "#slider-row" ).slider({
+				range: true,
+				min: 0,
+				max: 3,
+				values: [ 0, 3 ],
+				orientation: "vertical",
+				slide: function( event, ui ) {
+					$( "#led_row" ).val( ui.values[0] + " - " + ui.values[1] );
+				}
+			});
+			$( "#led_row" ).val( $( "#slider-row" ).slider( "values", 0 ) + " - " + $( "#slider-row" ).slider( "values", 1 ) );
+		} );
+
+
+		window.onload = function() {
+			SendDataToArduino();
+		};
+		
 	</script>
 	<style>
 		.out_box {
@@ -213,11 +264,31 @@
 			background: #4CAF50;
 			cursor: pointer;
 		}
+		
+		
+		/*---------------------------------------------------------------------*/
+		/* 2 thumb slider */
+		#led_slider_row {
+			float: left;
+			width: 100px;
+		}
+
+		#led_slider_column {
+			float: left;
+			width: calc(100% - 100px);
+		}
+
+
+		
 	</style>
-	
-	
-    </head>
-    <!--<body onload="GetArduinoIO()">-->
+
+
+</head>
+
+
+
+
+   <!--<body onload="GetArduinoIO()">-->
     <body>
         <h1>MoBa Licht Steuerung</h1>
 		<br>
@@ -285,5 +356,32 @@
 			<p>Value: <span id="brightness_value"></span></p>
 		</div>
 		
-    </body>
+
+
+
+
+
+
+
+ 
+		<h2>Leuchtposition</h2>
+		<div id="led_slider_row">
+			<p>
+			  <label for="led_row">Reihen</label>
+			  <input type="text" id="led_row" readonly style="border:0; color:#f6931f; font-weight:bold;">
+			</p>
+			 
+			<div id="slider-row"></div>
+		</div>
+ 
+		<div id="led_slider_column">
+			<p>
+			  <label for="led_column">Länge</label>
+			  <input type="text" id="led_column" readonly style="border:0; color:#f6931f; font-weight:bold;">
+			</p>
+			 
+			<div id="slider-column"></div>
+		</div>
+
+</body>
 </html>

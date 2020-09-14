@@ -28,27 +28,33 @@ $Id:  $
 
 
 //----------------------------------------------------------------------------
+// typedef
+typedef enum 
+{
+    OFFICE_TABLE_WW = 0,
+    LIGHT_ON_WW,
+    DISCO,
+    SUNSET,
+    SUNRISE,
+    POWER_OFF,
+    MOVING_DOT,
+    SBH,
+    IDLE,
+} light_scene_t;
+
+
+//----------------------------------------------------------------------------
 // class
 class LedScene
 {
     public:
-    typedef enum 
-    {
-        OFFICE_TABLE_WW = 0,
-        LIGHT_ON_WW,
-        DISCO,
-        SUNSET,
-        SUNRISE,
-        POWER_OFF,
-        MOVING_DOT,
-        SBH,
-        IDLE,
-    } light_scene_t;
-    
     	LedScene();
     	~LedScene();
         void Tasks(void);
         void ChangeLightScene(light_scene_t scene, uint8_t brightness);
+        light_scene_t GetLightScene(void);
+        void SetLedArea(uint16_t xs, uint16_t xe, uint8_t ys, uint8_t ye, uint32_t color);
+        uint8_t GetBrightness(void);
         void SetBrightness(uint8_t brightness);
     		
 	private:	

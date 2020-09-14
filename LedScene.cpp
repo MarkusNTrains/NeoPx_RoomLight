@@ -102,6 +102,16 @@ void LedScene::ChangeLightScene(light_scene_t scene, uint8_t brightness)
 
 //*****************************************************************************
 // description:
+//   Get Light Scene
+//*****************************************************************************
+light_scene_t LedScene::GetLightScene(void)
+{
+    return this->m_light_scene;
+}
+
+
+//*****************************************************************************
+// description:
 //   Statemachine
 //*****************************************************************************
 void LedScene::Tasks()
@@ -285,11 +295,31 @@ void LedScene::PowerOff_Task(void)
 
 //*****************************************************************************
 // description:
+//   Power Off
+//*****************************************************************************
+void LedScene::SetLedArea(uint16_t xs, uint16_t xe, uint8_t ys, uint8_t ye, uint32_t color)
+{
+    this->m_led_matrix->SetPixelArray(xs, xe, ys, ye, color);    
+}
+
+
+//*****************************************************************************
+// description:
+//   Get Brightness
+//*****************************************************************************
+uint8_t LedScene::GetBrightness(void)
+{
+    return this->m_desired_brightness;
+}
+
+
+//*****************************************************************************
+// description:
 //   Set Brightness
 //*****************************************************************************
 void LedScene::SetBrightness(uint8_t brightness)
 {
-    ChangeLightScene(m_light_scene, brightness);
+    this->ChangeLightScene(m_light_scene, brightness);
 }
 
 

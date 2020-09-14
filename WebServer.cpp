@@ -162,7 +162,7 @@ void WebServer::Tasks()
                         client.println("Connection: keep-alive");
                         client.println();
 
-                        SetLightScene();
+                        this->HandleRequest();
                         
                         // send XML file containing input states
                         XML_response(client);
@@ -220,7 +220,7 @@ void WebServer::Tasks()
 //   checks if received HTTP request is switching on/off LEDs
 //   also saves the state of the LEDs
 //*****************************************************************************
-void WebServer::SetLightScene(void)
+void WebServer::HandleRequest(void)
 {
     //char str_on[12] = {0};
     //char str_off[12] = {0};
@@ -235,8 +235,9 @@ void WebServer::SetLightScene(void)
     char needle_scene[] = "LightScene";
     char needle_brightness[] = "SetBrightness";
     char needle_color[] = "SetColor";
+    char needle_set_led_area[] = "SetArea";
 
-    // find LightScene
+    // find LightScene ---------------------------------------------------------
     if (StrContains(HTTP_req, needle_scene))
     {
         start_pos = strstr(HTTP_req, needle_scene);
@@ -253,14 +254,11 @@ void WebServer::SetLightScene(void)
             param_c[cnt+1] = '\0';
         }
         param = atoi(param_c);
-      #ifdef IS_DEBUG_MODE
-        Serial.print("Light Scene: ");
-        Serial.println(param);  
-      #endif
 
-        m_led_scene->ChangeLightScene(param, 255);
+        this->m_led_scene->ChangeLightScene(param, 255);
     }
-    else if(StrContains(HTTP_req, needle_brightness))
+    // find brightness ---------------------------------------------------------
+    else if (StrContains(HTTP_req, needle_brightness))
     {
         start_pos = strstr(HTTP_req, needle_brightness);
         if (start_pos == 0) return;  // no String found
@@ -277,11 +275,28 @@ void WebServer::SetLightScene(void)
         }
         param = atoi(param_c);
 
-      #ifdef IS_DEBUG_MODE
-        Serial.print("Birghtness: ");
-        Serial.println(param);  
-      #endif
-        m_led_scene->SetBrightness(param);
+        this->m_led_scene->SetBrightness(param);
+    }
+    // find set led area data -------------------------------------------------
+    else if (StrContains(HTTP_req, needle_set_led_area))
+    {
+        start_pos = strstr(HTTP_req, needle_set_led_area);
+        if (start_pos == 0) return;  // no String found
+
+        end_pos = strstr(start_pos, "&");
+        if (end_pos == 0) return;  // no String found
+
+        start_pos += sizeof(needle_set_led_area);      
+
+        for (cnt = 0; cnt < end_pos - start_pos; cnt++)
+        {
+            param_c[cnt] = start_pos[cnt];
+            param_c[cnt+1] = '\0';
+        }
+        param = atoi(param_c);        
+
+        uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
+        this->m_led_scene->SetLedArea(param, 0, 0, 0, color);
     }
 
     
@@ -323,6 +338,22 @@ void WebServer::XML_response(EthernetClient cl)
     
     cl.print("<?xml version = \"1.0\" ?>");
     cl.print("<inputs>");
+
+    cl.print("<scene>");
+    cl.print(m_led_scene->GetLightScene());
+    cl.print("</scene>");
+
+    cl.print("<brightness>");
+    cl.print(m_led_scene->GetBrightness());
+    cl.print("</brightness>");
+
+    /*cl.print("<led_area>");
+    cl.print(this->m_led_scene->GetLedRowStart());
+    cl.print(this->m_led_scene->GetLedRowEnd());
+    cl.print(this->m_led_scene->GetLedColumnStart());
+    cl.print(this->m_led_scene->GetLedColumnEnd());
+    cl.print("</led_area>");*/
+  
     /*for (i = 0; i < 3; i++) 
 	  {
         for (j = 1; j <= 0x80; j <<= 1) 
