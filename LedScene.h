@@ -33,7 +33,7 @@ typedef enum
 {
     OFFICE_TABLE_WW = 0,
     LIGHT_ON_WW,
-    DISCO,
+    RAINBOW,
     SUNSET,
     SUNRISE,
     POWER_OFF,
@@ -76,6 +76,7 @@ class LedScene
         void Sunrise_Task(void);
         void PowerOff_Task(void);
         void MovingDot_Task(void);
+        void WhiteOverRainbow(int whiteSpeed, int whiteLength);
         void UpdateBrightness(void);
 };
 

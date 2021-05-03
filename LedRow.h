@@ -25,8 +25,6 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // define
-#define LED_ROW_NOF 4
-#define LED_ROW_LENGTH 285
 
 
 //----------------------------------------------------------------------------
@@ -34,6 +32,9 @@ $Id:  $
 class LedRow
 {
 	public:
+        static const uint16_t LED_ROW_NOF = 4;
+        static const uint16_t LED_ROW_LENGTH = 285;
+    
 		LedRow(Adafruit_NeoPixel* led_strip_p, uint8_t row_idx);
 		~LedRow();
     void SetBrightness(uint8_t brightness);

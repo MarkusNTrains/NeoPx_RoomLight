@@ -44,7 +44,8 @@ LedScene::LedScene()
     m_update_time_ms = millis();
     m_led_matrix = new LedMatrix();
 
-    this->ChangeLightScene(OFFICE_TABLE_WW, 128);
+    this->ChangeLightScene(OFFICE_TABLE_WW, 180);
+    //this->ChangeLightScene(RAINBOW, 180);
 }
 
 
@@ -89,7 +90,10 @@ void LedScene::ChangeLightScene(light_scene_t scene, uint8_t brightness)
             this->m_desired_brightness = 0;
             break;
         
-        case DISCO:
+        case RAINBOW:
+            this->WhiteOverRainbow(75, 5);
+            break;
+            
         case MOVING_DOT:
             this->m_state = MOVING_DOT;
             break;
@@ -138,7 +142,9 @@ void LedScene::Tasks()
                 PowerOff_Task();
                 break;
             
-            case DISCO:
+            case RAINBOW:
+                break;
+            
             case MOVING_DOT:
                 MovingDot_Task();
                 break;
@@ -173,7 +179,7 @@ void LedScene::ShowOfficeTableWW_Task(void)
     uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
     this->m_led_matrix->SetPixelArray(0, 20, 0, 0, color);  
     this->m_led_matrix->SetPixelArray(120, 140, 0, 0, color);  
-    this->m_led_matrix->SetPixelArray(0, 120, 1, 3, color);  
+    this->m_led_matrix->SetPixelArray(0, 140, 1, 3, color);  
     this->UpdateBrightness();
     this->m_led_matrix->Show();
 }
@@ -197,7 +203,7 @@ void LedScene::LightOnWW_Enter(uint16_t brightness)
 void LedScene::LightOnWW_Task(void)
 {
     uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
-    this->m_led_matrix->SetPixelArray(0, LED_ROW_LENGTH, 0, 3, color);  
+    this->m_led_matrix->SetPixelArray(0, LedRow::LED_ROW_LENGTH, 0, 3, color);  
     this->UpdateBrightness();
     this->m_led_matrix->Show();
 }
@@ -284,6 +290,64 @@ void LedScene::MovingDot_Task(void)
 
 //*****************************************************************************
 // description:
+//   Show Rainbow with moving white dots
+//*****************************************************************************
+void LedScene::WhiteOverRainbow(int whiteSpeed, int whiteLength) 
+{
+  if (whiteLength >= LedRow::LED_ROW_LENGTH) 
+  {
+    whiteLength = LedRow::LED_ROW_LENGTH - 1;
+  }
+
+  int      head          = whiteLength - 1;
+  int      tail          = 0;
+  int      loops         = 3;
+  int      loopNum       = 0;
+  uint32_t lastTime      = millis();
+  uint32_t firstPixelHue = 0;
+  uint32_t color = 0;
+
+  for(;;)  // Repeat forever (or until a 'break' or 'return')
+  {
+    for (int idx = 0; idx < LedRow::LED_ROW_LENGTH; idx++)   // For each pixel in strip...
+    {
+      /*if (((idx >= tail) && (idx <= head)) ||      //  If between head & tail...
+         ((tail > head) && ((idx >= tail) || (idx <= head)))) 
+      {
+        color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
+        this->m_led_matrix->SetPixelArray(idx, idx, 0, 3, color);  
+      } 
+      else*/ 
+      {                                             // else set rainbow
+        int pixelHue = firstPixelHue + (idx * 65536L / LedRow::LED_ROW_LENGTH);
+        color = Adafruit_NeoPixel::gamma32(Adafruit_NeoPixel::ColorHSV(pixelHue));
+        this->m_led_matrix->SetPixelArray(idx, idx, 0, 3, color);  
+      }
+    }
+
+    // Update strip with new contents
+    this->UpdateBrightness();
+    this->m_led_matrix->Show();
+    // There's no delay here, it just runs full-tilt until the timer and
+    // counter combination below runs out.
+
+    firstPixelHue += 40; // Advance just a little along the color wheel
+
+    if ((millis() - lastTime) > whiteSpeed) { // Time to update head/tail?
+      if (++head >= LedRow::LED_ROW_LENGTH) {      // Advance head, wrap around
+        head = 0;
+        if (++loopNum >= loops) return;
+      }
+      if (++tail >= LedRow::LED_ROW_LENGTH) {      // Advance tail, wrap around
+        tail = 0;
+      }
+      lastTime = millis();                   // Save time of last movement
+    }
+  }
+}
+
+//*****************************************************************************
+// description:
 //   Power Off
 //*****************************************************************************
 void LedScene::PowerOff_Task(void)
@@ -355,7 +419,7 @@ void LedScene::UpdateBrightness(void)
     }
     else
     {
-        this->m_state = IDLE;
+        //this->m_state = IDLE;
     }    
     
     this->m_led_matrix->SetBrightness(this->m_current_brightness); // Set brigthness for all neo pixels

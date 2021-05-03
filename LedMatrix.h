@@ -44,7 +44,9 @@ class LedMatrix
     private:  
         Adafruit_NeoPixel* m_led_strip;  
         Adafruit_NeoPixel* m_led_strip_2;
-        LedRow* m_led_row[LED_ROW_NOF];
+        Adafruit_NeoPixel* m_led_strip_3;
+        Adafruit_NeoPixel* m_led_strip_4;
+        LedRow* m_led_row[LedRow::LED_ROW_NOF];
 };
 
 
