@@ -22,6 +22,7 @@ $Id:  $
 #include <SPI.h>
 #include <Ethernet.h>
 #include <SD.h>
+#include "common.h"
 #include "LedScene.h"
 
 

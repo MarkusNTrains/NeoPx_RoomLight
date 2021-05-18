@@ -20,6 +20,7 @@ $Id:  $
 //----------------------------------------------------------------------------
 // include
 //#include "Arduino.h"
+#include "common.h"
 #include <Adafruit_NeoPixel.h>
 
 

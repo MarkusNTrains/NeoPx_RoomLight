@@ -7,6 +7,8 @@
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<!--	<script src="jquery-1.12.4.js"></script>
+	<script src="jquery-ui.js"></script> -->
 	<script type="text/javascript" charset="utf-8">
 		const LightScene = 
 		{
@@ -126,12 +128,12 @@
 				values: [ 10, 120 ],
 				orientation: "horizontal",
 				slide: function( event, ui ) {
-					$( "#led_column" ).val( ui.values[0] + " - " + ui.values[1] );
-					xml_request = "&SetArea=" + ui.values[0];
+					$("#led_column").val( ui.values[0] + " - " + ui.values[1] );
+					xml_request = "&SetArea=X" + ui.values[0] + "-" + ui.values[1] + "Y" + $("#slider-row").slider("values", 0) + "-" + $("#slider-row").slider("values", 1);
 					SendDataToArduino();
 				}
 			});
-			$( "#led_column" ).val( $( "#slider-column" ).slider( "values", 0 ) + " - " + $( "#slider-column" ).slider( "values", 1 ) );
+			<!--$( "#led_column" ).val( $( "#slider-column" ).slider( "values", 0 ) + " - " + $( "#slider-column" ).slider( "values", 1 ) );-->
 		} );
 	  
 		// 2 thumb slider row
@@ -144,9 +146,11 @@
 				orientation: "vertical",
 				slide: function( event, ui ) {
 					$( "#led_row" ).val( ui.values[0] + " - " + ui.values[1] );
+					xml_request = "&SetArea=X" + $("#slider-column").slider("values", 0) + "-" + $("#slider-column").slider("values", 1) + "Y" + ui.values[0] + "-" + ui.values[1];
+					SendDataToArduino();
 				}
 			});
-			$( "#led_row" ).val( $( "#slider-row" ).slider( "values", 0 ) + " - " + $( "#slider-row" ).slider( "values", 1 ) );
+			<!--$( "#led_row" ).val( $( "#slider-row" ).slider( "values", 0 ) + " - " + $( "#slider-row" ).slider( "values", 1 ) );-->
 		} );
 
 
@@ -355,11 +359,8 @@
 			<input type="range" min="0" max="255" value="50" class="slider" id="brightness_slider" onchange="BrighntessSliderChanged()">
 			<p>Value: <span id="brightness_value"></span></p>
 		</div>
+		<br>
 		
-
-
-
-
 
 
 

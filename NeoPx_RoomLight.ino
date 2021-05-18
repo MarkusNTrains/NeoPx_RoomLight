@@ -16,13 +16,13 @@ $Id:  $
 
 //-----------------------------------------------------------------------------
 // includes
+#include "common.h"
 #include "LedScene.h"
 #include "WebServer.h"
 
 
 //-----------------------------------------------------------------------------
 // defines
-#define IS_DEBUG_MODE
 
 
 //-----------------------------------------------------------------------------
@@ -39,9 +39,9 @@ static WebServer* s_web_server;
 //*****************************************************************************
 void setup()
 {
-  //#ifdef IS_DEBUG_MODE
-    Serial.begin(9600);       // for debugging
-  //#endif
+  #ifdef IS_DEBUG_MODE
+    Serial.begin(115200);       // for debugging
+  #endif
     
     delay(50);
     s_led_scene = new LedScene();

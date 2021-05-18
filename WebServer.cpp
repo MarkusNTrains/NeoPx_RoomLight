@@ -55,6 +55,7 @@ WebServer::WebServer(LedScene* led_scene)
 		
     byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x49 }; // MAC address from Ethernet shield sticker under board
     IPAddress ip(192, 168, 0, 250);    // IP address, may need to change depending on network
+    IPAddress ip(192, 168, 1, 249);    // IP address, may need to change depending on network
     m_server = new EthernetServer(80);            // server
     m_led_scene = led_scene;
     
@@ -103,8 +104,10 @@ WebServer::WebServer(LedScene* led_scene)
     // start the server
     m_server->begin();           // start to listen for clients
 
+  #ifdef IS_DEBUG_MODE
     Serial.print("server is at ");
     Serial.println(Ethernet.localIP());     
+  #endif
 }
 
 
@@ -135,7 +138,7 @@ void WebServer::Tasks()
 			{
                 char c = client.read(); // read 1 byte (character) from client
   #ifdef IS_DEBUG_MODE
-                Serial.print(c);
+                //Serial.print(c);
   #endif
                 // limit the size of the stored received HTTP request
                 // buffer first part of HTTP request in HTTP_req array (string)
@@ -229,6 +232,9 @@ void WebServer::HandleRequest(void)
     //int LED_num = 1;
     char param_c[8];
     uint16_t param = 0;
+    uint16_t param2 = 0;
+    uint16_t param3 = 0;
+    uint16_t param4 = 0;
     char* start_pos = 0;
     char* end_pos = 0;
     uint16_t cnt = 0;
@@ -283,10 +289,10 @@ void WebServer::HandleRequest(void)
         start_pos = strstr(HTTP_req, needle_set_led_area);
         if (start_pos == 0) return;  // no String found
 
-        end_pos = strstr(start_pos, "&");
+        end_pos = strstr(start_pos, "-");
         if (end_pos == 0) return;  // no String found
 
-        start_pos += sizeof(needle_set_led_area);      
+        start_pos += (sizeof(needle_set_led_area) + 1);      
 
         for (cnt = 0; cnt < end_pos - start_pos; cnt++)
         {
@@ -295,8 +301,46 @@ void WebServer::HandleRequest(void)
         }
         param = atoi(param_c);        
 
-        uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
-        this->m_led_scene->SetLedArea(param, 0, 0, 0, color);
+        start_pos = end_pos+1;
+        end_pos = strstr(start_pos, "Y");
+        if (end_pos == 0) return;  // no String found
+
+        for (cnt = 0; cnt < end_pos - start_pos; cnt++)
+        {
+            param_c[cnt] = start_pos[cnt];
+            param_c[cnt+1] = '\0';
+        }
+        param2 = atoi(param_c);
+        
+        start_pos = end_pos+1;
+        end_pos = strstr(start_pos, "-");
+        if (end_pos == 0) return;  // no String found
+
+        for (cnt = 0; cnt < end_pos - start_pos; cnt++)
+        {
+            param_c[cnt] = start_pos[cnt];
+            param_c[cnt+1] = '\0';
+        }
+        param3 = atoi(param_c);
+        
+        start_pos = end_pos+1;
+        end_pos = strstr(start_pos, "&");
+        if (end_pos == 0) return;  // no String found
+
+        for (cnt = 0; cnt < end_pos - start_pos; cnt++)
+        {
+            param_c[cnt] = start_pos[cnt];
+            param_c[cnt+1] = '\0';
+        }
+        param4 = atoi(param_c);
+        
+      #ifdef IS_DEBUG_MODE
+        Serial.println(param);
+        Serial.println(param2);
+      #endif
+
+        uint32_t color = Adafruit_NeoPixel::Color(255, 0, 0, 0);
+        this->m_led_scene->SetLedArea(param, param2, param3, param4, color);
     }
 
     

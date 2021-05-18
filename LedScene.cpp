@@ -44,7 +44,7 @@ LedScene::LedScene()
     m_update_time_ms = millis();
     m_led_matrix = new LedMatrix();
 
-    this->ChangeLightScene(OFFICE_TABLE_WW, 180);
+    this->ChangeLightScene(OFFICE_TABLE_WW, 111);
     //this->ChangeLightScene(RAINBOW, 180);
 }
 
