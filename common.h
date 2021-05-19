@@ -6,7 +6,7 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original 
   source code
   
-  Created 24. August 2020 by MarkusNTrains
+  Created 18. May 2021 by MarkusNTrains
 ================================================================================
 $HeadURL:  $
 $Id:  $
@@ -15,4 +15,4 @@ $Id:  $
 
 //-----------------------------------------------------------------------------
 // defines
-#define IS_DEBUG_MODE
+//#define IS_DEBUG_MODE

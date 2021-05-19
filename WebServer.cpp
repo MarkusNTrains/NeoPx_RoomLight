@@ -55,7 +55,7 @@ WebServer::WebServer(LedScene* led_scene)
 		
     byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x49 }; // MAC address from Ethernet shield sticker under board
     IPAddress ip(192, 168, 0, 250);    // IP address, may need to change depending on network
-    IPAddress ip(192, 168, 1, 249);    // IP address, may need to change depending on network
+    //IPAddress ip(192, 168, 1, 249);    // IP address, may need to change depending on network
     m_server = new EthernetServer(80);            // server
     m_led_scene = led_scene;
     
@@ -212,7 +212,7 @@ void WebServer::Tasks()
             } // end if (client.available())
         } // end while (client.connected())
         
-        delay(20);      // give the web browser time to receive the data
+        delay(40);      // give the web browser time to receive the data
         client.stop(); // close the connection
     } // end if (client)
 }
@@ -225,11 +225,6 @@ void WebServer::Tasks()
 //*****************************************************************************
 void WebServer::HandleRequest(void)
 {
-    //char str_on[12] = {0};
-    //char str_off[12] = {0};
-    //unsigned char i;
-    //unsigned int  j;
-    //int LED_num = 1;
     char param_c[8];
     uint16_t param = 0;
     uint16_t param2 = 0;
@@ -337,9 +332,12 @@ void WebServer::HandleRequest(void)
       #ifdef IS_DEBUG_MODE
         Serial.println(param);
         Serial.println(param2);
+        Serial.println(param3);
+        Serial.println(param4);
       #endif
 
-        uint32_t color = Adafruit_NeoPixel::Color(255, 0, 0, 0);
+        uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
+        this->m_led_scene->ChangeLightScene(USER_SETTING);
         this->m_led_scene->SetLedArea(param, param2, param3, param4, color);
     }
 

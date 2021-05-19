@@ -62,6 +62,16 @@ LedScene::~LedScene()
 // description:
 //   ChangeLightScene
 //*****************************************************************************
+void LedScene::ChangeLightScene(light_scene_t scene)
+{
+    this->ChangeLightScene(scene, this->m_desired_brightness);
+}
+
+
+//*****************************************************************************
+// description:
+//   ChangeLightScene
+//*****************************************************************************
 void LedScene::ChangeLightScene(light_scene_t scene, uint8_t brightness)
 {
     m_light_scene = scene;
@@ -151,7 +161,11 @@ void LedScene::Tasks()
             
             case IDLE:
                 break;
-            
+
+            case USER_SETTING:
+                UserSetting_Task();
+                break;
+                
             default:
                 break;
         }
@@ -346,6 +360,7 @@ void LedScene::WhiteOverRainbow(int whiteSpeed, int whiteLength)
   }
 }
 
+
 //*****************************************************************************
 // description:
 //   Power Off
@@ -354,6 +369,17 @@ void LedScene::PowerOff_Task(void)
 {
     this->UpdateBrightness();  
     this->m_led_matrix->Show();
+}
+
+
+//*****************************************************************************
+// description:
+//   User Setting
+//*****************************************************************************
+void LedScene::UserSetting_Task(void)
+{
+    this->UpdateBrightness();  
+    this->m_led_matrix->Show();    
 }
 
 

@@ -40,6 +40,7 @@ typedef enum
     POWER_OFF,
     MOVING_DOT,
     SBH,
+    USER_SETTING,
     IDLE,
 } light_scene_t;
 
@@ -52,6 +53,7 @@ class LedScene
     	LedScene();
     	~LedScene();
         void Tasks(void);
+        void LedScene::ChangeLightScene(light_scene_t scene);
         void ChangeLightScene(light_scene_t scene, uint8_t brightness);
         light_scene_t GetLightScene(void);
         void SetLedArea(uint16_t xs, uint16_t xe, uint8_t ys, uint8_t ye, uint32_t color);
@@ -77,6 +79,7 @@ class LedScene
         void Sunrise_Task(void);
         void PowerOff_Task(void);
         void MovingDot_Task(void);
+        void UserSetting_Task(void);
         void WhiteOverRainbow(int whiteSpeed, int whiteLength);
         void UpdateBrightness(void);
 };

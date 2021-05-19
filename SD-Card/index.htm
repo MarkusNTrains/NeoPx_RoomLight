@@ -23,59 +23,81 @@
 		
 		
 		var xml_request = "";
+		var s_lock_send_data = false;
+		var s_is_send_data_pending = false;
 
+		function ReleaseLock()
+		{
+			s_lock_send_data = false;
+			if (s_is_send_data_pending == true)
+			{
+				SendDataToArduino();
+			}
+		}
+		
 		function SendDataToArduino()
 		{
-			nocache = "&nocache=" + Math.random() * 1000000;
-			var request = new XMLHttpRequest();
-			request.onreadystatechange = function()
+			if (s_lock_send_data == false)
 			{
-				if (this.readyState == 4) 
+				nocache = "&nocache=" + Math.random() * 1000000;
+				var request = new XMLHttpRequest();
+				request.onreadystatechange = function()
 				{
-					if (this.status == 200) 
+					if (this.readyState == 4) 
 					{
-						if (this.responseXML != null) 
+						if (this.status == 200) 
 						{
-							// XML file received - contains LED states
-							var re;
-							var num_LEDs;
-							var i;
-							var ledstr = "";
-							
-							/*re = this.responseXML.getElementsByTagName('LED');
-							num_LEDs = re.length;
-							
-							for (i = 0; i < num_LEDs; i++) 
+							if (this.responseXML != null) 
 							{
-								ledstr = "LED" + (i + 1);
-								if (re[i].childNodes[0].nodeValue === "checked") 
+								// XML file received - contains LED states
+								var re;
+								var num_LEDs;
+								var i;
+								var ledstr = "";
+								
+								/*re = this.responseXML.getElementsByTagName('LED');
+								num_LEDs = re.length;
+								
+								for (i = 0; i < num_LEDs; i++) 
 								{
-									document.getElementsByName(ledstr)[0].checked = true;
-								}
-								else 
-								{
-									document.getElementsByName(ledstr)[0].checked = false;
-								}
-							}*/
+									ledstr = "LED" + (i + 1);
+									if (re[i].childNodes[0].nodeValue === "checked") 
+									{
+										document.getElementsByName(ledstr)[0].checked = true;
+									}
+									else 
+									{
+										document.getElementsByName(ledstr)[0].checked = false;
+									}
+								}*/
 
 
 
-							//re = this.responseXML.getElementsByTagName('scene');
-							
-							
-							re = this.responseXML.getElementsByTagName('brightness');
-							document.getElementById("brightness_slider").value = re[0].childNodes[0].nodeValue;
-							document.getElementById("brightness_value").innerHTML = re[0].childNodes[0].nodeValue;
+								//re = this.responseXML.getElementsByTagName('scene');
+								
+								
+								re = this.responseXML.getElementsByTagName('brightness');
+								document.getElementById("brightness_slider").value = re[0].childNodes[0].nodeValue;
+								document.getElementById("brightness_value").innerHTML = re[0].childNodes[0].nodeValue;
 
+							}
 						}
 					}
 				}
+				// send HTTP GET request with LEDs to switch on/off if any
+				request.open("GET", "ajax_inputs" + xml_request + nocache, true);
+				request.send(null);
+				xml_request = "";
+				s_is_send_data_pending = false;
+				
+				// lock Send to Arduino
+				setTimeout('ReleaseLock()', 100);
+				s_lock_send_data = true;
 			}
-			// send HTTP GET request with LEDs to switch on/off if any
-			request.open("GET", "ajax_inputs" + xml_request + nocache, true);
-			request.send(null);
-			//setTimeout('SendDataToArduino()', 1000);
-			xml_request = "";
+			else
+			{
+				s_is_send_data_pending = true;
+			}
 		}
 		
 		// service LEDs when checkbox checked/unchecked
@@ -133,7 +155,7 @@
 					SendDataToArduino();
 				}
 			});
-			<!--$( "#led_column" ).val( $( "#slider-column" ).slider( "values", 0 ) + " - " + $( "#slider-column" ).slider( "values", 1 ) );-->
+			$( "#led_column" ).val( $( "#slider-column" ).slider( "values", 0 ) + " - " + $( "#slider-column" ).slider( "values", 1 ) );
 		} );
 	  
 		// 2 thumb slider row
@@ -150,7 +172,7 @@
 					SendDataToArduino();
 				}
 			});
-			<!--$( "#led_row" ).val( $( "#slider-row" ).slider( "values", 0 ) + " - " + $( "#slider-row" ).slider( "values", 1 ) );-->
+			$( "#led_row" ).val( $( "#slider-row" ).slider( "values", 0 ) + " - " + $( "#slider-row" ).slider( "values", 1 ) );
 		} );
 
 
