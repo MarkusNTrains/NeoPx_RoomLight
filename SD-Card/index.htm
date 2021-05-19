@@ -4,9 +4,9 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>MoBa Room Light</title>
-	<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<!--<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>-->
 <!--	<script src="jquery-1.12.4.js"></script>
 	<script src="jquery-ui.js"></script> -->
 	<script type="text/javascript" charset="utf-8">
@@ -140,42 +140,26 @@
 			xml_request = "&SetBrightness=" + slider.value;
 			SendDataToArduino();
 		}
-		
-		// 2 thumb slider column
-		$( function() {
-			$( "#slider-column" ).slider({
-				range: true,
-				min: 0,
-				max: 284,
-				values: [ 10, 120 ],
-				orientation: "horizontal",
-				slide: function( event, ui ) {
-					$("#led_column").val( ui.values[0] + " - " + ui.values[1] );
-					xml_request = "&SetArea=X" + ui.values[0] + "-" + ui.values[1] + "Y" + $("#slider-row").slider("values", 0) + "-" + $("#slider-row").slider("values", 1);
-					SendDataToArduino();
-				}
-			});
-			$( "#led_column" ).val( $( "#slider-column" ).slider( "values", 0 ) + " - " + $( "#slider-column" ).slider( "values", 1 ) );
-		} );
-	  
-		// 2 thumb slider row
-		$( function() {
-			$( "#slider-row" ).slider({
-				range: true,
-				min: 0,
-				max: 3,
-				values: [ 0, 3 ],
-				orientation: "vertical",
-				slide: function( event, ui ) {
-					$( "#led_row" ).val( ui.values[0] + " - " + ui.values[1] );
-					xml_request = "&SetArea=X" + $("#slider-column").slider("values", 0) + "-" + $("#slider-column").slider("values", 1) + "Y" + ui.values[0] + "-" + ui.values[1];
-					SendDataToArduino();
-				}
-			});
-			$( "#led_row" ).val( $( "#slider-row" ).slider( "values", 0 ) + " - " + $( "#slider-row" ).slider( "values", 1 ) );
-		} );
 
+		// 2 thumb slider
+		"use strict";
+		addEventListener('input', e => {
+			let _t = e.target;
 
+			_t.parentNode.style.setProperty(`--${_t.id}`, +_t.value);
+			
+			SliderTwoThumb_Update();
+		}, false);
+
+		function SliderTwoThumb_Update()
+		{
+			document.getElementById("led_column").innerHTML = (getComputedStyle(document.getElementById("slider_columen")).getPropertyValue('--a') + " - " + getComputedStyle(document.getElementById("slider_columen")).getPropertyValue('--b'));
+			document.getElementById("led_row").innerHTML = (getComputedStyle(document.getElementById("slider_row")).getPropertyValue('--a') + " - " + getComputedStyle(document.getElementById("slider_row")).getPropertyValue('--b'));
+			xml_request = "&SetArea=X" + getComputedStyle(document.getElementById("slider_columen")).getPropertyValue('--a') + "-" + getComputedStyle(document.getElementById("slider_columen")).getPropertyValue('--b') + "Y" + getComputedStyle(document.getElementById("slider_row")).getPropertyValue('--a') + "-" + getComputedStyle(document.getElementById("slider_row")).getPropertyValue('--b');
+			SendDataToArduino();
+		}
+
+		// on load
 		window.onload = function() {
 			SendDataToArduino();
 		};
@@ -296,7 +280,7 @@
 		/* 2 thumb slider */
 		#led_slider_row {
 			float: left;
-			width: 100px;
+			width: 100px;			
 		}
 
 		#led_slider_column {
@@ -304,7 +288,105 @@
 			width: calc(100% - 100px);
 		}
 
+		.wrap {
+			--dif: calc(var(--max) - var(--min));
+			display: grid;
+			grid-template: repeat(2, max-content) 2em/1fr 1fr;
+			overflow: hidden;
+			position: relative;
+			margin: 1em auto;
+			width: 100%;
+			background: linear-gradient(0deg, #ccc 2em, transparent 0);
+			font-family: ubuntu mono, consolas, monaco, monospace;
+		}
+		.wrap::before, .wrap::after {
+			grid-column: 1/span 2;
+			grid-row: 3;
+			height: 100%;
+			background: rgb(123, 202, 123);
+			content: "";
+		}
+		.wrap::before {
+			margin-left: calc((var(--a) - var(--min))/var(--dif)*100%);
+			width: calc((var(--b) - var(--a))/var(--dif)*100%);
+		}
+		.wrap::after {
+			margin-left: calc((var(--b) - var(--min))/var(--dif)*100%);
+			width: calc((var(--a) - var(--b))/var(--dif)*100%);
+		}
 
+		[id=multi-lbl] {
+			grid-column: 1/span 2;
+		}
+
+		.sr-only {
+			position: absolute;
+			clip-path: inset(50%);
+		}
+
+		input[type=range] {
+			grid-column: 1/span 2;
+			grid-row: 3;
+			z-index: 1;
+			top: 0;
+			left: 0;
+			margin: 0;
+			background: none;
+			/* get rid of white Chrome background */
+			color: #000;
+			pointer-events: none;
+		}
+		input[type=range]::-webkit-slider-runnable-track, input[type=range]::-webkit-slider-thumb, input[type=range] {
+			-webkit-appearance: none;
+		}
+		input[type=range]::-webkit-slider-runnable-track {
+			width: 100%;
+			height: 100%;
+			background: none;
+		}
+		input[type=range]::-moz-range-track {
+			width: 100%;
+			height: 100%;
+			background: none;
+		}
+		input[type=range]::-webkit-slider-thumb {
+			border: none;
+			/* get rid of Firefox thumb border */
+			width: 2em;
+			height: 2em;
+			border-radius: 0;
+			/* get rid of Firefox corner rounding */
+			background: currentcolor;
+			pointer-events: auto;
+		}
+		input[type=range]::-moz-range-thumb {
+			border: none;
+			/* get rid of Firefox thumb border */
+			width: 2em;
+			height: 2em;
+			border-radius: 0;
+			/* get rid of Firefox corner rounding */
+			background: currentcolor;
+			pointer-events: auto;
+		}
+		input[type=range]:focus {
+			z-index: 2;
+			outline: dotted 1px currentcolor;
+		}
+		input[type=range]:focus, input[type=range]:focus + output {
+			color: darkorange;
+		}
+
+		output {
+			grid-row: 2;
+		}
+		output:last-child {
+			text-align: right;
+		}
+		output::after {
+			counter-reset: c var(--c);
+			content: "--" attr(for) ": " counter(c) ";";
+		}
 		
 	</style>
 
@@ -391,19 +473,31 @@
 		<div id="led_slider_row">
 			<p>
 			  <label for="led_row">Reihen</label>
-			  <input type="text" id="led_row" readonly style="border:0; color:#f6931f; font-weight:bold;">
+			  <label type="text" id="led_row" readonly style="border:0; color:#f6931f; font-weight:bold;"></label>
 			</p>
 			 
-			<div id="slider-row"></div>
+			<div id="slider_row" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: 0; --b: 3; --min: 0; --max: 3; transform: rotate(270deg)">
+				<!--<div id="multi-lbl">Multi thumb slider: 0 - 15</div>-->
+				<input id="a" type="range" min="0" value="0" max="3" />
+				<!--<output for="a" style="--c: var(--a)"></output>-->
+				<input id="b" type="range" min="0" value="3" max="3" />
+				<!--<output for="b" style="--c: var(--b)"></output>-->
+			</div>
 		</div>
  
 		<div id="led_slider_column">
 			<p>
 			  <label for="led_column">Länge</label>
-			  <input type="text" id="led_column" readonly style="border:0; color:#f6931f; font-weight:bold;">
+			  <label type="text" id="led_column" readonly style="border:0; color:#f6931f; font-weight:bold;"></label>
 			</p>
 			 
-			<div id="slider-column"></div>
+			<div id="slider_columen" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: 20; --b: 120; --min: 0; --max: 284">
+				<!--<div id="multi-lbl">Multi thumb slider: 0 - 15</div>-->
+				<input id="a" type="range" min="0" value="20" max="284" />
+				<!--<output for="a" style="--c: var(--a)"></output>-->
+				<input id="b" type="range" min="0" value="120" max="284" />
+				<!--<output for="b" style="--c: var(--b)"></output>-->
+			</div>
 		</div>
 
 </body>

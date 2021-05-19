@@ -331,7 +331,7 @@ void LedScene::WhiteOverRainbow(int whiteSpeed, int whiteLength)
         color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
         this->m_led_matrix->SetPixelArray(idx, idx, 0, 3, color);  
       } 
-      else*/ 
+      else */
       {                                             // else set rainbow
         int pixelHue = firstPixelHue + (idx * 65536L / LedRow::LED_ROW_LENGTH);
         color = Adafruit_NeoPixel::gamma32(Adafruit_NeoPixel::ColorHSV(pixelHue));
@@ -389,6 +389,7 @@ void LedScene::UserSetting_Task(void)
 //*****************************************************************************
 void LedScene::SetLedArea(uint16_t xs, uint16_t xe, uint8_t ys, uint8_t ye, uint32_t color)
 {
+    this->m_led_matrix->Clear();
     this->m_led_matrix->SetPixelArray(xs, xe, ys, ye, color);    
 }
 
