@@ -153,19 +153,37 @@
 
 		function SliderTwoThumb_Update()
 		{
-			document.getElementById("led_column").innerHTML = (getComputedStyle(document.getElementById("slider_columen")).getPropertyValue('--a') + " - " + getComputedStyle(document.getElementById("slider_columen")).getPropertyValue('--b'));
-			document.getElementById("led_row").innerHTML = (getComputedStyle(document.getElementById("slider_row")).getPropertyValue('--a') + " - " + getComputedStyle(document.getElementById("slider_row")).getPropertyValue('--b'));
-			xml_request = "&SetArea=X" + getComputedStyle(document.getElementById("slider_columen")).getPropertyValue('--a') + "-" + getComputedStyle(document.getElementById("slider_columen")).getPropertyValue('--b') + "Y" + getComputedStyle(document.getElementById("slider_row")).getPropertyValue('--a') + "-" + getComputedStyle(document.getElementById("slider_row")).getPropertyValue('--b');
+            var xs = parseInt(getComputedStyle(document.getElementById("slider_columen")).getPropertyValue('--a'), 10);
+            var xe = parseInt(getComputedStyle(document.getElementById("slider_columen")).getPropertyValue('--b'), 10);
+            var ys = parseInt(getComputedStyle(document.getElementById("slider_row")).getPropertyValue('--a'), 10);
+            var ye = parseInt(getComputedStyle(document.getElementById("slider_row")).getPropertyValue('--b'), 10);
+
+            if (xs > xe)
+            {
+                var tmp = xs;
+                xs = xe;
+                xe = tmp;
+            }
+            if (ys > ye)
+            {
+                var tmp = ys;
+                ys = ye;
+                ye = tmp;
+            }
+
+			document.getElementById("led_column").innerHTML = (xs + " - " + xe);
+			document.getElementById("led_row").innerHTML = (ys + " - " + ye);
+			xml_request = "&SetArea=X" + xs + "-" + xe + "Y" + ys + "-" + ye;
 			SendDataToArduino();
 		}
 
 		// on load
 		window.onload = function() {
-			SendDataToArduino();
+            SliderTwoThumb_Update();
 		};
 		
 	</script>
-	<style>
+	<style type="text/css">
 		.out_box {
 			float: left;
 			margin: 0 20px 20px 0;
@@ -183,15 +201,19 @@
 			font-size: 150%;
 			color: black;
 			margin: 0 0 10px 0;
-			width: 100% - 32px;
+			width: calc(100% - 32px);
 			border-radius: 4px;
 			padding: 8px 16px 8px 16px;
 			border: 2px solid #000000;
 		}
 		h2 {
-			font-size: 85%;
-			color: #5734E6;
+			font-size: 120%;
+			color: #2f0fb3;
 			margin: 5px 0 5px 0;
+			width: calc(100% - 32px);
+			border-radius: 4px;
+			padding: 8px 16px 8px 16px;
+			border: 2px solid #2f0fb3;
 		}
 		p, form, button {
 			font-size: 80%;
@@ -242,11 +264,12 @@
 		/*----------------------------------------------------------------------*/
 		/* slider */
 		.slidecontainer {
-			width: 50%;
+			width: 100%;
 		}
 		
 		.slider {
 			-webkit-appearance: none;
+            -moz-appearance: none;
 			width: 100%;
 			height: 15px;
 			border-radius: 5px;  
@@ -259,6 +282,7 @@
 
 		.slider::-webkit-slider-thumb {
 			-webkit-appearance: none;
+            -moz-appearance: none;
 			appearance: none;
 			width: 25px;
 			height: 25px;
@@ -276,229 +300,181 @@
 		}
 		
 		
-		/*---------------------------------------------------------------------*/
-		/* 2 thumb slider */
-		#led_slider_row {
-			float: left;
-			width: 100px;			
-		}
+        /*---------------------------------------------------------------------*/
+        /* 2 thumb slider */
+        #led_slider_row {
+            width: 100px;	
+            height: 4em;
+        }
 
-		#led_slider_column {
-			float: left;
-			width: calc(100% - 100px);
-		}
+        #led_slider_column {
+            width: calc(100% - 100px);
+        }
 
-		.wrap {
-			--dif: calc(var(--max) - var(--min));
-			display: grid;
-			grid-template: repeat(2, max-content) 2em/1fr 1fr;
-			overflow: hidden;
-			position: relative;
-			margin: 1em auto;
-			width: 100%;
-			background: linear-gradient(0deg, #ccc 2em, transparent 0);
-			font-family: ubuntu mono, consolas, monaco, monospace;
-		}
-		.wrap::before, .wrap::after {
-			grid-column: 1/span 2;
-			grid-row: 3;
-			height: 100%;
-			background: rgb(123, 202, 123);
-			content: "";
-		}
-		.wrap::before {
-			margin-left: calc((var(--a) - var(--min))/var(--dif)*100%);
-			width: calc((var(--b) - var(--a))/var(--dif)*100%);
-		}
-		.wrap::after {
-			margin-left: calc((var(--b) - var(--min))/var(--dif)*100%);
-			width: calc((var(--a) - var(--b))/var(--dif)*100%);
-		}
+        .wrap {
+            --dif: calc(var(--max) - var(--min));
+            display: grid;
+            grid-template: repeat(2, max-content) 2em/1fr 1fr;
+            overflow: hidden;
+            position: relative;
+            margin: 1em auto;
+            width: 100%;
+            background: linear-gradient(0deg, #ccc 2em, transparent 0);
+            font-family: ubuntu mono, consolas, monaco, monospace;
+        }
+        .wrap::before, .wrap::after {
+            grid-column: 1/span 2;
+            grid-row: 3;
+            height: 100%;
+            background: rgb(123, 202, 123);
+            content: "";
+        }
+        .wrap::before {
+            margin-left: calc((var(--a) - var(--min))/var(--dif)*100%);
+            width: calc((var(--b) - var(--a))/var(--dif)*100%);
+        }
+        .wrap::after {
+            margin-left: calc((var(--b) - var(--min))/var(--dif)*100%);
+            width: calc((var(--a) - var(--b))/var(--dif)*100%);
+        }
 
-		[id=multi-lbl] {
-			grid-column: 1/span 2;
-		}
+        [id=multi-lbl] {
+            grid-column: 1/span 2;
+        }
 
-		.sr-only {
-			position: absolute;
-			clip-path: inset(50%);
-		}
+        .sr-only {
+            position: absolute;
+            clip-path: inset(50%);
+        }
 
-		input[type=range] {
-			grid-column: 1/span 2;
-			grid-row: 3;
-			z-index: 1;
-			top: 0;
-			left: 0;
-			margin: 0;
-			background: none;
-			/* get rid of white Chrome background */
-			color: #000;
-			pointer-events: none;
-		}
-		input[type=range]::-webkit-slider-runnable-track, input[type=range]::-webkit-slider-thumb, input[type=range] {
-			-webkit-appearance: none;
-		}
-		input[type=range]::-webkit-slider-runnable-track {
-			width: 100%;
-			height: 100%;
-			background: none;
-		}
-		input[type=range]::-moz-range-track {
-			width: 100%;
-			height: 100%;
-			background: none;
-		}
-		input[type=range]::-webkit-slider-thumb {
-			border: none;
-			/* get rid of Firefox thumb border */
-			width: 2em;
-			height: 2em;
-			border-radius: 0;
-			/* get rid of Firefox corner rounding */
-			background: currentcolor;
-			pointer-events: auto;
-		}
-		input[type=range]::-moz-range-thumb {
-			border: none;
-			/* get rid of Firefox thumb border */
-			width: 2em;
-			height: 2em;
-			border-radius: 0;
-			/* get rid of Firefox corner rounding */
-			background: currentcolor;
-			pointer-events: auto;
-		}
-		input[type=range]:focus {
-			z-index: 2;
-			outline: dotted 1px currentcolor;
-		}
-		input[type=range]:focus, input[type=range]:focus + output {
-			color: darkorange;
-		}
+        input[type=range] {
+            grid-column: 1/span 2;
+            grid-row: 3;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            margin: 0;
+            background: none;
+            /* get rid of white Chrome background */
+            color: #000;
+            pointer-events: none;
+        }
+        input[type=range]::-webkit-slider-runnable-track, input[type=range]::-webkit-slider-thumb, input[type=range] {
+            -webkit-appearance: none;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 100%;
+            background: none;
+        }
+        input[type=range]::-moz-range-track {
+            width: 100%;
+            height: 100%;
+            background: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            border: none;
+            /* get rid of Firefox thumb border */
+            width: 2em;
+            height: 100%;
+            border-radius: 0;
+            /* get rid of Firefox corner rounding */
+            background: currentcolor;
+            pointer-events: auto;
+        }
+        input[type=range]::-moz-range-thumb {
+            border: none;
+            /* get rid of Firefox thumb border */
+            width: 2em;
+            height: 2em;
+            border-radius: 0;
+            /* get rid of Firefox corner rounding */
+            background: currentcolor;
+            pointer-events: auto;
+        }
+        input[type=range]:focus {
+            z-index: 2;
+            outline: dotted 1px currentcolor;
+        }
+        input[type=range]:focus, input[type=range]:focus + output {
+            color: darkorange;
+        }
 
-		output {
-			grid-row: 2;
-		}
-		output:last-child {
-			text-align: right;
-		}
-		output::after {
-			counter-reset: c var(--c);
-			content: "--" attr(for) ": " counter(c) ";";
-		}
-		
+        output {
+            grid-row: 2;
+        }
+        output:last-child {
+            text-align: right;
+        }
+        output::after {
+            counter-reset: c var(--c);
+            content: "--" attr(for) ": " counter(c) ";";
+        }
+        		
 	</style>
-
-
 </head>
 
 
 
 
-   <!--<body onload="GetArduinoIO()">-->
-    <body>
-        <h1>MoBa Licht Steuerung</h1>
-		<br>
-		<!--<div class="out_box">
-			<form class="check_LEDs" name="LED_form1">
-				<input type="checkbox" name="LED1" value="0" onclick="GetCheck('LED1', this)" />LED 1 (D26)
-				<input type="checkbox" name="LED2" value="0" onclick="GetCheck('LED2', this)" />LED 2 (D27)<br />
-				<input type="checkbox" name="LED3" value="0" onclick="GetCheck('LED3', this)" />LED 3 (D28)
-				<input type="checkbox" name="LED4" value="0" onclick="GetCheck('LED4', this)" />LED 4 (D29)
-			</form>
-		</div>
-		<div class="out_box">
-			<form class="check_LEDs" name="LED_form2">
-				<input type="checkbox" name="LED5" value="0" onclick="GetCheck('LED5', this)" />LED 5 (D30)
-				<input type="checkbox" name="LED6" value="0" onclick="GetCheck('LED6', this)" />LED 6 (D31)<br />
-				<input type="checkbox" name="LED7" value="0" onclick="GetCheck('LED7', this)" />LED 7 (D32)
-				<input type="checkbox" name="LED8" value="0" onclick="GetCheck('LED8', this)" />LED 8 (D33)
-			</form>
-		</div>
-		<div class="out_box">
-			<form class="check_LEDs" name="LED_form3">
-				<input type="checkbox" name="LED9" value="0" onclick="GetCheck('LED9', this)" />LED 9 (D34)
-				<input type="checkbox" name="LED10" value="0" onclick="GetCheck('LED10', this)" />LED 10 (D35)<br />
-				<input type="checkbox" name="LED11" value="0" onclick="GetCheck('LED11', this)" />LED 11 (D36)
-				<input type="checkbox" name="LED12" value="0" onclick="GetCheck('LED12', this)" />LED 12 (D37)
-			</form>
-		</div>
-		<div class="out_box">
-			<form class="check_LEDs" name="LED_form4">
-				<input type="checkbox" name="LED13" value="0" onclick="GetCheck('LED13', this)" />LED 13 (D38)
-				<input type="checkbox" name="LED14" value="0" onclick="GetCheck('LED14', this)" />LED 14 (D39)<br />
-				<input type="checkbox" name="LED15" value="0" onclick="GetCheck('LED15', this)" />LED 15 (D40)
-				<input type="checkbox" name="LED16" value="0" onclick="GetCheck('LED16', this)" />LED 16 (D41)
-			</form>
-		</div>
-		<div class="out_box">
-			<form class="check_LEDs" name="LED_form5">
-				<input type="checkbox" name="LED17" value="0" onclick="GetCheck('LED17', this)" />LED 17 (D42)
-				<input type="checkbox" name="LED18" value="0" onclick="GetCheck('LED18', this)" />LED 18 (D43)<br />
-				<input type="checkbox" name="LED19" value="0" onclick="GetCheck('LED19', this)" />LED 19 (D44)
-				<input type="checkbox" name="LED20" value="0" onclick="GetCheck('LED20', this)" />LED 20 (D45)
-			</form>
-		</div>
-		<div class="out_box">
-			<form class="check_LEDs" name="LED_form6">
-				<input type="checkbox" name="LED21" value="0" onclick="GetCheck('LED21', this)" />LED 21 (D46)
-				<input type="checkbox" name="LED22" value="0" onclick="GetCheck('LED22', this)" />LED 22 (D47)<br />
-				<input type="checkbox" name="LED23" value="0" onclick="GetCheck('LED23', this)" />LED 23 (D48)
-				<input type="checkbox" name="LED24" value="0" onclick="GetCheck('LED24', this)" />LED 24 (D49)
-			</form>
-		</div>-->
-		
-		<button class="button" id="office_table_ww_button" onclick="LightSceneButtonPushed(LightScene.OFFICE_TABLE_WW, this)">B&uuml;rotisch</button>
-		<button class="button" id="light_on_ww_button" onclick="LightSceneButtonPushed(LightScene.LIGHT_ON_WW, this)">Licht warm Weiss</button>
-		<button class="button" id="disco_button" onclick="LightSceneButtonPushed(LightScene.DISCO, this)">Disco</button>
-		<button class="button" id="sunset_button" onclick="LightSceneButtonPushed(LightScene.SUNSET, this)">Sunset</button>
-		<button class="button" id="sunrise_button" onclick="LightSceneButtonPushed(LightScene.SUNRISE, this)">Sunrise</button>
-		<button class="button" id="power_off" onclick="LightSceneButtonPushed(LightScene.POWER_OFF, this)">Power Off</button>
-		<br>
-		<br>
+<!--<body onload="GetArduinoIO()">-->
+<body>
+    <h1>MoBa Licht Steuerung</h1>
+    <br>
+    <button class="button" id="office_table_ww_button" onclick="LightSceneButtonPushed(LightScene.OFFICE_TABLE_WW, this)">B&uuml;rotisch</button>
+    <button class="button" id="light_on_ww_button" onclick="LightSceneButtonPushed(LightScene.LIGHT_ON_WW, this)">Licht warm Weiss</button>
+    <button class="button" id="disco_button" onclick="LightSceneButtonPushed(LightScene.DISCO, this)">Disco</button>
+    <button class="button" id="sunset_button" onclick="LightSceneButtonPushed(LightScene.SUNSET, this)">Sunset</button>
+    <button class="button" id="sunrise_button" onclick="LightSceneButtonPushed(LightScene.SUNRISE, this)">Sunrise</button>
+    <button class="button" id="power_off" onclick="LightSceneButtonPushed(LightScene.POWER_OFF, this)">Power Off</button>
+    <br>
+    <br>
+    <br>
 
-		<h2>Helligkeit einstellen</h2>
-		<div class="slidecontainer">
-			<input type="range" min="0" max="255" value="50" class="slider" id="brightness_slider" onchange="BrighntessSliderChanged()">
-			<p>Value: <span id="brightness_value"></span></p>
-		</div>
-		<br>
-		
-
-
-
- 
-		<h2>Leuchtposition</h2>
-		<div id="led_slider_row">
-			<p>
-			  <label for="led_row">Reihen</label>
-			  <label type="text" id="led_row" readonly style="border:0; color:#f6931f; font-weight:bold;"></label>
-			</p>
-			 
-			<div id="slider_row" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: 0; --b: 3; --min: 0; --max: 3; transform: rotate(270deg)">
-				<!--<div id="multi-lbl">Multi thumb slider: 0 - 15</div>-->
-				<input id="a" type="range" min="0" value="0" max="3" />
-				<!--<output for="a" style="--c: var(--a)"></output>-->
-				<input id="b" type="range" min="0" value="3" max="3" />
-				<!--<output for="b" style="--c: var(--b)"></output>-->
-			</div>
-		</div>
- 
-		<div id="led_slider_column">
-			<p>
-			  <label for="led_column">Länge</label>
-			  <label type="text" id="led_column" readonly style="border:0; color:#f6931f; font-weight:bold;"></label>
-			</p>
-			 
-			<div id="slider_columen" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: 20; --b: 120; --min: 0; --max: 284">
-				<!--<div id="multi-lbl">Multi thumb slider: 0 - 15</div>-->
-				<input id="a" type="range" min="0" value="20" max="284" />
-				<!--<output for="a" style="--c: var(--a)"></output>-->
-				<input id="b" type="range" min="0" value="120" max="284" />
-				<!--<output for="b" style="--c: var(--b)"></output>-->
-			</div>
-		</div>
-
+    <h2>Helligkeit einstellen</h2>
+    <br>
+    <div class="slidecontainer">
+        <label for="brightness_value">Helligkeit</label>
+        <label id="brightness_value"></label>
+        <input type="range" min="0" max="255" value="50" class="slider" id="brightness_slider" oninput="BrighntessSliderChanged()" style="background:rgb(255, 240, 27)">
+    </div>
+    <br>
+    <br>
+    
+    <h2>Leuchtposition</h2>
+    <table style="width: 100%">
+        <tr>
+            <td>
+                <label for="led_row">Reihen</label>
+                <label type="text" id="led_row" readonly style="border:0; color:#f6931f; font-weight:bold;"></label>      
+            </td>
+            <td>
+                <label for="led_column">Länge</label>
+                <label type="text" id="led_column" readonly style="border:0; color:#f6931f; font-weight:bold;"></label>
+            </td>
+        </tr>
+        <tr>
+            <td id="led_slider_row">
+                <!--<div style="transform: rotate(270deg);">-->
+                <div>
+                    <div id="slider_row" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: 0; --b: 3; --min: 0; --max: 3;">
+                    <!--<div id="multi-lbl">Multi thumb slider: 0 - 15</div>-->
+                    <input id="a" type="range" min="0" value="0" max="3" />
+                    <!--<output for="a" style="--c: var(--a)"></output>-->
+                    <input id="b" type="range" min="0" value="3" max="3" />
+                    <!--<output for="b" style="--c: var(--b)"></output>-->
+                </div>
+            </td>
+            <td id=led_slider_column>
+                <div id="slider_columen" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: 20; --b: 120; --min: 0; --max: 284">
+                    <!--<div id="multi-lbl">Multi thumb slider: 0 - 15</div>-->
+                    <input id="a" type="range" min="0" value="20" max="284" />
+                    <!--<output for="a" style="--c: var(--a)"></output>-->
+                    <input id="b" type="range" min="0" value="120" max="284" />
+                    <!--<output for="b" style="--c: var(--b)"></output>-->
+                </div>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>
