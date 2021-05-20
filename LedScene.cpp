@@ -101,7 +101,7 @@ void LedScene::ChangeLightScene(light_scene_t scene, uint8_t brightness)
             break;
         
         case RAINBOW:
-            this->WhiteOverRainbow(75, 5);
+            this->WhiteOverRainbow_Task(75, 5);
             break;
             
         case MOVING_DOT:
@@ -151,8 +151,9 @@ void LedScene::Tasks()
             case POWER_OFF:
                 PowerOff_Task();
                 break;
-            
+
             case RAINBOW:
+                this->WhiteOverRainbow_Task(75, 5);
                 break;
             
             case MOVING_DOT:
@@ -306,7 +307,7 @@ void LedScene::MovingDot_Task(void)
 // description:
 //   Show Rainbow with moving white dots
 //*****************************************************************************
-void LedScene::WhiteOverRainbow(int whiteSpeed, int whiteLength) 
+void LedScene::WhiteOverRainbow_Task(int whiteSpeed, int whiteLength) 
 {
   if (whiteLength >= LedRow::LED_ROW_LENGTH) 
   {
@@ -318,11 +319,9 @@ void LedScene::WhiteOverRainbow(int whiteSpeed, int whiteLength)
   int      loops         = 3;
   int      loopNum       = 0;
   uint32_t lastTime      = millis();
-  uint32_t firstPixelHue = 0;
+  static uint32_t firstPixelHue = 0;
   uint32_t color = 0;
 
-  for(;;)  // Repeat forever (or until a 'break' or 'return')
-  {
     for (int idx = 0; idx < LedRow::LED_ROW_LENGTH; idx++)   // For each pixel in strip...
     {
       /*if (((idx >= tail) && (idx <= head)) ||      //  If between head & tail...
@@ -357,7 +356,6 @@ void LedScene::WhiteOverRainbow(int whiteSpeed, int whiteLength)
       }
       lastTime = millis();                   // Save time of last movement
     }
-  }
 }
 
 

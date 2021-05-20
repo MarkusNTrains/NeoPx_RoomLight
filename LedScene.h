@@ -80,7 +80,7 @@ class LedScene
         void PowerOff_Task(void);
         void MovingDot_Task(void);
         void UserSetting_Task(void);
-        void WhiteOverRainbow(int whiteSpeed, int whiteLength);
+        void WhiteOverRainbow_Task(int whiteSpeed, int whiteLength);
         void UpdateBrightness(void);
 };
 
