@@ -54,8 +54,8 @@ WebServer::WebServer(LedScene* led_scene)
     //int pin;
 		
     byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x49 }; // MAC address from Ethernet shield sticker under board
-    IPAddress ip(192, 168, 0, 250);    // IP address, may need to change depending on network
-    //IPAddress ip(192, 168, 1, 249);    // IP address, may need to change depending on network
+    //IPAddress ip(192, 168, 0, 250);    // IP address, may need to change depending on network
+    IPAddress ip(192, 168, 1, 249);    // IP address, may need to change depending on network
     m_server = new EthernetServer(80);            // server
     m_led_scene = led_scene;
     
@@ -241,6 +241,8 @@ void WebServer::HandleRequest(void)
     // find LightScene ---------------------------------------------------------
     if (StrContains(HTTP_req, needle_scene))
     {
+        this->m_action = ACTION_SetLightSecene;
+        
         start_pos = strstr(HTTP_req, needle_scene);
         if (start_pos == 0) return;  // no String found
 
@@ -258,9 +260,12 @@ void WebServer::HandleRequest(void)
 
         this->m_led_scene->ChangeLightScene(param, 255);
     }
+    
     // find brightness ---------------------------------------------------------
     else if (StrContains(HTTP_req, needle_brightness))
     {
+        this->m_action = ACTION_SetBrightness;
+        
         start_pos = strstr(HTTP_req, needle_brightness);
         if (start_pos == 0) return;  // no String found
 
@@ -278,9 +283,12 @@ void WebServer::HandleRequest(void)
 
         this->m_led_scene->SetBrightness(param);
     }
+    
     // find set led area data -------------------------------------------------
     else if (StrContains(HTTP_req, needle_set_led_area))
     {
+        this->m_action = ACTION_SetLedArea;
+        
         start_pos = strstr(HTTP_req, needle_set_led_area);
         if (start_pos == 0) return;  // no String found
 
@@ -341,6 +349,11 @@ void WebServer::HandleRequest(void)
         this->m_led_scene->SetLedArea(param, param2, param3, param4, color);
     }
 
+    else
+    {
+        this->m_action = ACTION_Unknown;
+    }
+
     
     /*for (i = 0; i < 3; i++) 
 	  {
@@ -385,9 +398,12 @@ void WebServer::XML_response(EthernetClient cl)
     cl.print(m_led_scene->GetLightScene());
     cl.print("</scene>");
 
-    cl.print("<brightness>");
-    cl.print(m_led_scene->GetBrightness());
-    cl.print("</brightness>");
+    if (this->m_action != ACTION_SetBrightness)
+    {
+        cl.print("<brightness>");
+        cl.print(m_led_scene->GetBrightness());
+        cl.print("</brightness>");
+    }
 
     /*cl.print("<led_area>");
     cl.print(this->m_led_scene->GetLedRowStart());

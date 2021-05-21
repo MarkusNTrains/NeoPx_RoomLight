@@ -39,16 +39,23 @@ class WebServer
 	public:
 		WebServer(LedScene* led_scene);
 		~WebServer();
-    void Tasks(void);
+        void Tasks(void);		
 		
-		
-	private:		
-    EthernetServer* m_server;
+	private:
+        typedef enum {
+            ACTION_SetLightSecene = 0,
+            ACTION_SetBrightness,
+            ACTION_SetLedArea,
+            ACTION_Unknown
+        } action_t;
+        
+        EthernetServer* m_server;
 		File webFile;                     // the web page file on the SD card
 		char HTTP_req[REQ_BUF_SZ] = {0};  // buffered HTTP request stored as null terminated string
 		char req_index = 0;               // index into HTTP_req buffer
 		unsigned char LED_state[3] = {0}; // stores the states of the LEDs, 1 bit per LED
-    LedScene* m_led_scene;
+        LedScene* m_led_scene;
+        action_t m_action;
 
 		void HandleRequest(void);
 		void XML_response(EthernetClient cl);
