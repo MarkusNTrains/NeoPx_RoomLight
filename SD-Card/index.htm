@@ -39,6 +39,8 @@
 		{
 			if (s_lock_send_data == false)
 			{
+				s_lock_send_data = true;
+
 				nocache = "&nocache=" + Math.random() * 1000000;
 				var request = new XMLHttpRequest();
 				request.onreadystatechange = function()
@@ -92,7 +94,6 @@
 				
 				// lock Send to Arduino
 				setTimeout('ReleaseLock()', 200);
-				s_lock_send_data = true;
 			}
 			else
 			{

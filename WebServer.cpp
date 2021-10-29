@@ -165,7 +165,8 @@ void WebServer::Tasks()
 			        {
                         // send rest of HTTP header
                         client.println("Content-Type: text/xml");
-                        client.println("Connection: keep-alive");
+                        client.println("Connection: close");  // the connection will be closed after completion of the response
+                        //client.println("Connection: keep-alive");
                         client.println();
 
                         this->HandleRequest();
@@ -177,7 +178,8 @@ void WebServer::Tasks()
 			        {
                         // send rest of HTTP header
                         client.println("Content-Type: text/html");
-                        client.println("Connection: keep-alive");
+                        client.println("Connection: close");  // the connection will be closed after completion of the response
+                        //client.println("Connection: keep-alive");
                         client.println();
 
                         // send web page
@@ -221,6 +223,7 @@ void WebServer::Tasks()
         
         delay(1);      // give the web browser time to receive the data
         client.stop(); // close the connection
+        client.flush();
     } // end if (client)
 }
 
@@ -410,7 +413,7 @@ void WebServer::XML_response(EthernetClient cl)
     unsigned char i;
     unsigned int  j;
     
-    cl.print("<?xml version = \"1.0\" ?>");
+    //cl.print("<?xml version = \"1.0\" ?>");
     cl.print("<inputs>");
 
     cl.print("<scene>");
