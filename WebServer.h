@@ -30,6 +30,8 @@ $Id:  $
 //----------------------------------------------------------------------------
 // define
 #define REQ_BUF_SZ 50  // size of buffer used to capture HTTP requests
+#define USE_SD_CARD
+#undef USE_SD_CARD
 
 
 //----------------------------------------------------------------------------
@@ -61,6 +63,7 @@ class WebServer
 		void XML_response(EthernetClient cl);
 		void StrClear(char *str, char length);
 		char StrContains(char *str, char *sfind);   
+        void SendToClient(EthernetClient* client);
 };
 
 #endif  // _WEB_SERVER_H

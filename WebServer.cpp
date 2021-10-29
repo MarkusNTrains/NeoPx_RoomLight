@@ -38,6 +38,7 @@
 //-----------------------------------------------------------------------------
 // includes
 #include "WebServer.h"
+#include "Website.h"
 
 
 //-----------------------------------------------------------------------------
@@ -64,6 +65,7 @@ WebServer::WebServer(LedScene* led_scene)
     digitalWrite(10, HIGH);
     
     // initialize SD card
+#ifdef USE_SD_CARD
   #ifdef IS_DEBUG_MODE
     Serial.println("Initializing SD card...");
   #endif
@@ -89,6 +91,7 @@ WebServer::WebServer(LedScene* led_scene)
   #ifdef IS_DEBUG_MODE
     Serial.println("SUCCESS - Found index.htm file.");
   #endif
+#endif
     
     
     // pins 26 to 49 are outputs
@@ -178,6 +181,7 @@ void WebServer::Tasks()
                         client.println();
 
                         // send web page
+                      #ifdef USE_SD_CARD
                         webFile = SD.open("index.htm");        // open web page file
                         if (webFile) 
 			            {
@@ -187,6 +191,9 @@ void WebServer::Tasks()
                             }
                             webFile.close();
                         }
+                      #else 
+                        Website_SendToClient(client);
+                      #endif
                     }
                     
                     // display received HTTP request on serial port
@@ -212,7 +219,7 @@ void WebServer::Tasks()
             } 
         } 
         
-        delay(50);      // give the web browser time to receive the data
+        delay(1);      // give the web browser time to receive the data
         client.stop(); // close the connection
     } // end if (client)
 }
@@ -259,6 +266,10 @@ void WebServer::HandleRequest(void)
         param = atoi(param_c);
 
         this->m_led_scene->ChangeLightScene(param, 255);
+
+      #ifdef IS_DEBUG_MODE
+        Serial.println(param);
+      #endif
     }
     
     // find brightness ---------------------------------------------------------
@@ -282,6 +293,10 @@ void WebServer::HandleRequest(void)
         param = atoi(param_c);
 
         this->m_led_scene->SetBrightness(param);
+        
+      #ifdef IS_DEBUG_MODE
+        Serial.println(param);
+      #endif
     }
     
     // find set led area data -------------------------------------------------
@@ -352,6 +367,10 @@ void WebServer::HandleRequest(void)
     else
     {
         this->m_action = ACTION_Unknown;
+
+      #ifdef IS_DEBUG_MODE
+        Serial.println("ACTION_Unknown");
+      #endif
     }
 
     
