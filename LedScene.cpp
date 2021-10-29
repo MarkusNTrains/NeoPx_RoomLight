@@ -44,7 +44,7 @@ LedScene::LedScene()
     m_update_time_ms = millis();
     m_led_matrix = new LedMatrix();
 
-    this->ChangeLightScene(OFFICE_TABLE_WW, 111);
+    this->ChangeLightScene(OFFICE_TABLE_WW, 30);
 }
 
 
@@ -100,7 +100,8 @@ void LedScene::ChangeLightScene(light_scene_t scene, uint8_t brightness)
             break;
         
         case RAINBOW:
-            this->WhiteOverRainbow_Task(75, 5);
+            this->m_led_matrix->Clear();
+            this->WhiteOverRainbow_Task(10, 5);
             break;
             
         case MOVING_DOT:
@@ -343,7 +344,7 @@ void LedScene::WhiteOverRainbow_Task(int whiteSpeed, int whiteLength)
     // There's no delay here, it just runs full-tilt until the timer and
     // counter combination below runs out.
 
-    firstPixelHue += 40; // Advance just a little along the color wheel
+    firstPixelHue += 542; // Advance just a little along the color wheel
 
     if ((millis() - lastTime) > whiteSpeed) { // Time to update head/tail?
       if (++head >= LedRow::LED_ROW_LENGTH) {      // Advance head, wrap around

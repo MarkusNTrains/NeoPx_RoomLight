@@ -29,7 +29,7 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // define
-#define REQ_BUF_SZ 100  // size of buffer used to capture HTTP requests
+#define REQ_BUF_SZ 50  // size of buffer used to capture HTTP requests
 
 
 //----------------------------------------------------------------------------

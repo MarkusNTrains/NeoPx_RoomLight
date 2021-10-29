@@ -54,8 +54,8 @@ WebServer::WebServer(LedScene* led_scene)
     //int pin;
 		
     byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x49 }; // MAC address from Ethernet shield sticker under board
-    //IPAddress ip(192, 168, 0, 250);    // IP address, may need to change depending on network
-    IPAddress ip(192, 168, 1, 249);    // IP address, may need to change depending on network
+    IPAddress ip(192, 168, 0, 250);    // IP address, may need to change depending on network
+    //IPAddress ip(192, 168, 1, 249);    // IP address, may need to change depending on network
     m_server = new EthernetServer(80);            // server
     m_led_scene = led_scene;
     
@@ -138,7 +138,7 @@ void WebServer::Tasks()
 			{
                 char c = client.read(); // read 1 byte (character) from client
   #ifdef IS_DEBUG_MODE
-                //Serial.print(c);
+                Serial.print(c);
   #endif
                 // limit the size of the stored received HTTP request
                 // buffer first part of HTTP request in HTTP_req array (string)
@@ -209,10 +209,10 @@ void WebServer::Tasks()
                     // a text character was received from client
                     currentLineIsBlank = false;
                 }
-            } // end if (client.available())
-        } // end while (client.connected())
+            } 
+        } 
         
-        delay(40);      // give the web browser time to receive the data
+        delay(50);      // give the web browser time to receive the data
         client.stop(); // close the connection
     } // end if (client)
 }
