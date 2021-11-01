@@ -134,8 +134,6 @@ void WebServer::Tasks()
 
     if (client)   // got client?
 	{
-        Serial.println("client valid");
-
         boolean currentLineIsBlank = true;
         while (client.connected()) 
 		{
