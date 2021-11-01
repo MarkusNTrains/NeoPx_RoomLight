@@ -134,6 +134,8 @@ void WebServer::Tasks()
 
     if (client)   // got client?
 	{
+        Serial.println("client valid");
+
         boolean currentLineIsBlank = true;
         while (client.connected()) 
 		{
@@ -166,7 +168,6 @@ void WebServer::Tasks()
                         // send rest of HTTP header
                         client.println("Content-Type: text/xml");
                         client.println("Connection: close");  // the connection will be closed after completion of the response
-                        //client.println("Connection: keep-alive");
                         client.println();
 
                         this->HandleRequest();
@@ -179,7 +180,6 @@ void WebServer::Tasks()
                         // send rest of HTTP header
                         client.println("Content-Type: text/html");
                         client.println("Connection: close");  // the connection will be closed after completion of the response
-                        //client.println("Connection: keep-alive");
                         client.println();
 
                         // send web page
@@ -220,10 +220,14 @@ void WebServer::Tasks()
                 }
             } 
         } 
-        
+
+        client.flush();
         delay(1);      // give the web browser time to receive the data
         client.stop(); // close the connection
-        client.flush();
+
+      #ifdef IS_DEBUG_MODE
+        Serial.println("connection closed");
+      #endif
     } // end if (client)
 }
 

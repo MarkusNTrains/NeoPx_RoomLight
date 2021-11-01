@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
 	<meta charset="utf-8">
@@ -25,10 +25,19 @@
 		var xml_request = "";
 		var s_lock_send_data = false;
 		var s_is_send_data_pending = false;
+		var s_sendToArduino_timeoutTimer = null;
+		var xhttp = null;
 
 		function ReleaseLock()
 		{
 			s_lock_send_data = false;
+			s_sendToArduino_timeoutTimer = null;
+
+			if (xhttp != null)
+			{
+				xhttp.abort();
+				xhttp = null;
+			}
 			if (s_is_send_data_pending == true)
 			{
 				SendDataToArduino();
@@ -40,12 +49,12 @@
 			if (s_lock_send_data == false)
 			{
 				s_lock_send_data = true;
-
 				nocache = "&nocache=" + Math.random() * 1000000;
-				var request = new XMLHttpRequest();
-				request.onreadystatechange = function()
+
+				xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange = function()
 				{
-					if (this.readyState == 4) 
+					if (this.readyState == XMLHttpRequest.DONE) 
 					{
 						if (this.status == 200) 
 						{
@@ -53,9 +62,9 @@
 							{
 								// XML file received - contains LED states
 								var re;
-								var num_LEDs;
-								var i;
-								var ledstr = "";
+								//var num_LEDs;
+								//var i;
+								//var ledstr = "";
 								
 								/*re = this.responseXML.getElementsByTagName('LED');
 								num_LEDs = re.length;
@@ -77,23 +86,39 @@
 
 								//re = this.responseXML.getElementsByTagName('scene');
 								
-								
 								re = this.responseXML.getElementsByTagName('brightness');
-								document.getElementById("brightness_slider").value = re[0].childNodes[0].nodeValue;
-								document.getElementById("brightness_value").innerHTML = re[0].childNodes[0].nodeValue;
+								if ((re != undefined) && (re != null) && (re.length > 0))
+								{
+									document.getElementById("brightness_slider").value = re[0].childNodes[0].nodeValue;
+									document.getElementById("brightness_value").innerHTML = re[0].childNodes[0].nodeValue;
+								}
 
+								if (s_sendToArduino_timeoutTimer != null)
+								{
+									clearTimeout(s_sendToArduino_timeoutTimer);
+									ReleaseLock();
+								}
 							}
+							else
+							{
+								alert("XML = NULL");
+							}
+						}
+						else
+						{
+							alert("Status: " + this.status);
 						}
 					}
 				}
+
 				// send HTTP GET request with LEDs to switch on/off if any
-				request.open("GET", "ajax_inputs" + xml_request + nocache, true);
-				request.send(null);
+				xhttp.open("GET", "ajax_inputs" + xml_request + nocache, true);
+				xhttp.send();
 				xml_request = "";
 				s_is_send_data_pending = false;
 				
 				// lock Send to Arduino
-				setTimeout('ReleaseLock()', 200);
+				s_sendToArduino_timeoutTimer = setTimeout('ReleaseLock()', 2000);
 			}
 			else
 			{
@@ -309,12 +334,11 @@
         /*---------------------------------------------------------------------*/
         /* 2 thumb slider */
         #led_slider_row {
-            width: 100px;	
-            height: 4em;
+            width: 150px;	
         }
 
         #led_slider_column {
-            width: calc(100% - 100px);
+            width: calc(100% - 150px);
         }
 
         .wrap {

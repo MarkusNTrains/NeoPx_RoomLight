@@ -130,9 +130,9 @@ light_scene_t LedScene::GetLightScene(void)
 //*****************************************************************************
 void LedScene::Tasks()
 {
-    if (millis() > this->m_update_time_ms + TMO_TILL_NEXT_UPDATE_MS)
+    if (millis() - this->m_update_time_ms > TMO_TILL_NEXT_UPDATE_MS)
     {
-        this->m_update_time_ms = millis();
+        this->m_update_time_ms += TMO_TILL_NEXT_UPDATE_MS;
     
         switch (this->m_state)
         {
