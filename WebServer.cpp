@@ -53,13 +53,13 @@
 WebServer::WebServer(LedScene* led_scene)
 {
     //int pin;
-		
-    byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x49 }; // MAC address from Ethernet shield sticker under board
-    IPAddress ip(192, 168, 0, 250);    // IP address, may need to change depending on network
-    //IPAddress ip(192, 168, 1, 249);    // IP address, may need to change depending on network
+    byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x49 }; // MAC address from Ethernet shield sticker under board    
+    //IPAddress ip(192, 168, 0, 250);    // IP address, may need to change depending on network
+    IPAddress ip(192, 168, 1, 8);    // IP address, may need to change depending on network
     m_server = new EthernetServer(80);            // server
     m_led_scene = led_scene;
-    
+
+
     // disable Ethernet chip slave select
     pinMode(10, OUTPUT);
     digitalWrite(10, HIGH);
