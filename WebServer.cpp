@@ -53,9 +53,13 @@
 WebServer::WebServer(LedScene* led_scene)
 {
     //int pin;
-    byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x49 }; // MAC address from Ethernet shield sticker under board    
-    //IPAddress ip(192, 168, 0, 250);    // IP address, may need to change depending on network
-    IPAddress ip(192, 168, 1, 8);    // IP address, may need to change depending on network
+    byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x43 }; // MAC address from Ethernet shield sticker under board    
+    IPAddress ip(192, 168, 0, 4);    // IP address, may need to change depending on network
+    //IPAddress ip(192, 168, 1, 8);    // IP address, may need to change depending on network
+    IPAddress myDns(192, 168, 0, 254);
+    IPAddress gateway(192, 168, 0, 254);  // how to find gateway: open cmd --> type ipconfig
+    IPAddress subnet(255, 255, 255, 0);
+    
     m_server = new EthernetServer(80);            // server
     m_led_scene = led_scene;
 
@@ -101,8 +105,8 @@ WebServer::WebServer(LedScene* led_scene)
         digitalWrite(pin, LOW);  // switch the output pins off
     }*/
 
-    Ethernet.begin(mac, ip);  // initialize Ethernet device
-
+    //Ethernet.begin(mac, ip);  // initialize Ethernet device
+    Ethernet.begin(mac, ip, myDns, gateway, subnet);
 
     // start the server
     m_server->begin();           // start to listen for clients
@@ -144,12 +148,12 @@ void WebServer::Tasks()
                 Serial.print(c);
   #endif
                 // limit the size of the stored received HTTP request
-                // buffer first part of HTTP request in HTTP_req array (string)
-                // leave last element in array as 0 to null terminate string (REQ_BUF_SZ - 1)
-                if (req_index < (REQ_BUF_SZ - 1)) 
+                // buffer first part of HTTP request in m_buffer_http_request array (string)
+                // leave last element in array as 0 to null terminate string (REQUEST_BUFFER_LENGTH - 1)
+                if (this->m_buffer_idx < (REQUEST_BUFFER_LENGTH - 1)) 
 			    {
-                    HTTP_req[req_index] = c;          // save HTTP request character
-                    req_index++;
+                    this->m_buffer_http_request[this->m_buffer_idx] = c;          // save HTTP request character
+                    this->m_buffer_idx++;
                 }
                 
                 // last line of client request is blank and ends with \n
@@ -161,7 +165,7 @@ void WebServer::Tasks()
                     // remainder of header follows below, depending on if
                     // web page or XML page is requested
                     // Ajax request - send XML file
-                    if (StrContains(HTTP_req, "ajax_inputs")) 
+                    if (StrContains(this->m_buffer_http_request, "ajax_inputs")) 
 			        {
                         // send rest of HTTP header
                         client.println("Content-Type: text/xml");
@@ -197,10 +201,7 @@ void WebServer::Tasks()
                     }
                     
                     // display received HTTP request on serial port
-                    //Serial.print(HTTP_req);
-                    // reset buffer index and all buffer elements to 0
-                    req_index = 0;
-                    StrClear(HTTP_req, REQ_BUF_SZ);
+                    //Serial.print(this->m_buffer_http_request);
                     break;
                 }
                 
@@ -222,11 +223,19 @@ void WebServer::Tasks()
         client.flush();
         delay(1);      // give the web browser time to receive the data
         client.stop(); // close the connection
+        
+        // reset buffer index and all buffer elements to 0
+        this->m_buffer_idx = 0;
+        StrClear(this->m_buffer_http_request, REQUEST_BUFFER_LENGTH);
 
       #ifdef IS_DEBUG_MODE
         Serial.println("connection closed");
       #endif
     } // end if (client)
+    else
+    {
+        this->m_buffer_idx = 0;
+    }
 }
 
 
@@ -251,11 +260,11 @@ void WebServer::HandleRequest(void)
     char needle_set_led_area[] = "SetArea";
 
     // find LightScene ---------------------------------------------------------
-    if (StrContains(HTTP_req, needle_scene))
+    if (StrContains(this->m_buffer_http_request, needle_scene))
     {
         this->m_action = ACTION_SetLightSecene;
         
-        start_pos = strstr(HTTP_req, needle_scene);
+        start_pos = strstr(this->m_buffer_http_request, needle_scene);
         if (start_pos == 0) return;  // no String found
 
         end_pos = strstr(start_pos, "&");
@@ -278,11 +287,11 @@ void WebServer::HandleRequest(void)
     }
     
     // find brightness ---------------------------------------------------------
-    else if (StrContains(HTTP_req, needle_brightness))
+    else if (StrContains(this->m_buffer_http_request, needle_brightness))
     {
         this->m_action = ACTION_SetBrightness;
         
-        start_pos = strstr(HTTP_req, needle_brightness);
+        start_pos = strstr(this->m_buffer_http_request, needle_brightness);
         if (start_pos == 0) return;  // no String found
 
         end_pos = strstr(start_pos, "&");
@@ -305,11 +314,11 @@ void WebServer::HandleRequest(void)
     }
     
     // find set led area data -------------------------------------------------
-    else if (StrContains(HTTP_req, needle_set_led_area))
+    else if (StrContains(this->m_buffer_http_request, needle_set_led_area))
     {
         this->m_action = ACTION_SetLedArea;
         
-        start_pos = strstr(HTTP_req, needle_set_led_area);
+        start_pos = strstr(this->m_buffer_http_request, needle_set_led_area);
         if (start_pos == 0) return;  // no String found
 
         end_pos = strstr(start_pos, "-");
@@ -385,14 +394,14 @@ void WebServer::HandleRequest(void)
 		    {
             sprintf(str_on,  "LED%d=%d", LED_num, 1);
             sprintf(str_off, "LED%d=%d", LED_num, 0);
-            if (StrContains(HTTP_req, str_on)) 
+            if (StrContains(this->m_buffer_http_request, str_on)) 
 			      {
                 LED_state[i] |= (unsigned char)j;  // save LED state
                 digitalWrite(LED_num + 25, HIGH);
                 Serial.print(LED_num);
                 Serial.println(" ON");
             }
-            else if (StrContains(HTTP_req, str_off)) 
+            else if (StrContains(this->m_buffer_http_request, str_off)) 
 			      {
                 LED_state[i] &= (unsigned char)(~j);  // save LED state
                 digitalWrite(LED_num + 25, LOW);
@@ -415,7 +424,7 @@ void WebServer::XML_response(EthernetClient cl)
     unsigned char i;
     unsigned int  j;
     
-    //cl.print("<?xml version = \"1.0\" ?>");
+    cl.print("<?xml version = \"1.0\" ?>");
     cl.print("<inputs>");
 
     cl.print("<scene>");
