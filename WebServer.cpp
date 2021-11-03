@@ -42,6 +42,12 @@
 
 
 //-----------------------------------------------------------------------------
+// define
+#define IP_CONFIG_MOBA
+//#undef IP_CONFIG_MOBA
+
+
+//-----------------------------------------------------------------------------
 // static module variable
 
 
@@ -54,12 +60,20 @@ WebServer::WebServer(LedScene* led_scene)
 {
     //int pin;
     byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x43 }; // MAC address from Ethernet shield sticker under board    
+
+#ifdef IP_CONFIG_MOBA
+    // IP config MoBa
     IPAddress ip(192, 168, 0, 4);    // IP address, may need to change depending on network
-    //IPAddress ip(192, 168, 1, 8);    // IP address, may need to change depending on network
     IPAddress myDns(192, 168, 0, 254);
     IPAddress gateway(192, 168, 0, 254);  // how to find gateway: open cmd --> type ipconfig
     IPAddress subnet(255, 255, 255, 0);
-    
+#else
+    // IP config business
+    IPAddress ip(192, 168, 1, 4);    // IP address, may need to change depending on network
+    IPAddress myDns(192, 168, 1, 2);
+    IPAddress gateway(192, 168, 1, 2);  // how to find gateway: open cmd --> type ipconfig
+    IPAddress subnet(255, 255, 255, 0);
+#endif    
     m_server = new EthernetServer(80);            // server
     m_led_scene = led_scene;
 
