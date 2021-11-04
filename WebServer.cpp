@@ -200,9 +200,9 @@ void WebServer::Tasks()
                   
                     is_uri_complete = true;
                 }
+                // request completely received so handle request
                 else if ((c == '\n') && (currentLineIsBlank == true)) 
 			    {
-                    // request completely received so handle request
                     //--- Ajax request - send XML file ----------------------------
                     if (StrContains(uri, "ajax_inputs")) 
 			        {
@@ -210,7 +210,7 @@ void WebServer::Tasks()
                         this->SendXML(&client);
                     }
                     //--- HTTP request - send Webpage -----------------------------
-                    else if ((!strcmp(uri, "/") || !strcmp(uri, "/index.htm"))) 
+                    else if ((!strcmp(uri, "/") || !strcmp(uri, "/index.html"))) 
                     {
                         this->SendWebPage(&client);
                     }
