@@ -295,14 +295,14 @@ void LedScene::Sunrise_Task(void)
 //*****************************************************************************
 void LedScene::MovingDot_Task(void)
 {
-  /*m_pixel->clear();
-  m_pixel->setPixelColor(m_px, Adafruit_NeoPixel::Color(0, 0, 0, m_desired_brightness));
-  m_pixel->show();
-  m_px++;
-  if (m_px >= m_nof_px)
-  {
-    m_px = 0;
-  }*/
+    /*m_pixel->clear();
+    m_pixel->setPixelColor(m_px, Adafruit_NeoPixel::Color(0, 0, 0, m_desired_brightness));
+    m_pixel->show();
+    m_px++;
+    if (m_px >= m_nof_px)
+    {
+        m_px = 0;
+    }*/
 }
 
 

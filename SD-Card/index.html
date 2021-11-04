@@ -4,6 +4,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>MoBa Room Light</title>
+	<link rel="icon" href="favicon.ico">
 	<script type="text/javascript" charset="utf-8">
         // const
 		const LightScene = 
@@ -37,8 +38,8 @@
              + '<button class="button" id="LightScene' + LightScene.DISCO + '" onclick="LightSceneButtonPushed(LightScene.DISCO, this)">Disco</button>'
              + '<button class="button" id="LightScene' + LightScene.SUNSET + '" onclick="LightSceneButtonPushed(LightScene.SUNSET, this)">Sunset</button>'
              + '<button class="button" id="LightScene' + LightScene.SUNRISE + '" onclick="LightSceneButtonPushed(LightScene.SUNRISE, this)">Sunrise</button>'
-             + '<button class="button" id="LightScene' + LightScene.MOVING_DOT + '" onclick="LightSceneButtonPushed(LightScene.MOVING_DOT, this)">Moving Dot</button>'
-             + '<button class="button" id="LightScene' + LightScene.SBH + '" onclick="LightSceneButtonPushed(LightScene.SBH, this)">SBf</button>'
+            // + '<button class="button" id="LightScene' + LightScene.MOVING_DOT + '" onclick="LightSceneButtonPushed(LightScene.MOVING_DOT, this)">Moving Dot</button>'
+            // + '<button class="button" id="LightScene' + LightScene.SBH + '" onclick="LightSceneButtonPushed(LightScene.SBH, this)">SBf</button>'
              + '<button class="button" id="LightScene' + LightScene.USER_SETTING + '" onclick="LightSceneButtonPushed(LightScene.USER_SETTING, this)">User Set</button>';
 
              document.getElementById("LightScene").innerHTML = button;
@@ -83,30 +84,7 @@
 							if (this.responseXML != null) 
 							{
 								// XML file received - contains LED states
-								var re;
-								//var num_LEDs;
-								//var i;
-								//var ledstr = "";
-								
-								/*re = this.responseXML.getElementsByTagName('LED');
-								num_LEDs = re.length;
-								
-								for (i = 0; i < num_LEDs; i++) 
-								{
-									ledstr = "LED" + (i + 1);
-									if (re[i].childNodes[0].nodeValue === "checked") 
-									{
-										document.getElementsByName(ledstr)[0].checked = true;
-									}
-									else 
-									{
-										document.getElementsByName(ledstr)[0].checked = false;
-									}
-								}*/
-
-
-
-								re = this.responseXML.getElementsByTagName('scene');
+								var re = this.responseXML.getElementsByTagName('scene');
 								if ((re != undefined) && (re != null) && (re.length > 0))
 								{
                                     LightScene_ShowAsActive(re[0].childNodes[0].nodeValue);
@@ -168,17 +146,6 @@
                 s_pending_xml_request = xml_request;
 			}
 		}
-		
-		// service LEDs when checkbox checked/unchecked
-		/*function GetCheck(led_num_str, cb)
-		{
-			if (cb.checked) {
-				strLED += ("&" + led_num_str + "=1");
-			}
-			else {
-				strLED += ("&" + led_num_str + "=0");
-			}
-		}*/
 		
 		function LightSceneButtonPushed(scene, bt)
 		{
@@ -478,10 +445,6 @@
 	</style>
 </head>
 
-
-
-
-<!--<body onload="GetArduinoIO()">-->
 <body>
     <h1>MoBa Licht Steuerung</h1>
     <br>

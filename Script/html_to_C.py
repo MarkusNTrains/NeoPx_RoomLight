@@ -1,6 +1,6 @@
 import json
 
-html_file_path = "../SD-Card/index.htm"
+html_file_path = "../SD-Card/index.html"
 
 # generate h file
 h_file = open("../Website.h", "w+")
@@ -31,7 +31,7 @@ h_file.write("\n")
 h_file.write("\n")
 h_file.write("//----------------------------------------------------------------------------\n")
 h_file.write("// Function Prototypes\n")
-h_file.write("void Website_SendToClient(EthernetClient client);\n")
+h_file.write("void Website_SendToClient(EthernetClient* client);\n")
 h_file.write("\n")
 h_file.write("\n")
 h_file.write("\n")
@@ -100,7 +100,7 @@ cpp_file.write("//**************************************************************
 cpp_file.write("// description:\n")
 cpp_file.write("//   Website_SendToClient\n")
 cpp_file.write("//*****************************************************************************\n")
-cpp_file.write("void Website_SendToClient(EthernetClient client)\n")
+cpp_file.write("void Website_SendToClient(EthernetClient* client)\n")
 cpp_file.write("{\n")
 cpp_file.write("	uint32_t line = 0;\n")
 cpp_file.write("    char line_str[" + str(max_line_length + 1) + "];\n")
@@ -108,7 +108,6 @@ cpp_file.write("\n")
 cpp_file.write("	for (line = 0; line < WEBSITE_NOF_LINES; line++)\n")
 cpp_file.write("	{\n")
 cpp_file.write("        strcpy_P(line_str, (char*)pgm_read_word(&(website_a[line])));\n")
-cpp_file.write("		client.println(line_str);\n")
-# cpp_file.write("		client.println(website_a[line]);\n")
+cpp_file.write("		client->println(line_str);\n")
 cpp_file.write("	}\n")
 cpp_file.write("}\n")

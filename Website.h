@@ -25,7 +25,7 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // Function Prototypes
-void Website_SendToClient(EthernetClient client);
+void Website_SendToClient(EthernetClient* client);
 
 
 

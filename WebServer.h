@@ -29,7 +29,6 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // define
-#define REQUEST_BUFFER_LENGTH 50  // size of buffer used to capture HTTP requests
 #define USE_SD_CARD
 #undef USE_SD_CARD
 
@@ -53,17 +52,17 @@ class WebServer
         
         EthernetServer* m_server;
 		File webFile;                                // the web page file on the SD card
-		char m_buffer_http_request[REQUEST_BUFFER_LENGTH] = {0};  // buffered HTTP request stored as null terminated string
-		uint32_t m_buffer_idx = 0;                   // index into HTTP_req buffer
-		//unsigned char LED_state[3] = {0};          // stores the states of the LEDs, 1 bit per LED
         LedScene* m_led_scene;
         action_t m_action;
 
-		void HandleRequest(void);
-		void XML_response(EthernetClient cl);
+		void HandleRequest(char* http_request);
 		void StrClear(char *str, char length);
 		char StrContains(char *str, char *sfind);   
-        void SendToClient(EthernetClient* client);
+        void PrintHardwareInfo();
+        void SendXML(EthernetClient* client);
+        void SendWebPage(EthernetClient* client);
+        void Send404(EthernetClient* client);
+        void SendFavicon(EthernetClient* client);
 };
 
 #endif  // _WEB_SERVER_H
