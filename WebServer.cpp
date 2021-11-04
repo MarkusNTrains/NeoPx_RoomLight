@@ -590,6 +590,9 @@ void WebServer::Send404(EthernetClient* client)
 //*****************************************************************************
 // description:
 //   SendFavicon
+// comment:
+//   create a favion: https://www.favicon.cc/
+//   convert to hex: http://tomeko.net/online_tools/file_to_hex.php?lang=en or https://www.onlinehexeditor.com/
 //*****************************************************************************
 void WebServer::SendFavicon(EthernetClient* client)
 {
