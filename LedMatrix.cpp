@@ -37,27 +37,25 @@ $Id:  $
 //*****************************************************************************
 LedMatrix::LedMatrix()
 {
-    this->m_led_strip = new Adafruit_NeoPixel(300, 26, NEO_GRBW + NEO_KHZ800);
-    this->m_led_strip->begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
+    uint8_t idx = 0;
     
-    this->m_led_strip_2 = new Adafruit_NeoPixel(285, 28, NEO_GRBW + NEO_KHZ800);
-    this->m_led_strip_2->begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
-
-    this->m_led_strip_3 = new Adafruit_NeoPixel(285, 24, NEO_GRBW + NEO_KHZ800);
-    this->m_led_strip_3->begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
-    
-    this->m_led_strip_4 = new Adafruit_NeoPixel(285, 22, NEO_GRBW + NEO_KHZ800);
-    this->m_led_strip_4->begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
-
+    this->m_led_strip[0] = new Adafruit_NeoPixel(300, 26, NEO_GRBW + NEO_KHZ800);
+    this->m_led_strip[1] = new Adafruit_NeoPixel(285, 28, NEO_GRBW + NEO_KHZ800);
+    this->m_led_strip[2] = new Adafruit_NeoPixel(285, 24, NEO_GRBW + NEO_KHZ800);
+    this->m_led_strip[3] = new Adafruit_NeoPixel(285, 22, NEO_GRBW + NEO_KHZ800);
+    for (idx = 0; idx < LED_STRIP_NOF; idx++)
+    {
+        this->m_led_strip[idx]->begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
+    }
 
     this->Clear();
     this->SetBrightness(0);
     this->Show();
     
-    this->m_led_row[0] = new LedRow(m_led_strip, 0);
-    this->m_led_row[1] = new LedRow(m_led_strip_2, 1);
-    this->m_led_row[2] = new LedRow(m_led_strip_3, 2);
-    this->m_led_row[3] = new LedRow(m_led_strip_4, 3);
+    this->m_led_row[0] = new LedRow(m_led_strip[0], 0);
+    this->m_led_row[1] = new LedRow(m_led_strip[1], 1);
+    this->m_led_row[2] = new LedRow(m_led_strip[2], 2);
+    this->m_led_row[3] = new LedRow(m_led_strip[3], 3);
 }
 
 
@@ -67,6 +65,17 @@ LedMatrix::LedMatrix()
 //*****************************************************************************
 LedMatrix::~LedMatrix()
 {
+    uint8_t idx = 0;
+    
+    for (idx = 0; idx < LED_STRIP_NOF; idx++)
+    {
+        delete this->m_led_strip[idx];
+    }
+
+    for (idx = 0; idx < LedRow::LED_ROW_NOF; idx++)
+    {
+        delete this->m_led_row[idx];
+    }
 }
 
 
@@ -91,7 +100,7 @@ void LedMatrix::SetPixel(uint16_t row, uint16_t col, uint32_t color)
 //   ys: 0 - (LED_MATRIX_NOF_ROW-1) y_start
 //   ye: 0 - (LED_MATRIX_NOF_ROW-1) y_end
 //*****************************************************************************
-void LedMatrix::SetPixelArray(uint16_t xs, uint16_t xe, uint8_t ys, uint8_t ye, uint32_t color)
+void LedMatrix::SetPixelArray(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color)
 {
     uint16_t row = 0;
 
@@ -108,10 +117,12 @@ void LedMatrix::SetPixelArray(uint16_t xs, uint16_t xe, uint8_t ys, uint8_t ye, 
 //*****************************************************************************
 void LedMatrix::Clear(void)
 {
-    m_led_strip->clear();
-    m_led_strip_2->clear();  
-    m_led_strip_3->clear();  
-    m_led_strip_4->clear();  
+    uint8_t idx = 0;
+    
+    for (idx = 0; idx < LED_STRIP_NOF; idx++)
+    {
+        m_led_strip[idx]->clear();
+    }
 }
 
 
@@ -121,10 +132,12 @@ void LedMatrix::Clear(void)
 //*****************************************************************************
 void LedMatrix::Show(void)
 {
-    m_led_strip->show();
-    m_led_strip_2->show();  
-    m_led_strip_3->show();  
-    m_led_strip_4->show();  
+    uint8_t idx = 0;
+
+    for (idx = 0; idx < LED_STRIP_NOF; idx++)
+    {
+        m_led_strip[idx]->show();
+    }
 }
 
 
@@ -134,8 +147,10 @@ void LedMatrix::Show(void)
 //*****************************************************************************
 void LedMatrix::SetBrightness(uint8_t brightness)
 {
-    m_led_strip->setBrightness(brightness); // Set brigthness for all neo pixels
-    m_led_strip_2->setBrightness(brightness); // Set brigthness for all neo pixels    
-    m_led_strip_3->setBrightness(brightness); // Set brigthness for all neo pixels    
-    m_led_strip_4->setBrightness(brightness); // Set brigthness for all neo pixels    
+    uint8_t idx = 0;
+
+    for (idx = 0; idx < LED_STRIP_NOF; idx++)
+    {
+        m_led_strip[idx]->setBrightness(brightness); // Set brigthness for all neo pixels
+    }
 }

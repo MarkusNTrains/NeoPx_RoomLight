@@ -44,7 +44,7 @@
 //-----------------------------------------------------------------------------
 // define
 #define IP_CONFIG_MOBA
-//#undef IP_CONFIG_MOBA
+#undef IP_CONFIG_MOBA
 
 
 //-----------------------------------------------------------------------------
@@ -401,7 +401,6 @@ void WebServer::HandleRequest(void)
       #endif
     }
 
-    
     /*for (i = 0; i < 3; i++) 
 	  {
         for (j = 1; j <= 0x80; j <<= 1) 
@@ -452,12 +451,21 @@ void WebServer::XML_response(EthernetClient cl)
         cl.print("</brightness>");
     }
 
-    /*cl.print("<led_area>");
-    cl.print(this->m_led_scene->GetLedRowStart());
-    cl.print(this->m_led_scene->GetLedRowEnd());
-    cl.print(this->m_led_scene->GetLedColumnStart());
-    cl.print(this->m_led_scene->GetLedColumnEnd());
-    cl.print("</led_area>");*/
+    if (this->m_action != ACTION_SetLedArea)
+    {
+        LedArea* area = this->m_led_scene->GetLedArea();
+        cl.print("<led_area>");
+        cl.print("<ys>");
+        cl.print(area->GetRowStart());
+        cl.print("</ys><ye>");
+        cl.print(area->GetRowEnd());
+        cl.print("</ye><xs>");
+        cl.print(area->GetColumnStart());
+        cl.print("</xs><xe>");
+        cl.print(area->GetColumnEnd());
+        cl.print("</xe>");
+        cl.print("</led_area>");
+    }
   
     /*for (i = 0; i < 3; i++) 
 	  {

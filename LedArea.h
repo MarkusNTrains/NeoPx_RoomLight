@@ -6,21 +6,20 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original 
   source code
   
-  Created 24. August 2020 by MarkusNTrains
+  Created 4. November 2021 by MarkusNTrains
 ================================================================================
 $HeadURL:  $
 $Id:  $
 *******************************************************************************/
 
 
-#ifndef _LED_ROW_H
-#define _LED_ROW_H
+#ifndef _LED_AREA_H
+#define _LED_AREA_H
 
 
 //----------------------------------------------------------------------------
 // include
 #include "common.h"
-#include <Adafruit_NeoPixel.h>
 
 
 //----------------------------------------------------------------------------
@@ -29,24 +28,25 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // class
-class LedRow
+class LedArea
 {
 	public:
-        static const uint16_t LED_ROW_NOF = 4;
-        static const uint16_t LED_ROW_LENGTH = 285;
-    
-		LedRow(Adafruit_NeoPixel* led_strip_p, uint8_t row_idx);
-		~LedRow();
-        void SetBrightness(uint8_t brightness);
-        void Show(void);
-        void SetPixel(uint16_t idx, uint32_t color);
-        void SetPixel(uint16_t start_idx, uint16_t width, uint16_t space, uint16_t nof_repeat, uint32_t color);
+		LedArea();
+		~LedArea();
 		
-	private:	
-        Adafruit_NeoPixel* m_led_strip_p;
-        uint8_t m_row_idx;
-
-        uint16_t GetLedIdxOfLut(uint16_t idx);
+        uint16_t GetColumnStart(void);
+        uint16_t GetColumnEnd(void);
+        uint16_t GetRowStart(void);
+        uint16_t GetRowEnd(void);
+        uint32_t GetColor(void);
+        Set(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color);
+        
+    private:    
+        uint16_t m_xs;
+        uint16_t m_xe;
+        uint16_t m_ys;
+        uint16_t m_ye;
+        uint32_t m_color;        
 };
 
 #endif  // _LED_ROW_H

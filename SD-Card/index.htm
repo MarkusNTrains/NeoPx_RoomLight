@@ -4,12 +4,8 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>MoBa Room Light</title>
-	<!--<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-	<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>-->
-<!--	<script src="jquery-1.12.4.js"></script>
-	<script src="jquery-ui.js"></script> -->
 	<script type="text/javascript" charset="utf-8">
+        // const
 		const LightScene = 
 		{
 			OFFICE_TABLE_WW: 0,
@@ -18,15 +14,38 @@
 			SUNSET: 3,
 			SUNRISE: 4,
 			POWER_OFF: 5,
-			IDLE: 6
+            MOVING_DOT: 6,
+            SBH: 7,
+            USER_SETTING: 8,
+			IDLE: 9,
+            NOF: 10
 		};
-		
-		
-		var xml_request = "";
+        
+		// static variables
 		var s_lock_send_data = false;
 		var s_is_send_data_pending = false;
+        var s_pending_xml_request = "";
 		var s_sendToArduino_timeoutTimer = null;
 		var xhttp = null;
+
+
+        // onload event handler
+        window.addEventListener('load', (event) => {
+            var button = '<button class="button" id="LightScene' + LightScene.POWER_OFF + '" onclick="LightSceneButtonPushed(LightScene.POWER_OFF, this)">Power Off</button>'
+             + '<button class="button" id="LightScene' + LightScene.OFFICE_TABLE_WW + '" onclick="LightSceneButtonPushed(LightScene.OFFICE_TABLE_WW, this)">B&uuml;rotisch</button>'
+             + '<button class="button" id="LightScene' + LightScene.LIGHT_ON_WW + '" onclick="LightSceneButtonPushed(LightScene.LIGHT_ON_WW, this)">Licht warm Weiss</button>'
+             + '<button class="button" id="LightScene' + LightScene.DISCO + '" onclick="LightSceneButtonPushed(LightScene.DISCO, this)">Disco</button>'
+             + '<button class="button" id="LightScene' + LightScene.SUNSET + '" onclick="LightSceneButtonPushed(LightScene.SUNSET, this)">Sunset</button>'
+             + '<button class="button" id="LightScene' + LightScene.SUNRISE + '" onclick="LightSceneButtonPushed(LightScene.SUNRISE, this)">Sunrise</button>'
+             + '<button class="button" id="LightScene' + LightScene.MOVING_DOT + '" onclick="LightSceneButtonPushed(LightScene.MOVING_DOT, this)">Moving Dot</button>'
+             + '<button class="button" id="LightScene' + LightScene.SBH + '" onclick="LightSceneButtonPushed(LightScene.SBH, this)">SBf</button>'
+             + '<button class="button" id="LightScene' + LightScene.USER_SETTING + '" onclick="LightSceneButtonPushed(LightScene.USER_SETTING, this)">User Set</button>';
+
+             document.getElementById("LightScene").innerHTML = button;
+
+            SendDataToArduino("");
+        });
+
 
 		function ReleaseLock()
 		{
@@ -38,13 +57,16 @@
 				xhttp.abort();
 				xhttp = null;
 			}
+
 			if (s_is_send_data_pending == true)
 			{
-				SendDataToArduino();
+				SendDataToArduino(s_pending_xml_request);
+                s_is_send_data_pending = false;
+                s_pending_xml_request = "";
 			}
 		}
 		
-		function SendDataToArduino()
+		function SendDataToArduino(xml_request)
 		{
 			if (s_lock_send_data == false)
 			{
@@ -84,14 +106,36 @@
 
 
 
-								//re = this.responseXML.getElementsByTagName('scene');
-								
+								re = this.responseXML.getElementsByTagName('scene');
+								if ((re != undefined) && (re != null) && (re.length > 0))
+								{
+                                    LightScene_ShowAsActive(re[0].childNodes[0].nodeValue);
+                                }	
+
 								re = this.responseXML.getElementsByTagName('brightness');
 								if ((re != undefined) && (re != null) && (re.length > 0))
 								{
 									document.getElementById("brightness_slider").value = re[0].childNodes[0].nodeValue;
 									document.getElementById("brightness_value").innerHTML = re[0].childNodes[0].nodeValue;
 								}
+
+								re = this.responseXML.getElementsByTagName('led_area');
+								if ((re != undefined) && (re != null) && (re.length > 0))
+                                {
+                                    var xs = this.responseXML.getElementsByTagName('xs')[0].childNodes[0].nodeValue;
+                                    var xe = this.responseXML.getElementsByTagName('xe')[0].childNodes[0].nodeValue;
+                                    var ys = this.responseXML.getElementsByTagName('ys')[0].childNodes[0].nodeValue;
+                                    var ye = this.responseXML.getElementsByTagName('ye')[0].childNodes[0].nodeValue;
+
+                                    document.getElementById("led_column").innerHTML = (xs + " - " + xe);
+                        			document.getElementById("led_row").innerHTML = (ys + " - " + ye);
+
+                                    /*document.getElementById("slider_columen").style.setProperty("--a", xs);
+                                    document.getElementById("slider_columen").style.setProperty("--b", xe);
+                                    document.getElementById("slider_row").style.setProperty("--a", ys);
+                                    document.getElementById("slider_row").style.setProperty("--b", ye);*/
+                                }
+
 
 								if (s_sendToArduino_timeoutTimer != null)
 								{
@@ -106,7 +150,7 @@
 						}
 						else
 						{
-							alert("Status: " + this.status);
+							alert("Keine Verbindung zum Webserver\nStatus: " + this.status);
 						}
 					}
 				}
@@ -114,15 +158,14 @@
 				// send HTTP GET request with LEDs to switch on/off if any
 				xhttp.open("GET", "ajax_inputs" + xml_request + nocache, true);
 				xhttp.send();
-				xml_request = "";
-				s_is_send_data_pending = false;
 				
 				// lock Send to Arduino
-				s_sendToArduino_timeoutTimer = setTimeout('ReleaseLock()', 2000);
+				s_sendToArduino_timeoutTimer = setTimeout('ReleaseLock()', 5000);
 			}
 			else
 			{
 				s_is_send_data_pending = true;
+                s_pending_xml_request = xml_request;
 			}
 		}
 		
@@ -139,18 +182,22 @@
 		
 		function LightSceneButtonPushed(scene, bt)
 		{
-			var matches = document.getElementsByClassName('active-class');
+			LightScene_ShowAsActive(scene)
+			SendDataToArduino("&LightScene=" + scene);
+		}
 
+        function LightScene_ShowAsActive(scene)
+        {
+			var matches = document.getElementsByClassName('active-class');
 			for (var cnt = 0; cnt < matches.length; cnt++) 
 			{
 				matches[cnt].classList.remove('active-class');
 			}
-			
-			bt.classList.add("active-class");
-			
-			xml_request = "&LightScene=" + scene;
-			SendDataToArduino();
-		}
+            if (scene < LightScene.NOF)
+            {
+			    document.getElementById("LightScene" + scene).classList.add("active-class");
+            }
+        }
 		
 		function BrighntessSliderChanged()
 		{
@@ -158,13 +205,7 @@
 			var output = document.getElementById("brightness_value");
 			output.innerHTML = slider.value;
 
-			/*slider.oninput = function() 
-			{
-				output.innerHTML = slider.value;
-			}*/
-
-			xml_request = "&SetBrightness=" + slider.value;
-			SendDataToArduino();
+			SendDataToArduino("&SetBrightness=" + slider.value);
 		}
 
 		// 2 thumb slider
@@ -202,15 +243,8 @@
 
 			document.getElementById("led_column").innerHTML = (xs + " - " + xe);
 			document.getElementById("led_row").innerHTML = (ys + " - " + ye);
-			xml_request = "&SetArea=X" + xs + "-" + xe + "Y" + ys + "-" + ye;
-			SendDataToArduino();
+			SendDataToArduino("&SetArea=X" + xs + "-" + xe + "Y" + ys + "-" + ye);
 		}
-
-		// on load
-		window.onload = function() {
-            SliderTwoThumb_Update();
-		};
-		
 	</script>
 
     
@@ -451,12 +485,7 @@
 <body>
     <h1>MoBa Licht Steuerung</h1>
     <br>
-    <button class="button" id="office_table_ww_button" onclick="LightSceneButtonPushed(LightScene.OFFICE_TABLE_WW, this)">B&uuml;rotisch</button>
-    <button class="button" id="light_on_ww_button" onclick="LightSceneButtonPushed(LightScene.LIGHT_ON_WW, this)">Licht warm Weiss</button>
-    <button class="button" id="disco_button" onclick="LightSceneButtonPushed(LightScene.DISCO, this)">Disco</button>
-    <button class="button" id="sunset_button" onclick="LightSceneButtonPushed(LightScene.SUNSET, this)">Sunset</button>
-    <button class="button" id="sunrise_button" onclick="LightSceneButtonPushed(LightScene.SUNRISE, this)">Sunrise</button>
-    <button class="button" id="power_off" onclick="LightSceneButtonPushed(LightScene.POWER_OFF, this)">Power Off</button>
+    <div id="LightScene"></div>
     <br>
     <br>
     <br>

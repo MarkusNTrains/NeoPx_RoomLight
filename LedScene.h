@@ -19,9 +19,9 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // include
-#include "Arduino.h"
 #include "common.h"
 #include "LedMatrix.h"
+#include "LedArea.h"
 
 
 //----------------------------------------------------------------------------
@@ -56,7 +56,8 @@ class LedScene
         void LedScene::ChangeLightScene(light_scene_t scene);
         void ChangeLightScene(light_scene_t scene, uint8_t brightness);
         light_scene_t GetLightScene(void);
-        void SetLedArea(uint16_t xs, uint16_t xe, uint8_t ys, uint8_t ye, uint32_t color);
+        LedArea* GetLedArea(void);
+        void SetLedArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color);
         uint8_t GetBrightness(void);
         void SetBrightness(uint8_t brightness);
     		
@@ -64,6 +65,7 @@ class LedScene
         const uint32_t TMO_TILL_NEXT_UPDATE_MS = 20;
 
         LedMatrix* m_led_matrix;
+        LedArea* m_led_area;
         light_scene_t m_light_scene;
         light_scene_t m_state;
         uint8_t m_current_brightness;

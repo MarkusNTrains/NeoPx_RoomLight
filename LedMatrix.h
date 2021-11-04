@@ -19,14 +19,14 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // include
-#include "Arduino.h"
-#include <Adafruit_NeoPixel.h>
 #include "common.h"
 #include "LedRow.h"
+#include <Adafruit_NeoPixel.h>
 
 
 //----------------------------------------------------------------------------
 // define
+#define LED_STRIP_NOF 4
 
 
 //----------------------------------------------------------------------------
@@ -37,16 +37,13 @@ class LedMatrix
         LedMatrix();
         ~LedMatrix();
         void SetPixel(uint16_t row, uint16_t col, uint32_t color);
-        void SetPixelArray(uint16_t xs, uint16_t xe, uint8_t ys, uint8_t ye, uint32_t color);
+        void SetPixelArray(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color);
         void Clear(void);
         void Show(void);
         void SetBrightness(uint8_t brightness);
     
     private:  
-        Adafruit_NeoPixel* m_led_strip;  
-        Adafruit_NeoPixel* m_led_strip_2;
-        Adafruit_NeoPixel* m_led_strip_3;
-        Adafruit_NeoPixel* m_led_strip_4;
+        Adafruit_NeoPixel* m_led_strip[LED_STRIP_NOF];  
         LedRow* m_led_row[LedRow::LED_ROW_NOF];
 };
 

@@ -41,8 +41,9 @@ LedScene::LedScene()
     m_state = OFFICE_TABLE_WW;
     m_current_brightness = 0;
     m_desired_brightness = 0;
-    m_update_time_ms = millis();
+    m_update_time_ms = 0;
     m_led_matrix = new LedMatrix();
+    m_led_area = new LedArea();
 
     this->ChangeLightScene(OFFICE_TABLE_WW, 110);
 }
@@ -54,6 +55,8 @@ LedScene::LedScene()
 //*****************************************************************************
 LedScene::~LedScene()
 {
+    delete this->m_led_matrix;
+    delete this->m_led_area;
 }
 
 
@@ -309,33 +312,33 @@ void LedScene::MovingDot_Task(void)
 //*****************************************************************************
 void LedScene::WhiteOverRainbow_Task(int whiteSpeed, int whiteLength) 
 {
-  if (whiteLength >= LedRow::LED_ROW_LENGTH) 
-  {
-    whiteLength = LedRow::LED_ROW_LENGTH - 1;
-  }
-
-  int      head          = whiteLength - 1;
-  int      tail          = 0;
-  int      loops         = 3;
-  int      loopNum       = 0;
-  uint32_t lastTime      = millis();
-  static uint32_t firstPixelHue = 0;
-  uint32_t color = 0;
+    if (whiteLength >= LedRow::LED_ROW_LENGTH) 
+    {
+        whiteLength = LedRow::LED_ROW_LENGTH - 1;
+    }
+    
+    int      head          = whiteLength - 1;
+    int      tail          = 0;
+    int      loops         = 3;
+    int      loopNum       = 0;
+    uint32_t lastTime      = millis();
+    static uint32_t firstPixelHue = 0;
+    uint32_t color = 0;
 
     for (int idx = 0; idx < LedRow::LED_ROW_LENGTH; idx++)   // For each pixel in strip...
     {
-      /*if (((idx >= tail) && (idx <= head)) ||      //  If between head & tail...
+        /*if (((idx >= tail) && (idx <= head)) ||      //  If between head & tail...
          ((tail > head) && ((idx >= tail) || (idx <= head)))) 
-      {
+        {
         color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
         this->m_led_matrix->SetPixelArray(idx, idx, 0, 3, color);  
-      } 
-      else */
-      {                                             // else set rainbow
-        int pixelHue = firstPixelHue + (idx * 65536L / LedRow::LED_ROW_LENGTH);
-        color = Adafruit_NeoPixel::gamma32(Adafruit_NeoPixel::ColorHSV(pixelHue));
-        this->m_led_matrix->SetPixelArray(idx, idx, 0, 3, color);  
-      }
+        } 
+        else */
+        {                                             // else set rainbow
+            int pixelHue = firstPixelHue + (idx * 65536L / LedRow::LED_ROW_LENGTH);
+            color = Adafruit_NeoPixel::gamma32(Adafruit_NeoPixel::ColorHSV(pixelHue));
+            this->m_led_matrix->SetPixelArray(idx, idx, 0, 3, color);  
+        }
     }
 
     // Update strip with new contents
@@ -346,15 +349,19 @@ void LedScene::WhiteOverRainbow_Task(int whiteSpeed, int whiteLength)
 
     firstPixelHue += 542; // Advance just a little along the color wheel
 
-    if ((millis() - lastTime) > whiteSpeed) { // Time to update head/tail?
-      if (++head >= LedRow::LED_ROW_LENGTH) {      // Advance head, wrap around
-        head = 0;
-        if (++loopNum >= loops) return;
-      }
-      if (++tail >= LedRow::LED_ROW_LENGTH) {      // Advance tail, wrap around
-        tail = 0;
-      }
-      lastTime = millis();                   // Save time of last movement
+    if ((millis() - lastTime) > whiteSpeed)  // Time to update head/tail?
+    {
+        if (++head >= LedRow::LED_ROW_LENGTH)       // Advance head, wrap around
+        {
+            head = 0;
+            if (++loopNum >= loops) 
+            { return; }
+        }
+        if (++tail >= LedRow::LED_ROW_LENGTH)    // Advance tail, wrap around
+        {
+            tail = 0;
+        }
+        lastTime = millis();                   // Save time of last movement
     }
 }
 
@@ -383,10 +390,21 @@ void LedScene::UserSetting_Task(void)
 
 //*****************************************************************************
 // description:
-//   Power Off
+//   Get Led Area
 //*****************************************************************************
-void LedScene::SetLedArea(uint16_t xs, uint16_t xe, uint8_t ys, uint8_t ye, uint32_t color)
+LedArea* LedScene::GetLedArea(void)
 {
+    return this->m_led_area;  
+}
+
+
+//*****************************************************************************
+// description:
+//   Set Led Area
+//*****************************************************************************
+void LedScene::SetLedArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color)
+{
+    this->m_led_area->Set(xs, xe, ys, ye, color);
     this->m_led_matrix->Clear();
     this->m_led_matrix->SetPixelArray(xs, xe, ys, ye, color);    
 }
