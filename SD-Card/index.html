@@ -453,12 +453,28 @@
     <br>
     <br>
 
-    <h2>Helligkeit einstellen</h2>
+    <h2>Helligkeit</h2>
     <br>
     <div class="slidecontainer">
         <label for="brightness_value">Helligkeit</label>
         <label id="brightness_value"></label>
         <input type="range" min="0" max="255" value="50" class="slider" id="brightness_slider" oninput="BrighntessSliderChanged()" style="background:rgb(255, 240, 27)">
+    </div>
+    <br>
+    <br>
+    
+    <h2>Farbe</h2>
+    <br>
+    <div class="slidecontainer">
+        <label for="color_value">RGB</label>
+        <label id="color_value"></label>
+        <input type="range" min="0" max="1535" value="50" class="slider" id="color_rgb_slider" oninput="ColorRGBSliderChanged()" style="background:rgb(255, 240, 27)">
+    </div>
+    <br>
+    <div class="slidecontainer">
+        <label for="color_value">Weiss</label>
+        <label id="color_value"></label>
+        <input type="range" min="0" max="255" value="50" class="slider" id="color_white_slider" oninput="ColorWhiteSliderChanged()" style="background:rgb(255, 240, 27)">
     </div>
     <br>
     <br>
