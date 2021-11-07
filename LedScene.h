@@ -52,7 +52,7 @@ class LedScene
         void ChangeLightScene(light_scene_t scene, uint8_t brightness);
         light_scene_t GetLightScene(void);
         LedArea *GetLedArea(void);
-        void SetLedArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color);
+        void SetLedArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye);
         uint8_t GetBrightness(void);
         void SetBrightness(uint8_t brightness);
         uint32_t GetColor(void);

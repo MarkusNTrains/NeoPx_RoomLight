@@ -415,9 +415,8 @@ void WebServer::HandleRequest(char* http_request)
         Serial.println(param4);
 #endif
 
-        uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
         this->m_led_scene->ChangeLightScene(USER_SETTING);
-        this->m_led_scene->SetLedArea(param, param2, param3, param4, color);
+        this->m_led_scene->SetLedArea(param, param2, param3, param4);
     }
 
     else

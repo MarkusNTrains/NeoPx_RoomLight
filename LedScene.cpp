@@ -403,11 +403,11 @@ LedArea* LedScene::GetLedArea(void)
 // description:
 //   Set Led Area
 //*****************************************************************************
-void LedScene::SetLedArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color)
+void LedScene::SetLedArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye)
 {
-    this->m_led_area->Set(xs, xe, ys, ye, color);
+    this->m_led_area->Set(xs, xe, ys, ye, this->m_color);
     this->m_led_matrix->Clear();
-    this->m_led_matrix->SetPixelArray(xs, xe, ys, ye, color);    
+    this->m_led_matrix->SetPixelArray(xs, xe, ys, ye, this->m_color);    
 }
 
 
