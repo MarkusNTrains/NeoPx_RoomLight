@@ -38,14 +38,15 @@ $Id:  $
 //*****************************************************************************
 LedScene::LedScene()
 {
-    m_state = OFFICE_TABLE_WW;
-    m_current_brightness = 0;
-    m_desired_brightness = 0;
-    m_update_time_ms = 0;
-    m_led_matrix = new LedMatrix();
-    m_led_area = new LedArea();
+    this->m_state = OFFICE_TABLE_WW;
+    this->m_current_brightness = 0;
+    this->m_desired_brightness = 0;
+    this->m_color = COLOR_WHITE;
+    this->m_update_time_ms = 0;
+    this->m_led_matrix = new LedMatrix();
+    this->m_led_area = new LedArea();
 
-    this->ChangeLightScene(OFFICE_TABLE_WW, 110);
+    this->ChangeLightScene(OFFICE_TABLE_WW, 100);
 }
 
 
@@ -194,10 +195,10 @@ void LedScene::ShowOfficeTableWW_Enter(uint16_t brightness)
 //*****************************************************************************
 void LedScene::ShowOfficeTableWW_Task(void)
 {
-    uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
-    this->m_led_matrix->SetPixelArray(0, 20, 0, 0, color);  
-    this->m_led_matrix->SetPixelArray(120, 140, 0, 0, color);  
-    this->m_led_matrix->SetPixelArray(0, 140, 1, 3, color);  
+    //uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
+    this->m_led_matrix->SetPixelArray(0, 20, 0, 0, this->m_color);  
+    this->m_led_matrix->SetPixelArray(120, 140, 0, 0, this->m_color);  
+    this->m_led_matrix->SetPixelArray(0, 140, 1, 3, this->m_color);  
     this->UpdateBrightness();
     this->m_led_matrix->Show();
 }
@@ -220,8 +221,8 @@ void LedScene::LightOnWW_Enter(uint16_t brightness)
 //*****************************************************************************
 void LedScene::LightOnWW_Task(void)
 {
-    uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
-    this->m_led_matrix->SetPixelArray(0, LedRow::LED_ROW_LENGTH, 0, 3, color);  
+    //uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
+    this->m_led_matrix->SetPixelArray(0, LedRow::LED_ROW_LENGTH, 0, 3, this->m_color);  
     this->UpdateBrightness();
     this->m_led_matrix->Show();
 }
@@ -466,4 +467,26 @@ void LedScene::UpdateBrightness(void)
     }    
     
     this->m_led_matrix->SetBrightness(this->m_current_brightness); // Set brigthness for all neo pixels
+}
+
+
+//*****************************************************************************
+// description:
+//   Get Color
+//*****************************************************************************
+uint32_t LedScene::GetColor(void)
+{
+    return this->m_color;
+}
+
+
+//*****************************************************************************
+// description:
+//   Set Color
+// parameter:
+//   color: RGBW --> 8888
+//*****************************************************************************
+void LedScene::SetColor(uint32_t color)
+{
+    this->m_color = color;
 }

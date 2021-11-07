@@ -262,7 +262,7 @@ void WebServer::Tasks()
 void WebServer::HandleRequest(char* http_request)
 {
     char param_c[8];
-    uint16_t param = 0;
+    uint32_t param = 0;
     uint16_t param2 = 0;
     uint16_t param3 = 0;
     uint16_t param4 = 0;
@@ -322,6 +322,33 @@ void WebServer::HandleRequest(char* http_request)
         param = atoi(param_c);
 
         this->m_led_scene->SetBrightness(param);
+        
+#ifdef IS_DEBUG_MODE
+        Serial.println(param);
+#endif
+    }
+    
+    // find color ---------------------------------------------------------
+    else if (StrContains(http_request, needle_color))
+    {
+        this->m_action = ACTION_SetColor;
+        
+        start_pos = strstr(http_request, needle_color);
+        if (start_pos == 0) return;  // no String found
+
+        end_pos = strstr(start_pos, "&");
+        if (end_pos == 0) return;  // no String found
+
+        start_pos += sizeof(needle_color);      
+
+        for (cnt = 0; cnt < end_pos - start_pos; cnt++)
+        {
+            param_c[cnt] = start_pos[cnt];
+            param_c[cnt+1] = '\0';
+        }
+        param = atol(param_c);
+
+        this->m_led_scene->SetColor(param);
         
 #ifdef IS_DEBUG_MODE
         Serial.println(param);
@@ -402,6 +429,16 @@ void WebServer::HandleRequest(char* http_request)
 #endif
     }  
 }
+
+
+//*****************************************************************************
+// description:
+//   Returns position of first parameter
+//*****************************************************************************
+/*void WebServer::HttpRequestGetParameterStartPos(char* http_request, char* needle)
+{
+
+}*/
 
 
 //*****************************************************************************
@@ -515,6 +552,13 @@ void WebServer::SendXML(EthernetClient* client)
         client->print("<brightness>");
         client->print(m_led_scene->GetBrightness());
         client->print("</brightness>");
+    }
+
+    if (this->m_action != ACTION_SetColor)
+    {
+        client->print("<color>");
+        client->print(m_led_scene->GetColor());
+        client->print("</color>");
     }
 
     if (this->m_action != ACTION_SetLedArea)

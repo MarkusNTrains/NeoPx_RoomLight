@@ -31,18 +31,18 @@ $Id:  $
 // class
 class LedRow
 {
-	public:
+    public:
         static const uint16_t LED_ROW_NOF = 4;
         static const uint16_t LED_ROW_LENGTH = 285;
     
-		LedRow(Adafruit_NeoPixel* led_strip_p, uint8_t row_idx);
-		~LedRow();
+	LedRow(Adafruit_NeoPixel* led_strip_p, uint8_t row_idx);
+	~LedRow();
         void SetBrightness(uint8_t brightness);
         void Show(void);
         void SetPixel(uint16_t idx, uint32_t color);
         void SetPixel(uint16_t start_idx, uint16_t width, uint16_t space, uint16_t nof_repeat, uint32_t color);
 		
-	private:	
+    private:	
         Adafruit_NeoPixel* m_led_strip_p;
         uint8_t m_row_idx;
 

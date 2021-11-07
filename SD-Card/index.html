@@ -97,6 +97,21 @@
 									document.getElementById("brightness_value").innerHTML = re[0].childNodes[0].nodeValue;
 								}
 
+								re = this.responseXML.getElementsByTagName('brightness');
+								if ((re != undefined) && (re != null) && (re.length > 0))
+								{
+									document.getElementById("brightness_slider").value = re[0].childNodes[0].nodeValue;
+									document.getElementById("brightness_value").innerHTML = re[0].childNodes[0].nodeValue;
+								}
+
+								re = this.responseXML.getElementsByTagName('color');
+								if ((re != undefined) && (re != null) && (re.length > 0))
+								{
+									var color = (re[0].childNodes[0].nodeValue >> 24) & 0xFF;
+									document.getElementById("color_white_slider").value = color;
+									document.getElementById("color_white_value").innerHTML = color;
+								}
+
 								re = this.responseXML.getElementsByTagName('led_area');
 								if ((re != undefined) && (re != null) && (re.length > 0))
                                 {
@@ -175,6 +190,56 @@
 			SendDataToArduino("&SetBrightness=" + slider.value);
 		}
 
+		function ColorRGBSliderChanged()
+		{
+			var slider = document.getElementById("color_rgb_slider");
+			var output = document.getElementById("color_rgb_value");
+
+			var color = 0;
+			if (slider.value > 1279)
+			{
+				color = 0xFF00FF - (slider.value - 1280);
+			}
+			else if (slider.value > 1023)
+			{
+				color = 0x0000FF + ((slider.value - 1024) << 16);
+			}
+			else if (slider.value > 767)
+			{
+				color = 0x00FFFF - ((slider.value - 768) << 8);
+			}
+			else if (slider.value > 511)
+			{
+				color = 0x00FF00 + (slider.value - 512);
+			}
+			else if (slider.value > 255)
+			{
+				color = 0xFFFF00 - ((slider.value - 256) << 16);
+			}
+			else
+			{
+				color = 0xFF0000 + (slider.value << 8);
+			}
+
+			var colorStr = ('000000' + color.toString(16)).slice(-6);
+			output.innerHTML = '0x' + colorStr;
+			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
+			SendDataToArduino("&SetColor=" + color);			
+		}
+
+		function ColorWhiteSliderChanged()
+		{
+			var slider = document.getElementById("color_white_slider");
+			var output = document.getElementById("color_white_value");
+			
+			var color = slider.value;
+			output.innerHTML = color;
+			colorStr = ('000000' + ((color << 16) | (color << 8) | color).toString(16)).slice(-6);
+			console.log(colorStr);
+			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
+			SendDataToArduino("&SetColor=" + (slider.value << 24));			
+		}
+
 		// 2 thumb slider
 		"use strict";
 		addEventListener('input', e => {
@@ -216,6 +281,9 @@
 
     
 	<style type="text/css">
+		:root {
+			--SliderThumbColor: #000000;
+		}
 		.out_box {
 			float: left;
 			margin: 0 20px 20px 0;
@@ -319,7 +387,7 @@
 			width: 25px;
 			height: 25px;
 			border-radius: 50%; 
-			background: #4CAF50;
+			background: var(--SliderThumbColor);
 			cursor: pointer;
 		}
 
@@ -327,7 +395,7 @@
 			width: 25px;
 			height: 25px;
 			border-radius: 50%;
-			background: #4CAF50;
+			background: var(--SliderThumbColor);
 			cursor: pointer;
 		}
 		
@@ -466,14 +534,14 @@
     <h2>Farbe</h2>
     <br>
     <div class="slidecontainer">
-        <label for="color_value">RGB</label>
-        <label id="color_value"></label>
+        <label for="color_rgb_value">RGB</label>
+        <label id="color_rgb_value"></label>
         <input type="range" min="0" max="1535" value="50" class="slider" id="color_rgb_slider" oninput="ColorRGBSliderChanged()" style="background:rgb(255, 240, 27)">
     </div>
     <br>
     <div class="slidecontainer">
-        <label for="color_value">Weiss</label>
-        <label id="color_value"></label>
+        <label for="color_white_value">Weiss</label>
+        <label id="color_white_value"></label>
         <input type="range" min="0" max="255" value="50" class="slider" id="color_white_slider" oninput="ColorWhiteSliderChanged()" style="background:rgb(255, 240, 27)">
     </div>
     <br>

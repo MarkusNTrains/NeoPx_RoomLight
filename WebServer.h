@@ -46,6 +46,7 @@ class WebServer
         typedef enum {
             ACTION_SetLightSecene = 0,
             ACTION_SetBrightness,
+            ACTION_SetColor,
             ACTION_SetLedArea,
             ACTION_Unknown
         } action_t;
