@@ -385,6 +385,7 @@ void LedScene::PowerOff_Task(void)
 void LedScene::UserSetting_Task(void)
 {
     this->UpdateBrightness();  
+    this->m_led_matrix->SetPixelArray(this->m_led_area->GetColumnStart(), this->m_led_area->GetColumnEnd(), this->m_led_area->GetRowStart(), this->m_led_area->GetRowEnd(), this->m_color);    
     this->m_led_matrix->Show();    
 }
 
