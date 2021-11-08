@@ -25,8 +25,8 @@ $Id:  $
 // define
 
 //----------------------------------------------------------------------------
-// typedef
-typedef enum
+// enum
+enum LightScene
 {
     OFFICE_TABLE_WW = 0,
     LIGHT_ON_WW,
@@ -38,7 +38,7 @@ typedef enum
     SBH,
     USER_SETTING,
     IDLE,
-} light_scene_t;
+};
 
 
 //----------------------------------------------------------------------------
@@ -49,9 +49,9 @@ class LedScene
         LedScene();
         ~LedScene();
         void Tasks(void);
-        void LedScene::ChangeLightScene(light_scene_t scene);
-        void ChangeLightScene(light_scene_t scene, uint8_t brightness);
-        light_scene_t GetLightScene(void);
+        void ChangeLightScene(LightScene scene);
+        void ChangeLightScene(LightScene scene, uint8_t brightness);
+        LightScene GetLightScene(void);
         LedArea *GetLedArea(void);
         void SetLedArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye);
         uint8_t GetBrightness(void);
@@ -68,8 +68,8 @@ class LedScene
 
         LedMatrix *m_led_matrix;
         LedArea *m_led_area;
-        light_scene_t m_scene;
-        light_scene_t m_last_scene;
+        LightScene m_scene;
+        LightScene m_last_scene;
         uint8_t m_current_brightness;
         uint8_t m_desired_brightness;
         uint32_t m_color;

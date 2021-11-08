@@ -21,7 +21,6 @@ $Id:  $
 // include
 #include "common.h"
 #include "LedRow.h"
-#include <Adafruit_NeoPixel.h>
 
 
 //----------------------------------------------------------------------------

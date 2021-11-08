@@ -64,7 +64,7 @@ LedScene::~LedScene()
 // description:
 //   ChangeLightScene
 //*****************************************************************************
-void LedScene::ChangeLightScene(light_scene_t scene)
+void LedScene::ChangeLightScene(LightScene scene)
 {
     this->ChangeLightScene(scene, this->m_desired_brightness);
 }
@@ -74,7 +74,7 @@ void LedScene::ChangeLightScene(light_scene_t scene)
 // description:
 //   ChangeLightScene
 //*****************************************************************************
-void LedScene::ChangeLightScene(light_scene_t scene, uint8_t brightness)
+void LedScene::ChangeLightScene(LightScene scene, uint8_t brightness)
 {
     if (this->m_scene != scene)
     {
@@ -123,7 +123,7 @@ void LedScene::ChangeLightScene(light_scene_t scene, uint8_t brightness)
 // description:
 //   Get Light Scene
 //*****************************************************************************
-light_scene_t LedScene::GetLightScene(void)
+LightScene LedScene::GetLightScene(void)
 {
     return this->m_scene;
 }

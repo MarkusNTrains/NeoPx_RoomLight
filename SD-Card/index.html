@@ -108,9 +108,48 @@
 								re = this.responseXML.getElementsByTagName('color');
 								if ((re != undefined) && (re != null) && (re.length > 0))
 								{
-									var color = (re[0].childNodes[0].nodeValue >> 24) & 0xFF;
-									document.getElementById("color_white_slider").value = color;
-									document.getElementById("color_white_value").innerHTML = color;
+									var color = parseInt(re[0].childNodes[0].nodeValue);
+                                    if (color > 0xFFFFFF)
+                                    {
+                                        color = (color >> 24) & 0xFF;
+                                        document.getElementById("color_white_slider").value = color;
+                                        document.getElementById("color_white_value").innerHTML = color;
+                                        colorStr = ('000000' + ((color << 16) | (color << 8) | color).toString(16)).slice(-6);
+                            			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
+                                    }
+                                    else
+                                    {
+                                        var slider_value = 0;
+                                        if (((color >= 0xFF0000) && (color <= 0xFFFF00)) && (((color & 0xFF0000) == 0xFF0000) && (((color & 0xFF) == 0x0))))
+                                        {
+                                            slider_value = ((color & 0xFF00) >> 8);
+                                        }
+                                        else if (((color >= 0x00FF00) && (color <= 0xFFFF00)) && (((color & 0xFF00) == 0xFF00) && (((color & 0xFF) == 0x0))))
+                                        {
+                                            slider_value = 511 - ((color & 0xFF0000) >> 16);
+                                        }
+                                        else if (((color >= 0x00FF00) && (color <= 0x00FFFF)) && (((color & 0xFF00) == 0xFF00) && (((color & 0xFF0000) == 0x0))))
+                                        {
+                                            slider_value = 512 + (color & 0xFF);
+                                        }
+                                        else if (((color >= 0x0000FF) && (color <= 0x00FFFF)) && (((color & 0xFF) == 0xFF) && (((color & 0xFF0000) == 0x0))))
+                                        {
+                                            slider_value = 1023 - ((color & 0x00FF00) >> 8);
+                                        }
+                                        else if (((color >= 0x0000FF) && (color <= 0xFF00FF)) && (((color & 0xFF) == 0xFF) && (((color & 0xFF00) == 0x0))))
+                                        {
+                                            slider_value = 1024 + ((color & 0xFF0000) >> 16);
+                                        }
+                                        else if (((color >= 0xFF0000) && (color <= 0xFF00FF)) && (((color & 0xFF0000) == 0xFF0000) && (((color & 0xFF00) == 0x0))))
+                                        {
+                                            slider_value = 1535 - (color & 0xFF);
+                                        }
+
+                                        var colorStr = ('000000' + color.toString(16)).slice(-6);
+                                        document.getElementById("color_rgb_slider").value = slider_value;
+                                        document.getElementById("color_rgb_value").innerHTML = '0x' + colorStr;;
+                                        document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
+                                    }
 								}
 
 								re = this.responseXML.getElementsByTagName('led_area');
