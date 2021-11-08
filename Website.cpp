@@ -525,7 +525,7 @@ const char line502[] PROGMEM = "left: 0;";
 const char line503[] PROGMEM = "margin: 0;";
 const char line504[] PROGMEM = "background: none;";
 const char line505[] PROGMEM = "/* get rid of white Chrome background */";
-const char line506[] PROGMEM = "color: #e9e9e9;";
+const char line506[] PROGMEM = "color: #000000;";
 const char line507[] PROGMEM = "pointer-events: none;";
 const char line508[] PROGMEM = "}";
 const char line509[] PROGMEM = "input.twoThumbSlider[type=range]::-webkit-slider-runnable-track, input[type=range]::-webkit-slider-thumb, input[type=range] {";

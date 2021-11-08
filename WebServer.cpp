@@ -1,38 +1,27 @@
-/*--------------------------------------------------------------
-  Program:      eth_websrv_SD_Ajax_24_out
+/*******************************************************************************
+Project   Train TimeTable
 
-  Description:  Arduino web server allows 24 outputs to be
-                switched on and off using checkboxes.
-                The web page is stored on the micro SD card.
+  This is an OpenSource Project.
+  You can use, share or improve this project. If you improve this source code
+  please share with the comunity or at least with the author of the original 
+  source code
   
-  Hardware:     Arduino MEGA 2560 and official Arduino Ethernet
-                shield.
-                Tested with 24 LEDs connected from pin 26 to 49
-                Can't use pins 50 to 53 when Ethernet shield
-                plugged in, these pins are for SPI.
-                2Gb micro SD card formatted FAT16.
-                
-  Software:     Developed using Arduino 1.0.6 software
-                Should be compatible with Arduino 1.0 +
-                SD card contains web page called index.htm
-  
-  References:   - WebServer example by David A. Mellis and 
-                  modified by Tom Igoe
-                - SD card examples by David A. Mellis and
-                  Tom Igoe
-                - Ethernet library documentation:
+  Created 09. May 2019 by MarkusNTrains
+
+  References:   - Ethernet library documentation:
                   http://arduino.cc/en/Reference/Ethernet
                 - SD Card library documentation:
                   http://arduino.cc/en/Reference/SD
-                - Based on code from the Ethernet shield
-                  tutorial:
-                  http://startingelectronics.org/tutorials/arduino/ethernet-shield-web-server-tutorial/SD-card-IO/
+                - Stream library
+                  https://github.com/jandrassy/StreamLibdownload 
+                
+================================================================================
+$HeadURL:  $
+$Id:  $
+*******************************************************************************/
 
-  Date:         4. September 2019
- 
-  Author:       W.A. Smith, http://startingelectronics.org
-                enhanced by MarkusNTrains
---------------------------------------------------------------*/
+
+
 
 
 //-----------------------------------------------------------------------------
