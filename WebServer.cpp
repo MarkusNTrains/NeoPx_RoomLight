@@ -45,7 +45,7 @@
 //-----------------------------------------------------------------------------
 // define
 #define IP_CONFIG_MOBA
-//#undef IP_CONFIG_MOBA
+#undef IP_CONFIG_MOBA
 
 
 //-----------------------------------------------------------------------------
@@ -155,7 +155,8 @@ void WebServer::Tasks()
         char lineBuffer[REQUEST_BUFFER_LENGTH] {'\0'}; // buffer for incomming data
         char uri[SMALL_BUFFER_SIZE];                   // the requestet page, shorter than smallbuffersize - method
         char method[8];                                // largest one 7+1. HTTP request methods in RFC7231 + RFC5789: GET HEAD POST PUT DELETE CONNECT OPTONS TRACE PATCH
-        char requestParameter[SMALL_BUFFER_SIZE];      // parameter appended to the URI after a ?
+        char request_param_a[SMALL_BUFFER_SIZE];      // parameter appended to the URI after a ?
+        char* request_param_p;
         
         while (client.connected()) 
 		{
@@ -179,22 +180,21 @@ void WebServer::Tasks()
                 if ((c == '\n') && (is_uri_complete == false))
                 {
                     //get uri
-                    char *ptr;
-                    ptr = strtok(lineBuffer, " ");  // strtok willdestroy the newRequest
-                    strlcpy(method, ptr, SMALL_BUFFER_SIZE);
-                    ptr = strtok(NULL, " ");
-                    strlcpy(uri, ptr, SMALL_BUFFER_SIZE);   // enthält noch evtl. parameter
+                    request_param_p = strtok(lineBuffer, " ");  // strtok willdestroy the newRequest
+                    strlcpy(method, request_param_p, SMALL_BUFFER_SIZE);
+                    request_param_p = strtok(NULL, " ");
+                    strlcpy(uri, request_param_p, SMALL_BUFFER_SIZE);   // enthält noch evtl. parameter
                     if (strchr(uri, '?') != NULL)
                     {
-                        ptr = strtok(uri, "?");  // split URI from parameters
-                        strcpy(uri, ptr);
-                        ptr = strtok(NULL, " ");
-                        strcpy(requestParameter, ptr);
+                        request_param_p = strtok(uri, "?");  // split URI from parameters
+                        strcpy(uri, request_param_p);
+                        request_param_p = strtok(NULL, " ");
+                        strcpy(request_param_a, request_param_p);
                     }
                     
 #ifdef IS_DEBUG_MODE
                     Serial.print(F("method=")); Serial.println(method);
-                    Serial.print(F("requestParameter=")); Serial.println(requestParameter);
+                    Serial.print(F("requestParameter=")); Serial.println(request_param_a);
                     Serial.print(F("uri=")); Serial.println(uri);
 #endif
                   
@@ -261,7 +261,7 @@ void WebServer::Tasks()
 //*****************************************************************************
 void WebServer::HandleRequest(char* http_request)
 {
-    char param_c[8];
+    char param_c[12];
     uint32_t param = 0;
     uint16_t param2 = 0;
     uint16_t param3 = 0;
@@ -278,22 +278,7 @@ void WebServer::HandleRequest(char* http_request)
     if (StrContains(http_request, needle_scene))
     {
         this->m_action = ACTION_SetLightSecene;
-        
-        start_pos = strstr(http_request, needle_scene);
-        if (start_pos == 0) return;  // no String found
-
-        end_pos = strstr(start_pos, "&");
-        if (end_pos == 0) return;  // no String found
-
-        start_pos += sizeof(needle_scene);
-
-        for (cnt = 0; cnt < end_pos - start_pos; cnt++)
-        {
-            param_c[cnt] = start_pos[cnt];
-            param_c[cnt+1] = '\0';
-        }
-        param = atoi(param_c);
-
+        param = this->HttpRequestExtractOneParameter(http_request, needle_scene, sizeof(needle_scene));
         this->m_led_scene->ChangeLightScene(param, 255);
 
 #ifdef IS_DEBUG_MODE
@@ -305,22 +290,7 @@ void WebServer::HandleRequest(char* http_request)
     else if (StrContains(http_request, needle_brightness))
     {
         this->m_action = ACTION_SetBrightness;
-        
-        start_pos = strstr(http_request, needle_brightness);
-        if (start_pos == 0) return;  // no String found
-
-        end_pos = strstr(start_pos, "&");
-        if (end_pos == 0) return;  // no String found
-
-        start_pos += sizeof(needle_brightness);      
-
-        for (cnt = 0; cnt < end_pos - start_pos; cnt++)
-        {
-            param_c[cnt] = start_pos[cnt];
-            param_c[cnt+1] = '\0';
-        }
-        param = atoi(param_c);
-
+        param = this->HttpRequestExtractOneParameter(http_request, needle_brightness, sizeof(needle_brightness));
         this->m_led_scene->SetBrightness(param);
         
 #ifdef IS_DEBUG_MODE
@@ -332,22 +302,7 @@ void WebServer::HandleRequest(char* http_request)
     else if (StrContains(http_request, needle_color))
     {
         this->m_action = ACTION_SetColor;
-        
-        start_pos = strstr(http_request, needle_color);
-        if (start_pos == 0) return;  // no String found
-
-        end_pos = strstr(start_pos, "&");
-        if (end_pos == 0) return;  // no String found
-
-        start_pos += sizeof(needle_color);      
-
-        for (cnt = 0; cnt < end_pos - start_pos; cnt++)
-        {
-            param_c[cnt] = start_pos[cnt];
-            param_c[cnt+1] = '\0';
-        }
-        param = atol(param_c);
-
+        param = this->HttpRequestExtractOneParameter(http_request, needle_color, sizeof(needle_color));
         this->m_led_scene->SetColor(param);
         
 #ifdef IS_DEBUG_MODE
@@ -366,7 +321,7 @@ void WebServer::HandleRequest(char* http_request)
         end_pos = strstr(start_pos, "-");
         if (end_pos == 0) return;  // no String found
 
-        start_pos += (sizeof(needle_set_led_area) + 1);      
+        start_pos += (sizeof(needle_set_led_area) + 1);
 
         for (cnt = 0; cnt < end_pos - start_pos; cnt++)
         {
@@ -432,12 +387,39 @@ void WebServer::HandleRequest(char* http_request)
 
 //*****************************************************************************
 // description:
-//   Returns position of first parameter
+//   Returns the first parameter of a http request string
 //*****************************************************************************
-/*void WebServer::HttpRequestGetParameterStartPos(char* http_request, char* needle)
+uint32_t WebServer::HttpRequestExtractOneParameter(char* http_request, char* needle, uint8_t needle_length)
 {
+    char param_c[12];
+    char* start_pos = 0;
+    char* end_pos = 0;
+    uint16_t cnt = 0;
+    uint32_t param = 0;
 
-}*/
+    start_pos = strstr(http_request, needle);
+    if (start_pos == 0) 
+    { 
+        return 0;  // no String found
+    }
+
+    end_pos = strstr(start_pos, "&");
+    if (end_pos == 0) 
+    {
+        return 0;  // no String found
+    }
+
+    start_pos += needle_length;      
+
+    for (cnt = 0; cnt < end_pos - start_pos; cnt++)
+    {
+        param_c[cnt] = start_pos[cnt];
+        param_c[cnt+1] = '\0';
+    }
+
+    param = atol(param_c);
+    return param;
+}
 
 
 //*****************************************************************************

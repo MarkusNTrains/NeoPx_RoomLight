@@ -1,3 +1,4 @@
+<!-- html realtime: https://htmledit.squarefree.com/-->
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
@@ -175,6 +176,7 @@
 			{
 				matches[cnt].classList.remove('active-class');
 			}
+
             if (scene < LightScene.NOF)
             {
 			    document.getElementById("LightScene" + scene).classList.add("active-class");
@@ -235,7 +237,6 @@
 			var color = slider.value;
 			output.innerHTML = color;
 			colorStr = ('000000' + ((color << 16) | (color << 8) | color).toString(16)).slice(-6);
-			console.log(colorStr);
 			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
 			SendDataToArduino("&SetColor=" + (slider.value << 24));			
 		}
@@ -282,7 +283,17 @@
     
 	<style type="text/css">
 		:root {
-			--SliderThumbColor: #000000;
+            --backgroundColor: #222222;
+            --headerBackgroundColor: #444444;
+            --BackgroundColorActive: #ffbf00;
+            --sliderBackgroundColor: #4b4b4b;
+		    --SliderThumbColor: var(--sliderBackgroundColor);
+            --textColorDark: #000000;
+            --textColorLight: #ffffff;
+            --boarderColor: #000000;
+
+            background-color: var(--backgroundColor);
+            color: var(--textColorLight);
 		}
 		.out_box {
 			float: left;
@@ -299,38 +310,41 @@
 		}
 		h1 {
 			font-size: 150%;
-			color: black;
+			color: var(--textColorLight);
+            background-color: var(--headerBackgroundColor);
 			margin: 0 0 10px 0;
 			width: calc(100% - 32px);
 			border-radius: 4px;
 			padding: 8px 16px 8px 16px;
-			border: 2px solid #000000;
+			border: 2px solid var(--boarderColor);
 		}
 		h2 {
 			font-size: 120%;
-			color: #2f0fb3;
+			color: var(--textColorLight);
+            background-color: var(--headerBackgroundColor);
 			margin: 5px 0 5px 0;
 			width: calc(100% - 32px);
 			border-radius: 4px;
 			padding: 8px 16px 8px 16px;
-			border: 2px solid #2f0fb3;
+			border: 2px solid var(--boarderColor);
 		}
 		p, form, button {
 			font-size: 80%;
-			color: #252525;
+			color: var(--textColorDark);
+            background-color: var(--backgroundColor);
 		}
-		.small_text {
-			font-size: 70%;
-			color: #737373;
-		}
-		/*----------------------------------------------------------------------*/
+        a {
+            color: var(--BackgroundColorActive);
+        }
+
+        /*----------------------------------------------------------------------*/
 		/* button */
 		.button {
-			background-color: #4CAF50; /* Green */
-			border: none;
+            color: var(--textColorLight);
+			background-color: var(--backgroundColor);
+			border: 2px solid var(--headerBackgroundColor);
 			border-radius: 4px;
-			color: white;
-			padding: 16px 32px;
+			padding: 16px 12px;
 			text-align: center;
 			text-decoration: none;
 			display: inline-block;
@@ -341,24 +355,18 @@
 			cursor: pointer;
 		}
 
-		.button {
-			background-color: white; 
-			color: black; 
-			border: 2px solid #4CAF50;
-		}
-
 		.button:hover {
-			background-color: #4CAF50;
-			color: black;
+			background-color: var(--BackgroundColorActive);
+			color: var(--textColorDark);
 		}
 		.button:active {
-			background-color: #337536;
-			color: white;
+			background-color: var(--BackgroundColorActive);
+			color: var(--textColorDark);
 			transform: translateY(2px);
 		}		
 		.active-class {
-			background-color: #337536;
-			color: white;
+			background-color: var(--BackgroundColorActive);
+			color: var(--textColorDark);
 		}
 		
 		/*----------------------------------------------------------------------*/
@@ -370,12 +378,13 @@
 		.slider {
 			-webkit-appearance: none;
             -moz-appearance: none;
-			width: 100%;
+			width: calc(100% - 15px);
 			height: 15px;
+			border: 1px solid var(--headerBackgroundColor);
 			border-radius: 5px;  
-			background: #d3d3d3;
+			background: var(--BackgroundColorActive);
 			outline: none;
-			opacity: 0.7;
+			opacity: 1;
 			-webkit-transition: .2s;
 			transition: opacity .2s;
 		}
@@ -418,14 +427,14 @@
             position: relative;
             margin: 1em auto;
             width: 100%;
-            background: linear-gradient(0deg, #ccc 2em, transparent 0);
+            background: linear-gradient(0deg, var(--sliderBackgroundColor) 2em, transparent 0);
             font-family: ubuntu mono, consolas, monaco, monospace;
         }
         .wrap::before, .wrap::after {
             grid-column: 1/span 2;
             grid-row: 3;
             height: 100%;
-            background: rgb(123, 202, 123);
+            background: var(--BackgroundColorActive);
             content: "";
         }
         .wrap::before {
@@ -455,7 +464,7 @@
             margin: 0;
             background: none;
             /* get rid of white Chrome background */
-            color: #000;
+            color: #e9e9e9;
             pointer-events: none;
         }
         input.twoThumbSlider[type=range]::-webkit-slider-runnable-track, input[type=range]::-webkit-slider-thumb, input[type=range] {
@@ -526,7 +535,7 @@
     <div class="slidecontainer">
         <label for="brightness_value">Helligkeit</label>
         <label id="brightness_value"></label>
-        <input type="range" min="0" max="255" value="50" class="slider" id="brightness_slider" oninput="BrighntessSliderChanged()" style="background:rgb(255, 240, 27)">
+        <input type="range" min="0" max="255" value="50" class="slider" id="brightness_slider" oninput="BrighntessSliderChanged()">
     </div>
     <br>
     <br>
@@ -536,13 +545,13 @@
     <div class="slidecontainer">
         <label for="color_rgb_value">RGB</label>
         <label id="color_rgb_value"></label>
-        <input type="range" min="0" max="1535" value="50" class="slider" id="color_rgb_slider" oninput="ColorRGBSliderChanged()" style="background:rgb(255, 240, 27)">
+        <input type="range" min="0" max="1535" value="50" class="slider" id="color_rgb_slider" oninput="ColorRGBSliderChanged()" style="background-image: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);">
     </div>
     <br>
     <div class="slidecontainer">
         <label for="color_white_value">Weiss</label>
         <label id="color_white_value"></label>
-        <input type="range" min="0" max="255" value="50" class="slider" id="color_white_slider" oninput="ColorWhiteSliderChanged()" style="background:rgb(255, 240, 27)">
+        <input type="range" min="0" max="255" value="50" class="slider" id="color_white_slider" oninput="ColorWhiteSliderChanged()" style="background-image: linear-gradient(90deg, black, white)">
     </div>
     <br>
     <br>
@@ -583,4 +592,14 @@
         </tr>
     </table>
 </body>
+
+<footer>
+    <div>
+        <br>
+        <br>
+        <hr>
+        08.11.2021 &nbsp; &copy; MarkusNTrains
+        <a href="mailto:markusntrains@gmx.ch">E-Mail</a>
+    </div>
+</footer>
 </html>

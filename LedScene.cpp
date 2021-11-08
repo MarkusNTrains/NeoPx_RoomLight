@@ -38,7 +38,6 @@ $Id:  $
 //*****************************************************************************
 LedScene::LedScene()
 {
-    this->m_state = OFFICE_TABLE_WW;
     this->m_current_brightness = 0;
     this->m_desired_brightness = 0;
     this->m_color = COLOR_WHITE;
@@ -77,9 +76,12 @@ void LedScene::ChangeLightScene(light_scene_t scene)
 //*****************************************************************************
 void LedScene::ChangeLightScene(light_scene_t scene, uint8_t brightness)
 {
-    m_light_scene = scene;
-    m_state = scene;
-    m_desired_brightness = brightness;
+    if (this->m_scene != scene)
+    {
+        this->m_last_scene = this->m_scene;
+        this->m_scene = scene;
+    }
+    this->m_desired_brightness = brightness;
     
     switch (scene)
     {
@@ -109,7 +111,6 @@ void LedScene::ChangeLightScene(light_scene_t scene, uint8_t brightness)
             break;
             
         case MOVING_DOT:
-            this->m_state = MOVING_DOT;
             break;
           
         default:
@@ -124,7 +125,7 @@ void LedScene::ChangeLightScene(light_scene_t scene, uint8_t brightness)
 //*****************************************************************************
 light_scene_t LedScene::GetLightScene(void)
 {
-    return this->m_light_scene;
+    return this->m_scene;
 }
 
 
@@ -138,7 +139,7 @@ void LedScene::Tasks()
     {
         this->m_update_time_ms += TMO_TILL_NEXT_UPDATE_MS;
     
-        switch (this->m_state)
+        switch (this->m_scene)
         {
             case OFFICE_TABLE_WW:
                 ShowOfficeTableWW_Task();
@@ -195,7 +196,6 @@ void LedScene::ShowOfficeTableWW_Enter(uint16_t brightness)
 //*****************************************************************************
 void LedScene::ShowOfficeTableWW_Task(void)
 {
-    //uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
     this->m_led_matrix->SetPixelArray(0, 20, 0, 0, this->m_color);  
     this->m_led_matrix->SetPixelArray(120, 140, 0, 0, this->m_color);  
     this->m_led_matrix->SetPixelArray(0, 140, 1, 3, this->m_color);  
@@ -428,7 +428,12 @@ uint8_t LedScene::GetBrightness(void)
 //*****************************************************************************
 void LedScene::SetBrightness(uint8_t brightness)
 {
-    this->ChangeLightScene(m_light_scene, brightness);
+    if (this->m_scene == POWER_OFF)
+    {
+        this->m_scene = this->m_last_scene;
+    }
+
+    this->ChangeLightScene(m_scene, brightness);
 }
 
 
@@ -464,7 +469,7 @@ void LedScene::UpdateBrightness(void)
     }
     else
     {
-        //this->m_state = IDLE;
+        // IDLE;
     }    
     
     this->m_led_matrix->SetBrightness(this->m_current_brightness); // Set brigthness for all neo pixels

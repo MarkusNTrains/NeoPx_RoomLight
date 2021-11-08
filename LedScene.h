@@ -40,6 +40,7 @@ typedef enum
     IDLE,
 } light_scene_t;
 
+
 //----------------------------------------------------------------------------
 // class
 class LedScene
@@ -67,8 +68,8 @@ class LedScene
 
         LedMatrix *m_led_matrix;
         LedArea *m_led_area;
-        light_scene_t m_light_scene;
-        light_scene_t m_state;
+        light_scene_t m_scene;
+        light_scene_t m_last_scene;
         uint8_t m_current_brightness;
         uint8_t m_desired_brightness;
         uint32_t m_color;

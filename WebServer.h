@@ -57,6 +57,7 @@ class WebServer
         action_t m_action;
 
 		void HandleRequest(char* http_request);
+        uint32_t HttpRequestExtractOneParameter(char* http_request, char* needle, uint8_t needle_length);
 		void StrClear(char *str, char length);
 		char StrContains(char *str, char *sfind);   
         void PrintHardwareInfo();
