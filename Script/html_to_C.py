@@ -77,6 +77,33 @@ with open(html_file_path) as file:
         if max_line_length < len(line_str):
             max_line_length = len(line_str)
 
+# add footer
+from datetime import date
+footer_a = []
+footer_a.append("<html>")
+footer_a.append("<footer>")
+footer_a.append("    <div>")
+footer_a.append("        <br>")
+footer_a.append("        <br>")
+footer_a.append("        <hr>")
+footer_a.append("        " + date.today().strftime("%d. %B %Y") + " &nbsp; &copy; MarkusNTrains")
+footer_a.append("        <a href='mailto:markusntrains@gmx.ch'>E-Mail</a>")
+footer_a.append("    </div>")
+footer_a.append("</footer>")
+footer_a.append("</html>")
+
+for line in footer_a:
+    line_str = ((line.rstrip()).lstrip(' \t'))
+    line_str = json.dumps(line_str)
+    # print(line_str)
+    nof_lines += 1
+    cpp_file.write("const char line" + str(nof_lines) + "[] PROGMEM = " + line_str + ";\n")
+
+    if max_line_length < len(line_str):
+        max_line_length = len(line_str)
+
+
+
 cpp_file.write("\n")
 cpp_file.write("const char* const website_a[] PROGMEM = {")
 for line_number in range(nof_lines - 1):
