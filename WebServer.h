@@ -1,12 +1,12 @@
 /*******************************************************************************
-Project   Train TimeTable
+Project   RoomLight
 
   This is an OpenSource Project.
   You can use, share or improve this project. If you improve this source code
   please share with the comunity or at least with the author of the original 
   source code
   
-  Created 09. May 2019 by MarkusNTrains
+  Created 24. August 2020 by MarkusNTrains
 ================================================================================
 $HeadURL:  $
 $Id:  $

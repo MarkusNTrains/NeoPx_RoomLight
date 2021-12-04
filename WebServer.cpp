@@ -1,12 +1,12 @@
 /*******************************************************************************
-Project   Train TimeTable
+Project   RoomLight
 
   This is an OpenSource Project.
   You can use, share or improve this project. If you improve this source code
   please share with the comunity or at least with the author of the original 
   source code
   
-  Created 09. May 2019 by MarkusNTrains
+  Created 24. August 2020 by MarkusNTrains
 
   References:   - Ethernet library documentation:
                   http://arduino.cc/en/Reference/Ethernet
@@ -28,13 +28,13 @@ $Id:  $
 // includes
 #include "WebServer.h"
 #include "Website.h"
-#include <StreamLib.h>   // install with Library manager or download from https://github.com/jandrassy/StreamLibdownload 
+#include <StreamLib.h>   // install with Library manager or download from https://github.com/jandrassy/StreamLib/
 
 
 //-----------------------------------------------------------------------------
 // define
 #define IP_CONFIG_MOBA
-#undef IP_CONFIG_MOBA
+//#undef IP_CONFIG_MOBA
 
 
 //-----------------------------------------------------------------------------
