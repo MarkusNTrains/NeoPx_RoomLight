@@ -20,7 +20,9 @@
             SBH: 7,
             USER_SETTING: 8,
 			IDLE: 9,
-            NOF: 10
+            LIGHTNING: 10,
+            MOBA: 11,
+            NOF: 12
 		};
         
 		// static variables
@@ -35,13 +37,15 @@
         window.addEventListener('load', (event) => {
             var button = '<button class="button" id="LightScene' + LightScene.POWER_OFF + '" onclick="LightSceneButtonPushed(LightScene.POWER_OFF, this)">Power Off</button>'
              + '<button class="button" id="LightScene' + LightScene.OFFICE_TABLE_WW + '" onclick="LightSceneButtonPushed(LightScene.OFFICE_TABLE_WW, this)">B&uuml;rotisch</button>'
-             + '<button class="button" id="LightScene' + LightScene.LIGHT_ON_WW + '" onclick="LightSceneButtonPushed(LightScene.LIGHT_ON_WW, this)">Licht warm Weiss</button>'
-             + '<button class="button" id="LightScene' + LightScene.DISCO + '" onclick="LightSceneButtonPushed(LightScene.DISCO, this)">Disco</button>'
+             + '<button class="button" id="LightScene' + LightScene.MOBA + '" onclick="LightSceneButtonPushed(LightScene.MOBA, this)">MoBa</button>'
+             + '<button class="button" id="LightScene' + LightScene.LIGHT_ON_WW + '" onclick="LightSceneButtonPushed(LightScene.LIGHT_ON_WW, this)">All On</button>'
+             + '<button class="button" id="LightScene' + LightScene.DISCO + '" onclick="LightSceneButtonPushed(LightScene.DISCO, this)">Regenbogen</button>'
              + '<button class="button" id="LightScene' + LightScene.SUNSET + '" onclick="LightSceneButtonPushed(LightScene.SUNSET, this)">Sunset</button>'
              + '<button class="button" id="LightScene' + LightScene.SUNRISE + '" onclick="LightSceneButtonPushed(LightScene.SUNRISE, this)">Sunrise</button>'
             // + '<button class="button" id="LightScene' + LightScene.MOVING_DOT + '" onclick="LightSceneButtonPushed(LightScene.MOVING_DOT, this)">Moving Dot</button>'
             // + '<button class="button" id="LightScene' + LightScene.SBH + '" onclick="LightSceneButtonPushed(LightScene.SBH, this)">SBf</button>'
              + '<button class="button" id="LightScene' + LightScene.USER_SETTING + '" onclick="LightSceneButtonPushed(LightScene.USER_SETTING, this)">User Set</button>';
+             + '<button class="button" id="LightScene' + LightScene.LIGHTNING + '" onclick="LightSceneButtonPushed(LightScene.LIGHTNING, this)">Gewitter</button>';
 
              document.getElementById("LightScene").innerHTML = button;
 
@@ -205,7 +209,12 @@
 		function LightSceneButtonPushed(scene, bt)
 		{
 			LightScene_ShowAsActive(scene)
-			SendDataToArduino("&LightScene=" + scene);
+            var brightness = document.getElementById("brightness_slider").value;
+            if (brightness == 0)
+            {
+                brightness = 100;
+            }
+			SendDataToArduino("&LightScene=" + scene + "&SetBrightness=" + brightness);
 		}
 
         function LightScene_ShowAsActive(scene)

@@ -38,7 +38,7 @@ $Id:  $
 class WebServer
 {
 	public:
-		WebServer(LedScene* led_scene);
+		WebServer(LightScene* led_scene);
 		~WebServer();
         void Tasks(void);		
 		
@@ -53,7 +53,7 @@ class WebServer
         
         EthernetServer* m_server;
 		File webFile;                                // the web page file on the SD card
-        LedScene* m_led_scene;
+        LightScene* m_led_scene;
         action_t m_action;
 
 		void HandleRequest(char* http_request);

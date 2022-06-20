@@ -36,7 +36,7 @@ $Id:  $
 // description:
 //   constructor
 //*****************************************************************************
-LedScene::LedScene()
+LightScene::LightScene()
 {
     this->m_current_brightness = 0;
     this->m_desired_brightness = 0;
@@ -53,7 +53,7 @@ LedScene::LedScene()
 // description:
 //   destructor
 //*****************************************************************************
-LedScene::~LedScene()
+LightScene::~LightScene()
 {
     delete this->m_led_matrix;
     delete this->m_led_area;
@@ -64,7 +64,7 @@ LedScene::~LedScene()
 // description:
 //   ChangeLightScene
 //*****************************************************************************
-void LedScene::ChangeLightScene(LightScene scene)
+void LightScene::ChangeLightScene(LightScene scene)
 {
     this->ChangeLightScene(scene, this->m_desired_brightness);
 }
@@ -74,7 +74,7 @@ void LedScene::ChangeLightScene(LightScene scene)
 // description:
 //   ChangeLightScene
 //*****************************************************************************
-void LedScene::ChangeLightScene(LightScene scene, uint8_t brightness)
+void LightScene::ChangeLightScene(LightScene scene, uint8_t brightness)
 {
     if (this->m_scene != scene)
     {
@@ -86,7 +86,7 @@ void LedScene::ChangeLightScene(LightScene scene, uint8_t brightness)
     switch (scene)
     {
         case OFFICE_TABLE_WW:
-            this->ShowOfficeTableWW_Enter(brightness);
+            this->LightScene_OfficeTableWW_Enter(brightness);
             break;
         
         case LIGHT_ON_WW:
@@ -112,6 +112,13 @@ void LedScene::ChangeLightScene(LightScene scene, uint8_t brightness)
             
         case MOVING_DOT:
             break;
+
+        case LITGHTING:
+            break;
+
+        case MOBA:
+            this->LightScene_MoBa_Enter(brightness);
+            break;
           
         default:
             break;
@@ -123,7 +130,7 @@ void LedScene::ChangeLightScene(LightScene scene, uint8_t brightness)
 // description:
 //   Get Light Scene
 //*****************************************************************************
-LightScene LedScene::GetLightScene(void)
+LightScene LightScene::GetLightScene(void)
 {
     return this->m_scene;
 }
@@ -133,7 +140,7 @@ LightScene LedScene::GetLightScene(void)
 // description:
 //   Statemachine
 //*****************************************************************************
-void LedScene::Tasks()
+void LightScene::Tasks()
 {
     if (millis() - this->m_update_time_ms > TMO_TILL_NEXT_UPDATE_MS)
     {
@@ -171,7 +178,15 @@ void LedScene::Tasks()
             case USER_SETTING:
                 UserSetting_Task();
                 break;
+
+            case LITGHTING:
+                Lightning_Task();
+                break;
                 
+            case MOBA:
+                this->LightScene_MoBa_Task();
+                break;
+
             default:
                 break;
         }
@@ -181,9 +196,9 @@ void LedScene::Tasks()
 
 //*****************************************************************************
 // description:
-//   Show White Pixel
+//   LightScene_OfficeTableWW_Enter
 //*****************************************************************************
-void LedScene::ShowOfficeTableWW_Enter(uint16_t brightness)
+void LightScene::LightScene_OfficeTableWW_Enter(uint16_t brightness)
 {
     this->m_desired_brightness = brightness;
     this->m_led_matrix->Clear();
@@ -194,7 +209,7 @@ void LedScene::ShowOfficeTableWW_Enter(uint16_t brightness)
 // description:
 //   ShowOfficeTableWW_Task
 //*****************************************************************************
-void LedScene::ShowOfficeTableWW_Task(void)
+void LightScene::ShowOfficeTableWW_Task(void)
 {
     this->m_led_matrix->SetPixelArray(0, 20, 0, 0, this->m_color);  
     this->m_led_matrix->SetPixelArray(120, 140, 0, 0, this->m_color);  
@@ -206,9 +221,35 @@ void LedScene::ShowOfficeTableWW_Task(void)
 
 //*****************************************************************************
 // description:
+//   LightScene_MoBa_Enter
+//*****************************************************************************
+void LightScene::LightScene_MoBa_Enter(uint16_t brightness)
+{
+    this->m_desired_brightness = brightness;
+    this->m_led_matrix->Clear();
+}
+
+
+//*****************************************************************************
+// description:
+//   LightScene_MoBa_Task
+//*****************************************************************************
+void LightScene::LightScene_MoBa_Task(void)
+{
+    this->m_led_matrix->SetPixelArray(0, LedRow::LED_ROW_LENGTH, 0, 0, this->m_color);  
+    this->m_led_matrix->SetPixelArray(0, 30, 1, 2, this->m_color);  
+    this->m_led_matrix->SetPixelArray(LedRow::LED_ROW_LENGTH - 30, LedRow::LED_ROW_LENGTH, 1, 2, this->m_color);  
+    this->m_led_matrix->SetPixelArray(0, LedRow::LED_ROW_LENGTH, 3, 3, this->m_color);  
+    this->UpdateBrightness();
+    this->m_led_matrix->Show();
+}
+
+
+//*****************************************************************************
+// description:
 //   Show White Pixel
 //*****************************************************************************
-void LedScene::LightOnWW_Enter(uint16_t brightness)
+void LightScene::LightOnWW_Enter(uint16_t brightness)
 {
     this->m_desired_brightness = brightness;
     this->m_led_matrix->Clear();
@@ -219,7 +260,7 @@ void LedScene::LightOnWW_Enter(uint16_t brightness)
 // description:
 //   Show White Pixel
 //*****************************************************************************
-void LedScene::LightOnWW_Task(void)
+void LightScene::LightOnWW_Task(void)
 {
     //uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
     this->m_led_matrix->SetPixelArray(0, LedRow::LED_ROW_LENGTH, 0, 3, this->m_color);  
@@ -237,7 +278,7 @@ void LedScene::LightOnWW_Task(void)
 #define SUN_MAX_HEIGHT 1000
 static int32_t s_sun_height = 0;
 static uint32_t s_sun_pos = 0;
-void LedScene::Sunrise_Task(void)
+void LightScene::Sunrise_Task(void)
 {
  /* uint16_t pixel;
   uint16_t cnt;
@@ -294,7 +335,7 @@ void LedScene::Sunrise_Task(void)
 // description:
 //   MovingDot_Task
 //*****************************************************************************
-void LedScene::MovingDot_Task(void)
+void LightScene::MovingDot_Task(void)
 {
     /*m_pixel->clear();
     m_pixel->setPixelColor(m_px, Adafruit_NeoPixel::Color(0, 0, 0, m_desired_brightness));
@@ -311,7 +352,7 @@ void LedScene::MovingDot_Task(void)
 // description:
 //   Show Rainbow with moving white dots
 //*****************************************************************************
-void LedScene::WhiteOverRainbow_Task(int whiteSpeed, int whiteLength) 
+void LightScene::WhiteOverRainbow_Task(int whiteSpeed, int whiteLength) 
 {
     if (whiteLength >= LedRow::LED_ROW_LENGTH) 
     {
@@ -371,7 +412,7 @@ void LedScene::WhiteOverRainbow_Task(int whiteSpeed, int whiteLength)
 // description:
 //   Power Off
 //*****************************************************************************
-void LedScene::PowerOff_Task(void)
+void LightScene::PowerOff_Task(void)
 {
     this->UpdateBrightness();  
     this->m_led_matrix->Show();
@@ -382,7 +423,7 @@ void LedScene::PowerOff_Task(void)
 // description:
 //   User Setting
 //*****************************************************************************
-void LedScene::UserSetting_Task(void)
+void LightScene::UserSetting_Task(void)
 {
     this->UpdateBrightness();  
     this->m_led_matrix->SetPixelArray(this->m_led_area->GetColumnStart(), this->m_led_area->GetColumnEnd(), this->m_led_area->GetRowStart(), this->m_led_area->GetRowEnd(), this->m_color);    
@@ -392,9 +433,19 @@ void LedScene::UserSetting_Task(void)
 
 //*****************************************************************************
 // description:
+//   Handle ligthing 
+//*****************************************************************************
+void LightScene::Lightning_Task(void)
+{
+    // uint8_t nof_flashes = srand(mills());
+}
+
+
+//*****************************************************************************
+// description:
 //   Get Led Area
 //*****************************************************************************
-LedArea* LedScene::GetLedArea(void)
+LedArea* LightScene::GetLedArea(void)
 {
     return this->m_led_area;  
 }
@@ -404,7 +455,7 @@ LedArea* LedScene::GetLedArea(void)
 // description:
 //   Set Led Area
 //*****************************************************************************
-void LedScene::SetLedArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye)
+void LightScene::SetLedArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye)
 {
     this->m_led_area->Set(xs, xe, ys, ye, this->m_color);
     this->m_led_matrix->Clear();
@@ -416,7 +467,7 @@ void LedScene::SetLedArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye)
 // description:
 //   Get Brightness
 //*****************************************************************************
-uint8_t LedScene::GetBrightness(void)
+uint8_t LightScene::GetBrightness(void)
 {
     return this->m_desired_brightness;
 }
@@ -426,7 +477,7 @@ uint8_t LedScene::GetBrightness(void)
 // description:
 //   Set Brightness
 //*****************************************************************************
-void LedScene::SetBrightness(uint8_t brightness)
+void LightScene::SetBrightness(uint8_t brightness)
 {
     if (this->m_scene == POWER_OFF)
     {
@@ -441,7 +492,7 @@ void LedScene::SetBrightness(uint8_t brightness)
 // description:
 //   Update Brightness
 //*****************************************************************************
-void LedScene::UpdateBrightness(void)
+void LightScene::UpdateBrightness(void)
 {
     uint8_t factor = 10;
     
@@ -480,7 +531,7 @@ void LedScene::UpdateBrightness(void)
 // description:
 //   Get Color
 //*****************************************************************************
-uint32_t LedScene::GetColor(void)
+uint32_t LightScene::GetColor(void)
 {
     return this->m_color;
 }
@@ -492,7 +543,7 @@ uint32_t LedScene::GetColor(void)
 // parameter:
 //   color: RGBW --> 8888
 //*****************************************************************************
-void LedScene::SetColor(uint32_t color)
+void LightScene::SetColor(uint32_t color)
 {
     this->m_color = color;
 }

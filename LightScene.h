@@ -38,16 +38,18 @@ enum LightScene
     SBH,
     USER_SETTING,
     IDLE,
+    LITGHTING,
+    MOBA,
 };
 
 
 //----------------------------------------------------------------------------
 // class
-class LedScene
+class LightScene
 {
     public:
-        LedScene();
-        ~LedScene();
+        LightScene();
+        ~LightScene();
         void Tasks(void);
         void ChangeLightScene(LightScene scene);
         void ChangeLightScene(LightScene scene, uint8_t brightness);
@@ -76,14 +78,17 @@ class LedScene
         uint32_t m_update_time_ms;
         uint16_t m_px;
 
-        void ShowOfficeTableWW_Enter(uint16_t brightness);
+        void LightScene_OfficeTableWW_Enter(uint16_t brightness);
         void ShowOfficeTableWW_Task(void);
+        void LightScene_MoBa_Enter(uint16_t brightness);
+        void LightScene_MoBa_Task(void);
         void LightOnWW_Enter(uint16_t brightness);
         void LightOnWW_Task(void);
         void Sunrise_Task(void);
         void PowerOff_Task(void);
         void MovingDot_Task(void);
         void UserSetting_Task(void);
+        void Lightning_Task(void);
         void WhiteOverRainbow_Task(int whiteSpeed, int whiteLength);
         void UpdateBrightness(void);
 };

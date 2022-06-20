@@ -34,7 +34,7 @@ $Id:  $
 //-----------------------------------------------------------------------------
 // define
 #define IP_CONFIG_MOBA
-//#undef IP_CONFIG_MOBA
+#undef IP_CONFIG_MOBA
 
 
 //-----------------------------------------------------------------------------
@@ -46,7 +46,7 @@ $Id:  $
 // description:
 //   constructor
 //*****************************************************************************
-WebServer::WebServer(LedScene* led_scene)
+WebServer::WebServer(LightScene* led_scene)
 {
     //int pin;
     byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x43 }; // MAC address from Ethernet shield sticker under board    
@@ -59,7 +59,7 @@ WebServer::WebServer(LedScene* led_scene)
     IPAddress subnet(255, 255, 255, 0);
 #else
     // IP config business
-    IPAddress ip(192, 168, 1, 4);    // IP address, may need to change depending on network
+    IPAddress ip(192, 168, 1, 88);    // IP address, may need to change depending on network
     IPAddress myDns(192, 168, 1, 2);
     IPAddress gateway(192, 168, 1, 2);  // how to find gateway: open cmd --> type ipconfig
     IPAddress subnet(255, 255, 255, 0);
@@ -268,7 +268,8 @@ void WebServer::HandleRequest(char* http_request)
     {
         this->m_action = ACTION_SetLightSecene;
         param = this->HttpRequestExtractOneParameter(http_request, needle_scene, sizeof(needle_scene));
-        this->m_led_scene->ChangeLightScene(param, 255);
+        param2 = this->HttpRequestExtractOneParameter(http_request, needle_brightness, sizeof(needle_brightness));
+        this->m_led_scene->ChangeLightScene(param, param2);
 
 #ifdef IS_DEBUG_MODE
         Serial.println(param);
