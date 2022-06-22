@@ -46,7 +46,7 @@ $Id:  $
 // description:
 //   constructor
 //*****************************************************************************
-WebServer::WebServer(LightScene* led_scene)
+WebServer::WebServer(LightSceneHdl* led_scene)
 {
     //int pin;
     byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x43 }; // MAC address from Ethernet shield sticker under board    

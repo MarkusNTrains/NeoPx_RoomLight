@@ -12,8 +12,8 @@ $HeadURL:  $
 $Id:  $
 *******************************************************************************/
 
-#ifndef _LED_SCENE_H
-#define _LED_SCENE_H
+#ifndef _LIGHT_SCENE_H
+#define _LIGHT_SCENE_H
 
 //----------------------------------------------------------------------------
 // include
@@ -45,11 +45,11 @@ enum LightScene
 
 //----------------------------------------------------------------------------
 // class
-class LightScene
+class LightSceneHdl
 {
     public:
-        LightScene();
-        ~LightScene();
+        LightSceneHdl();
+        ~LightSceneHdl();
         void Tasks(void);
         void ChangeLightScene(LightScene scene);
         void ChangeLightScene(LightScene scene, uint8_t brightness);
@@ -78,19 +78,22 @@ class LightScene
         uint32_t m_update_time_ms;
         uint16_t m_px;
 
+
+        void UpdateBrightness(void);
+
+        // light scene
         void LightScene_OfficeTableWW_Enter(uint16_t brightness);
-        void ShowOfficeTableWW_Task(void);
+        void LightScene_OfficeTableWW_Task(void);
         void LightScene_MoBa_Enter(uint16_t brightness);
         void LightScene_MoBa_Task(void);
-        void LightOnWW_Enter(uint16_t brightness);
-        void LightOnWW_Task(void);
-        void Sunrise_Task(void);
-        void PowerOff_Task(void);
-        void MovingDot_Task(void);
-        void UserSetting_Task(void);
-        void Lightning_Task(void);
-        void WhiteOverRainbow_Task(int whiteSpeed, int whiteLength);
-        void UpdateBrightness(void);
+        void LightScene_LightOnWW_Enter(uint16_t brightness);
+        void LightScene_LightOnWW_Task(void);
+        void LightScene_Sunrise_Task(void);
+        void LightScene_PowerOff_Task(void);
+        void LightScene_MovingDot_Task(void);
+        void LightScene_UserSetting_Task(void);
+        void LightScene_Lightning_Task(void);
+        void LightScene_WhiteOverRainbow_Task(int whiteSpeed, int whiteLength);
 };
 
-#endif // _LED_SCENE_H
+#endif // _LIGHT_SCENE_H

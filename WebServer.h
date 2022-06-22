@@ -23,7 +23,7 @@ $Id:  $
 #include <Ethernet.h>
 #include <SD.h>
 #include "common.h"
-#include "LedScene.h"
+#include "LightScene.h"
 
 
 
@@ -38,7 +38,7 @@ $Id:  $
 class WebServer
 {
 	public:
-		WebServer(LightScene* led_scene);
+		WebServer(LightSceneHdl* led_scene);
 		~WebServer();
         void Tasks(void);		
 		
@@ -53,7 +53,7 @@ class WebServer
         
         EthernetServer* m_server;
 		File webFile;                                // the web page file on the SD card
-        LightScene* m_led_scene;
+        LightSceneHdl* m_led_scene;
         action_t m_action;
 
 		void HandleRequest(char* http_request);

@@ -28,7 +28,7 @@ $Id:  $
 //-----------------------------------------------------------------------------
 // static module variable
 // MAC address from Ethernet shield sticker under board
-static LightScene* s_led_scene;
+static LightSceneHdl* s_led_scene;
 static WebServer* s_web_server;
 
 
@@ -44,7 +44,7 @@ void setup()
   #endif
     
     delay(50);
-    s_led_scene = new LightScene();
+    s_led_scene = new LightSceneHdl();
     s_web_server = new WebServer(s_led_scene);
 }
 
