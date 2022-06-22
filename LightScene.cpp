@@ -114,6 +114,7 @@ void LightSceneHdl::ChangeLightScene(LightScene scene, uint8_t brightness)
             break;
 
         case LITGHTING:
+            this->m_desired_brightness = 5;
             break;
 
         case MOBA:
@@ -437,7 +438,20 @@ void LightSceneHdl::LightScene_UserSetting_Task(void)
 //*****************************************************************************
 void LightSceneHdl::LightScene_Lightning_Task(void)
 {
-    // uint8_t nof_flashes = srand(mills());
+
+    if ((this->m_desired_brightness != m_current_brightness) || (this->GetColor() != COLOR_BLUE))
+    {
+        //this->SetColor(Adafruit_NeoPixel::gamma32(COLOR_BLUE));
+        this->SetColor(COLOR_BLUE);
+        //uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
+        this->m_led_matrix->SetPixelArray(0, LedRow::LED_ROW_LENGTH, 0, 3, this->GetColor());
+        this->UpdateBrightness();  
+        this->m_led_matrix->Show();
+    }
+    else
+    {
+        // uint8_t nof_flashes = srand(mills());
+    }
 }
 
 
