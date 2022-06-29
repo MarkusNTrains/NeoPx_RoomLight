@@ -67,7 +67,7 @@ class LightSceneHdl
         const uint32_t COLOR_GREEN = 0x0000FF00;
         const uint32_t COLOR_RED = 0x00FF0000;
         const uint32_t COLOR_WHITE = 0xFF000000;
-
+        
         LedMatrix *m_led_matrix;
         LedArea *m_led_area;
         LightScene m_scene;
@@ -80,6 +80,7 @@ class LightSceneHdl
 
 
         void UpdateBrightness(void);
+        void UpdateValueTo(uint8_t current_value, uint8_t desired_value, uint8_t factor);
 
         // light scene
         void LightScene_OfficeTableWW_Enter(uint16_t brightness);

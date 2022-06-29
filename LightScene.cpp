@@ -441,10 +441,19 @@ void LightSceneHdl::LightScene_Lightning_Task(void)
 
     if ((this->m_desired_brightness != m_current_brightness) || (this->GetColor() != COLOR_BLUE))
     {
-        //this->SetColor(Adafruit_NeoPixel::gamma32(COLOR_BLUE));
+        uint8_t color_change_factor = 10;
         this->SetColor(COLOR_BLUE);
-        //uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
-        this->m_led_matrix->SetPixelArray(0, LedRow::LED_ROW_LENGTH, 0, 3, this->GetColor());
+        uint8_t red = (this->GetColor() && COLOR_RED) >> 16;
+        uint8_t green = (this->GetColor() && COLOR_GREEN) >> 8;
+        uint8_t blue = (this->GetColor() && COLOR_BLUE);
+        uint8_t white = (this->GetColor() && COLOR_WHITE) >> 24;
+        red = this->UpdateValueTo(red, 0, color_change_factor);
+        green = this->UpdateValueTo(green, 0, color_change_factor);
+        blue = this->UpdateValueTo(blue, 0xFF, color_change_factor);
+        white = this->UpdateValueTo(white, 0, color_change_factor);
+        
+        uint32_t color = Adafruit_NeoPixel::Color(red, green, blue, white);
+        this->m_led_matrix->SetPixelArray(0, LedRow::LED_ROW_LENGTH, 0, 3, color);
         this->UpdateBrightness();  
         this->m_led_matrix->Show();
     }
@@ -560,4 +569,45 @@ uint32_t LightSceneHdl::GetColor(void)
 void LightSceneHdl::SetColor(uint32_t color)
 {
     this->m_color = color;
+}
+
+
+//*****************************************************************************
+// description:
+//   Get Color
+// parameter:
+//   current_value: 
+//   desired_value: value to change
+//   change_val: max change of value
+//*****************************************************************************
+uint8_t LightSceneHdl::UpdateValueTo(uint8_t current_value, uint8_t desired_value, uint8_t factor)
+{
+    if (current_value < desired_value)
+    {
+        if (((current_value + ((current_value / factor) + 1))) < desired_value)
+        {
+            current_value += (current_value / factor) + 1;
+        }
+        else
+        {
+            current_value = desired_value;
+        }
+    }
+    else if (current_value > desired_value)
+    {
+        if (((current_value - ((current_value / factor) + 1))) > desired_value)
+        {
+            current_value -= (current_value / factor) + 1;
+        }
+        else
+        {
+            current_value = desired_value;      
+        }
+    }
+    else
+    {
+        // IDLE;
+    }  
+
+    return current_value;  
 }
