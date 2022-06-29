@@ -80,7 +80,7 @@ class LightSceneHdl
 
 
         void UpdateBrightness(void);
-        void UpdateValueTo(uint8_t current_value, uint8_t desired_value, uint8_t factor);
+        uint8_t UpdateValueTo(uint8_t current_value, uint8_t desired_value, uint8_t factor);
 
         // light scene
         void LightScene_OfficeTableWW_Enter(uint16_t brightness);
