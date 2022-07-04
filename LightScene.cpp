@@ -459,7 +459,14 @@ void LightSceneHdl::LightScene_Lightning_Task(void)
     }
     else
     {
-        // uint8_t nof_flashes = srand(mills());
+        srand(millis());
+        uint8_t nof_flashes = rand();
+        uint8_t cnt = 0;
+
+        for (cnt = 0; cnt < nof_flashes; cnt++)
+        {
+            uint8_t flash_length = rand();
+        }
     }
 }
 
