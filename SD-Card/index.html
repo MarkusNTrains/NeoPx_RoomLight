@@ -24,12 +24,15 @@
             MOBA: 11,
             NOF: 12
 		};
+
+        const SEND_DATA_TO_ARDUINO_LOCK_TIMEOUT_MS = 5000;
         
 		// static variables
 		var s_lock_send_data = false;
 		var s_is_send_data_pending = false;
         var s_pending_xml_request = "";
 		var s_sendToArduino_timeoutTimer = null;
+        var s_requestDataFromArduino_intervallTimer = null;
 		var xhttp = null;
 
 
@@ -53,6 +56,17 @@
         });
 
 
+        function RequestCurrentDataFromArduino()
+        {
+            SendDataToArduino("");
+        }
+
+        function Reset_RequestCurrentDataFromArduino_IntervallTimer()
+        {
+            clearInterval(s_requestDataFromArduino_intervallTimer);
+            s_requestDataFromArduino_intervallTimer = setInterval(RequestCurrentDataFromArduino, SEND_DATA_TO_ARDUINO_LOCK_TIMEOUT_MS + 500);
+        }
+        
 		function ReleaseLock()
 		{
 			s_lock_send_data = false;
@@ -77,6 +91,7 @@
 			if (s_lock_send_data == false)
 			{
 				s_lock_send_data = true;
+                Reset_RequestCurrentDataFromArduino_IntervallTimer();
 				nocache = "&nocache=" + Math.random() * 1000000;
 
 				xhttp = new XMLHttpRequest();
@@ -197,7 +212,7 @@
 				xhttp.send();
 				
 				// lock Send to Arduino
-				s_sendToArduino_timeoutTimer = setTimeout('ReleaseLock()', 5000);
+				s_sendToArduino_timeoutTimer = setTimeout('ReleaseLock()', SEND_DATA_TO_ARDUINO_LOCK_TIMEOUT_MS);
 			}
 			else
 			{
