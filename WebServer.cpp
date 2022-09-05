@@ -360,7 +360,7 @@ void WebServer::HandleRequest(char* http_request)
         Serial.println(param4);
 #endif
 
-        this->m_led_scene->ChangeLightScene(USER_SETTING);
+        this->m_led_scene->ChangeLightScene(LIGHTSCENE_UserSetting);
         this->m_led_scene->SetLedArea(param, param2, param3, param4);
     }
 

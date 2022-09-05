@@ -45,7 +45,7 @@ LightSceneHdl::LightSceneHdl()
     this->m_led_matrix = new LedMatrix();
     this->m_led_area = new LedArea();
 
-    this->ChangeLightScene(OFFICE_TABLE_WW, 100);
+    this->ChangeLightScene(LIGHTSCENE_OfficeTableWW, 100);
 }
 
 
@@ -85,39 +85,41 @@ void LightSceneHdl::ChangeLightScene(LightScene scene, uint8_t brightness)
     
     switch (scene)
     {
-        case OFFICE_TABLE_WW:
+        case LIGHTSCENE_OfficeTableWW:
             this->LightScene_OfficeTableWW_Enter(brightness);
             break;
         
-        case LIGHT_ON_WW:
+        case LIGHTSCENE_LightOnWW:
             this->LightScene_LightOnWW_Enter(brightness);
             break;
         
-        case SBH:
+        case LIGHTSCENE_Sbh:
             //
             break;
         
-        case SUNRISE:
+        case LIGHTSCENE_Sunset:
             //m_pixel->setBrightness(brightness); // Set brigthness for all neo pixels
             break;
           
-        case POWER_OFF:
+        case LIGHTSCENE_PowerOff:
             this->m_desired_brightness = 0;
             break;
         
-        case RAINBOW:
+        case LIGHTSCENE_Rainbow:
             this->m_led_matrix->Clear();
             this->LightScene_WhiteOverRainbow_Task(10, 5);
             break;
             
-        case MOVING_DOT:
+        case LIGHTSCENE_MovingDot:
             break;
 
-        case LITGHTING:
-            this->m_desired_brightness = 5;
+        case LIGHTSCENE_Lightning:
+            this->m_lightning_state = LIGHTNING_STATE_Dimming;
+            this->m_last_brightness = this->m_current_brightness;
+            this->m_desired_brightness = LIGHTNING_BackgroundBrightness;
             break;
 
-        case MOBA:
+        case LIGHTSCENE_Moba:
             this->LightScene_MoBa_Enter(brightness);
             break;
           
@@ -149,42 +151,42 @@ void LightSceneHdl::Tasks()
     
         switch (this->m_scene)
         {
-            case OFFICE_TABLE_WW:
+            case LIGHTSCENE_OfficeTableWW:
                 LightScene_OfficeTableWW_Task();
                 break;
         
-            case LIGHT_ON_WW:
+            case LIGHTSCENE_LightOnWW:
                 LightScene_LightOnWW_Task();
                 break;
         
-            case SUNRISE:
+            case LIGHTSCENE_Sunrise:
                 LightScene_Sunrise_Task();
                 break;
             
-            case POWER_OFF:
+            case LIGHTSCENE_PowerOff:
                 LightScene_PowerOff_Task();
                 break;
 
-            case RAINBOW:
+            case LIGHTSCENE_Rainbow:
                 this->LightScene_WhiteOverRainbow_Task(75, 5);
                 break;
             
-            case MOVING_DOT:
+            case LIGHTSCENE_MovingDot:
                 LightScene_MovingDot_Task();
                 break;
             
-            case IDLE:
+            case LIGHTSCENE_Idle:
                 break;
 
-            case USER_SETTING:
+            case LIGHTSCENE_UserSetting:
                 LightScene_UserSetting_Task();
                 break;
 
-            case LITGHTING:
+            case LIGHTSCENE_Lightning:
                 LightScene_Lightning_Task();
                 break;
                 
-            case MOBA:
+            case LIGHTSCENE_Moba:
                 this->LightScene_MoBa_Task();
                 break;
 
@@ -339,12 +341,12 @@ void LightSceneHdl::LightScene_Sunrise_Task(void)
 void LightSceneHdl::LightScene_MovingDot_Task(void)
 {
     /*m_pixel->clear();
-    m_pixel->setPixelColor(m_px, Adafruit_NeoPixel::Color(0, 0, 0, m_desired_brightness));
+    m_pixel->setPixelColor(m_moving_dot_current_px, Adafruit_NeoPixel::Color(0, 0, 0, m_desired_brightness));
     m_pixel->show();
-    m_px++;
-    if (m_px >= m_nof_px)
+    m_moving_dot_current_px++;
+    if (m_moving_dot_current_px >= m_nof_px)
     {
-        m_px = 0;
+        m_moving_dot_current_px = 0;
     }*/
 }
 
@@ -438,35 +440,78 @@ void LightSceneHdl::LightScene_UserSetting_Task(void)
 //*****************************************************************************
 void LightSceneHdl::LightScene_Lightning_Task(void)
 {
-
-    if ((this->m_desired_brightness != m_current_brightness) || (this->m_color != COLOR_BLUE))
+    switch (this->m_lightning_state)
     {
-        uint8_t color_change_factor = 10;
-        uint8_t red = (this->m_color & COLOR_RED) >> 16;
-        uint8_t green = (this->m_color & COLOR_GREEN) >> 8;
-        uint8_t blue = (this->m_color & COLOR_BLUE);
-        uint8_t white = (this->m_color & COLOR_WHITE) >> 24;
-        
-        red = this->UpdateValueTo(red, 0, color_change_factor);
-        green = this->UpdateValueTo(green, 0, color_change_factor);
-        blue = this->UpdateValueTo(blue, 0xFF, color_change_factor);
-        white = this->UpdateValueTo(white, 0, color_change_factor);
-        
-        this->m_color = Adafruit_NeoPixel::Color(red, green, blue, white);
-        this->m_led_matrix->SetPixelArray(0, LedRow::LED_ROW_LENGTH, 0, 3, this->m_color);
-        this->UpdateBrightness();  
-        this->m_led_matrix->Show();
-    }
-    else
-    {
-        srand(millis());
-        uint8_t nof_flashes = rand();
-        uint8_t cnt = 0;
+        case LIGHTNING_STATE_Dimming:
+            if ((this->m_desired_brightness != m_current_brightness) || (this->m_color != COLOR_BLUE))
+            {
+                uint8_t color_change_factor = 20;
+                uint8_t red = (this->m_color & COLOR_RED) >> 16;
+                uint8_t green = (this->m_color & COLOR_GREEN) >> 8;
+                uint8_t blue = (this->m_color & COLOR_BLUE);
+                uint8_t white = (this->m_color & COLOR_WHITE) >> 24;
+                
+                red = this->UpdateValueTo(red, 0, color_change_factor);
+                green = this->UpdateValueTo(green, 0, color_change_factor);
+                blue = this->UpdateValueTo(blue, 0xFF, color_change_factor/2);
+                white = this->UpdateValueTo(white, 0, color_change_factor);
+                
+                this->m_color = Adafruit_NeoPixel::Color(red, green, blue, white);
+                this->m_led_matrix->SetPixelArray(0, LedRow::LED_ROW_LENGTH, 0, 3, this->m_color);
+                this->UpdateBrightness();  
+                this->m_led_matrix->Show();
+            }
+            else
+            {
+                // set overall brightness to maximum and the background color to current brightness, so that flashes will bi visible
+                this->m_led_matrix->SetBrightness(255);
+                this->m_led_matrix->SetPixelArray(0, LedRow::LED_ROW_LENGTH, 0, 3, Adafruit_NeoPixel::Color(0, 0, LIGHTNING_BackgroundBrightness, 0));
+                this->m_led_matrix->Show();
 
-        for (cnt = 0; cnt < nof_flashes; cnt++)
-        {
-            uint8_t flash_length = rand();
-        }
+                this->m_lightning_nof_flashes = rand() % 10;
+                this->m_lightning_flash_counter = 0;
+                this->m_lightning_flash_timestamp_ms = millis();
+                this->m_lightning_flash_pause_ms = 5000;
+                this->m_lightning_state = LIGHTNING_STATE_FlashActive;
+            }
+            break;
+
+        case LIGHTNING_STATE_FlashActive:
+            if (millis() >= this->m_lightning_flash_timestamp_ms + this->m_lightning_flash_pause_ms)
+            {
+                if (this->m_lightning_flash_counter >= this->m_lightning_nof_flashes)
+                {
+                    // exit lightning task
+                    this->ChangeLightScene(this->m_last_scene, this->m_last_brightness);
+                }
+                else 
+                {
+                    // show next flash
+                    srand(millis());
+                    this->m_lightning_flash_timestamp_ms = millis();
+                    this->m_lightning_flash_pause_ms = rand() % 5000;
+
+                    uint32_t flash_color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
+                    uint8_t flash_start_pos = rand() % 2;
+                    uint8_t flash_width = rand() % 10;
+                    uint32_t flash_length_ms = rand() % LIGHTNING_MaxFlashLengthMs;
+
+                    // show flash
+                    this->m_led_matrix->SetPixelArray(flash_start_pos, flash_start_pos + flash_width, 0, 3, flash_color);
+                    this->m_led_matrix->Show();
+                    delay(flash_length_ms);
+
+                    // hide flash
+                    this->m_led_matrix->SetPixelArray(0, LedRow::LED_ROW_LENGTH, 0, 3, Adafruit_NeoPixel::Color(0, 0, LIGHTNING_BackgroundBrightness, 0));
+                    this->m_led_matrix->Show();
+
+                    this->m_lightning_flash_counter++;
+                }
+            }
+            break;
+
+        default:
+            break;
     }
 }
 
@@ -509,7 +554,7 @@ uint8_t LightSceneHdl::GetBrightness(void)
 //*****************************************************************************
 void LightSceneHdl::SetBrightness(uint8_t brightness)
 {
-    if (this->m_scene == POWER_OFF)
+    if (this->m_scene == LIGHTSCENE_PowerOff)
     {
         this->m_scene = this->m_last_scene;
     }

@@ -669,7 +669,7 @@ const char line646[] PROGMEM = "<div>";
 const char line647[] PROGMEM = "<br>";
 const char line648[] PROGMEM = "<br>";
 const char line649[] PROGMEM = "<hr>";
-const char line650[] PROGMEM = "22. June 2022 &nbsp; &copy; MarkusNTrains";
+const char line650[] PROGMEM = "05. September 2022 &nbsp; &copy; MarkusNTrains";
 const char line651[] PROGMEM = "<a href='mailto:markusntrains@gmx.ch'>E-Mail</a>";
 const char line652[] PROGMEM = "</div>";
 const char line653[] PROGMEM = "</footer>";

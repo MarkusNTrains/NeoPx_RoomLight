@@ -28,18 +28,25 @@ $Id:  $
 // enum
 enum LightScene
 {
-    OFFICE_TABLE_WW = 0,
-    LIGHT_ON_WW,
-    RAINBOW,
-    SUNSET,
-    SUNRISE,
-    POWER_OFF,
-    MOVING_DOT,
-    SBH,
-    USER_SETTING,
-    IDLE,
-    LITGHTING,
-    MOBA,
+    LIGHTSCENE_OfficeTableWW = 0,
+    LIGHTSCENE_LightOnWW,
+    LIGHTSCENE_Rainbow,
+    LIGHTSCENE_Sunset,
+    LIGHTSCENE_Sunrise,
+    LIGHTSCENE_PowerOff,
+    LIGHTSCENE_MovingDot,
+    LIGHTSCENE_Sbh,
+    LIGHTSCENE_UserSetting,
+    LIGHTSCENE_Idle,
+    LIGHTSCENE_Lightning,
+    LIGHTSCENE_Moba,
+};
+
+enum LightningState
+{
+    LIGHTNING_STATE_Dimming = 0,
+    LIGHTNING_STATE_Prepaire,
+    LIGHTNING_STATE_FlashActive,
 };
 
 
@@ -67,16 +74,28 @@ class LightSceneHdl
         const uint32_t COLOR_GREEN = 0x0000FF00;
         const uint32_t COLOR_RED = 0x00FF0000;
         const uint32_t COLOR_WHITE = 0xFF000000;
-        
+
         LedMatrix *m_led_matrix;
         LedArea *m_led_area;
         LightScene m_scene;
         LightScene m_last_scene;
         uint8_t m_current_brightness;
         uint8_t m_desired_brightness;
+        uint8_t m_last_brightness;
         uint32_t m_color;
         uint32_t m_update_time_ms;
-        uint16_t m_px;
+
+        // lightning task
+        const uint32_t LIGHTNING_MaxFlashLengthMs = 150;
+        const uint8_t LIGHTNING_BackgroundBrightness = 4;        
+        uint8_t m_lightning_state;
+        uint32_t m_lightning_flash_timestamp_ms;
+        uint32_t m_lightning_flash_pause_ms;
+        uint8_t m_lightning_nof_flashes;
+        uint8_t m_lightning_flash_counter;
+
+        // moving dot task
+        uint16_t m_moving_dot_current_px;
 
 
         void UpdateBrightness(void);
