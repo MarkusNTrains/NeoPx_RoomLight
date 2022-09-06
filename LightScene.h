@@ -85,6 +85,10 @@ class LightSceneHdl
         uint32_t m_color;
         uint32_t m_update_time_ms;
 
+        // daylight tasks
+        uint32_t m_sunrise_sun_height;
+        uint32_t m_sunrise_sun_pos;
+        
         // lightning task
         const uint32_t LIGHTNING_MaxFlashLengthMs = 150;
         const uint32_t LIGHTNING_MaxFlashWidth = 40;

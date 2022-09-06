@@ -96,7 +96,11 @@ void LightSceneHdl::ChangeLightScene(LightScene scene, uint8_t brightness)
         case LIGHTSCENE_Sbh:
             //
             break;
-        
+        case LIGHTSCENE_Sunrise:
+            this->m_sunrise_sun_height = 0;
+            this->m_sunrise_sun_pos = 0;
+            break;
+            
         case LIGHTSCENE_Sunset:
             //m_pixel->setBrightness(brightness); // Set brigthness for all neo pixels
             break;
@@ -278,9 +282,7 @@ void LightSceneHdl::LightScene_LightOnWW_Task(void)
 //*****************************************************************************
 #define PIXEL_DISTANCE_MM 16  // distance between neo pixels in mm
 #define PIXEL_BRIGHTNESS 100
-#define SUN_MAX_HEIGHT 1000
-static int32_t s_sun_height = 0;
-static uint32_t s_sun_pos = 0;
+#define SUN_MAX_HEIGHT 10000
 void LightSceneHdl::LightScene_Sunrise_Task(void)
 {
     uint16_t PIXEL_NOF = LedRow::LED_ROW_LENGTH;
@@ -297,23 +299,26 @@ void LightSceneHdl::LightScene_Sunrise_Task(void)
 
     for (cnt = 0; cnt < PIXEL_NOF; cnt++)
     {
-        hypothenuse = sqrt(pow(s_sun_height, 2) + pow(PIXEL_DISTANCE_MM * cnt, 2));
-        asin_alpha = (255 * s_sun_height) / hypothenuse;
+        hypothenuse = sqrt(pow(m_sunrise_sun_height, 2) + pow(PIXEL_DISTANCE_MM * cnt, 2));
+        asin_alpha = (255 * m_sunrise_sun_height) / hypothenuse;
         brightness = asin_alpha / 255;
 
         red[cnt] = 255 * brightness;
         //red[(PIXEL_NOF - 1) - cnt] = red[cnt];
 
         green[cnt] = asin_alpha * brightness;
+        if (green[cnt] > PIXEL_BRIGHTNESS) {
+            green[cnt] = PIXEL_BRIGHTNESS;
+        }
         //green[(PIXEL_NOF - 1) - cnt] = green[cnt];
 
-        tmp_color = (green[cnt] * s_sun_height) / (SUN_MAX_HEIGHT * 2);
+        tmp_color = (green[cnt] * m_sunrise_sun_height) / (SUN_MAX_HEIGHT * 2);
         tmp_color = (cnt * (PIXEL_BRIGHTNESS / (PIXEL_NOF / 2))) + tmp_color;
         if (tmp_color > PIXEL_BRIGHTNESS) {
             tmp_color = PIXEL_BRIGHTNESS;
         }
         blue[cnt] = tmp_color * brightness;
-        //blue[cnt] = ((green[cnt] * s_sun_height) / (SUN_MAX_HEIGHT * 2)) * brightness;
+        //blue[cnt] = ((green[cnt] * m_sunrise_sun_height) / (SUN_MAX_HEIGHT * 2)) * brightness;
         //blue[(PIXEL_NOF - 1) - cnt] =  blue[cnt];
 
         #ifdef IS_DEBUG_MODE
@@ -328,7 +333,7 @@ void LightSceneHdl::LightScene_Sunrise_Task(void)
 
     for (cnt = 0; cnt < PIXEL_NOF; cnt++)
     {
-        pixel = (s_sun_pos + cnt) % PIXEL_NOF;
+        pixel = (m_sunrise_sun_pos + cnt) % PIXEL_NOF;
         color = Adafruit_NeoPixel::Color(red[cnt], green[cnt], blue[cnt], 0);
         this->m_led_matrix->SetPixelArray(pixel, pixel, 0, 3, color);
     }
@@ -337,16 +342,16 @@ void LightSceneHdl::LightScene_Sunrise_Task(void)
     this->m_led_matrix->SetBrightness(255);
     this->m_led_matrix->Show();    
 
-    if (s_sun_height < SUN_MAX_HEIGHT)
+    if (m_sunrise_sun_height < SUN_MAX_HEIGHT)
     {
-        s_sun_height++;
+        m_sunrise_sun_height += 10;
     }
     else
     {
         this->SetColor(Adafruit_NeoPixel::Color(0,0,0,255));
         this->ChangeLightScene(LIGHTSCENE_MoBa, this->m_current_brightness);        
     }
-    s_sun_pos = s_sun_pos % PIXEL_NOF;
+    m_sunrise_sun_pos = m_sunrise_sun_pos % PIXEL_NOF;
 }
 
 
