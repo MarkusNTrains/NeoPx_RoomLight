@@ -508,17 +508,18 @@ void LightSceneHdl::LightScene_Lightning_Task(void)
                     this->m_lightning_flash_pause_ms = rand() % 5000;
 
                     uint32_t flash_color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
-                    uint8_t flash_start_pos = rand() % 2;
-                    uint8_t flash_width = rand() % 10;
+                    uint8_t flash_start_pos = rand() % (LedRow::LED_ROW_LENGTH - LIGHTNING_MaxFlashWidth);
+                    uint8_t flash_width = rand() % LIGHTNING_MaxFlashWidth;
                     uint32_t flash_length_ms = rand() % LIGHTNING_MaxFlashLengthMs;
+                    uint8_t flash_row = rand() % LedRow::LED_ROW_NOF;
 
                     // show flash
-                    this->m_led_matrix->SetPixelArray(flash_start_pos, flash_start_pos + flash_width, 0, 3, flash_color);
+                    this->m_led_matrix->SetPixelArray(flash_start_pos, flash_start_pos + flash_width, flash_row, flash_row, flash_color);
                     this->m_led_matrix->Show();
                     delay(flash_length_ms);
 
                     // hide flash
-                    this->m_led_matrix->SetPixelArray(0, LedRow::LED_ROW_LENGTH, 0, 3, Adafruit_NeoPixel::Color(0, 0, LIGHTNING_BackgroundBrightness, 0));
+                    this->m_led_matrix->SetPixelArray(0, LedRow::LED_ROW_LENGTH, flash_row, flash_row, Adafruit_NeoPixel::Color(0, 0, LIGHTNING_BackgroundBrightness, 0));
                     this->m_led_matrix->Show();
 
                     this->m_lightning_flash_counter++;

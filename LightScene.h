@@ -87,6 +87,7 @@ class LightSceneHdl
 
         // lightning task
         const uint32_t LIGHTNING_MaxFlashLengthMs = 150;
+        const uint32_t LIGHTNING_MaxFlashWidth = 40;
         const uint8_t LIGHTNING_BackgroundBrightness = 4;        
         uint8_t m_lightning_state;
         uint32_t m_lightning_flash_timestamp_ms;
