@@ -119,7 +119,7 @@ void LightSceneHdl::ChangeLightScene(LightScene scene, uint8_t brightness)
             this->m_desired_brightness = LIGHTNING_BackgroundBrightness;
             break;
 
-        case LIGHTSCENE_Moba:
+        case LIGHTSCENE_MoBa:
             this->LightScene_MoBa_Enter(brightness);
             break;
           
@@ -186,7 +186,7 @@ void LightSceneHdl::Tasks()
                 LightScene_Lightning_Task();
                 break;
                 
-            case LIGHTSCENE_Moba:
+            case LIGHTSCENE_MoBa:
                 this->LightScene_MoBa_Task();
                 break;
 
@@ -283,54 +283,70 @@ static int32_t s_sun_height = 0;
 static uint32_t s_sun_pos = 0;
 void LightSceneHdl::LightScene_Sunrise_Task(void)
 {
- /* uint16_t pixel;
-  uint16_t cnt;
-  uint8_t red[m_nof_px];
-  uint8_t green[m_nof_px];
-  uint8_t blue[m_nof_px];
-  float brightness = 0;
-  float asin_alpha = 0;
-  uint32_t hypothenuse = 0;
+    uint16_t PIXEL_NOF = LedRow::LED_ROW_LENGTH;
+    uint16_t pixel;
+    uint16_t cnt;
+    uint8_t red[PIXEL_NOF];
+    uint8_t green[PIXEL_NOF];
+    uint8_t blue[PIXEL_NOF];
+    float brightness = 0;
+    float asin_alpha = 0;
+    uint32_t hypothenuse = 0;
+    uint32_t color = 0;
+    uint8_t tmp_color = 0;
 
-  for (cnt = 0; cnt < ((m_nof_px + 1) / 2); cnt++)
-  {
-    hypothenuse = sqrt(pow(s_sun_height, 2) + pow(PIXEL_DISTANCE_MM * cnt, 2));
-    asin_alpha = (255 * s_sun_height) / hypothenuse;
-    brightness = asin_alpha / 255;
-    
-    red[cnt] = 255 * brightness;
-    red[(m_nof_px - 1) - cnt] = red[cnt];
-    
-    green[cnt] = asin_alpha * brightness;
-    green[(m_nof_px - 1) - cnt] = green[cnt];
-    
-    blue[cnt] = ((green[cnt] * s_sun_height) / (SUN_MAX_HEIGHT * 2)) * brightness;
-    blue[(m_nof_px - 1) - cnt] =  blue[cnt];
-    
-#ifdef IS_DEBUG_MODE
-    Serial.print("c ");
-    Serial.print(hypothenuse);
-    Serial.print("  brigth ");
-    Serial.print(brightness);
-    Serial.print("  green ");
-    Serial.println(green[cnt]);
-#endif
-  }
-  
-  for (cnt = 0; cnt < m_nof_px; cnt++)
-  {
-    pixel = (s_sun_pos + cnt) % m_nof_px;
-    m_pixel->setPixelColor(pixel, m_pixel->Color(red[cnt], green[cnt], blue[cnt]));
-  }
+    for (cnt = 0; cnt < PIXEL_NOF; cnt++)
+    {
+        hypothenuse = sqrt(pow(s_sun_height, 2) + pow(PIXEL_DISTANCE_MM * cnt, 2));
+        asin_alpha = (255 * s_sun_height) / hypothenuse;
+        brightness = asin_alpha / 255;
 
-  m_pixel->show();   // Send the updated pixel colors to the hardware.  
+        red[cnt] = 255 * brightness;
+        //red[(PIXEL_NOF - 1) - cnt] = red[cnt];
 
-  if (s_sun_height < SUN_MAX_HEIGHT)
-  {
-    s_sun_height++;
-  }
-  s_sun_pos = s_sun_pos % m_nof_px;
-*/
+        green[cnt] = asin_alpha * brightness;
+        //green[(PIXEL_NOF - 1) - cnt] = green[cnt];
+
+        tmp_color = (green[cnt] * s_sun_height) / (SUN_MAX_HEIGHT * 2);
+        tmp_color = (cnt * (PIXEL_BRIGHTNESS / (PIXEL_NOF / 2))) + tmp_color;
+        if (tmp_color > PIXEL_BRIGHTNESS) {
+            tmp_color = PIXEL_BRIGHTNESS;
+        }
+        blue[cnt] = tmp_color * brightness;
+        //blue[cnt] = ((green[cnt] * s_sun_height) / (SUN_MAX_HEIGHT * 2)) * brightness;
+        //blue[(PIXEL_NOF - 1) - cnt] =  blue[cnt];
+
+        #ifdef IS_DEBUG_MODE
+        Serial.print("c ");
+        Serial.print(asin_alpha);
+        Serial.print("  brigth ");
+        Serial.print(brightness);
+        Serial.print("  green ");
+        Serial.println(green[cnt]);
+        #endif
+    }
+
+    for (cnt = 0; cnt < PIXEL_NOF; cnt++)
+    {
+        pixel = (s_sun_pos + cnt) % PIXEL_NOF;
+        color = Adafruit_NeoPixel::Color(red[cnt], green[cnt], blue[cnt], 0);
+        this->m_led_matrix->SetPixelArray(pixel, pixel, 0, 3, color);
+    }
+
+    // Send the updated pixel colors to the hardware.  
+    this->m_led_matrix->SetBrightness(255);
+    this->m_led_matrix->Show();    
+
+    if (s_sun_height < SUN_MAX_HEIGHT)
+    {
+        s_sun_height++;
+    }
+    else
+    {
+        this->SetColor(Adafruit_NeoPixel::Color(0,0,0,255));
+        this->ChangeLightScene(LIGHTSCENE_MoBa, this->m_current_brightness);        
+    }
+    s_sun_pos = s_sun_pos % PIXEL_NOF;
 }
 
 

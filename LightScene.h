@@ -39,7 +39,7 @@ enum LightScene
     LIGHTSCENE_UserSetting,
     LIGHTSCENE_Idle,
     LIGHTSCENE_Lightning,
-    LIGHTSCENE_Moba,
+    LIGHTSCENE_MoBa,
 };
 
 enum LightningState
