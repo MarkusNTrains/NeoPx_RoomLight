@@ -23,7 +23,7 @@ $Id:  $
 #include <Ethernet.h>
 #include <SD.h>
 #include "common.h"
-#include "LightScene.h"
+#include "LightSceneHdl.h"
 
 
 
@@ -37,12 +37,12 @@ $Id:  $
 // class
 class WebServer
 {
-	public:
-		WebServer(LightSceneHdl* led_scene);
-		~WebServer();
+    public:
+        WebServer(LightSceneHdl* led_scene);
+        ~WebServer();
         void Tasks(void);		
-		
-	private:
+        
+    private:
         typedef enum {
             ACTION_SetLightSecene = 0,
             ACTION_SetBrightness,
@@ -52,14 +52,14 @@ class WebServer
         } action_t;
         
         EthernetServer* m_server;
-		File webFile;                                // the web page file on the SD card
-        LightSceneHdl* m_led_scene;
+        File webFile;                                // the web page file on the SD card
+        LightSceneHdl* m_light_scene;
         action_t m_action;
 
-		void HandleRequest(char* http_request);
+        void HandleRequest(char* http_request);
         uint32_t HttpRequestExtractOneParameter(char* http_request, char* needle, uint8_t needle_length);
-		void StrClear(char *str, char length);
-		char StrContains(char *str, char *sfind);   
+        void StrClear(char *str, char length);
+        char StrContains(char *str, char *sfind);   
         void PrintHardwareInfo();
         void SendXML(EthernetClient* client);
         void SendWebPage(EthernetClient* client);

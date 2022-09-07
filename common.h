@@ -25,6 +25,6 @@ $Id:  $
 //-----------------------------------------------------------------------------
 // defines
 #define IS_DEBUG_MODE
-#undef IS_DEBUG_MODE
+//#undef IS_DEBUG_MODE
 
 #endif //_COMMON_H

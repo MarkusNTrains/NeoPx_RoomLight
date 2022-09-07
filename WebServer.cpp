@@ -34,7 +34,7 @@ $Id:  $
 //-----------------------------------------------------------------------------
 // define
 #define IP_CONFIG_MOBA
-//#undef IP_CONFIG_MOBA
+#undef IP_CONFIG_MOBA
 
 
 //-----------------------------------------------------------------------------
@@ -65,7 +65,7 @@ WebServer::WebServer(LightSceneHdl* led_scene)
     IPAddress subnet(255, 255, 255, 0);
 #endif    
     m_server = new EthernetServer(80);            // server
-    m_led_scene = led_scene;
+    m_light_scene = led_scene;
 
 
     // disable Ethernet chip slave select
@@ -135,7 +135,7 @@ void WebServer::Tasks()
     EthernetClient client = m_server->available();  // try to get client
 
     if (client)   // got client?
-	{
+    {
         const uint8_t REQUEST_BUFFER_LENGTH = 100;     // size of read buffer (reads a complete line) 
         const uint8_t SMALL_BUFFER_SIZE = 50;          // a smaller buffer for results
         bool currentLineIsBlank = false;
@@ -148,9 +148,9 @@ void WebServer::Tasks()
         char* request_param_p;
         
         while (client.connected()) 
-		{
+        {
             if (client.available())    // client data available to read
-			{
+            { 
                 char c = client.read(); // read 1 byte (character) from client
   #ifdef IS_DEBUG_MODE
                 Serial.print(c);
@@ -159,7 +159,7 @@ void WebServer::Tasks()
                 // buffer first part of HTTP request in m_buffer_http_request array (string)
                 // leave last element in array as 0 to null terminate string (REQUEST_BUFFER_LENGTH - 1)
                 if (buffer_idx < (REQUEST_BUFFER_LENGTH - 1)) 
-			    {
+                {
                     lineBuffer[buffer_idx] = c;   // save HTTP request character
                     buffer_idx++;
                 }
@@ -191,10 +191,10 @@ void WebServer::Tasks()
                 }
                 // request completely received so handle request
                 else if ((c == '\n') && (currentLineIsBlank == true)) 
-			    {
+                {
                     //--- Ajax request - send XML file ----------------------------
                     if (StrContains(uri, "ajax_inputs")) 
-			        {
+                    {
                         this->HandleRequest(uri);
                         this->SendXML(&client);
                     }
@@ -213,19 +213,19 @@ void WebServer::Tasks()
                     else
                     {
                         this->Send404(&client);
-		            }
+                    }
                    
                     break;  // exit while loop
                 }
                 
                 // every line of text received from the client ends with \r\n
                 if (c == '\n') 
-				{
+                {
                     // last character on line of received text starting new line with next character read
                     currentLineIsBlank = true;
                 } 
                 else if (c != '\r') 
-				{
+                {
                     // a text character was received from client
                     currentLineIsBlank = false;
                 }
@@ -269,7 +269,7 @@ void WebServer::HandleRequest(char* http_request)
         this->m_action = ACTION_SetLightSecene;
         param = this->HttpRequestExtractOneParameter(http_request, needle_scene, sizeof(needle_scene));
         param2 = this->HttpRequestExtractOneParameter(http_request, needle_brightness, sizeof(needle_brightness));
-        this->m_led_scene->ChangeLightScene(param, param2);
+        this->m_light_scene->ChangeLightScene(param, param2);
 
 #ifdef IS_DEBUG_MODE
         Serial.println(param);
@@ -281,7 +281,7 @@ void WebServer::HandleRequest(char* http_request)
     {
         this->m_action = ACTION_SetBrightness;
         param = this->HttpRequestExtractOneParameter(http_request, needle_brightness, sizeof(needle_brightness));
-        this->m_led_scene->SetBrightness(param);
+        this->m_light_scene->SetBrightness(param);
         
 #ifdef IS_DEBUG_MODE
         Serial.println(param);
@@ -293,7 +293,7 @@ void WebServer::HandleRequest(char* http_request)
     {
         this->m_action = ACTION_SetColor;
         param = this->HttpRequestExtractOneParameter(http_request, needle_color, sizeof(needle_color));
-        this->m_led_scene->SetColor(param);
+        this->m_light_scene->GetLightHdl()->SetColor(param);
         
 #ifdef IS_DEBUG_MODE
         Serial.println(param);
@@ -360,8 +360,8 @@ void WebServer::HandleRequest(char* http_request)
         Serial.println(param4);
 #endif
 
-        this->m_led_scene->ChangeLightScene(LIGHTSCENE_UserSetting);
-        this->m_led_scene->SetLedArea(param, param2, param3, param4);
+        this->m_light_scene->ChangeLightScene(LIGHTSCENE_UserSetting);
+        this->m_light_scene->GetLightHdl()->SetLedArea(param, param2, param3, param4);
     }
 
     else
@@ -419,7 +419,7 @@ uint32_t WebServer::HttpRequestExtractOneParameter(char* http_request, char* nee
 void WebServer::StrClear(char *str, char length)
 {
     for (int i = 0; i < length; i++) 
-	  {
+      {
         str[i] = 0;
     }
 }
@@ -515,26 +515,26 @@ void WebServer::SendXML(EthernetClient* client)
     client->print("<inputs>");
 
     client->print("<scene>");
-    client->print(m_led_scene->GetLightScene());
+    client->print(m_light_scene->GetLightScene());
     client->print("</scene>");
 
     if (this->m_action != ACTION_SetBrightness)
     {
         client->print("<brightness>");
-        client->print(m_led_scene->GetBrightness());
+        client->print(m_light_scene->GetLightHdl()->GetBrightness());
         client->print("</brightness>");
     }
 
     if (this->m_action != ACTION_SetColor)
     {
         client->print("<color>");
-        client->print(m_led_scene->GetColor());
+        client->print(m_light_scene->GetLightHdl()->GetColor());
         client->print("</color>");
     }
 
     if (this->m_action != ACTION_SetLedArea)
     {
-        LedArea* area = this->m_led_scene->GetLedArea();
+        LedArea* area = this->m_light_scene->GetLightHdl()->GetLedArea();
         client->print("<led_area>");
         client->print("<ys>");
         client->print(area->GetRowStart());
