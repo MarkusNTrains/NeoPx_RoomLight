@@ -39,7 +39,7 @@ class LedArea
         uint16_t GetRowStart(void);
         uint16_t GetRowEnd(void);
         uint32_t GetColor(void);
-        Set(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color);
+        void Set(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color);
         
     private:    
         uint16_t m_xs;

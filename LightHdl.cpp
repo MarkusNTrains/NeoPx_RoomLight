@@ -219,7 +219,7 @@ void LightHdl::Show(void)
 //   desired_value: value to change
 //   change_val: max change of value
 //*****************************************************************************
-static uint8_t LightHdl::UpdateValueTo(uint8_t current_value, uint8_t desired_value, uint8_t factor)
+uint8_t LightHdl::UpdateValueTo(uint8_t current_value, uint8_t desired_value, uint8_t factor)
 {
     if (current_value < desired_value)
     {

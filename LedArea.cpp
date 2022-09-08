@@ -112,7 +112,7 @@ uint32_t LedArea::GetColor(void)
 // description:
 //   Set
 //*****************************************************************************
-LedArea::Set(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color)
+void LedArea::Set(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color)
 {
     this->m_xs = xs;
     this->m_xe = xe;

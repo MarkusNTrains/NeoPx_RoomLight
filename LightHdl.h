@@ -66,7 +66,7 @@ class LightHdl
         uint32_t m_color;
         uint32_t m_update_time_ms;
 
-        static uint8_t UpdateValueTo(uint8_t current_value, uint8_t desired_value, uint8_t factor);
+        uint8_t UpdateValueTo(uint8_t current_value, uint8_t desired_value, uint8_t factor);
 };
 
 #endif // _LIGHT_HDL_H

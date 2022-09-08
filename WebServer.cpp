@@ -193,7 +193,7 @@ void WebServer::Tasks()
                 else if ((c == '\n') && (currentLineIsBlank == true)) 
                 {
                     //--- Ajax request - send XML file ----------------------------
-                    if (StrContains(uri, "ajax_inputs")) 
+                    if (StrContains(uri, (char*)"ajax_inputs")) 
                     {
                         this->HandleRequest(uri);
                         this->SendXML(&client);
@@ -269,7 +269,7 @@ void WebServer::HandleRequest(char* http_request)
         this->m_action = ACTION_SetLightSecene;
         param = this->HttpRequestExtractOneParameter(http_request, needle_scene, sizeof(needle_scene));
         param2 = this->HttpRequestExtractOneParameter(http_request, needle_brightness, sizeof(needle_brightness));
-        this->m_light_scene->ChangeLightScene(param, param2);
+        this->m_light_scene->ChangeLightScene((LightScene)param, param2);
 
 #ifdef IS_DEBUG_MODE
         Serial.println(param);
