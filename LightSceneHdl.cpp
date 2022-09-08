@@ -240,7 +240,7 @@ void LightSceneHdl::LightScene_OfficeTableWW_Task(void)
 {
     this->m_light_hdl_p->SetLedArea(0, 20, 0, 0);  
     this->m_light_hdl_p->SetLedArea(120, 140, 0, 0);  
-    this->m_light_hdl_p->SetLedArea(0, 140, 1, 3);  
+    this->m_light_hdl_p->SetLedArea(0, 140, 1, LedRow::LED_ROW_NOF);  
     this->m_light_hdl_p->Show();
 }
 
@@ -288,7 +288,7 @@ void LightSceneHdl::LightScene_LightOnWW_Enter(uint16_t brightness)
 void LightSceneHdl::LightScene_LightOnWW_Task(void)
 {
     //uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
-    this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, 3);  
+    this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF);  
     this->m_light_hdl_p->Show();
 }
 
@@ -352,7 +352,7 @@ void LightSceneHdl::LightScene_Sunrise_Task(void)
     {
         pixel = (m_sunrise_sun_pos + cnt) % PIXEL_NOF;
         color = Adafruit_NeoPixel::Color(red[cnt], green[cnt], blue[cnt], 0);
-        this->m_light_hdl_p->SetLedArea(pixel, pixel, 0, 3, color);
+        this->m_light_hdl_p->SetLedArea(pixel, pixel, 0, LedRow::LED_ROW_NOF, color);
     }
 
     // Send the updated pixel colors to the hardware.  
@@ -414,13 +414,13 @@ void LightSceneHdl::LightScene_WhiteOverRainbow_Task(int whiteSpeed, int whiteLe
          ((tail > head) && ((idx >= tail) || (idx <= head)))) 
         {
         color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
-        this->m_light_hdl_p->m_led_matrix->SetPixelArray(idx, idx, 0, 3, color);  
+        this->m_light_hdl_p->m_led_matrix->SetPixelArray(idx, idx, 0, LedRow::LED_ROW_NOF, color);  
         } 
         else */
         {                                             // else set rainbow
             int pixelHue = firstPixelHue + (idx * 65536L / LedRow::LED_ROW_LENGTH);
             color = Adafruit_NeoPixel::gamma32(Adafruit_NeoPixel::ColorHSV(pixelHue));
-            this->m_light_hdl_p->SetLedArea(idx, idx, 0, 3, color);  
+            this->m_light_hdl_p->SetLedArea(idx, idx, 0, LedRow::LED_ROW_NOF, color);  
         }
     }
 

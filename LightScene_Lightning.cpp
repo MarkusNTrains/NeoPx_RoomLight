@@ -102,7 +102,7 @@ void LightScene_Lightning::Task(void)
                 white = this->UpdateValueTo(white, 0, color_change_factor);
                 
                 this->m_color = Adafruit_NeoPixel::Color(red, green, blue, white);
-                this->m_led_matrix->SetPixelArray(0, LedRow::LED_ROW_LENGTH, 0, 3, this->m_color);
+                this->m_led_matrix->SetPixelArray(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF, this->m_color);
                 this->UpdateBrightness();  
                 this->m_led_matrix->Show();
             }
@@ -110,7 +110,7 @@ void LightScene_Lightning::Task(void)
             {
                 // set overall brightness to maximum and the background color to current brightness, so that flashes will bi visible
                 this->m_light_hdl_p->SetBrightness_Instantly(255);
-                this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, 3, Adafruit_NeoPixel::Color(0, 0, BackgroundBrightness, 0));
+                this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF, Adafruit_NeoPixel::Color(0, 0, BackgroundBrightness, 0));
                 this->m_light_hdl_p->Show();
 
                 this->m_nof_flashes = (rand() % 10) + 10;
