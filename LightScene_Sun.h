@@ -57,7 +57,9 @@ class LightScene_Sun
 
     private:
         const uint8_t DAY_BRIGHTNESS = 150;
+        const uint32_t DAY_COLOR = Adafruit_NeoPixel::Color(0,0,0,255);
         const uint8_t NIGHT_BRIGHTNESS = 4;
+        const uint32_t NIGHT_COLOR = Adafruit_NeoPixel::Color(0,0,255,0);
 
         const uint32_t PIXEL_DISTANCE_MM = 16;  // distance between neo pixels in mm
         const uint32_t SUN_MAX_HEIGHT = 10000;

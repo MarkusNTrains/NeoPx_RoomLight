@@ -79,7 +79,7 @@ void LightSceneHdl::ChangeLightScene(LightScene scene, uint8_t brightness)
         this->m_last_scene = this->m_scene;
         this->m_scene = scene;
     }
-    this->SetBrightness(brightness);
+    this->m_light_hdl_p->SetBrightness_Fade(brightness);
     
     switch (scene)
     {

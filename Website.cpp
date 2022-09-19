@@ -46,7 +46,7 @@ const char line23[] PROGMEM = "LIGHTNING: 10,";
 const char line24[] PROGMEM = "MOBA: 11,";
 const char line25[] PROGMEM = "DAY: 12,";
 const char line26[] PROGMEM = "NIGHT: 13,";
-const char line27[] PROGMEM = "NOF: 12";
+const char line27[] PROGMEM = "NOF: 14";
 const char line28[] PROGMEM = "};";
 const char line29[] PROGMEM = "";
 const char line30[] PROGMEM = "const SEND_DATA_TO_ARDUINO_LOCK_TIMEOUT_MS = 5000;";

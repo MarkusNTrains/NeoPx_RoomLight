@@ -83,7 +83,7 @@ void LightScene_Sun::Day_Task(void)
 //*****************************************************************************
 void LightScene_Sun::Night_Enter(void)
 {
-    this->m_light_hdl_p->SetColor(Adafruit_NeoPixel::Color(0,0,255,0));
+    this->m_light_hdl_p->SetColor(NIGHT_COLOR);
     this->m_light_hdl_p->SetBrightness_Fade(NIGHT_BRIGHTNESS);
     this->m_light_hdl_p->Show();    
 }
@@ -111,6 +111,9 @@ void LightScene_Sun::Sunrise_Enter(void)
 {
     this->m_sun_height = 0;
     this->m_sun_pos = 0;
+
+    this->m_light_hdl_p->SetColor(NIGHT_COLOR);
+    this->m_light_hdl_p->SetBrightness_Instantly(255);
 }
 
 
@@ -184,7 +187,6 @@ void LightScene_Sun::Sunrise_Task(void)
     }
 
     // Send the updated pixel colors to the hardware.  
-    this->m_light_hdl_p->SetBrightness_Instantly(255);
     this->m_light_hdl_p->Show();    
 
     if (this->m_sun_height < SUN_MAX_HEIGHT)
@@ -207,6 +209,9 @@ void LightScene_Sun::Sunset_Enter(void)
 {
     this->m_sun_height = SUN_MAX_HEIGHT;
     this->m_sun_pos = 0;
+
+    this->m_light_hdl_p->SetColor(DAY_COLOR);
+    this->m_light_hdl_p->SetBrightness_Instantly(255);
 }
 
 
