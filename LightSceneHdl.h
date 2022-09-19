@@ -21,6 +21,7 @@ $Id:  $
 #include "common.h"
 #include "LightHdl.h"
 #include "LightScene_Lightning.h"
+#include "LightScene_Sun.h"
 
 
 //----------------------------------------------------------------------------
@@ -31,24 +32,27 @@ $Id:  $
 // enum
 enum LightScene
 {
-    LIGHTSCENE_OfficeTableWW = 0,
-    LIGHTSCENE_LightOnWW,
-    LIGHTSCENE_Rainbow,
-    LIGHTSCENE_Sunset,
-    LIGHTSCENE_Sunrise,
-    LIGHTSCENE_PowerOff,
-    LIGHTSCENE_MovingDot,
-    LIGHTSCENE_Sbh,
-    LIGHTSCENE_UserSetting,
-    LIGHTSCENE_Idle,
-    LIGHTSCENE_Lightning,
-    LIGHTSCENE_MoBa,
+    OfficeTable = 0,
+    LightOn,
+    Rainbow,
+    Sunset,
+    Sunrise,
+    LightOff,
+    MovingDot,
+    Sbh,
+    UserSetting,
+    Idle,
+    Lightning,
+    MoBa,
+    Day,
+    Night,
 };
 
 
 //----------------------------------------------------------------------------
 // extern
 class LightScene_Lightning;
+class LightScene_Sun;
 
 
 //----------------------------------------------------------------------------
@@ -75,25 +79,21 @@ class LightSceneHdl
         LightScene m_last_scene;
         LightHdl* m_light_hdl_p;
         LightScene_Lightning* m_scene_lightning_p;
+        LightScene_Sun* m_scene_sun_p;
         uint32_t m_update_time_ms;
 
-        // daylight tasks
-        uint32_t m_sunrise_sun_height;
-        uint32_t m_sunrise_sun_pos;
-        
         // moving dot task
         uint16_t m_moving_dot_current_px;
 
 
         // light scene
-        void LightScene_OfficeTableWW_Enter(uint16_t brightness);
-        void LightScene_OfficeTableWW_Task(void);
+        void LightScene_OfficeTable_Enter(uint16_t brightness);
+        void LightScene_OfficeTable_Task(void);
         void LightScene_MoBa_Enter(uint16_t brightness);
         void LightScene_MoBa_Task(void);
-        void LightScene_LightOnWW_Enter(uint16_t brightness);
-        void LightScene_LightOnWW_Task(void);
-        void LightScene_Sunrise_Task(void);
-        void LightScene_PowerOff_Task(void);
+        void LightScene_LightOn_Enter(uint16_t brightness);
+        void LightScene_LightOn_Task(void);
+        void LightScene_LightOff_Task(void);
         void LightScene_MovingDot_Task(void);
         void LightScene_UserSetting_Task(void);
         void LightScene_WhiteOverRainbow_Task(int whiteSpeed, int whiteLength);

@@ -39,9 +39,10 @@ LightSceneHdl::LightSceneHdl()
 {
     this->m_light_hdl_p = new LightHdl();
     this->m_scene_lightning_p = new LightScene_Lightning(this, this->m_light_hdl_p);
+    this->m_scene_sun_p = new LightScene_Sun(this, this->m_light_hdl_p);
     this->m_update_time_ms = 0;
 
-    this->ChangeLightScene(LIGHTSCENE_OfficeTableWW, 100);
+    this->ChangeLightScene(LightScene::OfficeTable, 100);
 }
 
 
@@ -53,6 +54,7 @@ LightSceneHdl::~LightSceneHdl()
 {
     delete this->m_light_hdl_p;
     delete this->m_scene_lightning_p;
+    delete this->m_scene_sun_p;
 }
 
 
@@ -81,53 +83,131 @@ void LightSceneHdl::ChangeLightScene(LightScene scene, uint8_t brightness)
     
     switch (scene)
     {
-        case LIGHTSCENE_OfficeTableWW:
-            this->LightScene_OfficeTableWW_Enter(brightness);
-            break;
-        
-        case LIGHTSCENE_LightOnWW:
-            this->LightScene_LightOnWW_Enter(brightness);
-            break;
-        
-        case LIGHTSCENE_Sbh:
-            //
+        case LightScene::Day:
+            this->m_scene_sun_p->Day_Enter();
             break;
 
-        case LIGHTSCENE_Sunrise:
-            this->m_sunrise_sun_height = 0;
-            this->m_sunrise_sun_pos = 0;
+        case LightScene::Lightning:
+            this->m_scene_lightning_p->Enter();
             break;
-            
-        case LIGHTSCENE_Sunset:
-            //m_pixel->setBrightness(brightness); // Set brigthness for all neo pixels
+
+        case LightScene::LightOn:
+            this->LightScene_LightOn_Enter(brightness);
             break;
-          
-        case LIGHTSCENE_PowerOff:
+        
+        case LightScene::LightOff:
             this->m_light_hdl_p->SetBrightness_Fade(0);
             break;
         
-        case LIGHTSCENE_Rainbow:
+        case LightScene::MovingDot:
+            break;
+
+        case LightScene::MoBa:
+            this->LightScene_MoBa_Enter(brightness);
+            break;
+
+        case LightScene::Night:
+            this->m_scene_sun_p->Night_Enter();
+            break;
+          
+        case LightScene::OfficeTable:
+            this->LightScene_OfficeTable_Enter(brightness);
+            break;
+        
+        case LightScene::Rainbow:
             this->m_light_hdl_p->Clear();
             this->LightScene_WhiteOverRainbow_Task(10, 5);
             break;
             
-        case LIGHTSCENE_MovingDot:
+        case LightScene::Sbh:
+            //
             break;
 
-        case LIGHTSCENE_Lightning:
-            this->m_scene_lightning_p->Enter();
+        case LightScene::Sunrise:
+            this->m_scene_sun_p->Sunrise_Enter();
             break;
-
-        case LIGHTSCENE_MoBa:
-            this->LightScene_MoBa_Enter(brightness);
-            break;
-
-        case LIGHTSCENE_UserSetting:
-            this->m_light_hdl_p->Clear();
+            
+        case LightScene::Sunset:
+            this->m_scene_sun_p->Sunset_Enter();
             break;
           
+        case LightScene::UserSetting:
+            this->m_light_hdl_p->Clear();
+            break;
+
         default:
             break;
+    }
+}
+
+
+//*****************************************************************************
+// description:
+//   Statemachine
+//*****************************************************************************
+void LightSceneHdl::Tasks()
+{
+    if (millis() - this->m_update_time_ms > TMO_TILL_NEXT_UPDATE_MS)
+    {
+        this->m_update_time_ms += TMO_TILL_NEXT_UPDATE_MS;
+        this->m_light_hdl_p->UpdateBrightness();
+
+        switch (this->m_scene)
+        {
+            case LightScene::Day:
+                this->m_scene_sun_p->Day_Task();
+                break;
+
+            case LightScene::Idle:
+                break;
+
+            case LightScene::Lightning:
+                this->m_scene_lightning_p->Task();
+                break;
+                
+            case LightScene::LightOn:
+                LightScene_LightOn_Task();
+                break;
+        
+            case LightScene::LightOff:
+                LightScene_LightOff_Task();
+                break;
+
+            case LightScene::MoBa:
+                this->LightScene_MoBa_Task();
+                break;
+
+            case LightScene::MovingDot:
+                LightScene_MovingDot_Task();
+                break;
+            
+            case LightScene::Night:
+                this->m_scene_sun_p->Night_Task();
+                break;
+            
+            case LightScene::OfficeTable:
+                LightScene_OfficeTable_Task();
+                break;
+        
+            case LightScene::Rainbow:
+                this->LightScene_WhiteOverRainbow_Task(75, 5);
+                break;
+            
+            case LightScene::Sunrise:
+                this->m_scene_sun_p->Sunrise_Task();
+                break;
+
+            case LightScene::Sunset:
+                this->m_scene_sun_p->Sunset_Task();
+                break;
+            
+            case LightScene::UserSetting:
+                LightScene_UserSetting_Task();
+                break;
+
+            default:
+                break;
+        }
     }
 }
 
@@ -164,68 +244,9 @@ LightHdl* LightSceneHdl::GetLightHdl(void)
 
 //*****************************************************************************
 // description:
-//   Statemachine
-//*****************************************************************************
-void LightSceneHdl::Tasks()
-{
-    if (millis() - this->m_update_time_ms > TMO_TILL_NEXT_UPDATE_MS)
-    {
-        this->m_update_time_ms += TMO_TILL_NEXT_UPDATE_MS;
-        this->m_light_hdl_p->UpdateBrightness();
-
-        switch (this->m_scene)
-        {
-            case LIGHTSCENE_OfficeTableWW:
-                LightScene_OfficeTableWW_Task();
-                break;
-        
-            case LIGHTSCENE_LightOnWW:
-                LightScene_LightOnWW_Task();
-                break;
-        
-            case LIGHTSCENE_Sunrise:
-                LightScene_Sunrise_Task();
-                break;
-            
-            case LIGHTSCENE_PowerOff:
-                LightScene_PowerOff_Task();
-                break;
-
-            case LIGHTSCENE_Rainbow:
-                this->LightScene_WhiteOverRainbow_Task(75, 5);
-                break;
-            
-            case LIGHTSCENE_MovingDot:
-                LightScene_MovingDot_Task();
-                break;
-            
-            case LIGHTSCENE_Idle:
-                break;
-
-            case LIGHTSCENE_UserSetting:
-                LightScene_UserSetting_Task();
-                break;
-
-            case LIGHTSCENE_Lightning:
-                this->m_scene_lightning_p->Task();
-                break;
-                
-            case LIGHTSCENE_MoBa:
-                this->LightScene_MoBa_Task();
-                break;
-
-            default:
-                break;
-        }
-    }
-}
-
-
-//*****************************************************************************
-// description:
 //   LightScene_OfficeTableWW_Enter
 //*****************************************************************************
-void LightSceneHdl::LightScene_OfficeTableWW_Enter(uint16_t brightness)
+void LightSceneHdl::LightScene_OfficeTable_Enter(uint16_t brightness)
 {
     this->m_light_hdl_p->SetBrightness_Fade(brightness);
     this->m_light_hdl_p->Clear();
@@ -234,9 +255,9 @@ void LightSceneHdl::LightScene_OfficeTableWW_Enter(uint16_t brightness)
 
 //*****************************************************************************
 // description:
-//   ShowOfficeTableWW_Task
+//   ShowOfficeTable_Task
 //*****************************************************************************
-void LightSceneHdl::LightScene_OfficeTableWW_Task(void)
+void LightSceneHdl::LightScene_OfficeTable_Task(void)
 {
     this->m_light_hdl_p->SetLedArea(0, 20, 0, 0);  
     this->m_light_hdl_p->SetLedArea(120, 140, 0, 0);  
@@ -274,7 +295,7 @@ void LightSceneHdl::LightScene_MoBa_Task(void)
 // description:
 //   Show White Pixel
 //*****************************************************************************
-void LightSceneHdl::LightScene_LightOnWW_Enter(uint16_t brightness)
+void LightSceneHdl::LightScene_LightOn_Enter(uint16_t brightness)
 {
     this->m_light_hdl_p->SetBrightness_Fade(brightness);
     this->m_light_hdl_p->Clear();
@@ -285,90 +306,11 @@ void LightSceneHdl::LightScene_LightOnWW_Enter(uint16_t brightness)
 // description:
 //   Show White Pixel
 //*****************************************************************************
-void LightSceneHdl::LightScene_LightOnWW_Task(void)
+void LightSceneHdl::LightScene_LightOn_Task(void)
 {
     //uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
     this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF);  
     this->m_light_hdl_p->Show();
-}
-
-
-//*****************************************************************************
-// description:
-//   Sunrise_Task
-//*****************************************************************************
-#define PIXEL_DISTANCE_MM 16  // distance between neo pixels in mm
-#define PIXEL_BRIGHTNESS 100
-#define SUN_MAX_HEIGHT 10000
-void LightSceneHdl::LightScene_Sunrise_Task(void)
-{
-    uint16_t PIXEL_NOF = LedRow::LED_ROW_LENGTH;
-    uint16_t pixel;
-    uint16_t cnt;
-    uint8_t red[PIXEL_NOF];
-    uint8_t green[PIXEL_NOF];
-    uint8_t blue[PIXEL_NOF];
-    float brightness = 0;
-    float asin_alpha = 0;
-    uint32_t hypothenuse = 0;
-    uint32_t color = 0;
-    uint8_t tmp_color = 0;
-
-    for (cnt = 0; cnt < PIXEL_NOF; cnt++)
-    {
-        hypothenuse = sqrt(pow(m_sunrise_sun_height, 2) + pow(PIXEL_DISTANCE_MM * cnt, 2));
-        asin_alpha = (255 * m_sunrise_sun_height) / hypothenuse;
-        brightness = asin_alpha / 255;
-
-        red[cnt] = 255 * brightness;
-        //red[(PIXEL_NOF - 1) - cnt] = red[cnt];
-
-        green[cnt] = asin_alpha * brightness;
-        if (green[cnt] > PIXEL_BRIGHTNESS) {
-            green[cnt] = PIXEL_BRIGHTNESS;
-        }
-        //green[(PIXEL_NOF - 1) - cnt] = green[cnt];
-
-        tmp_color = (green[cnt] * m_sunrise_sun_height) / (SUN_MAX_HEIGHT * 2);
-        tmp_color = (cnt * (PIXEL_BRIGHTNESS / (PIXEL_NOF / 2))) + tmp_color;
-        if (tmp_color > PIXEL_BRIGHTNESS) {
-            tmp_color = PIXEL_BRIGHTNESS;
-        }
-        blue[cnt] = tmp_color * brightness;
-        //blue[cnt] = ((green[cnt] * m_sunrise_sun_height) / (SUN_MAX_HEIGHT * 2)) * brightness;
-        //blue[(PIXEL_NOF - 1) - cnt] =  blue[cnt];
-
-        #ifdef IS_DEBUG_MODE
-        Serial.print("c ");
-        Serial.print(asin_alpha);
-        Serial.print("  brigth ");
-        Serial.print(brightness);
-        Serial.print("  green ");
-        Serial.println(green[cnt]);
-        #endif
-    }
-
-    for (cnt = 0; cnt < PIXEL_NOF; cnt++)
-    {
-        pixel = (m_sunrise_sun_pos + cnt) % PIXEL_NOF;
-        color = Adafruit_NeoPixel::Color(red[cnt], green[cnt], blue[cnt], 0);
-        this->m_light_hdl_p->SetLedArea(pixel, pixel, 0, LedRow::LED_ROW_NOF, color);
-    }
-
-    // Send the updated pixel colors to the hardware.  
-    this->m_light_hdl_p->SetBrightness_Instantly(255);
-    this->m_light_hdl_p->Show();    
-
-    if (m_sunrise_sun_height < SUN_MAX_HEIGHT)
-    {
-        m_sunrise_sun_height += 10;
-    }
-    else
-    {
-        this->m_light_hdl_p->SetColor(Adafruit_NeoPixel::Color(0,0,0,255));
-        this->ChangeLightScene(LIGHTSCENE_MoBa);        
-    }
-    m_sunrise_sun_pos = m_sunrise_sun_pos % PIXEL_NOF;
 }
 
 
@@ -452,7 +394,7 @@ void LightSceneHdl::LightScene_WhiteOverRainbow_Task(int whiteSpeed, int whiteLe
 // description:
 //   Power Off
 //*****************************************************************************
-void LightSceneHdl::LightScene_PowerOff_Task(void)
+void LightSceneHdl::LightScene_LightOff_Task(void)
 {
     this->m_light_hdl_p->Show();
 }
@@ -475,7 +417,7 @@ void LightSceneHdl::LightScene_UserSetting_Task(void)
 //*****************************************************************************
 void LightSceneHdl::SetBrightness(uint8_t brightness)
 {
-    if (this->m_scene == LIGHTSCENE_PowerOff)
+    if (this->m_scene == LightScene::LightOff)
     {
         this->m_scene = this->m_last_scene;
         this->ChangeLightScene(m_scene, brightness);

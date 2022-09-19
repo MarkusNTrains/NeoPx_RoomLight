@@ -34,7 +34,7 @@ $Id:  $
 //-----------------------------------------------------------------------------
 // define
 #define IP_CONFIG_MOBA
-//#undef IP_CONFIG_MOBA
+#undef IP_CONFIG_MOBA
 
 
 //-----------------------------------------------------------------------------
@@ -360,7 +360,7 @@ void WebServer::HandleRequest(char* http_request)
         Serial.println(param4);
 #endif
 
-        this->m_light_scene->ChangeLightScene(LIGHTSCENE_UserSetting);
+        this->m_light_scene->ChangeLightScene(LightScene::UserSetting);
         this->m_light_scene->GetLightHdl()->SetLedArea(param, param2, param3, param4);
     }
 
