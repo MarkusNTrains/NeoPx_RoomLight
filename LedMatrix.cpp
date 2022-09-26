@@ -104,6 +104,26 @@ void LedMatrix::SetPixelArray(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye
 {
     uint16_t row = 0;
 
+    if (xs >= LedRow::LED_ROW_LENGTH)
+    {
+        xs = LedRow::LED_ROW_LENGTH - 1;
+    }
+
+    if (xe >= LedRow::LED_ROW_LENGTH)
+    {
+        xe = LedRow::LED_ROW_LENGTH - 1;
+    }
+
+    if (ys >= LedRow::LED_ROW_NOF)
+    {
+        ys = LedRow::LED_ROW_NOF - 1;
+    }
+
+    if (ye >= LedRow::LED_ROW_NOF)
+    {
+        ye = LedRow::LED_ROW_NOF - 1;
+    }
+
     for (row = ys; row <= ye; row++)
     {
         m_led_row[row]->SetPixel(xs, ((xe+1)-xs), 0, 1, color);

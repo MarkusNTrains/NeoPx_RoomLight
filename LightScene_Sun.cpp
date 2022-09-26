@@ -60,6 +60,7 @@ void LightScene_Sun::Day_Enter(void)
 {
     this->m_light_hdl_p->SetColor(Adafruit_NeoPixel::Color(0,0,0,255));
     this->m_light_hdl_p->SetBrightness_Fade(DAY_BRIGHTNESS);
+    this->m_light_hdl_p->Clear();
 }
 
 
@@ -85,7 +86,7 @@ void LightScene_Sun::Night_Enter(void)
 {
     this->m_light_hdl_p->SetColor(NIGHT_COLOR);
     this->m_light_hdl_p->SetBrightness_Fade(NIGHT_BRIGHTNESS);
-    this->m_light_hdl_p->Show();    
+    this->m_light_hdl_p->Clear();
 }
 
 
@@ -183,7 +184,7 @@ void LightScene_Sun::Sunrise_Task(void)
     {
         pixel = (this->m_sun_pos + cnt) % PIXEL_NOF;
         color = Adafruit_NeoPixel::Color(red[cnt], green[cnt], blue[cnt], 0);
-        this->m_light_hdl_p->SetLedArea(pixel, pixel, 0, LedRow::LED_ROW_NOF, color);
+        this->m_light_hdl_p->SetLedArea(pixel, pixel, 0, (LedRow::LED_ROW_NOF - 1), color);
     }
 
     // Send the updated pixel colors to the hardware.  

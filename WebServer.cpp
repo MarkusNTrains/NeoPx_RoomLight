@@ -272,6 +272,7 @@ void WebServer::HandleRequest(char* http_request)
         this->m_light_scene->ChangeLightScene((LightScene)param, param2);
 
 #ifdef IS_DEBUG_MODE
+        Serial.print("Scene: ");
         Serial.println(param);
 #endif
     }

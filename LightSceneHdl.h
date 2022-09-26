@@ -85,6 +85,9 @@ class LightSceneHdl
         // moving dot task
         uint16_t m_moving_dot_current_px;
 
+        // rainbow
+        uint16_t m_rainbow_firstPixelHue;
+
 
         // light scene
         void LightScene_OfficeTable_Enter(uint16_t brightness);
@@ -96,7 +99,7 @@ class LightSceneHdl
         void LightScene_LightOff_Task(void);
         void LightScene_MovingDot_Task(void);
         void LightScene_UserSetting_Task(void);
-        void LightScene_WhiteOverRainbow_Task(int whiteSpeed, int whiteLength);
+        void LightScene_WhiteOverRainbow_Task(void);
 };
 
 #endif // _LIGHT_SCENE_HDL_H

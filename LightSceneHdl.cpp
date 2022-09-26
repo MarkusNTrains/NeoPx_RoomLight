@@ -116,7 +116,7 @@ void LightSceneHdl::ChangeLightScene(LightScene scene, uint8_t brightness)
         
         case LightScene::Rainbow:
             this->m_light_hdl_p->Clear();
-            this->LightScene_WhiteOverRainbow_Task(10, 5);
+            this->m_rainbow_firstPixelHue = 0;
             break;
             
         case LightScene::Sbh:
@@ -190,7 +190,7 @@ void LightSceneHdl::Tasks()
                 break;
         
             case LightScene::Rainbow:
-                this->LightScene_WhiteOverRainbow_Task(75, 5);
+                this->LightScene_WhiteOverRainbow_Task();
                 break;
             
             case LightScene::Sunrise:
@@ -261,7 +261,7 @@ void LightSceneHdl::LightScene_OfficeTable_Task(void)
 {
     this->m_light_hdl_p->SetLedArea(0, 20, 0, 0);  
     this->m_light_hdl_p->SetLedArea(120, 140, 0, 0);  
-    this->m_light_hdl_p->SetLedArea(0, 140, 1, LedRow::LED_ROW_NOF);  
+    this->m_light_hdl_p->SetLedArea(0, 140, 1, (LedRow::LED_ROW_NOF - 1));  
     this->m_light_hdl_p->Show();
 }
 
@@ -309,7 +309,7 @@ void LightSceneHdl::LightScene_LightOn_Enter(uint16_t brightness)
 void LightSceneHdl::LightScene_LightOn_Task(void)
 {
     //uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
-    this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF);  
+    this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, (LedRow::LED_ROW_NOF - 1));  
     this->m_light_hdl_p->Show();
 }
 
@@ -335,58 +335,21 @@ void LightSceneHdl::LightScene_MovingDot_Task(void)
 // description:
 //   Show Rainbow with moving white dots
 //*****************************************************************************
-void LightSceneHdl::LightScene_WhiteOverRainbow_Task(int whiteSpeed, int whiteLength) 
+void LightSceneHdl::LightScene_WhiteOverRainbow_Task(void) 
 {
-    if (whiteLength >= LedRow::LED_ROW_LENGTH) 
-    {
-        whiteLength = LedRow::LED_ROW_LENGTH - 1;
-    }
-    
-    int      head          = whiteLength - 1;
-    int      tail          = 0;
-    int      loops         = 3;
-    int      loopNum       = 0;
-    uint32_t lastTime      = millis();
-    static uint32_t firstPixelHue = 0;
     uint32_t color = 0;
+    uint16_t pixelHue = 0;
 
-    for (int idx = 0; idx < LedRow::LED_ROW_LENGTH; idx++)   // For each pixel in strip...
+    for (uint32_t idx = 0; idx < LedRow::LED_ROW_LENGTH; idx++)   // For each pixel in strip...
     {
-        /*if (((idx >= tail) && (idx <= head)) ||      //  If between head & tail...
-         ((tail > head) && ((idx >= tail) || (idx <= head)))) 
-        {
-        color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
-        this->m_light_hdl_p->m_led_matrix->SetPixelArray(idx, idx, 0, LedRow::LED_ROW_NOF, color);  
-        } 
-        else */
-        {                                             // else set rainbow
-            int pixelHue = firstPixelHue + (idx * 65536L / LedRow::LED_ROW_LENGTH);
-            color = Adafruit_NeoPixel::gamma32(Adafruit_NeoPixel::ColorHSV(pixelHue));
-            this->m_light_hdl_p->SetLedArea(idx, idx, 0, LedRow::LED_ROW_NOF, color);  
-        }
+        pixelHue = this->m_rainbow_firstPixelHue + (idx * 65536L / LedRow::LED_ROW_LENGTH);
+        color = Adafruit_NeoPixel::gamma32(Adafruit_NeoPixel::ColorHSV(pixelHue));
+        this->m_light_hdl_p->SetLedArea(idx, idx, 0, (LedRow::LED_ROW_NOF - 1), color);  
     }
 
     // Update strip with new contents
     this->m_light_hdl_p->Show();
-    // There's no delay here, it just runs full-tilt until the timer and
-    // counter combination below runs out.
-
-    firstPixelHue += 542; // Advance just a little along the color wheel
-
-    if ((millis() - lastTime) > whiteSpeed)  // Time to update head/tail?
-    {
-        if (++head >= LedRow::LED_ROW_LENGTH)       // Advance head, wrap around
-        {
-            head = 0;
-            if (++loopNum >= loops) 
-            { return; }
-        }
-        if (++tail >= LedRow::LED_ROW_LENGTH)    // Advance tail, wrap around
-        {
-            tail = 0;
-        }
-        lastTime = millis();                   // Save time of last movement
-    }
+    this->m_rainbow_firstPixelHue += 542; // Advance just a little along the color wheel
 }
 
 

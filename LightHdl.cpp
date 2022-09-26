@@ -85,7 +85,7 @@ void LightHdl::SetLedArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye)
 void LightHdl::SetLedArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color)
 {
     this->m_color = color;
-    this->SetLedArea(xs, xe, ys, ye);   
+    this->SetLedArea(xs, xe, ys, ye);    
 }
 
 
