@@ -82,6 +82,16 @@ void LedRow::Show(void)
 
 //*****************************************************************************
 // description:
+//   Get Pixel Color
+//*****************************************************************************
+uint32_t LedRow::GetPixelColor(uint16_t idx)
+{
+    return this->m_led_strip_p->getPixelColor(this->GetLedIdxOfLut(idx));
+}
+
+
+//*****************************************************************************
+// description:
 //   Set Pixel
 //*****************************************************************************
 void LedRow::SetPixel(uint16_t idx, uint32_t color)

@@ -40,6 +40,7 @@ class LedMatrix
         void Clear(void);
         void Show(void);
         void SetBrightness(uint8_t brightness);
+        void SetColor(uint32_t color);
     
     private:  
         Adafruit_NeoPixel* m_led_strip[LED_STRIP_NOF];  

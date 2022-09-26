@@ -50,9 +50,8 @@ class LightScene_Lightning
 
     private:
         // lightning task
-        const uint32_t MaxFlashLengthMs = 150;
-        const uint32_t MaxFlashWidth = 40;
-        const uint8_t BackgroundBrightness = 4;      
+        const uint32_t MAX_FLASH_LENGHT_MS = 150;
+        const uint32_t MAX_FLASH_WIDTH_PX = 40;
         const uint8_t MIN_NOF_FLASHES = 10;
 
         LightSceneHdl* m_scene_hdl_p;

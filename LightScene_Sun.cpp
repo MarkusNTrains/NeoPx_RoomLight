@@ -58,9 +58,9 @@ LightScene_Sun::~LightScene_Sun()
 //*****************************************************************************
 void LightScene_Sun::Day_Enter(void)
 {
-    this->m_light_hdl_p->SetColor(Adafruit_NeoPixel::Color(0,0,0,255));
-    this->m_light_hdl_p->SetBrightness_Fade(DAY_BRIGHTNESS);
     this->m_light_hdl_p->Clear();
+    this->m_light_hdl_p->SetColor(DAY_COLOR);
+    this->m_light_hdl_p->SetBrightness_Fade(DAY_BRIGHTNESS);
 }
 
 
@@ -112,9 +112,11 @@ void LightScene_Sun::Sunrise_Enter(void)
 {
     this->m_sun_height = 0;
     this->m_sun_pos = 0;
+    this->m_state = LIGHTSCENESUN_STATE_Sunrise;
 
-    this->m_light_hdl_p->SetColor(NIGHT_COLOR);
     this->m_light_hdl_p->SetBrightness_Instantly(255);
+    this->m_light_hdl_p->SetColor(Adafruit_NeoPixel::Color(0, 0, NIGHT_BRIGHTNESS, 0));
+    this->m_light_hdl_p->Show();
 }
 
 
@@ -124,6 +126,8 @@ void LightScene_Sun::Sunrise_Enter(void)
 //*****************************************************************************
 void LightScene_Sun::Sunrise_Exit(void)
 {
+    this->m_light_hdl_p->SetBrightness_Instantly(DAY_BRIGHTNESS);
+    this->m_light_hdl_p->SetColor(DAY_COLOR);
     this->m_scene_hdl_p->ChangeLightScene(LightScene::Day);   
 }
 
@@ -134,71 +138,84 @@ void LightScene_Sun::Sunrise_Exit(void)
 //*****************************************************************************
 void LightScene_Sun::Sunrise_Task(void)
 {
-    uint16_t PIXEL_NOF = LedRow::LED_ROW_LENGTH;
-    uint16_t pixel;
-    uint16_t cnt;
-    uint8_t red[PIXEL_NOF];
-    uint8_t green[PIXEL_NOF];
-    uint8_t blue[PIXEL_NOF];
-    float brightness = 0;
-    float asin_alpha = 0;
-    uint32_t hypothenuse = 0;
-    uint32_t color = 0;
-    uint8_t tmp_color = 0;
-
-    for (cnt = 0; cnt < PIXEL_NOF; cnt++)
+    switch (this->m_state)
     {
-        hypothenuse = sqrt(pow(this->m_sun_height, 2) + pow(PIXEL_DISTANCE_MM * cnt, 2));
-        asin_alpha = (255 * this->m_sun_height) / hypothenuse;
-        brightness = asin_alpha / 255;
+        case LIGHTSCENESUN_STATE_Sunrise:
+        {
+            this->CalculateAndShow_Sunlight();
 
-        red[cnt] = 255 * brightness;
-        //red[(PIXEL_NOF - 1) - cnt] = red[cnt];
+            if (this->m_sun_height < SUN_MAX_HEIGHT)
+            {
+                this->m_sun_height += (this->m_sun_height / 10) + 1;
+                this->m_sun_pos = this->m_sun_pos % LedRow::LED_ROW_LENGTH;
+            }
+            else
+            {
+                this->m_day_color = Adafruit_NeoPixel::Color(DAY_BRIGHTNESS, DAY_BRIGHTNESS, DAY_BRIGHTNESS, 0);
+                this->m_state = LIGHTSCENESUN_STATE_Fading;   
+            }
 
-        green[cnt] = asin_alpha * brightness;
-        if (green[cnt] > DAY_BRIGHTNESS) {
-            green[cnt] = DAY_BRIGHTNESS;
+            break;
         }
-        //green[(PIXEL_NOF - 1) - cnt] = green[cnt];
+        case LIGHTSCENESUN_STATE_Fading:
+        {
+            if (   ((uint8_t)(this->m_day_color >> 24) >= DAY_BRIGHTNESS)
+                && ((this->m_day_color & 0xFFFFFF) == 0))
+            {
+                this->Sunrise_Exit();
+            }
+            else
+            {
+                uint16_t tmp = 0;
+                uint8_t red = (uint8_t)(this->m_day_color >> 16);
+                uint8_t green = (uint8_t)(this->m_day_color >>  8);
+                uint8_t blue = (uint8_t)this->m_day_color;
+                uint8_t white = (uint8_t)(this->m_day_color >> 24);
 
-        tmp_color = (green[cnt] * this->m_sun_height) / (SUN_MAX_HEIGHT * 2);
-        tmp_color = (cnt * (DAY_BRIGHTNESS / (PIXEL_NOF / 2))) + tmp_color;
-        if (tmp_color > DAY_BRIGHTNESS) {
-            tmp_color = DAY_BRIGHTNESS;
-        }
-        blue[cnt] = tmp_color * brightness;
-        //blue[cnt] = ((green[cnt] * m_sunrise_sun_height) / (SUN_MAX_HEIGHT * 2)) * brightness;
-        //blue[(PIXEL_NOF - 1) - cnt] =  blue[cnt];
+                tmp = (white / 10) + 1;
+                if ((white + tmp) < DAY_BRIGHTNESS) 
+                {
+                    white += tmp;
+                }
+                else 
+                {
+                    white = DAY_BRIGHTNESS;
 
-        #ifdef IS_DEBUG_MODE
-        Serial.print("c ");
-        Serial.print(asin_alpha);
-        Serial.print("  brigth ");
-        Serial.print(brightness);
-        Serial.print("  green ");
-        Serial.println(green[cnt]);
-        #endif
+                    tmp = (red / 10) + 1;
+                    if (tmp < red) {
+                        red -= tmp;
+                    }
+                    else {
+                        red = 0;
+                    }
+
+                    tmp = (green / 10) + 1;
+                    if (tmp < green) {
+                        green -= tmp;
+                    }
+                    else {
+                        green = 0;
+                    }
+
+                    tmp = (blue / 10) + 1;
+                    if (tmp < blue) {
+                        blue -= tmp;
+                    }
+                    else {
+                        blue = 0;
+                    }                
+                }
+
+                this->m_day_color = Adafruit_NeoPixel::Color(red, green, blue, white);
+                this->m_light_hdl_p->SetColor(this->m_day_color);
+                this->m_light_hdl_p->Show();    
+            }
+            break;  
+        } 
+
+        default:
+            break;
     }
-
-    for (cnt = 0; cnt < PIXEL_NOF; cnt++)
-    {
-        pixel = (this->m_sun_pos + cnt) % PIXEL_NOF;
-        color = Adafruit_NeoPixel::Color(red[cnt], green[cnt], blue[cnt], 0);
-        this->m_light_hdl_p->SetLedArea(pixel, pixel, 0, (LedRow::LED_ROW_NOF - 1), color);
-    }
-
-    // Send the updated pixel colors to the hardware.  
-    this->m_light_hdl_p->Show();    
-
-    if (this->m_sun_height < SUN_MAX_HEIGHT)
-    {
-        this->m_sun_height += 10;
-    }
-    else
-    {
-        this->Sunrise_Exit();     
-    }
-    this->m_sun_pos = this->m_sun_pos % PIXEL_NOF;
 }
 
 
@@ -209,10 +226,13 @@ void LightScene_Sun::Sunrise_Task(void)
 void LightScene_Sun::Sunset_Enter(void)
 {
     this->m_sun_height = SUN_MAX_HEIGHT;
-    this->m_sun_pos = 0;
+    this->m_sun_pos = LedRow::LED_ROW_LENGTH - 1;
+    this->m_state = LIGHTSCENESUN_STATE_Sunset;
+    this->m_day_color = Adafruit_NeoPixel::Color(0, 0, 0, DAY_BRIGHTNESS);
 
-    this->m_light_hdl_p->SetColor(DAY_COLOR);
     this->m_light_hdl_p->SetBrightness_Instantly(255);
+    this->m_light_hdl_p->SetColor(this->m_day_color);
+    this->m_light_hdl_p->Show();
 }
 
 
@@ -222,6 +242,8 @@ void LightScene_Sun::Sunset_Enter(void)
 //*****************************************************************************
 void LightScene_Sun::Sunset_Exit(void)
 {
+    this->m_light_hdl_p->SetBrightness_Instantly(NIGHT_BRIGHTNESS);
+    this->m_light_hdl_p->SetColor(NIGHT_COLOR);
     this->m_scene_hdl_p->ChangeLightScene(LightScene::Night);   
 }
 
@@ -232,4 +254,129 @@ void LightScene_Sun::Sunset_Exit(void)
 //*****************************************************************************
 void LightScene_Sun::Sunset_Task(void)
 {
+    switch (this->m_state)
+    {
+        case LIGHTSCENESUN_STATE_Fading:
+        {
+            if ((uint8_t)(this->m_day_color >> 24) == 0)
+            {
+                this->m_state = LIGHTSCENESUN_STATE_Fading;   
+            }
+            else
+            {
+                uint16_t tmp = 0;
+                uint8_t red = (uint8_t)(this->m_day_color >> 16);
+                uint8_t green = (uint8_t)(this->m_day_color >>  8);
+                uint8_t blue = (uint8_t)this->m_day_color;
+                uint8_t white = (uint8_t)(this->m_day_color >> 24);
+
+                tmp = (red / 10) + 1;
+                if ((tmp + red) < DAY_BRIGHTNESS) 
+                {
+                    red += tmp;
+                    green += tmp;
+                    blue += tmp;                    
+                }
+                else 
+                {
+                    red = DAY_BRIGHTNESS;
+                    green = DAY_BRIGHTNESS;
+                    blue = DAY_BRIGHTNESS;
+
+                    tmp = (white / 10) + 1;
+                    if (tmp < white) {
+                        white -= tmp;
+                    }
+                    else {
+                        white = 0;
+                    }                
+                }
+
+                this->m_day_color = Adafruit_NeoPixel::Color(red, green, blue, white);
+                this->m_light_hdl_p->SetColor(this->m_day_color);
+                this->m_light_hdl_p->Show();    
+            }
+            break;   
+        }
+
+        case LIGHTSCENESUN_STATE_Sunset:
+        {
+            this->CalculateAndShow_Sunlight();
+
+            if (this->m_sun_height > 0)
+            {
+                this->m_sun_height -= (this->m_sun_height / 10) + 1;
+                this->m_sun_pos = this->m_sun_pos % LedRow::LED_ROW_LENGTH;
+            }
+            else
+            {
+                this->Sunset_Exit();
+            }
+
+            break;
+        }
+
+        default:
+            break;
+    }
+}
+
+
+//*****************************************************************************
+// description:
+//   CalculateAndShow_Sunlight
+//*****************************************************************************
+void LightScene_Sun::CalculateAndShow_Sunlight(void)
+{
+    uint16_t pixel;
+    uint16_t cnt;
+    uint8_t red[LedRow::LED_ROW_LENGTH];
+    uint8_t green[LedRow::LED_ROW_LENGTH];
+    uint8_t blue[LedRow::LED_ROW_LENGTH];
+    float brightness = 0;
+    float asin_alpha = 0;
+    uint32_t hypothenuse = 0;
+    uint32_t color = 0;
+    uint8_t tmp_color = 0;
+
+    for (cnt = 0; cnt < LedRow::LED_ROW_LENGTH; cnt++)
+    {
+        hypothenuse = sqrt(pow(this->m_sun_height, 2) + pow(PIXEL_DISTANCE_MM * cnt, 2));
+        asin_alpha = (255 * this->m_sun_height) / hypothenuse;
+        brightness = asin_alpha / 255;
+
+        red[cnt] = 255 * brightness;
+        //red[(LedRow::LED_ROW_LENGTH - 1) - cnt] = red[cnt];
+
+        green[cnt] = asin_alpha * brightness;
+        if (green[cnt] > DAY_BRIGHTNESS) {
+            green[cnt] = DAY_BRIGHTNESS;
+        }
+        //green[(LedRow::LED_ROW_LENGTH - 1) - cnt] = green[cnt];
+
+        tmp_color = (green[cnt] * this->m_sun_height) / (SUN_MAX_HEIGHT * 2);
+        tmp_color = (cnt * (DAY_BRIGHTNESS / (LedRow::LED_ROW_LENGTH / 2))) + tmp_color;
+        blue[cnt] = (tmp_color * brightness) + NIGHT_BRIGHTNESS;
+        if (tmp_color > DAY_BRIGHTNESS) {
+            tmp_color = DAY_BRIGHTNESS;
+        }
+        //blue[cnt] = ((green[cnt] * m_sunrise_sun_height) / (SUN_MAX_HEIGHT * 2)) * brightness;
+        //blue[(LedRow::LED_ROW_LENGTH - 1) - cnt] =  blue[cnt];
+    }
+
+    #ifdef IS_DEBUG_MODE
+    Serial.print("height ");
+    Serial.println(m_sun_height);
+    #endif
+
+    for (cnt = 0; cnt < LedRow::LED_ROW_LENGTH; cnt++)
+    {
+        pixel = (this->m_sun_pos + cnt) % LedRow::LED_ROW_LENGTH;
+        color = Adafruit_NeoPixel::Color(red[cnt], green[cnt], blue[cnt], 0);
+        this->m_light_hdl_p->SetLedArea(pixel, pixel, 0, (LedRow::LED_ROW_NOF - 1), color);
+    }
+
+    // Send the updated pixel colors to the hardware.  
+    this->m_light_hdl_p->Show();    
+
 }

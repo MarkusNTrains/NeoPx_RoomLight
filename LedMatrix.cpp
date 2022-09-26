@@ -174,3 +174,25 @@ void LedMatrix::SetBrightness(uint8_t brightness)
         m_led_strip[idx]->setBrightness(brightness); // Set brigthness for all neo pixels
     }
 }
+
+
+//*****************************************************************************
+// description:
+//   SetColor
+//*****************************************************************************
+void LedMatrix::SetColor(uint32_t color)
+{
+    uint16_t col;
+    uint8_t row;
+
+    for (row = 0; row < LedRow::LED_ROW_NOF; row++)
+    {
+        for (col = 0; col < LedRow::LED_ROW_LENGTH; col++)
+        {
+            if (this->m_led_row[row]->GetPixelColor(col) > 0)
+            {
+                this->m_led_row[row]->SetPixel(col, color);
+            }
+        }
+    }
+}

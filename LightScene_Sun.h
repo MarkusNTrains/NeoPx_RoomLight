@@ -30,6 +30,14 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // enum
+enum LightningState
+{
+    LIGHTSCENESUN_STATE_Sunrise = 0,
+    LIGHTSCENESUN_STATE_Sunset,
+    LIGHTSCENESUN_STATE_Fading,
+    LIGHTSCENESUN_STATE_FadingToNight,
+    LIGHTSCENESUN_STATE_Unknown,
+};
 
 
 //----------------------------------------------------------------------------
@@ -42,6 +50,11 @@ class LightSceneHdl;
 class LightScene_Sun
 {
     public:
+        static const uint8_t DAY_BRIGHTNESS = 150;
+        const uint32_t DAY_COLOR = Adafruit_NeoPixel::Color(0, 0, 0, 255);
+        static const uint8_t NIGHT_BRIGHTNESS = 4;
+        const uint32_t NIGHT_COLOR = Adafruit_NeoPixel::Color(0, 0, 255, 0);
+
         LightScene_Sun(LightSceneHdl* parent, LightHdl* light_hdl);
         ~LightScene_Sun();
         void Day_Enter(void);
@@ -54,13 +67,9 @@ class LightScene_Sun
         void Sunset_Enter(void);
         void Sunset_Exit(void);
         void Sunset_Task(void);
+        void CalculateAndShow_Sunlight(void);
 
     private:
-        const uint8_t DAY_BRIGHTNESS = 150;
-        const uint32_t DAY_COLOR = Adafruit_NeoPixel::Color(0,0,0,255);
-        const uint8_t NIGHT_BRIGHTNESS = 4;
-        const uint32_t NIGHT_COLOR = Adafruit_NeoPixel::Color(0,0,255,0);
-
         const uint32_t PIXEL_DISTANCE_MM = 16;  // distance between neo pixels in mm
         const uint32_t SUN_MAX_HEIGHT = 10000;
 
@@ -68,8 +77,10 @@ class LightScene_Sun
         LightSceneHdl* m_scene_hdl_p;
         LightHdl* m_light_hdl_p;
 
+        LightningState m_state;
         uint32_t m_sun_height;
-        uint32_t m_sun_pos;        
+        uint32_t m_sun_pos;
+        uint32_t m_day_color;
 };
 
 #endif // _LIGHT_SCENE_SUN_H

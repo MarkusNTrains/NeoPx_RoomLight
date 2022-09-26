@@ -66,7 +66,7 @@ void LightScene_Lightning::Enter(void)
     // set overall brightness to maximum and the background color to current brightness, so that flashes will bi visible
     this->m_light_hdl_p->Clear();
     this->m_light_hdl_p->SetBrightness_Instantly(255);
-    this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, (LedRow::LED_ROW_NOF - 1), Adafruit_NeoPixel::Color(0, 0, this->BackgroundBrightness, 0));
+    this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, (LedRow::LED_ROW_NOF - 1), Adafruit_NeoPixel::Color(0, 0, LightScene_Sun::NIGHT_BRIGHTNESS, 0));
     this->m_light_hdl_p->Show();
 
     this->m_nof_flashes = (rand() % 10) + MIN_NOF_FLASHES;
@@ -82,7 +82,8 @@ void LightScene_Lightning::Enter(void)
 //*****************************************************************************
 void LightScene_Lightning::Exit(void)
 {
-    this->m_scene_hdl_p->ChangeLightScene(this->m_scene_hdl_p->GetLastScene(), this->m_last_brightness);
+    this->m_light_hdl_p->SetBrightness_Instantly(this->m_last_brightness);
+    this->m_scene_hdl_p->ChangeLightScene(this->m_scene_hdl_p->GetLastScene());
 }
 
 
@@ -106,9 +107,9 @@ void LightScene_Lightning::Task(void)
             this->m_flash_pause_ms = rand() % 5000;
 
             uint32_t flash_color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
-            uint8_t flash_start_pos = rand() % (LedRow::LED_ROW_LENGTH - MaxFlashWidth);
-            uint8_t flash_width = rand() % MaxFlashWidth;
-            uint32_t flash_length_ms = rand() % MaxFlashLengthMs;
+            uint8_t flash_start_pos = rand() % (LedRow::LED_ROW_LENGTH - MAX_FLASH_WIDTH_PX);
+            uint8_t flash_width = rand() % MAX_FLASH_WIDTH_PX;
+            uint32_t flash_length_ms = rand() % MAX_FLASH_LENGHT_MS;
             uint8_t flash_row = rand() % LedRow::LED_ROW_NOF;
 
             // show flash
@@ -117,7 +118,7 @@ void LightScene_Lightning::Task(void)
             delay(flash_length_ms);
 
             // hide flash
-            this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, flash_row, flash_row, Adafruit_NeoPixel::Color(0, 0, BackgroundBrightness, 0));
+            this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, flash_row, flash_row, Adafruit_NeoPixel::Color(0, 0, LightScene_Sun::NIGHT_BRIGHTNESS, 0));
             this->m_light_hdl_p->Show();
 
             this->m_flash_counter++;

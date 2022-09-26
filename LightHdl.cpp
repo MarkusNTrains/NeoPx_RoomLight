@@ -190,6 +190,7 @@ uint32_t LightHdl::GetColor(void)
 void LightHdl::SetColor(uint32_t color)
 {
     this->m_color = color;
+    this->m_led_matrix->SetColor(color);
 }
 
 
