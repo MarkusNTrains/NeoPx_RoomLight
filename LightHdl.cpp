@@ -126,6 +126,8 @@ void LightHdl::SetBrightness_Fade(uint8_t brightness)
 //*****************************************************************************
 void LightHdl::SetBrightness_Instantly(uint8_t brightness)
 {
+    this->m_current_brightness = brightness;
+    this->m_desired_brightness = brightness;
     this->m_led_matrix->SetBrightness(this->m_current_brightness); // Set brigthness for all neo pixels
 }
 

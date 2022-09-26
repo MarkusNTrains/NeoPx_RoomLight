@@ -30,12 +30,6 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // enum
-enum LightningState
-{
-    LIGHTNING_STATE_Dimming = 0,
-    LIGHTNING_STATE_FlashActive,
-    LIGHTNING_STATE_Unknown,
-};
 
 
 //----------------------------------------------------------------------------
@@ -59,10 +53,10 @@ class LightScene_Lightning
         const uint32_t MaxFlashLengthMs = 150;
         const uint32_t MaxFlashWidth = 40;
         const uint8_t BackgroundBrightness = 4;      
+        const uint8_t MIN_NOF_FLASHES = 10;
 
         LightSceneHdl* m_scene_hdl_p;
         LightHdl* m_light_hdl_p;
-        uint8_t m_state;
         uint32_t m_flash_timestamp_ms;
         uint32_t m_flash_pause_ms;
         uint8_t m_nof_flashes;
