@@ -99,7 +99,8 @@ void LightSceneHdl::ChangeLightScene(LightScene scene, uint8_t brightness)
             this->m_light_hdl_p->SetBrightness_Fade(0);
             break;
         
-        case LightScene::MovingDot:
+        case LightScene::Disco:
+            this->m_light_hdl_p->Clear();
             break;
 
         case LightScene::MoBa:
@@ -177,8 +178,8 @@ void LightSceneHdl::Tasks()
                 this->LightScene_MoBa_Task();
                 break;
 
-            case LightScene::MovingDot:
-                LightScene_MovingDot_Task();
+            case LightScene::Disco:
+                LightScene_Disco_Task();
                 break;
             
             case LightScene::Night:
@@ -318,7 +319,7 @@ void LightSceneHdl::LightScene_LightOn_Task(void)
 // description:
 //   MovingDot_Task
 //*****************************************************************************
-void LightSceneHdl::LightScene_MovingDot_Task(void)
+void LightSceneHdl::LightScene_Disco_Task(void)
 {
     /*m_pixel->clear();
     m_pixel->setPixelColor(m_moving_dot_current_px, Adafruit_NeoPixel::Color(0, 0, 0, this->m_light_hdl_p->m_desired_brightness));
@@ -328,6 +329,17 @@ void LightSceneHdl::LightScene_MovingDot_Task(void)
     {
         m_moving_dot_current_px = 0;
     }*/
+
+    srand(millis());
+
+    uint16_t col_start = rand() % LedRow::LED_ROW_LENGTH;
+    uint16_t col_end = col_start + (rand() % LedRow::LED_ROW_LENGTH);
+    uint16_t row_start = rand() % LedRow::LED_ROW_NOF;
+    uint16_t row_end = row_end + rand() % LedRow::LED_ROW_NOF;
+    uint32_t color = Adafruit_NeoPixel::Color(rand() % 255, rand() % 255, rand() % 255, 0);
+
+    this->m_light_hdl_p->SetLedArea(col_start, col_end, row_start, row_end, color);
+    this->m_light_hdl_p->Show();
 }
 
 

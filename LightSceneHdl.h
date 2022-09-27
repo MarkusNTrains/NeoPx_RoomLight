@@ -38,7 +38,7 @@ enum LightScene
     Sunset,
     Sunrise,
     LightOff,
-    MovingDot,
+    Disco,
     Sbh,
     UserSetting,
     Idle,
@@ -97,7 +97,7 @@ class LightSceneHdl
         void LightScene_LightOn_Enter(uint16_t brightness);
         void LightScene_LightOn_Task(void);
         void LightScene_LightOff_Task(void);
-        void LightScene_MovingDot_Task(void);
+        void LightScene_Disco_Task(void);
         void LightScene_UserSetting_Task(void);
         void LightScene_WhiteOverRainbow_Task(void);
 };
