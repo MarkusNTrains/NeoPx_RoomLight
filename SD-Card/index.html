@@ -297,6 +297,26 @@
 			SendDataToArduino("&SetColor=" + color);			
 		}
 
+        function ColorRGBSingleSliderChanged()
+        {
+			var red_slider = document.getElementById("color_red_slider");
+			var green_slider = document.getElementById("color_green_slider");
+			var blue_slider = document.getElementById("color_blue_slider");
+
+			document.getElementById("color_red_value").innerHTML = red_slider.value;
+			document.getElementById("color_green_value").innerHTML = green_slider.value;
+			document.getElementById("color_blue_value").innerHTML = blue_slider.value;
+
+            var color = 0;
+            color = (red_slider.value << 16);
+            color |= (green_slider.value << 8);
+            color |= blue_slider.value
+
+			var colorStr = ('000000' + color.toString(16)).slice(-6);
+			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
+			SendDataToArduino("&SetColor=" + color);			
+        }
+
 		function ColorWhiteSliderChanged()
 		{
 			var slider = document.getElementById("color_white_slider");
@@ -617,6 +637,18 @@
     </div>
     <br>
     <div class="slidecontainer">
+        <label for="color_red_value">Rot</label>
+        <label id="color_red_value"></label>
+        <input type="range" min="0" max="255" value="50" class="slider" id="color_red_slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, red)">
+
+        <label for="color_green_value">Gr&uuml;n</label>
+        <label id="color_green_value"></label>
+        <input type="range" min="0" max="255" value="50" class="slider" id="color_green_slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, rgb(0, 255, 0))">
+
+        <label for="color_blue_value">Blau</label>
+        <label id="color_blue_value"></label>
+        <input type="range" min="0" max="255" value="50" class="slider" id="color_blue_slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, blue)">
+
         <label for="color_white_value">Weiss</label>
         <label id="color_white_value"></label>
         <input type="range" min="0" max="255" value="50" class="slider" id="color_white_slider" oninput="ColorWhiteSliderChanged()" style="background-image: linear-gradient(90deg, black, white)">
