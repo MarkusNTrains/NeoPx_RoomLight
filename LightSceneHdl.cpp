@@ -336,7 +336,24 @@ void LightSceneHdl::LightScene_Disco_Task(void)
     uint16_t col_end = col_start + (rand() % LedRow::LED_ROW_LENGTH);
     uint16_t row_start = rand() % LedRow::LED_ROW_NOF;
     uint16_t row_end = row_end + rand() % LedRow::LED_ROW_NOF;
-    uint32_t color = Adafruit_NeoPixel::Color(rand() % 255, rand() % 255, rand() % 255, 0);
+    uint32_t color = 0;
+    switch (rand() % 3)
+    {
+        case 0:
+            color = Adafruit_NeoPixel::Color(rand() % 255, rand() % 255, 0, 0);
+            break;
+
+        case 1:
+            color = Adafruit_NeoPixel::Color(rand() % 255, 0, rand() % 255, 0);
+            break;
+
+        case 2:
+            color = Adafruit_NeoPixel::Color(0, rand() % 255, rand() % 255, 0);
+            break;
+
+        default:
+            break;
+    }
 
     this->m_light_hdl_p->SetLedArea(col_start, col_end, row_start, row_end, color);
     this->m_light_hdl_p->Show();

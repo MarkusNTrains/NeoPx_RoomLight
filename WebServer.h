@@ -32,6 +32,9 @@ $Id:  $
 #define USE_SD_CARD
 #undef USE_SD_CARD
 
+#define IP_CONFIG_MOBA
+//#undef IP_CONFIG_MOBA
+
 
 //----------------------------------------------------------------------------
 // class

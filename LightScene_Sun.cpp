@@ -84,9 +84,9 @@ void LightScene_Sun::Day_Task(void)
 //*****************************************************************************
 void LightScene_Sun::Night_Enter(void)
 {
+    this->m_light_hdl_p->Clear();
     this->m_light_hdl_p->SetColor(NIGHT_COLOR);
     this->m_light_hdl_p->SetBrightness_Fade(NIGHT_BRIGHTNESS);
-    this->m_light_hdl_p->Clear();
 }
 
 
@@ -329,7 +329,7 @@ void LightScene_Sun::Sunset_Task(void)
 //*****************************************************************************
 void LightScene_Sun::CalculateAndShow_Sunlight(void)
 {
-    uint16_t pixel;
+    uint16_t pixel_idx;
     uint16_t cnt;
     uint8_t red[LedRow::LED_ROW_LENGTH];
     uint8_t green[LedRow::LED_ROW_LENGTH];
@@ -376,9 +376,18 @@ void LightScene_Sun::CalculateAndShow_Sunlight(void)
 
     for (cnt = 0; cnt < LedRow::LED_ROW_LENGTH; cnt++)
     {
-        pixel = (this->m_sun_pos + cnt) % LedRow::LED_ROW_LENGTH;
         color = Adafruit_NeoPixel::Color(red[cnt], green[cnt], blue[cnt], 0);
-        this->m_light_hdl_p->SetLedArea(pixel, pixel, 0, (LedRow::LED_ROW_NOF - 1), color);
+        if ((this->m_sun_pos + cnt) < LedRow::LED_ROW_LENGTH)
+        {
+            pixel_idx = (this->m_sun_pos + cnt);
+            this->m_light_hdl_p->SetLedArea(pixel_idx, pixel_idx, 0, (LedRow::LED_ROW_NOF - 1), color);
+        }
+
+        if (this->m_sun_pos >= cnt)
+        {
+            pixel_idx = (this->m_sun_pos - cnt);
+            this->m_light_hdl_p->SetLedArea(pixel_idx, pixel_idx, 0, (LedRow::LED_ROW_NOF - 1), color);
+        }
     }
 
     // Send the updated pixel colors to the hardware.  

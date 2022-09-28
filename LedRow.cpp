@@ -109,10 +109,12 @@ void LedRow::SetPixel(uint16_t start_idx, uint16_t width, uint16_t space, uint16
     uint16_t px = 0;
     uint16_t idx = 0;
     uint16_t cnt = 0;
-    uint16_t offset = 0;
+    uint16_t end_idx = 0;
     uint16_t nof_px_to_fill = 0;
+    uint16_t additional_px = 0;
     
-    if (start_idx >= LED_ROW_LENGTH)
+    if (   (start_idx >= LED_ROW_LENGTH)
+        || (width == 0))
     { return; }
     
     if ((start_idx + width) > LED_ROW_LENGTH)
@@ -120,11 +122,9 @@ void LedRow::SetPixel(uint16_t start_idx, uint16_t width, uint16_t space, uint16
         width = LED_ROW_LENGTH - start_idx;
     }
 
-    width -= 1;
-
-    offset = start_idx;
     for (cnt = 0; cnt < nof_repeat; cnt++)
     {
+        nof_px_to_fill = 0;
         /*for (px = 0; px < width; px++)
         {
             // check if position is further than the rowlength
@@ -134,20 +134,33 @@ void LedRow::SetPixel(uint16_t start_idx, uint16_t width, uint16_t space, uint16
         Serial.println(idx);
             this->m_led_strip_p->setPixelColor(this->m_lookup_table_p[idx], color);    
         }*/
-        if (this->GetLedIdxOfLut(offset) <= this->GetLedIdxOfLut(offset + width))
+        end_idx = start_idx + width;
+        if (end_idx >= LED_ROW_LENGTH) {
+            end_idx = LED_ROW_LENGTH - 1;
+            additional_px = 1;
+        }
+        if (this->GetLedIdxOfLut(start_idx) <= this->GetLedIdxOfLut(end_idx))
         {
-            idx = this->GetLedIdxOfLut(offset);
-            nof_px_to_fill = (this->GetLedIdxOfLut(offset + width) - idx) + 1;
+            idx = this->GetLedIdxOfLut(start_idx);
+            nof_px_to_fill = (this->GetLedIdxOfLut(end_idx) - idx);
+            Serial.print("OK ");
         }
         else
         {
-            idx = this->GetLedIdxOfLut((offset + width));
-            nof_px_to_fill = (this->GetLedIdxOfLut(offset) - idx) + 1;  
+            idx = this->GetLedIdxOfLut((end_idx));
+            nof_px_to_fill = (this->GetLedIdxOfLut(start_idx) - idx);  
+            Serial.print("NOT ");
         }
+
+        nof_px_to_fill += additional_px;
+/*        Serial.print(" idx ");
+        Serial.print(idx);
+        Serial.print(" nof ");
+        Serial.println(nof_px_to_fill);*/
         this->m_led_strip_p->fill(color, idx, nof_px_to_fill);
       
-        offset += space + width;      
+        start_idx += space + width;      
         // check if offset is further than the rowlength
-        if (offset >= LED_ROW_LENGTH) { break; }
+        if (start_idx >= LED_ROW_LENGTH) { break; }
     }
 }
