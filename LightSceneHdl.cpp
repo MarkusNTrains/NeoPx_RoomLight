@@ -337,7 +337,7 @@ void LightSceneHdl::LightScene_Disco_Task(void)
     uint16_t row_start = rand() % LedRow::LED_ROW_NOF;
     uint16_t row_end = row_end + rand() % LedRow::LED_ROW_NOF;
     uint32_t color = 0;
-    switch (rand() % 3)
+    /*switch (rand() % 3)
     {
         case 0:
             color = Adafruit_NeoPixel::Color(rand() % 255, rand() % 255, 0, 0);
@@ -349,6 +349,60 @@ void LightSceneHdl::LightScene_Disco_Task(void)
 
         case 2:
             color = Adafruit_NeoPixel::Color(0, rand() % 255, rand() % 255, 0);
+            break;
+
+        default:
+            break;
+    }*/
+
+    switch (rand() % 3)
+    {
+        case 0:
+            color = Adafruit_NeoPixel::Color(255, 0, 0, 0);
+            break;
+
+        case 1:
+            color = Adafruit_NeoPixel::Color(0, 255, 0, 0);
+            break;
+
+        case 2:
+            color = Adafruit_NeoPixel::Color(0, 0, 255, 0);
+            break;
+
+        case 3:
+            color = Adafruit_NeoPixel::Color(255, 255, 0, 0);
+            break;
+
+        case 4:
+            color = Adafruit_NeoPixel::Color(255, 0, 255, 0);
+            break;
+
+        case 5:
+            color = Adafruit_NeoPixel::Color(0, 255, 255, 0);
+            break;
+
+        case 6:
+            color = Adafruit_NeoPixel::Color(255, 127, 0, 0);
+            break;
+
+        case 7:
+            color = Adafruit_NeoPixel::Color(127, 255, 0, 0);
+            break;
+
+        case 8:
+            color = Adafruit_NeoPixel::Color(255, 0, 127, 0);
+            break;
+
+        case 9:
+            color = Adafruit_NeoPixel::Color(127, 0, 255, 0);
+            break;
+
+        case 10:
+            color = Adafruit_NeoPixel::Color(0, 255, 127, 0);
+            break;
+
+        case 11:
+            color = Adafruit_NeoPixel::Color(0, 127, 255, 0);
             break;
 
         default:
