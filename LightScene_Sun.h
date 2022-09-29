@@ -50,13 +50,14 @@ class LightSceneHdl;
 class LightScene_Sun
 {
     public:
-        static const uint8_t DAY_BRIGHTNESS = 150;
+        static const uint8_t DAY_BRIGHTNESS_WHITE = 80;
+        const uint8_t DAY_BRIGHTNESS_RGB = (DAY_BRIGHTNESS_WHITE * 5) / 3;
         const uint32_t DAY_COLOR = Adafruit_NeoPixel::Color(0, 0, 0, 255);
         static const uint8_t NIGHT_BRIGHTNESS = 4;
         const uint32_t NIGHT_COLOR = Adafruit_NeoPixel::Color(0, 0, 255, 0);
-        const uint8_t RED_MAX = (255 * DAY_BRIGHTNESS) / 255;
-        const uint8_t GREEN_MAX = (120 * DAY_BRIGHTNESS) / 255;
-        const uint8_t BLUE_MAX = (24 * DAY_BRIGHTNESS ) / 255;
+        const uint8_t RED_MAX = (255 * DAY_BRIGHTNESS_RGB) / 255;
+        const uint8_t GREEN_MAX = (140 * DAY_BRIGHTNESS_RGB) / 255;
+        const uint8_t BLUE_MAX = (32 * DAY_BRIGHTNESS_RGB ) / 255;
 
         LightScene_Sun(LightSceneHdl* parent, LightHdl* light_hdl);
         ~LightScene_Sun();
