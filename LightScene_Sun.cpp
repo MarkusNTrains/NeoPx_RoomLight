@@ -70,10 +70,7 @@ void LightScene_Sun::Day_Enter(void)
 //*****************************************************************************
 void LightScene_Sun::Day_Task(void)
 {
-    this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, 0);  
-    this->m_light_hdl_p->SetLedArea(0, 30, 1, 2);  
-    this->m_light_hdl_p->SetLedArea(LedRow::LED_ROW_LENGTH - 30, LedRow::LED_ROW_LENGTH, 1, 2);  
-    this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 3, 3);  
+    this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF);  
     this->m_light_hdl_p->Show();    
 }
 
@@ -96,10 +93,7 @@ void LightScene_Sun::Night_Enter(void)
 //*****************************************************************************
 void LightScene_Sun::Night_Task(void)
 {
-    this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, 0);  
-    this->m_light_hdl_p->SetLedArea(0, 30, 1, 2);  
-    this->m_light_hdl_p->SetLedArea(LedRow::LED_ROW_LENGTH - 30, LedRow::LED_ROW_LENGTH, 1, 2);  
-    this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 3, 3);  
+    this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF);  
     this->m_light_hdl_p->Show();    
 }
 
@@ -116,6 +110,7 @@ void LightScene_Sun::Sunrise_Enter(void)
 
     this->m_light_hdl_p->SetBrightness_Instantly(255);
     this->m_light_hdl_p->SetColor(Adafruit_NeoPixel::Color(0, 0, NIGHT_BRIGHTNESS, 0));
+    this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF);  
     this->m_light_hdl_p->Show();
 }
 
@@ -232,6 +227,7 @@ void LightScene_Sun::Sunset_Enter(void)
 
     this->m_light_hdl_p->SetBrightness_Instantly(255);
     this->m_light_hdl_p->SetColor(this->m_day_color);
+    this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF);  
     this->m_light_hdl_p->Show();
 }
 
