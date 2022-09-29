@@ -355,7 +355,7 @@ void LightSceneHdl::LightScene_Disco_Task(void)
             break;
     }*/
 
-    switch (rand() % 3)
+    switch (rand() % 12)
     {
         case 0:
             color = Adafruit_NeoPixel::Color(255, 0, 0, 0);
