@@ -154,8 +154,7 @@ void LightScene_Sun::Sunrise_Task(void)
         }
         case LIGHTSCENESUN_STATE_Fading:
         {
-            if (   ((uint8_t)(this->m_day_color >> 24) >= DAY_BRIGHTNESS)
-                && ((this->m_day_color & 0xFFFFFF) == 0))
+            if (this->m_day_color == Adafruit_NeoPixel::Color(0, 0, 0, DAY_BRIGHTNESS))
             {
                 this->Sunrise_Exit();
             }
@@ -175,7 +174,10 @@ void LightScene_Sun::Sunrise_Task(void)
                 else 
                 {
                     white = DAY_BRIGHTNESS;
+                }
 
+                if (white > ((DAY_BRIGHTNESS * 2) / 3))
+                {
                     tmp = (red / 10) + 1;
                     if (tmp < red) {
                         red -= tmp;
@@ -254,7 +256,7 @@ void LightScene_Sun::Sunset_Task(void)
     {
         case LIGHTSCENESUN_STATE_Fading:
         {
-            if ((uint8_t)(this->m_day_color >> 24) == 0)
+            if (this->m_day_color == Adafruit_NeoPixel::Color(RED_MAX, GREEN_MAX, BLUE_MAX, 0))
             {
                 this->m_state = LIGHTSCENESUN_STATE_Sunset;   
             }
@@ -267,19 +269,38 @@ void LightScene_Sun::Sunset_Task(void)
                 uint8_t white = (uint8_t)(this->m_day_color >> 24);
                 bool is_rgb_color_ready = true;
 
-                /*tmp = (red / 10) + 1;
+                tmp = (red / 10) + 1;
                 if ((tmp + red) < RED_MAX) 
                 {
                     red += tmp;
-                    green += tmp;
-                    blue += tmp;   
                 }
-                else */
+                else
                 {
                     red = RED_MAX;
-                    green = GREEN_MAX;
-                    blue = BLUE_MAX;
+                }
 
+                tmp = (green / 10) + 1;
+                if ((tmp + green) < GREEN_MAX) 
+                {
+                    green += tmp;
+                }
+                else
+                {
+                    green = GREEN_MAX;
+                }
+
+                tmp = (blue / 10) + 1;
+                if ((tmp + blue) < BLUE_MAX) 
+                {
+                    blue += tmp;
+                }
+                else
+                {
+                    blue = BLUE_MAX;
+                }
+
+                if (red > ((RED_MAX * 2) / 3))
+                {
                     tmp = (white / 10) + 1;
                     if (tmp < white) {
                         white -= tmp;
