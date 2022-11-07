@@ -260,6 +260,8 @@ void WebServer::HandleRequest(char* http_request)
     char needle_brightness[] = "SetBrightness";
     char needle_color[] = "SetColor";
     char needle_set_led_area[] = "SetArea";
+    char needle_get_current_data[] = "GetCurrentData";
+
 
     // find LightScene ---------------------------------------------------------
     if (StrContains(http_request, needle_scene))

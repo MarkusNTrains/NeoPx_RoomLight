@@ -106,6 +106,7 @@ void LightScene_Sun::Sunrise_Enter(void)
 {
     this->m_sun_height = 0;
     this->m_sun_pos = 0;
+    this->m_twilight_brightness = NIGHT_BRIGHTNESS;
     this->m_state = LIGHTSCENESUN_STATE_Sunrise;
 
     this->m_light_hdl_p->SetBrightness_Instantly(255);
@@ -139,7 +140,11 @@ void LightScene_Sun::Sunrise_Task(void)
         {
             this->CalculateAndShow_Sunlight();
 
-            if (this->m_sun_height < SUN_MAX_HEIGHT)
+            if (this->m_twilight_brightness < SUNRISE_BIRGHTNESS)
+            {
+                this->m_twilight_brightness++;
+            }
+            else if (this->m_sun_height < SUN_MAX_HEIGHT)
             {
                 this->m_sun_height += (this->m_sun_height / 10) + 1;
                 this->m_sun_pos = this->m_sun_pos % LedRow::LED_ROW_LENGTH;
@@ -224,6 +229,7 @@ void LightScene_Sun::Sunset_Enter(void)
 {
     this->m_sun_height = SUN_MAX_HEIGHT;
     this->m_sun_pos = LedRow::LED_ROW_LENGTH - 1;
+    this->m_twilight_brightness = SUNRISE_BIRGHTNESS;
     this->m_state = LIGHTSCENESUN_STATE_Fading;
     this->m_day_color = Adafruit_NeoPixel::Color(0, 0, 0, DAY_BRIGHTNESS_WHITE);
 
@@ -326,6 +332,10 @@ void LightScene_Sun::Sunset_Task(void)
                 this->m_sun_height -= (this->m_sun_height / 10) + 1;
                 this->m_sun_pos = this->m_sun_pos % LedRow::LED_ROW_LENGTH;
             }
+            else if (this->m_twilight_brightness > NIGHT_BRIGHTNESS)
+            {
+                this->m_twilight_brightness--;
+            }
             else
             {
                 this->Sunset_Exit();
@@ -367,13 +377,11 @@ void LightScene_Sun::CalculateAndShow_Sunlight(void)
         if (red[cnt] > RED_MAX) {
             red[cnt] = RED_MAX;
         }
-        //red[(LedRow::LED_ROW_LENGTH - 1) - cnt] = red[cnt];
 
         green[cnt] = asin_alpha * brightness;
         if (green[cnt] > GREEN_MAX) {
             green[cnt] = GREEN_MAX;
         }
-        //green[(LedRow::LED_ROW_LENGTH - 1) - cnt] = green[cnt];
 
         tmp_color = (green[cnt] * this->m_sun_height) / (SUN_MAX_HEIGHT * 2);
         tmp_color = (cnt * (DAY_BRIGHTNESS_WHITE / (LedRow::LED_ROW_LENGTH / 2))) + tmp_color;
@@ -381,9 +389,7 @@ void LightScene_Sun::CalculateAndShow_Sunlight(void)
         if (tmp_color > BLUE_MAX) {
             tmp_color = BLUE_MAX;
         }
-        blue[cnt] = (tmp_color * brightness) + NIGHT_BRIGHTNESS;
-        //blue[cnt] = ((green[cnt] * m_sunrise_sun_height) / (SUN_MAX_HEIGHT * 2)) * brightness;
-        //blue[(LedRow::LED_ROW_LENGTH - 1) - cnt] =  blue[cnt];
+        blue[cnt] = (tmp_color * brightness) + this->m_twilight_brightness;
     }
 
     #ifdef IS_DEBUG_MODE

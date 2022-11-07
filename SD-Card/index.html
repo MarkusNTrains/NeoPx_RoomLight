@@ -7,7 +7,7 @@
 	<title>MoBa Room Light</title>
 	<link rel="icon" href="favicon.ico">
 	<script type="text/javascript" charset="utf-8">
-        // const
+        //--- const ------------------------------------------------------
 		const LightScene = 
 		{
 			OFFICE_TABLE: 0,
@@ -27,9 +27,19 @@
             NOF: 14
 		};
 
-        const SEND_DATA_TO_ARDUINO_LOCK_TIMEOUT_MS = 5000;
+        const XML_RREQUEST = 
+        {
+            GetCurrentData: "GetCurrentData",
+            SetArea: "SetArea",
+            SetBrightness: "SetBrightness",
+            SetColor: "SetColor",
+            SetLightScene: "LightScene",
+        };
+
+        const SEND_DATA_TO_ARDUINO_LOCK_TIMEOUT_MS = 2000;
         
-		// static variables
+
+		//--- static variables --------------------------------------------
 		var s_lock_send_data = false;
 		var s_is_send_data_pending = false;
         var s_pending_xml_request = "";
@@ -38,15 +48,15 @@
 		var xhttp = null;
 
 
-        // onload event handler
-        window.addEventListener('load', (event) => {
+        //--- onload event handler ----------------------------------------
+        window.addEventListener('load', (event) => 
+        {
             var button = '<button class="button" id="LightScene' + LightScene.POWER_OFF + '" onclick="LightSceneButtonPushed(LightScene.POWER_OFF, this)">Off</button>'
              + '<button class="button" id="LightScene' + LightScene.OFFICE_TABLE + '" onclick="LightSceneButtonPushed(LightScene.OFFICE_TABLE, this)">B&uuml;rotisch</button>'
              + '<button class="button" id="LightScene' + LightScene.MOBA + '" onclick="LightSceneButtonPushed(LightScene.MOBA, this)">MoBa</button>'
              + '<button class="button" id="LightScene' + LightScene.LIGHT_ON + '" onclick="LightSceneButtonPushed(LightScene.LIGHT_ON, this)">All On</button>'
              + '<button class="button" id="LightScene' + LightScene.RAINBOW + '" onclick="LightSceneButtonPushed(LightScene.RAINBOW, this)">Rainbow</button>'
              + '<button class="button" id="LightScene' + LightScene.DISCO + '" onclick="LightSceneButtonPushed(LightScene.DISCO, this)">Disco</button>'
-            // + '<button class="button" id="LightScene' + LightScene.SBH + '" onclick="LightSceneButtonPushed(LightScene.SBH, this)">SBf</button>'
              + '<button class="button" id="LightScene' + LightScene.USER_SETTING + '" onclick="LightSceneButtonPushed(LightScene.USER_SETTING, this)">User Set</button>'
              + '<br>'
              + '<button class="button" id="LightScene' + LightScene.SUNRISE + '" onclick="LightSceneButtonPushed(LightScene.SUNRISE, this)">Sunrise</button>'
@@ -57,13 +67,14 @@
 
              document.getElementById("LightScene").innerHTML = button;
 
-            SendDataToArduino("");
+             RequestCurrentDataFromArduino();
         });
 
 
+        //--- function ----------------------------------------------------
         function RequestCurrentDataFromArduino()
         {
-            SendDataToArduino("");
+            SendDataToArduino("&" + XML_RREQUEST.GetCurrentData);
         }
 
         function Reset_RequestCurrentDataFromArduino_IntervallTimer()
@@ -234,7 +245,7 @@
             {
                 brightness = 100;
             }
-			SendDataToArduino("&LightScene=" + scene + "&SetBrightness=" + brightness);
+			SendDataToArduino("&" + XML_RREQUEST.SetLightScene + "=" + scene + "&" + XML_RREQUEST.SetBrightness + "=" + brightness);
 		}
 
         function LightScene_ShowAsActive(scene)
@@ -257,7 +268,7 @@
 			var output = document.getElementById("brightness_value");
 			output.innerHTML = slider.value;
 
-			SendDataToArduino("&SetBrightness=" + slider.value);
+			SendDataToArduino("&" + XML_RREQUEST.SetBrightness + "=" + slider.value);
 		}
 
 		function ColorRGBSliderChanged()
@@ -294,7 +305,7 @@
 			var colorStr = ('000000' + color.toString(16)).slice(-6);
 			output.innerHTML = '0x' + colorStr;
 			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
-			SendDataToArduino("&SetColor=" + color);			
+			SendDataToArduino("&" + XML_RREQUEST.SetColor + "=" + color);			
 		}
 
         function ColorRGBSingleSliderChanged()
@@ -314,7 +325,7 @@
 
 			var colorStr = ('000000' + color.toString(16)).slice(-6);
 			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
-			SendDataToArduino("&SetColor=" + color);			
+			SendDataToArduino("&" + XML_RREQUEST.SetColor + "=" + color);			
         }
 
 		function ColorWhiteSliderChanged()
@@ -326,7 +337,7 @@
 			output.innerHTML = color;
 			colorStr = ('000000' + ((color << 16) | (color << 8) | color).toString(16)).slice(-6);
 			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
-			SendDataToArduino("&SetColor=" + (slider.value << 24));			
+			SendDataToArduino("&" + XML_RREQUEST.SetColor + "=" + (slider.value << 24));			
 		}
 
 		// 2 thumb slider
@@ -364,7 +375,7 @@
 
 			document.getElementById("led_column").innerHTML = (xs + " - " + xe);
 			document.getElementById("led_row").innerHTML = (ys + " - " + ye);
-			SendDataToArduino("&SetArea=X" + xs + "-" + xe + "Y" + ys + "-" + ye);
+			SendDataToArduino("&" + XML_RREQUEST.SetArea + "=X" + xs + "-" + xe + "Y" + ys + "-" + ye);
 		}
 	</script>
 
