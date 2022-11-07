@@ -8,22 +8,22 @@
 	<link rel="icon" href="favicon.ico">
 	<script type="text/javascript" charset="utf-8">
         //--- const ------------------------------------------------------
-		const LightScene = 
+		const LIGHT_SCENE = 
 		{
-			OFFICE_TABLE: 0,
-			LIGHT_ON: 1,
-			RAINBOW: 2,
-			SUNSET: 3,
-			SUNRISE: 4,
-			POWER_OFF: 5,
-            DISCO: 6,
-            SBH: 7,
-            USER_SETTING: 8,
+			OfficeTable: 0,
+			LightOn: 1,
+			Rainbow: 2,
+			Sunset: 3,
+			Sunrise: 4,
+			PowerOff: 5,
+            Disco: 6,
+            Sbh: 7,
+            UserSetting: 8,
 			IDLE: 9,
-            LIGHTNING: 10,
-            MOBA: 11,
-            DAY: 12,
-            NIGHT: 13,
+            Lightning: 10,
+            Moba: 11,
+            Day: 12,
+            Night: 13,
             NOF: 14
 		};
 
@@ -51,19 +51,19 @@
         //--- onload event handler ----------------------------------------
         window.addEventListener('load', (event) => 
         {
-            var button = '<button class="button" id="LightScene' + LightScene.POWER_OFF + '" onclick="LightSceneButtonPushed(LightScene.POWER_OFF, this)">Off</button>'
-             + '<button class="button" id="LightScene' + LightScene.OFFICE_TABLE + '" onclick="LightSceneButtonPushed(LightScene.OFFICE_TABLE, this)">B&uuml;rotisch</button>'
-             + '<button class="button" id="LightScene' + LightScene.MOBA + '" onclick="LightSceneButtonPushed(LightScene.MOBA, this)">MoBa</button>'
-             + '<button class="button" id="LightScene' + LightScene.LIGHT_ON + '" onclick="LightSceneButtonPushed(LightScene.LIGHT_ON, this)">All On</button>'
-             + '<button class="button" id="LightScene' + LightScene.RAINBOW + '" onclick="LightSceneButtonPushed(LightScene.RAINBOW, this)">Rainbow</button>'
-             + '<button class="button" id="LightScene' + LightScene.DISCO + '" onclick="LightSceneButtonPushed(LightScene.DISCO, this)">Disco</button>'
-             + '<button class="button" id="LightScene' + LightScene.USER_SETTING + '" onclick="LightSceneButtonPushed(LightScene.USER_SETTING, this)">User Set</button>'
+            var button = '<button class="button" id="LightScene' + LIGHT_SCENE.PowerOff + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.PowerOff, this)">Off</button>'
+             + '<button class="button" id="LightScene' + LIGHT_SCENE.OfficeTable + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.OfficeTable, this)">B&uuml;rotisch</button>'
+             + '<button class="button" id="LightScene' + LIGHT_SCENE.Moba + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Moba, this)">MoBa</button>'
+             + '<button class="button" id="LightScene' + LIGHT_SCENE.LightOn + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.LightOn, this)">All On</button>'
+             + '<button class="button" id="LightScene' + LIGHT_SCENE.Rainbow + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Rainbow, this)">Rainbow</button>'
+             + '<button class="button" id="LightScene' + LIGHT_SCENE.Disco + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Disco, this)">Disco</button>'
+             + '<button class="button" id="LightScene' + LIGHT_SCENE.UserSetting + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.UserSetting, this)">User Set</button>'
              + '<br>'
-             + '<button class="button" id="LightScene' + LightScene.SUNRISE + '" onclick="LightSceneButtonPushed(LightScene.SUNRISE, this)">Sunrise</button>'
-             + '<button class="button" id="LightScene' + LightScene.DAY + '" onclick="LightSceneButtonPushed(LightScene.DAY, this)">Day</button>'
-             + '<button class="button" id="LightScene' + LightScene.SUNSET + '" onclick="LightSceneButtonPushed(LightScene.SUNSET, this)">Sunset</button>'
-             + '<button class="button" id="LightScene' + LightScene.NIGHT + '" onclick="LightSceneButtonPushed(LightScene.NIGHT, this)">Night</button>'
-             + '<button class="button" id="LightScene' + LightScene.LIGHTNING + '" onclick="LightSceneButtonPushed(LightScene.LIGHTNING, this)">Gewitter</button>';
+             + '<button class="button" id="LightScene' + LIGHT_SCENE.Sunrise + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Sunrise, this)">Sunrise</button>'
+             + '<button class="button" id="LightScene' + LIGHT_SCENE.Day + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Day, this)">Day</button>'
+             + '<button class="button" id="LightScene' + LIGHT_SCENE.Sunset + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Sunset, this)">Sunset</button>'
+             + '<button class="button" id="LightScene' + LIGHT_SCENE.Night + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Night, this)">Night</button>'
+             + '<button class="button" id="LightScene' + LIGHT_SCENE.Lightning + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Lightning, this)">Gewitter</button>';
 
              document.getElementById("LightScene").innerHTML = button;
 
@@ -256,7 +256,7 @@
 				matches[cnt].classList.remove('active-class');
 			}
 
-            if (scene < LightScene.NOF)
+            if (scene < LIGHT_SCENE.NOF)
             {
 			    document.getElementById("LightScene" + scene).classList.add("active-class");
             }
