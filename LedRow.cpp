@@ -143,20 +143,14 @@ void LedRow::SetPixel(uint16_t start_idx, uint16_t width, uint16_t space, uint16
         {
             idx = this->GetLedIdxOfLut(start_idx);
             nof_px_to_fill = (this->GetLedIdxOfLut(end_idx) - idx);
-            Serial.print("OK ");
         }
         else
         {
             idx = this->GetLedIdxOfLut((end_idx));
             nof_px_to_fill = (this->GetLedIdxOfLut(start_idx) - idx);  
-            Serial.print("NOT ");
         }
 
         nof_px_to_fill += additional_px;
-/*        Serial.print(" idx ");
-        Serial.print(idx);
-        Serial.print(" nof ");
-        Serial.println(nof_px_to_fill);*/
         this->m_led_strip_p->fill(color, idx, nof_px_to_fill);
       
         start_idx += space + width;      

@@ -108,8 +108,8 @@ void LightScene_Lightning::Task(void)
 
             uint32_t flash_color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
             uint8_t flash_start_pos = rand() % (LedRow::LED_ROW_LENGTH - MAX_FLASH_WIDTH_PX);
-            uint8_t flash_width = rand() % MAX_FLASH_WIDTH_PX;
-            uint32_t flash_length_ms = rand() % MAX_FLASH_LENGHT_MS;
+            uint8_t flash_width = rand() % (MAX_FLASH_WIDTH_PX + 1);
+            uint32_t flash_length_ms = rand() % (MAX_FLASH_LENGHT_MS + 1);
             uint8_t flash_row = rand() % LedRow::LED_ROW_NOF;
 
             // show flash

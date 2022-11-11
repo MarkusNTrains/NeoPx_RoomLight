@@ -24,7 +24,8 @@
             Moba: 11,
             Day: 12,
             Night: 13,
-            NOF: 14
+            Cloud: 14,
+            NOF: 15
 		};
 
         const XML_RREQUEST = 
@@ -36,7 +37,7 @@
             SetLightScene: "LightScene",
         };
 
-        const SEND_DATA_TO_ARDUINO_LOCK_TIMEOUT_MS = 2000;
+        const SEND_DATA_TO_ARDUINO_LOCK_TIMEOUT_MS = 3000;
         
 
 		//--- static variables --------------------------------------------
@@ -63,7 +64,8 @@
              + '<button class="button" id="LightScene' + LIGHT_SCENE.Day + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Day, this)">Day</button>'
              + '<button class="button" id="LightScene' + LIGHT_SCENE.Sunset + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Sunset, this)">Sunset</button>'
              + '<button class="button" id="LightScene' + LIGHT_SCENE.Night + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Night, this)">Night</button>'
-             + '<button class="button" id="LightScene' + LIGHT_SCENE.Lightning + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Lightning, this)">Gewitter</button>';
+             + '<button class="button" id="LightScene' + LIGHT_SCENE.Cloud + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Cloud, this)">Clouds</button>'
+             + '<button class="button" id="LightScene' + LIGHT_SCENE.Lightning + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Lightning, this)">Lightning</button>';
 
              document.getElementById("LightScene").innerHTML = button;
 
@@ -80,7 +82,7 @@
         function Reset_RequestCurrentDataFromArduino_IntervallTimer()
         {
             clearInterval(s_requestDataFromArduino_intervallTimer);
-            s_requestDataFromArduino_intervallTimer = setInterval(RequestCurrentDataFromArduino, SEND_DATA_TO_ARDUINO_LOCK_TIMEOUT_MS + 500);
+            s_requestDataFromArduino_intervallTimer = setInterval(RequestCurrentDataFromArduino, SEND_DATA_TO_ARDUINO_LOCK_TIMEOUT_MS);
         }
         
 		function ReleaseLock()
@@ -146,10 +148,10 @@
 									var color = parseInt(re[0].childNodes[0].nodeValue);
                                     if (color > 0xFFFFFF)
                                     {
-                                        color = (color >> 24) & 0xFF;
-                                        document.getElementById("color_white_slider").value = color;
-                                        document.getElementById("color_white_value").innerHTML = color;
-                                        colorStr = ('000000' + ((color << 16) | (color << 8) | color).toString(16)).slice(-6);
+                                        var white = (color >> 24) & 0xFF;
+                                        document.getElementById("color_white_slider").value = white;
+                                        document.getElementById("color_white_value").innerHTML = white;
+                                        colorStr = ('000000' + ((white << 16) | (white << 8) | white).toString(16)).slice(-6);
                             			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
                                     }
                                     else
@@ -180,11 +182,23 @@
                                             slider_value = 1535 - (color & 0xFF);
                                         }
 
+                                        // set rgb combined slider
                                         var colorStr = ('000000' + color.toString(16)).slice(-6);
                                         document.getElementById("color_rgb_slider").value = slider_value;
-                                        document.getElementById("color_rgb_value").innerHTML = '0x' + colorStr;;
+                                        document.getElementById("color_rgb_value").innerHTML = '0x' + colorStr;
                                         document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
                                     }
+
+                                    // set rgb single slider
+                                    var red = (color >> 16) & 0xFF;
+                                    var green = (color >> 8) & 0xFF;
+                                    var blue = color & 0xFF;
+                                    document.getElementById("color_red_value").innerHTML = red;
+                                    document.getElementById("color_green_value").innerHTML = green;
+                                    document.getElementById("color_blue_value").innerHTML = blue;
+                                    document.getElementById("color_red_slider").value = red;
+                                    document.getElementById("color_green_slider").value = green;
+                                    document.getElementById("color_blue_slider").value = blue;
 								}
 
 								re = this.responseXML.getElementsByTagName('led_area');
@@ -305,7 +319,18 @@
 			var colorStr = ('000000' + color.toString(16)).slice(-6);
 			output.innerHTML = '0x' + colorStr;
 			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
-			SendDataToArduino("&" + XML_RREQUEST.SetColor + "=" + color);			
+			SendDataToArduino("&" + XML_RREQUEST.SetColor + "=" + color);
+            
+            
+            var red = (color >> 16) & 0xFF;
+            var green = (color >> 8) & 0xFF;
+            var blue = color & 0xFF;
+			document.getElementById("color_red_value").innerHTML = red;
+			document.getElementById("color_green_value").innerHTML = green;
+			document.getElementById("color_blue_value").innerHTML = blue;
+            document.getElementById("color_red_slider").value = red;
+            document.getElementById("color_green_slider").value = green;
+            document.getElementById("color_blue_slider").value = blue;
 		}
 
         function ColorRGBSingleSliderChanged()

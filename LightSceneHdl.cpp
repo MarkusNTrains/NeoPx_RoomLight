@@ -38,6 +38,7 @@ $Id:  $
 LightSceneHdl::LightSceneHdl()
 {
     this->m_light_hdl_p = new LightHdl();
+    this->m_scene_cloud_p = new LightScene_Cloud(this, this->m_light_hdl_p);
     this->m_scene_lightning_p = new LightScene_Lightning(this, this->m_light_hdl_p);
     this->m_scene_sun_p = new LightScene_Sun(this, this->m_light_hdl_p);
     this->m_update_time_ms = 0;
@@ -53,6 +54,7 @@ LightSceneHdl::LightSceneHdl()
 LightSceneHdl::~LightSceneHdl()
 {
     delete this->m_light_hdl_p;
+    delete this->m_scene_cloud_p;
     delete this->m_scene_lightning_p;
     delete this->m_scene_sun_p;
 }
@@ -83,6 +85,10 @@ void LightSceneHdl::ChangeLightScene(LightScene scene, uint8_t brightness)
     
     switch (scene)
     {
+        case LightScene::Cloud:
+            this->m_scene_cloud_p->Enter();
+            break;
+
         case LightScene::Day:
             this->m_scene_sun_p->Day_Enter();
             break;
@@ -155,6 +161,10 @@ void LightSceneHdl::Tasks()
 
         switch (this->m_scene)
         {
+            case LightScene::Cloud:
+                this->m_scene_cloud_p->Task();
+                break;
+                
             case LightScene::Day:
                 this->m_scene_sun_p->Day_Task();
                 break;

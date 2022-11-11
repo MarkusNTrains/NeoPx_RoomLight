@@ -30,9 +30,9 @@ $Id:  $
 // class
 class LedArea
 {
-	public:
-		LedArea();
-		~LedArea();
+	  public:
+      LedArea();
+      ~LedArea();
 		
         uint16_t GetColumnStart(void);
         uint16_t GetColumnEnd(void);

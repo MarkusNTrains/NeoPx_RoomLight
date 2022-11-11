@@ -20,6 +20,7 @@ $Id:  $
 // include
 #include "common.h"
 #include "LightHdl.h"
+#include "LightScene_Cloud.h"
 #include "LightScene_Lightning.h"
 #include "LightScene_Sun.h"
 
@@ -46,11 +47,13 @@ enum LightScene
     MoBa,
     Day,
     Night,
+    Cloud,
 };
 
 
 //----------------------------------------------------------------------------
 // extern
+class LightScene_Cloud;
 class LightScene_Lightning;
 class LightScene_Sun;
 
@@ -78,6 +81,7 @@ class LightSceneHdl
         LightScene m_scene;
         LightScene m_last_scene;
         LightHdl* m_light_hdl_p;
+        LightScene_Cloud* m_scene_cloud_p;
         LightScene_Lightning* m_scene_lightning_p;
         LightScene_Sun* m_scene_sun_p;
         uint32_t m_update_time_ms;
