@@ -35,7 +35,7 @@ $Id:  $
 // description:
 //   constructor
 //*****************************************************************************
-LightScene_Cloud::LightScene_Cloud(LightSceneHdl* parent, LightHdl* light_hdl)
+LightScene_Cloud::LightScene_Cloud(LightSceneHdl* parent, LightHdl* light_hdl) 
 {
     uint8_t cnt = 0;
 
@@ -48,7 +48,7 @@ LightScene_Cloud::LightScene_Cloud(LightSceneHdl* parent, LightHdl* light_hdl)
 // description:
 //   destructor
 //*****************************************************************************
-LightScene_Cloud::~LightScene_Cloud()
+LightScene_Cloud::~LightScene_Cloud() 
 {
 }
 
@@ -57,7 +57,7 @@ LightScene_Cloud::~LightScene_Cloud()
 // description:
 //   Enter
 //*****************************************************************************
-void LightScene_Cloud::Enter(void)
+void LightScene_Cloud::Enter(void) 
 {
     uint8_t cnt = 0;
 
@@ -71,14 +71,16 @@ void LightScene_Cloud::Enter(void)
 
     srand(millis());
     this->m_nof_clouds = (rand() % ((MAX_NOF_CLOUDS + 1) - MIN_NOF_CLOUDS)) + MIN_NOF_CLOUDS;
-    for (cnt = 0; cnt < this->m_nof_clouds; cnt++)
+    for (cnt = 0; cnt < this->m_nof_clouds; cnt++) 
     {
         this->m_cloud_p[cnt] = new SkyCloud();
         this->m_cloud_p[cnt]->is_enable = false;
         this->m_cloud_p[cnt]->position_px = 0;
         this->m_cloud_p[cnt]->row = rand() % LedRow::LED_ROW_NOF;
-        this->m_cloud_p[cnt]->length_px = (rand() % ((MAX_CLOUD_WIDTH_PX + 1) - MIN_CLOUD_WIDTH_PX)) + MIN_CLOUD_WIDTH_PX;
+        this->m_cloud_p[cnt]->width = (rand() % ((MAX_CLOUD_WIDTH + 1) - MIN_CLOUD_WIDTH)) + MIN_CLOUD_WIDTH;;
+        this->m_cloud_p[cnt]->length_px = (rand() % ((MAX_CLOUD_LENGTH_PX + 1) - MIN_CLOUD_LENGTH_PX)) + MIN_CLOUD_LENGTH_PX;
         this->m_cloud_p[cnt]->speed = (rand() % ((MAX_CLOUD_SPEED + 1) - MIN_CLOUD_SPEED)) + MIN_CLOUD_SPEED;
+        //this->m_cloud_p[cnt]->speed = 1;
         this->m_cloud_p[cnt]->darkness = (rand() % ((MAX_CLOUD_DARKNESS + 1) - MIN_CLOUD_DARKNESS)) + MIN_CLOUD_DARKNESS;
     }
 }
@@ -88,10 +90,10 @@ void LightScene_Cloud::Enter(void)
 // description:
 //   Exit
 //*****************************************************************************
-void LightScene_Cloud::Exit(void)
+void LightScene_Cloud::Exit(void) 
 {
     uint8_t cnt = 0;
-    for (cnt = 0; cnt < this->m_nof_clouds; cnt++)
+    for (cnt = 0; cnt < this->m_nof_clouds; cnt++) 
     {
         delete this->m_cloud_p[cnt];
     }
@@ -104,39 +106,46 @@ void LightScene_Cloud::Exit(void)
 // description:
 //   Task
 //*****************************************************************************
-void LightScene_Cloud::Task(void)
+void LightScene_Cloud::Task(void) 
 {
     //--- check if a new cloud has to be enabled -----------------------------
-    if (this->m_start_next_cloud_idx < this->m_nof_clouds)
+    if (this->m_start_next_cloud_idx < this->m_nof_clouds) 
     {
-        if (millis() >= this->m_start_cloud_timestamp_ms + this->m_start_next_cloud_tmo_ms)
+        if (millis() >= this->m_start_cloud_timestamp_ms + this->m_start_next_cloud_tmo_ms) 
         {
             this->m_start_cloud_timestamp_ms = millis();
 
             this->m_cloud_p[this->m_start_next_cloud_idx]->is_enable = true;
             this->m_start_next_cloud_idx++;
 
-            this->m_start_next_cloud_tmo_ms = 500;
+            srand(millis());
+            this->m_start_next_cloud_tmo_ms = (rand() % ((MAX_ADD_NEW_CLOUD_LENGTH_MS + 1) / this->m_nof_clouds))  + MIN_ADD_NEXT_CLOUD_TMO_MS;
+            //this->m_start_next_cloud_tmo_ms = 1000;
         }
     }
 
     //--- move clouds ---------------------------------------------------------
-    if (millis() >= this->m_task_hdl_timestamp_ms + TASK_HDL_TMO_MS)
+    if (millis() >= this->m_task_hdl_timestamp_ms + TASK_HDL_TMO_MS) 
     {
         this->m_task_hdl_timestamp_ms = millis();
         this->m_task_cycle_cnt++;
 
         bool do_update = false;
-        uint8_t cnt = 0;
-        uint8_t nof_active_clouds = 0;
+        uint16_t cnt = 0;
+        uint16_t nof_active_clouds = 0;
         uint16_t start_pos;
         uint16_t end_pos;
+        uint16_t column;
+        uint8_t row;
         uint32_t color = 0;
 
+        //this->m_light_hdl_p->Clear();
+        //this->m_light_hdl_p->SetColor(this->m_scene_color);
+        //this->m_light_hdl_p->UpdateLedArea();
         this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF, this->m_scene_color);
-        for (cnt = 0; cnt < this->m_nof_clouds; cnt++)
+        for (cnt = 0; cnt < this->m_nof_clouds; cnt++) 
         {
-            if (this->m_cloud_p[cnt]->is_enable == true)
+            if (this->m_cloud_p[cnt]->is_enable == true) 
             {
                 nof_active_clouds++;
 
@@ -144,35 +153,95 @@ void LightScene_Cloud::Task(void)
                 end_pos = this->m_cloud_p[cnt]->position_px;
 
                 //--- calculate start pos -------------------------------------
-                if (end_pos > this->m_cloud_p[cnt]->length_px)
+                if (end_pos > this->m_cloud_p[cnt]->length_px) 
                 {
                     start_pos = end_pos - this->m_cloud_p[cnt]->length_px;
-                }
-                else
+                } 
+                else 
                 {
                     start_pos = 0;
                 }
 
-                if (start_pos >= LedRow::LED_ROW_LENGTH)
+                if (start_pos >= LedRow::LED_ROW_LENGTH) 
                 {
                     this->m_cloud_p[cnt]->is_enable = false;
                 }
 
                 //--- calculate color -----------------------------------------
-                color = this->m_scene_color & 0xFFFFFF;  // clear white color
-                Serial.print("color: ");
-                Serial.println(color);
-                if (this->m_cloud_p[cnt]->darkness < (this->m_scene_color >> 24)) 
+                color = 0;
+                // white color
+                if (this->m_cloud_p[cnt]->darkness < ((this->m_scene_color >> 24) & 0xFF)) 
                 {
                     color = this->m_scene_color - this->m_cloud_p[cnt]->darkness << 24;
                 }
+                // red color
+                if (this->m_cloud_p[cnt]->darkness < ((this->m_scene_color >> 16) & 0xFF)) 
+                {
+                    color = this->m_scene_color - this->m_cloud_p[cnt]->darkness << 16;
+                }
+                // green color
+                if (this->m_cloud_p[cnt]->darkness < ((this->m_scene_color >> 8) & 0xFF)) 
+                {
+                    color = this->m_scene_color - this->m_cloud_p[cnt]->darkness << 8;
+                }
+                // blue color
+                if (this->m_cloud_p[cnt]->darkness < (this->m_scene_color & 0xFF)) 
+                {
+                    color = this->m_scene_color - this->m_cloud_p[cnt]->darkness;
+                }
+                
+                
+                /*switch (cnt % 6)
+                {
+                    case 0:
+                        color = 0x00FF0000;
+                        break;
+
+                    case 1:
+                        color = 0x0000FF00;
+                        break;
+
+                    case 2:
+                        color = 0x000000FF;
+                        break;
+
+                    case 3:
+                        color = 0x00FFFF00;
+                        break;
+
+                    case 4:
+                        color = 0x00FF00FF;
+                        break;
+
+                    case 5:
+                        color = 0x0000FFFF;
+                        break;
+                }*/
 
                 //--- set cloud into stripe -----------------------------------
-                this->m_light_hdl_p->SetLedArea(start_pos, end_pos, this->m_cloud_p[cnt]->row, this->m_cloud_p[cnt]->row, color);
+                /*for (row = this->m_cloud_p[cnt]->row; row < (this->m_cloud_p[cnt]->row + this->m_cloud_p[cnt]->width); row++) 
+                {
+                    if (row >= LedRow::LED_ROW_NOF) 
+                    {
+                        break;
+                    }
+
+                    for (column = start_pos; column <= end_pos; column++) 
+                    {
+                        if (column < LedRow::LED_ROW_LENGTH)
+                        {
+                            if (this->m_light_hdl_p->GetLedColor(row, column) > color) 
+                            {
+                                this->m_light_hdl_p->SetLed(row, column, color);
+                            }
+                        }
+                    }
+                }*/
+                this->m_light_hdl_p->SetLedArea(start_pos, end_pos, this->m_cloud_p[cnt]->row, this->m_cloud_p[cnt]->row + this->m_cloud_p[cnt]->width, color);
                 do_update = true;
 
                 //--- update position -----------------------------------------
-                if ((this->m_task_cycle_cnt % this->m_cloud_p[cnt]->speed) == 0)
+                if ((this->m_task_cycle_cnt % this->m_cloud_p[cnt]->speed) == 0) 
                 {
                     this->m_cloud_p[cnt]->position_px++;
                 }
@@ -180,17 +249,15 @@ void LightScene_Cloud::Task(void)
         }
 
         //--- update LED strips -----------------------------------------------
-        if (do_update == true)
+        if (do_update == true) 
         {
             this->m_light_hdl_p->Show();
         }
 
         //--- check exit condition --------------------------------------------
-        if ((nof_active_clouds == 0) && (this->m_start_next_cloud_idx >= this->m_nof_clouds))
+        if ((nof_active_clouds == 0) && (this->m_start_next_cloud_idx >= this->m_nof_clouds)) 
         {
             this->Exit();
         }
     }
 }
-
-

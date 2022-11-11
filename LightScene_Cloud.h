@@ -42,6 +42,7 @@ struct SkyCloud
     uint8_t darkness;
     uint16_t position_px;
     uint16_t length_px;
+    uint16_t width;
 };
 
 
@@ -64,14 +65,18 @@ class LightScene_Cloud
     private:
         // lightning task
         const uint32_t TASK_HDL_TMO_MS = 50;
+        const uint32_t MIN_ADD_NEXT_CLOUD_TMO_MS = 200;
+        const uint32_t MAX_ADD_NEW_CLOUD_LENGTH_MS = 60000;
         const uint32_t MIN_CLOUD_SPEED = 1;
-        const uint32_t MAX_CLOUD_SPEED = 10;
-        const uint32_t MIN_CLOUD_WIDTH_PX = 10;
-        const uint32_t MAX_CLOUD_WIDTH_PX = 150;
-        const uint32_t MIN_CLOUD_DARKNESS = 255;
+        const uint32_t MAX_CLOUD_SPEED = 6;
+        const uint32_t MIN_CLOUD_LENGTH_PX = 20;
+        const uint32_t MAX_CLOUD_LENGTH_PX = 100;
+        const uint32_t MIN_CLOUD_WIDTH = 1;
+        const uint32_t MAX_CLOUD_WIDTH = LedRow::LED_ROW_NOF;
+        const uint32_t MIN_CLOUD_DARKNESS = 180;
         const uint32_t MAX_CLOUD_DARKNESS = 255;
         const uint8_t MIN_NOF_CLOUDS = 5;
-        static const uint8_t MAX_NOF_CLOUDS = 20;
+        static const uint8_t MAX_NOF_CLOUDS = 30;
 
         LightSceneHdl* m_scene_hdl_p;
         LightHdl* m_light_hdl_p;

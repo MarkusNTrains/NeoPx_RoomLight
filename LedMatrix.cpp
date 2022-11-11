@@ -81,13 +81,31 @@ LedMatrix::~LedMatrix()
 
 //*****************************************************************************
 // description:
+//   GetPixelColor
+// return:
+//   color WRGB
+//*****************************************************************************
+uint32_t LedMatrix::GetPixelColor(uint16_t row, uint16_t column)
+{
+    if ((row < LedRow::LED_ROW_NOF) && (column < LedRow::LED_ROW_LENGTH)) 
+    {
+        return this->m_led_row[row]->GetPixelColor(column);
+    }
+
+    return 0;
+}
+
+
+//*****************************************************************************
+// description:
 //   SetPixel
 //*****************************************************************************
-void LedMatrix::SetPixel(uint16_t row, uint16_t col, uint32_t color)
+void LedMatrix::SetPixel(uint16_t row, uint16_t column, uint32_t color)
 {
-    this->Clear();
-    this->m_led_row[row]->SetPixel(col, color);
-    this->Show();
+    if ((row < LedRow::LED_ROW_NOF) && (column < LedRow::LED_ROW_LENGTH)) 
+    {
+        this->m_led_row[row]->SetPixel(column, color);
+    }
 }
 
 

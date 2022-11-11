@@ -59,6 +59,27 @@ LightHdl::~LightHdl()
 
 //*****************************************************************************
 // description:
+//   Get LED color
+//*****************************************************************************
+uint32_t LightHdl::GetLedColor(uint16_t row, uint16_t column)
+{
+    return this->m_led_matrix->GetPixelColor(row, column);
+}
+
+
+//*****************************************************************************
+// description:
+//   Set one LED
+//*****************************************************************************
+void LightHdl::SetLed(uint16_t row, uint16_t column, uint32_t color)
+{
+    this->m_led_matrix->SetPixel(row, column, color);
+    //this->m_led_matrix->SetPixelArray(column, column, row, row, color);
+}
+
+
+//*****************************************************************************
+// description:
 //   Get Led Area
 //*****************************************************************************
 LedArea* LightHdl::GetLedArea(void)

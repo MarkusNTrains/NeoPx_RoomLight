@@ -38,6 +38,8 @@ class LightHdl
     public:
         LightHdl();
         ~LightHdl();
+        uint32_t GetLedColor(uint16_t row, uint16_t column);
+        void SetLed(uint16_t row, uint16_t column, uint32_t color);
         LedArea* GetLedArea(void);
         void SetLedArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye);
         void SetLedArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color);
