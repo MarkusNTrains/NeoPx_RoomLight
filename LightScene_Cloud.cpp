@@ -138,6 +138,7 @@ void LightScene_Cloud::Task(void)
         uint16_t column;
         uint8_t row;
         uint32_t color = 0;
+        uint32_t darkness = 0;
 
         //this->m_light_hdl_p->Clear();
         //this->m_light_hdl_p->SetColor(this->m_scene_color);
@@ -169,25 +170,26 @@ void LightScene_Cloud::Task(void)
 
                 //--- calculate color -----------------------------------------
                 color = 0;
+                darkness = this->m_cloud_p[cnt]->darkness;
                 // white color
-                if (this->m_cloud_p[cnt]->darkness < ((this->m_scene_color >> 24) & 0xFF)) 
+                if (darkness < ((this->m_scene_color >> 24) & 0xFF)) 
                 {
-                    color = this->m_scene_color - this->m_cloud_p[cnt]->darkness << 24;
+                    color |= (this->m_scene_color & 0xFF000000) - (darkness << 24);
                 }
                 // red color
-                if (this->m_cloud_p[cnt]->darkness < ((this->m_scene_color >> 16) & 0xFF)) 
+                if (darkness < ((this->m_scene_color >> 16) & 0xFF)) 
                 {
-                    color = this->m_scene_color - this->m_cloud_p[cnt]->darkness << 16;
+                    color |= (this->m_scene_color & 0xFF0000) - (darkness << 16);
                 }
                 // green color
-                if (this->m_cloud_p[cnt]->darkness < ((this->m_scene_color >> 8) & 0xFF)) 
+                if (darkness < ((this->m_scene_color >> 8) & 0xFF)) 
                 {
-                    color = this->m_scene_color - this->m_cloud_p[cnt]->darkness << 8;
+                    color |= (this->m_scene_color & 0xFF00) - (darkness << 8);
                 }
                 // blue color
-                if (this->m_cloud_p[cnt]->darkness < (this->m_scene_color & 0xFF)) 
+                if (darkness < (this->m_scene_color & 0xFF)) 
                 {
-                    color = this->m_scene_color - this->m_cloud_p[cnt]->darkness;
+                    color |= (this->m_scene_color & 0xFF) - darkness;
                 }
                 
                 
