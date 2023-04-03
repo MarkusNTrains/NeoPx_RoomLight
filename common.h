@@ -24,12 +24,11 @@ $Id:  $
 
 //-----------------------------------------------------------------------------
 // defines
+//--- version ---------
 #define SW_VERSION_Major 1
-#define SW_VERSION_Minor 1
+#define SW_VERSION_Minor 2
 
-#define IS_DEBUG_MODE
-#undef IS_DEBUG_MODE
-
+//--- hardware setting --------
 // enhance the following setting to use it for another room light
 // and enhance the following files:
 //  - LED_MATRIX_LUT in file LedRow.cpp
@@ -48,6 +47,13 @@ $Id:  $
     #define ROOM_LIGHT_RowNofPx     240
     #define ROOM_LIGHT_NofLedStrips 6
 #endif
+
+
+//--- debug setting --------
+#define IS_DEBUG_MODE
+#undef IS_DEBUG_MODE
+
+
 
 
 #endif //_COMMON_H
