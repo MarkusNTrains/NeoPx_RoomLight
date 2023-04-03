@@ -31,6 +31,7 @@
         const XML_RREQUEST = 
         {
             GetCurrentData: "GetCurrentData",
+			GetInfo: "GetInfo",
             SetArea: "SetArea",
             SetBrightness: "SetBrightness",
             SetColor: "SetColor",
@@ -38,6 +39,7 @@
         };
 
         const SEND_DATA_TO_ARDUINO_LOCK_TIMEOUT_MS = 3000;
+        const USER_SETTING_OFFSET = 1;
         
 
 		//--- static variables --------------------------------------------
@@ -67,9 +69,10 @@
              + '<button class="button" id="LightScene' + LIGHT_SCENE.Cloud + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Cloud, this)">Clouds</button>'
              + '<button class="button" id="LightScene' + LIGHT_SCENE.Lightning + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Lightning, this)">Lightning</button>';
 
-             document.getElementById("LightScene").innerHTML = button;
+            document.getElementById("LightScene").innerHTML = button;
 
-             RequestCurrentDataFromArduino();
+			RequestArduinoInfo();
+            RequestCurrentDataFromArduino();
         });
 
 
@@ -78,6 +81,11 @@
         {
             SendDataToArduino("&" + XML_RREQUEST.GetCurrentData);
         }
+		
+		function RequestArduinoInfo()
+		{
+            SendDataToArduino("&" + XML_RREQUEST.GetInfo);			
+		}
 
         function Reset_RequestCurrentDataFromArduino_IntervallTimer()
         {
@@ -122,7 +130,49 @@
 							if (this.responseXML != null) 
 							{
 								// XML file received - contains LED states
-								var re = this.responseXML.getElementsByTagName('scene');
+								var re = this.responseXML.getElementsByTagName('info');
+								if ((re != undefined) && (re != null) && (re.length > 0))
+                                {
+                                    var version_major = this.responseXML.getElementsByTagName('major')[0].childNodes[0].nodeValue;
+                                    var version_minor = this.responseXML.getElementsByTagName('minor')[0].childNodes[0].nodeValue;
+                                    var led_nof_row = parseInt(this.responseXML.getElementsByTagName('nof_row')[0].childNodes[0].nodeValue) - USER_SETTING_OFFSET;
+                                    var led_nof_px = parseInt(this.responseXML.getElementsByTagName('nof_leds')[0].childNodes[0].nodeValue) - USER_SETTING_OFFSET;
+
+                                    //--- display arduion room light firmware version in footer ---------------------
+                                    document.getElementById("footer_version").innerHTML = ("v" + version_major + "." + version_minor);
+
+                                    //--- update user setting columen and row slider --------------------------------
+                                    //<!--<div style="transform: rotate(270deg);">-->
+                                    //<div id="slider_row" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: 0; --b: 5; --min: 0; --max: 5;">
+                                    //    <!--<div id="multi-lbl">Multi thumb slider: 0 - 15</div>-->
+                                    //    <input id="a" class="twoThumbSlider" type="range" min="0" value="0" max="5" />
+                                    //    <!--<output for="a" style="--c: var(--a)"></output>-->
+                                    //    <input id="b" class="twoThumbSlider" type="range" min="0" value="5" max="5" />
+                                    //    <!--<output for="b" style="--c: var(--b)"></output>-->
+                                    //</div>
+                                    document.getElementById("led_slider_row").innerHTML = (
+                                        '<div id="slider_row" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: 0; --b: ' + led_nof_row + '; --min: 0; --max: ' + led_nof_row + ';">'
+                                        +   '<input id="a" class="twoThumbSlider" type="range" min="0" value="0" max="' + led_nof_row + '" />'
+                                        +   '<input id="b" class="twoThumbSlider" type="range" min="0" value="' + led_nof_row + '" max="' + led_nof_row + '" />'
+                                        + '</div>'
+                                    );
+
+                                    //<div id="slider_columen" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: 20; --b: 120; --min: 0; --max: 239">
+                                    //    <!--<div id="multi-lbl">Multi thumb slider: 0 - 15</div>-->
+                                    //    <input id="a" class="twoThumbSlider" type="range" min="0" value="20" max="239" />
+                                    //    <!--<output for="a" style="--c: var(--a)"></output>-->
+                                    //    <input id="b" class="twoThumbSlider" type="range" min="0" value="120" max="239" />
+                                    //    <!--<output for="b" style="--c: var(--b)"></output>-->
+                                    //</div>
+                                    document.getElementById("led_slider_column").innerHTML = (
+                                        '<div id="slider_columen" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: 0; --b: ' + led_nof_px + '; --min: 0; --max: ' + led_nof_px + '">'
+                                        +   '<input id="a" class="twoThumbSlider" type="range" min="0" value="0" max="' + led_nof_px + '" />'
+                                        +   '<input id="b" class="twoThumbSlider" type="range" min="0" value="' + led_nof_px + '" max="' + led_nof_px + '" />'
+                                        + '</div>'
+                                    );
+                                }
+								
+								re = this.responseXML.getElementsByTagName('scene');
 								if ((re != undefined) && (re != null) && (re.length > 0))
 								{
                                     LightScene_ShowAsActive(re[0].childNodes[0].nodeValue);
@@ -204,10 +254,10 @@
 								re = this.responseXML.getElementsByTagName('led_area');
 								if ((re != undefined) && (re != null) && (re.length > 0))
                                 {
-                                    var xs = this.responseXML.getElementsByTagName('xs')[0].childNodes[0].nodeValue;
-                                    var xe = this.responseXML.getElementsByTagName('xe')[0].childNodes[0].nodeValue;
-                                    var ys = this.responseXML.getElementsByTagName('ys')[0].childNodes[0].nodeValue;
-                                    var ye = this.responseXML.getElementsByTagName('ye')[0].childNodes[0].nodeValue;
+                                    var xs = parseInt(this.responseXML.getElementsByTagName('xs')[0].childNodes[0].nodeValue) + USER_SETTING_OFFSET;
+                                    var xe = parseInt(this.responseXML.getElementsByTagName('xe')[0].childNodes[0].nodeValue) + USER_SETTING_OFFSET;
+                                    var ys = parseInt(this.responseXML.getElementsByTagName('ys')[0].childNodes[0].nodeValue) + USER_SETTING_OFFSET;
+                                    var ye = parseInt(this.responseXML.getElementsByTagName('ye')[0].childNodes[0].nodeValue) + USER_SETTING_OFFSET;
 
                                     document.getElementById("led_column").innerHTML = (xs + " - " + xe);
                         			document.getElementById("led_row").innerHTML = (ys + " - " + ye);
@@ -398,9 +448,13 @@
                 ye = tmp;
             }
 
+			SendDataToArduino("&" + XML_RREQUEST.SetArea + "=X" + xs + "-" + xe + "Y" + ys + "-" + ye);
+            xs += USER_SETTING_OFFSET;
+            xe += USER_SETTING_OFFSET;
+            ys += USER_SETTING_OFFSET;
+            ye += USER_SETTING_OFFSET;
 			document.getElementById("led_column").innerHTML = (xs + " - " + xe);
 			document.getElementById("led_row").innerHTML = (ys + " - " + ye);
-			SendDataToArduino("&" + XML_RREQUEST.SetArea + "=X" + xs + "-" + xe + "Y" + ys + "-" + ye);
 		}
 	</script>
 
@@ -706,24 +760,8 @@
         </tr>
         <tr>
             <td id="led_slider_row">
-                <!--<div style="transform: rotate(270deg);">-->
-                <div>
-                    <div id="slider_row" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: 0; --b: 3; --min: 0; --max: 3;">
-                    <!--<div id="multi-lbl">Multi thumb slider: 0 - 15</div>-->
-                    <input id="a" class="twoThumbSlider" type="range" min="0" value="0" max="3" />
-                    <!--<output for="a" style="--c: var(--a)"></output>-->
-                    <input id="b" class="twoThumbSlider" type="range" min="0" value="3" max="3" />
-                    <!--<output for="b" style="--c: var(--b)"></output>-->
-                </div>
             </td>
             <td id=led_slider_column>
-                <div id="slider_columen" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: 20; --b: 120; --min: 0; --max: 284">
-                    <!--<div id="multi-lbl">Multi thumb slider: 0 - 15</div>-->
-                    <input id="a" class="twoThumbSlider" type="range" min="0" value="20" max="284" />
-                    <!--<output for="a" style="--c: var(--a)"></output>-->
-                    <input id="b" class="twoThumbSlider" type="range" min="0" value="120" max="284" />
-                    <!--<output for="b" style="--c: var(--b)"></output>-->
-                </div>
             </td>
         </tr>
     </table>
