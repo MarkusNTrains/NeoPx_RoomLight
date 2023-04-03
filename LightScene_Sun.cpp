@@ -181,7 +181,7 @@ void LightScene_Sun::Sunrise_Task(void)
                     white = DAY_BRIGHTNESS_WHITE;
                 }
 
-                if (white > ((DAY_BRIGHTNESS_WHITE * 2) / 4))
+                if (white > ((DAY_BRIGHTNESS_WHITE * 2) / 5))
                 {
                     tmp = (red / 10) + 1;
                     if (tmp < red) {
@@ -305,7 +305,7 @@ void LightScene_Sun::Sunset_Task(void)
                     blue = BLUE_MAX;
                 }
 
-                if (red > ((RED_MAX * 2) / 4))
+                if (red > ((RED_MAX * 2) / 5))
                 {
                     tmp = (white / 10) + 1;
                     if (tmp < white) {
@@ -358,9 +358,9 @@ void LightScene_Sun::CalculateAndShow_Sunlight(void)
 {
     uint16_t pixel_idx;
     uint16_t cnt;
-    uint8_t red[LedRow::LED_ROW_LENGTH];
-    uint8_t green[LedRow::LED_ROW_LENGTH];
-    uint8_t blue[LedRow::LED_ROW_LENGTH];
+    uint8_t red;
+    uint8_t green;
+    uint8_t blue;
     float brightness = 0;
     float asin_alpha = 0;
     uint32_t hypothenuse = 0;
@@ -369,37 +369,31 @@ void LightScene_Sun::CalculateAndShow_Sunlight(void)
 
     for (cnt = 0; cnt < LedRow::LED_ROW_LENGTH; cnt++)
     {
+        // calculate pixel color ----------------------------------------------
         hypothenuse = sqrt(pow(this->m_sun_height, 2) + pow(PIXEL_DISTANCE_MM * cnt, 2));
         asin_alpha = (255 * this->m_sun_height) / hypothenuse;
         brightness = asin_alpha / 255;
 
-        red[cnt] = 255 * brightness;
-        if (red[cnt] > RED_MAX) {
-            red[cnt] = RED_MAX;
+        red = 255 * brightness;
+        if (red > RED_MAX) {
+            red = RED_MAX;
         }
 
-        green[cnt] = asin_alpha * brightness;
-        if (green[cnt] > GREEN_MAX) {
-            green[cnt] = GREEN_MAX;
+        green = asin_alpha * brightness;
+        if (green > GREEN_MAX) {
+            green = GREEN_MAX;
         }
 
-        tmp_color = (green[cnt] * this->m_sun_height) / (SUN_MAX_HEIGHT * 2);
+        tmp_color = (green * this->m_sun_height) / (SUN_MAX_HEIGHT * 2);
         tmp_color = (cnt * (DAY_BRIGHTNESS_WHITE / (LedRow::LED_ROW_LENGTH / 2))) + tmp_color;
         tmp_color += NIGHT_BRIGHTNESS;
         if (tmp_color > BLUE_MAX) {
             tmp_color = BLUE_MAX;
         }
-        blue[cnt] = (tmp_color * brightness) + this->m_twilight_brightness;
-    }
+        blue = (tmp_color * brightness) + this->m_twilight_brightness;
 
-    #ifdef IS_DEBUG_MODE
-    Serial.print("height ");
-    Serial.println(m_sun_height);
-    #endif
-
-    for (cnt = 0; cnt < LedRow::LED_ROW_LENGTH; cnt++)
-    {
-        color = Adafruit_NeoPixel::Color(red[cnt], green[cnt], blue[cnt], 0);
+        // update pixel -------------------------------------------------------
+        color = Adafruit_NeoPixel::Color(red, green, blue, 0);
         if ((this->m_sun_pos + cnt) < LedRow::LED_ROW_LENGTH)
         {
             pixel_idx = (this->m_sun_pos + cnt);
