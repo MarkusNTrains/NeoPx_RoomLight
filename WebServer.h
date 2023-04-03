@@ -32,9 +32,6 @@ $Id:  $
 #define USE_SD_CARD
 #undef USE_SD_CARD
 
-#define IP_CONFIG_MOBA
-//#undef IP_CONFIG_MOBA
-
 
 //----------------------------------------------------------------------------
 // class
@@ -51,6 +48,7 @@ class WebServer
             ACTION_SetBrightness,
             ACTION_SetColor,
             ACTION_SetLedArea,
+            ACTION_GetInfo,
             ACTION_Unknown
         } action_t;
         

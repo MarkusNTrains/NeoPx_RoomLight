@@ -43,7 +43,11 @@ LightSceneHdl::LightSceneHdl()
     this->m_scene_sun_p = new LightScene_Sun(this, this->m_light_hdl_p);
     this->m_update_time_ms = 0;
 
+#if (ROOM_LIGHT == ROOM_LIGHT_MARKUSNTRAINS)
     this->ChangeLightScene(LightScene::OfficeTable, 100);
+#else
+    this->ChangeLightScene(LightScene::LightOn, 150);
+#endif
 }
 
 

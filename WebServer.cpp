@@ -49,11 +49,17 @@ WebServer::WebServer(LightSceneHdl* led_scene)
     //int pin;
     byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x43 }; // MAC address from Ethernet shield sticker under board    
 
-#ifdef IP_CONFIG_MOBA
+#if (ROOM_LIGHT == ROOM_LIGHT_MARKUSNTRAINS)
     // IP config MoBa
     IPAddress ip(192, 168, 0, 4);    // IP address, may need to change depending on network
     IPAddress myDns(192, 168, 0, 254);
     IPAddress gateway(192, 168, 0, 254);  // how to find gateway: open cmd --> type ipconfig
+    IPAddress subnet(255, 255, 255, 0);
+#elif (ROOM_LIGHT == ROOM_LIGHT_ALTENGLIENICKE)
+    // IP config Altenglienicke
+    IPAddress ip(192, 168, 30, 55);    // IP address, may need to change depending on network
+    IPAddress myDns(192, 168, 30, 1);
+    IPAddress gateway(192, 168, 30, 1);  // how to find gateway: open cmd --> type ipconfig
     IPAddress subnet(255, 255, 255, 0);
 #else
     // IP config business
@@ -101,7 +107,7 @@ WebServer::WebServer(LightSceneHdl* led_scene)
     
     
     //Ethernet.begin(mac, ip);  // initialize Ethernet device
-    Ethernet.begin(mac, ip, myDns, gateway, subnet);
+    Ethernet.begin(mac, ip, myDns, gateway, subnet); // initialize Ethernet device
 
     // start the server
     m_server->begin();           // start to listen for clients
@@ -261,6 +267,7 @@ void WebServer::HandleRequest(char* http_request)
     char needle_color[] = "SetColor";
     char needle_set_led_area[] = "SetArea";
     char needle_get_current_data[] = "GetCurrentData";
+    char needle_get_info[] = "GetInfo";
 
 
     // find LightScene ---------------------------------------------------------
@@ -365,6 +372,12 @@ void WebServer::HandleRequest(char* http_request)
         this->m_light_scene->GetLightHdl()->SetLedArea(param, param2, param3, param4);
     }
 
+    // find color ---------------------------------------------------------
+    else if (StrContains(http_request, needle_get_info))
+    {
+        this->m_action = ACTION_GetInfo;
+    }
+    
     else
     {
         this->m_action = ACTION_Unknown;
@@ -515,40 +528,64 @@ void WebServer::SendXML(EthernetClient* client)
     client->print("<?xml version = \"1.0\" ?>");
     client->print("<inputs>");
 
-    client->print("<scene>");
-    client->print(m_light_scene->GetLightScene());
-    client->print("</scene>");
-
-    if (this->m_action != ACTION_SetBrightness)
+    if (this->m_action == ACTION_GetInfo)
     {
-        client->print("<brightness>");
-        client->print(m_light_scene->GetLightHdl()->GetBrightness());
-        client->print("</brightness>");
+        client->print("<info>");
+        client->print("<version>");
+        client->print("<major>");
+        client->print(SW_VERSION_Major);
+        client->print("</major>");        
+        client->print("<minor>");
+        client->print(SW_VERSION_Minor);
+        client->print("</minor>");        
+        client->print("</version>");        
+        client->print("<led>");
+        client->print("<nof_row>");
+        client->print(ROOM_LIGHT_NofRows);
+        client->print("</nof_row>");        
+        client->print("<nof_leds>");
+        client->print(ROOM_LIGHT_RowNofPx);
+        client->print("</nof_leds>");        
+        client->print("</led>");        
+        client->print("</info>");        
     }
-
-    if (this->m_action != ACTION_SetColor)
+    else
     {
-        client->print("<color>");
-        client->print(m_light_scene->GetLightHdl()->GetColor());
-        client->print("</color>");
-    }
+        // this is standard return
+        client->print("<scene>");
+        client->print(m_light_scene->GetLightScene());
+        client->print("</scene>");
 
-    if (this->m_action != ACTION_SetLedArea)
-    {
-        LedArea* area = this->m_light_scene->GetLightHdl()->GetLedArea();
-        client->print("<led_area>");
-        client->print("<ys>");
-        client->print(area->GetRowStart());
-        client->print("</ys><ye>");
-        client->print(area->GetRowEnd());
-        client->print("</ye><xs>");
-        client->print(area->GetColumnStart());
-        client->print("</xs><xe>");
-        client->print(area->GetColumnEnd());
-        client->print("</xe>");
-        client->print("</led_area>");
+        if (this->m_action != ACTION_SetBrightness)
+        {
+            client->print("<brightness>");
+            client->print(m_light_scene->GetLightHdl()->GetBrightness());
+            client->print("</brightness>");
+        }
+
+        if (this->m_action != ACTION_SetColor)
+        {
+            client->print("<color>");
+            client->print(m_light_scene->GetLightHdl()->GetColor());
+            client->print("</color>");
+        }
+
+        if (this->m_action != ACTION_SetLedArea)
+        {
+            LedArea* area = this->m_light_scene->GetLightHdl()->GetLedArea();
+            client->print("<led_area>");
+            client->print("<ys>");
+            client->print(area->GetRowStart());
+            client->print("</ys><ye>");
+            client->print(area->GetRowEnd());
+            client->print("</ye><xs>");
+            client->print(area->GetColumnStart());
+            client->print("</xs><xe>");
+            client->print(area->GetColumnEnd());
+            client->print("</xe>");
+            client->print("</led_area>");
+        }
     }
-    
     client->println("</inputs>");
 }
 
