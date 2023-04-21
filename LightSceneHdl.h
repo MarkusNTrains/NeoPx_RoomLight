@@ -19,6 +19,7 @@ $Id:  $
 //----------------------------------------------------------------------------
 // include
 #include "common.h"
+#include "Datastore.h"
 #include "LightHdl.h"
 #include "LightScene_Cloud.h"
 #include "LightScene_Lightning.h"
@@ -31,7 +32,7 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // enum
-enum LightScene
+enum class LightScene
 {
     OfficeTable = 0,
     LightOn,
@@ -48,6 +49,7 @@ enum LightScene
     Day,
     Night,
     Cloud,
+    Nof
 };
 
 
@@ -78,13 +80,14 @@ class LightSceneHdl
     private:
         const uint32_t TMO_TILL_NEXT_UPDATE_MS = 20;
 
+        Datastore* m_datastore_p;
         LightScene m_scene;
         LightScene m_last_scene;
         LightHdl* m_light_hdl_p;
         LightScene_Cloud* m_scene_cloud_p;
         LightScene_Lightning* m_scene_lightning_p;
         LightScene_Sun* m_scene_sun_p;
-        uint32_t m_update_time_ms;
+        uint32_t m_update_timestamp_ms;
 
         // moving dot task
         uint16_t m_moving_dot_current_px;

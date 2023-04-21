@@ -49,20 +49,23 @@ WebServer::WebServer(LightSceneHdl* led_scene)
     //int pin;
     byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x43 }; // MAC address from Ethernet shield sticker under board    
 
-#if (ROOM_LIGHT == ROOM_LIGHT_MARKUSNTRAINS)
-    // IP config MoBa
-    IPAddress ip(192, 168, 0, 4);    // IP address, may need to change depending on network
-    IPAddress myDns(192, 168, 0, 254);
-    IPAddress gateway(192, 168, 0, 254);  // how to find gateway: open cmd --> type ipconfig
+#if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
+    // IP config MarkusNTrains
+    //IPAddress ip(192, 168, 0, 4);    // IP address, may need to change depending on network
+    //IPAddress myDns(192, 168, 0, 254);
+    //IPAddress gateway(192, 168, 0, 254);  // how to find gateway: open cmd --> type ipconfig
+    IPAddress ip(192, 168, 1, 88);    // IP address, may need to change depending on network
+    IPAddress myDns(192, 168, 1, 2);
+    IPAddress gateway(192, 168, 1, 2);  // how to find gateway: open cmd --> type ipconfig
     IPAddress subnet(255, 255, 255, 0);
-#elif (ROOM_LIGHT == ROOM_LIGHT_ALTENGLIENICKE)
+#elif (ROOM_LIGHT == ROOM_LIGHT_Altenglienicke)
     // IP config Altenglienicke
     IPAddress ip(192, 168, 30, 55);    // IP address, may need to change depending on network
     IPAddress myDns(192, 168, 30, 1);
     IPAddress gateway(192, 168, 30, 1);  // how to find gateway: open cmd --> type ipconfig
     IPAddress subnet(255, 255, 255, 0);
-#else
-    // IP config business
+#else // Testboard
+    // IP config test board
     IPAddress ip(192, 168, 1, 88);    // IP address, may need to change depending on network
     IPAddress myDns(192, 168, 1, 2);
     IPAddress gateway(192, 168, 1, 2);  // how to find gateway: open cmd --> type ipconfig
@@ -553,7 +556,7 @@ void WebServer::SendXML(EthernetClient* client)
     {
         // this is standard return
         client->print("<scene>");
-        client->print(m_light_scene->GetLightScene());
+        client->print((int)m_light_scene->GetLightScene());
         client->print("</scene>");
 
         if (this->m_action != ACTION_SetBrightness)

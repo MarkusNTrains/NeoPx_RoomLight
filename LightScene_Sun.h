@@ -77,6 +77,7 @@ class LightScene_Sun
     private:
         const uint32_t PIXEL_DISTANCE_MM = 16;  // distance between neo pixels in mm
         const uint32_t SUN_MAX_HEIGHT = 10000;
+        const uint32_t TMO_TILL_NEXT_UPDATE_MS = 80; 
 
 
         LightSceneHdl* m_scene_hdl_p;
@@ -87,6 +88,7 @@ class LightScene_Sun
         uint32_t m_sun_pos;
         uint32_t m_day_color;
         uint8_t m_twilight_brightness;
+        uint32_t m_sun_update_timestamp_ms;
 };
 
 #endif // _LIGHT_SCENE_SUN_H

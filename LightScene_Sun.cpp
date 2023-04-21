@@ -108,6 +108,7 @@ void LightScene_Sun::Sunrise_Enter(void)
     this->m_sun_pos = 0;
     this->m_twilight_brightness = NIGHT_BRIGHTNESS;
     this->m_state = LIGHTSCENESUN_STATE_Sunrise;
+    this->m_sun_update_timestamp_ms = millis();
 
     this->m_light_hdl_p->SetBrightness_Instantly(255);
     this->m_light_hdl_p->SetColor(Adafruit_NeoPixel::Color(0, 0, NIGHT_BRIGHTNESS, 0));
@@ -134,89 +135,94 @@ void LightScene_Sun::Sunrise_Exit(void)
 //*****************************************************************************
 void LightScene_Sun::Sunrise_Task(void)
 {
-    switch (this->m_state)
+    if (millis() - this->m_sun_update_timestamp_ms > TMO_TILL_NEXT_UPDATE_MS)
     {
-        case LIGHTSCENESUN_STATE_Sunrise:
+        this->m_sun_update_timestamp_ms = millis();
+        
+        switch (this->m_state)
         {
-            this->CalculateAndShow_Sunlight();
+            case LIGHTSCENESUN_STATE_Sunrise:
+            {
+                this->CalculateAndShow_Sunlight();
 
-            if (this->m_twilight_brightness < SUNRISE_BIRGHTNESS)
-            {
-                this->m_twilight_brightness++;
-            }
-            else if (this->m_sun_height < SUN_MAX_HEIGHT)
-            {
-                this->m_sun_height += (this->m_sun_height / 10) + 1;
-                this->m_sun_pos = this->m_sun_pos % LedRow::LED_ROW_LENGTH;
-            }
-            else
-            {
-                this->m_day_color = Adafruit_NeoPixel::Color(RED_MAX, GREEN_MAX, BLUE_MAX, 0);
-                this->m_state = LIGHTSCENESUN_STATE_Fading;   
-            }
+                if (this->m_twilight_brightness < SUNRISE_BIRGHTNESS)
+                {
+                    this->m_twilight_brightness++;
+                }
+                else if (this->m_sun_height < SUN_MAX_HEIGHT)
+                {
+                    this->m_sun_height += (this->m_sun_height / 10) + 1;
+                    this->m_sun_pos = this->m_sun_pos % LedRow::LED_ROW_LENGTH;
+                }
+                else
+                {
+                    this->m_day_color = Adafruit_NeoPixel::Color(RED_MAX, GREEN_MAX, BLUE_MAX, 0);
+                    this->m_state = LIGHTSCENESUN_STATE_Fading;   
+                }
 
-            break;
+                break;
+            }
+            case LIGHTSCENESUN_STATE_Fading:
+            {
+                if (this->m_day_color == Adafruit_NeoPixel::Color(0, 0, 0, DAY_BRIGHTNESS_WHITE))
+                {
+                    this->Sunrise_Exit();
+                }
+                else
+                {
+                    uint16_t tmp = 0;
+                    uint8_t red = (uint8_t)(this->m_day_color >> 16);
+                    uint8_t green = (uint8_t)(this->m_day_color >>  8);
+                    uint8_t blue = (uint8_t)this->m_day_color;
+                    uint8_t white = (uint8_t)(this->m_day_color >> 24);
+
+                    tmp = (white / 10) + 1;
+                    if ((white + tmp) < DAY_BRIGHTNESS_WHITE) 
+                    {
+                        white += tmp;
+                    }
+                    else 
+                    {
+                        white = DAY_BRIGHTNESS_WHITE;
+                    }
+
+                    if (white > ((DAY_BRIGHTNESS_WHITE * 2) / 5))
+                    {
+                        tmp = (red / 10) + 1;
+                        if (tmp < red) {
+                            red -= tmp;
+                        }
+                        else {
+                            red = 0;
+                        }
+
+                        tmp = (green / 10) + 1;
+                        if (tmp < green) {
+                            green -= tmp;
+                        }
+                        else {
+                            green = 0;
+                        }
+
+                        tmp = (blue / 10) + 1;
+                        if (tmp < blue) {
+                            blue -= tmp;
+                        }
+                        else {
+                            blue = 0;
+                        }                
+                    }
+
+                    this->m_day_color = Adafruit_NeoPixel::Color(red, green, blue, white);
+                    this->m_light_hdl_p->SetColor(this->m_day_color);
+                    this->m_light_hdl_p->Show();    
+                }
+                break;  
+            } 
+
+            default:
+                break;
         }
-        case LIGHTSCENESUN_STATE_Fading:
-        {
-            if (this->m_day_color == Adafruit_NeoPixel::Color(0, 0, 0, DAY_BRIGHTNESS_WHITE))
-            {
-                this->Sunrise_Exit();
-            }
-            else
-            {
-                uint16_t tmp = 0;
-                uint8_t red = (uint8_t)(this->m_day_color >> 16);
-                uint8_t green = (uint8_t)(this->m_day_color >>  8);
-                uint8_t blue = (uint8_t)this->m_day_color;
-                uint8_t white = (uint8_t)(this->m_day_color >> 24);
-
-                tmp = (white / 10) + 1;
-                if ((white + tmp) < DAY_BRIGHTNESS_WHITE) 
-                {
-                    white += tmp;
-                }
-                else 
-                {
-                    white = DAY_BRIGHTNESS_WHITE;
-                }
-
-                if (white > ((DAY_BRIGHTNESS_WHITE * 2) / 5))
-                {
-                    tmp = (red / 10) + 1;
-                    if (tmp < red) {
-                        red -= tmp;
-                    }
-                    else {
-                        red = 0;
-                    }
-
-                    tmp = (green / 10) + 1;
-                    if (tmp < green) {
-                        green -= tmp;
-                    }
-                    else {
-                        green = 0;
-                    }
-
-                    tmp = (blue / 10) + 1;
-                    if (tmp < blue) {
-                        blue -= tmp;
-                    }
-                    else {
-                        blue = 0;
-                    }                
-                }
-
-                this->m_day_color = Adafruit_NeoPixel::Color(red, green, blue, white);
-                this->m_light_hdl_p->SetColor(this->m_day_color);
-                this->m_light_hdl_p->Show();    
-            }
-            break;  
-        } 
-
-        default:
-            break;
     }
 }
 
@@ -232,6 +238,7 @@ void LightScene_Sun::Sunset_Enter(void)
     this->m_twilight_brightness = SUNRISE_BIRGHTNESS;
     this->m_state = LIGHTSCENESUN_STATE_Fading;
     this->m_day_color = Adafruit_NeoPixel::Color(0, 0, 0, DAY_BRIGHTNESS_WHITE);
+    this->m_sun_update_timestamp_ms = millis();
 
     this->m_light_hdl_p->SetBrightness_Instantly(255);
     this->m_light_hdl_p->SetColor(this->m_day_color);
@@ -258,94 +265,99 @@ void LightScene_Sun::Sunset_Exit(void)
 //*****************************************************************************
 void LightScene_Sun::Sunset_Task(void)
 {
-    switch (this->m_state)
+    if (millis() - this->m_sun_update_timestamp_ms > TMO_TILL_NEXT_UPDATE_MS)
     {
-        case LIGHTSCENESUN_STATE_Fading:
+        this->m_sun_update_timestamp_ms = millis();
+        
+        switch (this->m_state)
         {
-            if (this->m_day_color == Adafruit_NeoPixel::Color(RED_MAX, GREEN_MAX, BLUE_MAX, 0))
+            case LIGHTSCENESUN_STATE_Fading:
             {
-                this->m_state = LIGHTSCENESUN_STATE_Sunset;   
-            }
-            else
-            {
-                uint16_t tmp = 0;
-                uint8_t red = (uint8_t)(this->m_day_color >> 16);
-                uint8_t green = (uint8_t)(this->m_day_color >>  8);
-                uint8_t blue = (uint8_t)this->m_day_color;
-                uint8_t white = (uint8_t)(this->m_day_color >> 24);
-                bool is_rgb_color_ready = true;
-
-                tmp = (red / 10) + 1;
-                if ((tmp + red) < RED_MAX) 
+                if (this->m_day_color == Adafruit_NeoPixel::Color(RED_MAX, GREEN_MAX, BLUE_MAX, 0))
                 {
-                    red += tmp;
+                    this->m_state = LIGHTSCENESUN_STATE_Sunset;   
                 }
                 else
                 {
-                    red = RED_MAX;
-                }
+                    uint16_t tmp = 0;
+                    uint8_t red = (uint8_t)(this->m_day_color >> 16);
+                    uint8_t green = (uint8_t)(this->m_day_color >>  8);
+                    uint8_t blue = (uint8_t)this->m_day_color;
+                    uint8_t white = (uint8_t)(this->m_day_color >> 24);
+                    bool is_rgb_color_ready = true;
 
-                tmp = (green / 10) + 1;
-                if ((tmp + green) < GREEN_MAX) 
-                {
-                    green += tmp;
-                }
-                else
-                {
-                    green = GREEN_MAX;
-                }
-
-                tmp = (blue / 10) + 1;
-                if ((tmp + blue) < BLUE_MAX) 
-                {
-                    blue += tmp;
-                }
-                else
-                {
-                    blue = BLUE_MAX;
-                }
-
-                if (red > ((RED_MAX * 2) / 5))
-                {
-                    tmp = (white / 10) + 1;
-                    if (tmp < white) {
-                        white -= tmp;
+                    tmp = (red / 10) + 1;
+                    if ((tmp + red) < RED_MAX) 
+                    {
+                        red += tmp;
                     }
-                    else {
-                        white = 0;
-                    }                
+                    else
+                    {
+                        red = RED_MAX;
+                    }
+
+                    tmp = (green / 10) + 1;
+                    if ((tmp + green) < GREEN_MAX) 
+                    {
+                        green += tmp;
+                    }
+                    else
+                    {
+                        green = GREEN_MAX;
+                    }
+
+                    tmp = (blue / 10) + 1;
+                    if ((tmp + blue) < BLUE_MAX) 
+                    {
+                        blue += tmp;
+                    }
+                    else
+                    {
+                        blue = BLUE_MAX;
+                    }
+
+                    if (red > ((RED_MAX * 2) / 5))
+                    {
+                        tmp = (white / 10) + 1;
+                        if (tmp < white) {
+                            white -= tmp;
+                        }
+                        else {
+                            white = 0;
+                        }                
+                    }
+
+                    this->m_day_color = Adafruit_NeoPixel::Color(red, green, blue, white);
+                    this->m_light_hdl_p->SetColor(this->m_day_color);
+                    this->m_light_hdl_p->Show();    
+                }
+                break;   
+            }
+
+            case LIGHTSCENESUN_STATE_Sunset:
+            {
+                this->CalculateAndShow_Sunlight();
+
+                if (this->m_sun_height > 0)
+                {
+                    this->m_sun_height -= (this->m_sun_height / 10) + 1;
+                    this->m_sun_pos = this->m_sun_pos % LedRow::LED_ROW_LENGTH;
+                }
+                else if (this->m_twilight_brightness > NIGHT_BRIGHTNESS)
+                {
+                    this->m_twilight_brightness--;
+                }
+                else
+                {
+                    this->Sunset_Exit();
                 }
 
-                this->m_day_color = Adafruit_NeoPixel::Color(red, green, blue, white);
-                this->m_light_hdl_p->SetColor(this->m_day_color);
-                this->m_light_hdl_p->Show();    
+                break;
             }
-            break;   
+
+            default:
+                break;
         }
-
-        case LIGHTSCENESUN_STATE_Sunset:
-        {
-            this->CalculateAndShow_Sunlight();
-
-            if (this->m_sun_height > 0)
-            {
-                this->m_sun_height -= (this->m_sun_height / 10) + 1;
-                this->m_sun_pos = this->m_sun_pos % LedRow::LED_ROW_LENGTH;
-            }
-            else if (this->m_twilight_brightness > NIGHT_BRIGHTNESS)
-            {
-                this->m_twilight_brightness--;
-            }
-            else
-            {
-                this->Sunset_Exit();
-            }
-
-            break;
-        }
-
-        default:
-            break;
     }
 }
 

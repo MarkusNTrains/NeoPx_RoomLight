@@ -19,6 +19,7 @@ $Id:  $
 //----------------------------------------------------------------------------
 // include
 #include "common.h"
+#include "Datastore.h"
 #include "LedMatrix.h"
 #include "LedArea.h"
 
@@ -36,7 +37,7 @@ $Id:  $
 class LightHdl
 {
     public:
-        LightHdl();
+        LightHdl(Datastore* datastore_p);
         ~LightHdl();
         uint32_t GetLedColor(uint16_t row, uint16_t column);
         void SetLed(uint16_t row, uint16_t column, uint32_t color);
@@ -67,6 +68,7 @@ class LightHdl
         uint8_t m_desired_brightness;
         uint32_t m_color;
         uint32_t m_update_time_ms;
+        Datastore* m_datastore_p;
 
         uint8_t UpdateValueTo(uint8_t current_value, uint8_t desired_value, uint8_t factor);
 };

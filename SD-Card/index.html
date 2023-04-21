@@ -38,7 +38,7 @@
             SetLightScene: "LightScene",
         };
 
-        const SEND_DATA_TO_ARDUINO_LOCK_TIMEOUT_MS = 3000;
+        const REQUEST_CURRENT_DATA_FROM_ARDUINO_TIMEOUT_MS = 3000;
         const USER_SETTING_OFFSET = 1;
         
 
@@ -90,7 +90,7 @@
         function Reset_RequestCurrentDataFromArduino_IntervallTimer()
         {
             clearInterval(s_requestDataFromArduino_intervallTimer);
-            s_requestDataFromArduino_intervallTimer = setInterval(RequestCurrentDataFromArduino, SEND_DATA_TO_ARDUINO_LOCK_TIMEOUT_MS);
+            s_requestDataFromArduino_intervallTimer = setInterval(RequestCurrentDataFromArduino, REQUEST_CURRENT_DATA_FROM_ARDUINO_TIMEOUT_MS);
         }
         
 		function ReleaseLock()
@@ -292,7 +292,7 @@
 				xhttp.send();
 				
 				// lock Send to Arduino
-				s_sendToArduino_timeoutTimer = setTimeout('ReleaseLock()', SEND_DATA_TO_ARDUINO_LOCK_TIMEOUT_MS);
+				s_sendToArduino_timeoutTimer = setTimeout('ReleaseLock()', REQUEST_CURRENT_DATA_FROM_ARDUINO_TIMEOUT_MS);
 			}
 			else
 			{

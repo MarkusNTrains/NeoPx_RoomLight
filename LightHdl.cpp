@@ -35,11 +35,13 @@ $Id:  $
 // description:
 //   constructor
 //*****************************************************************************
-LightHdl::LightHdl()
+LightHdl::LightHdl(Datastore* datastore_p)
 {
-    this->m_current_brightness = 0;
-    this->m_desired_brightness = 0;
-    this->m_color = COLOR_WHITE;
+    this->m_datastore_p = datastore_p;
+
+    this->m_current_brightness = this->m_datastore_p->GetParameter(Datastore::ParameterId::Brightness);
+    this->m_desired_brightness = this->m_current_brightness;
+    this->m_color = this->m_datastore_p->GetParameter(Datastore::ParameterId::Color);
     this->m_update_time_ms = 0;
     this->m_led_matrix = new LedMatrix();
     this->m_led_area = new LedArea();
@@ -138,6 +140,7 @@ uint8_t LightHdl::GetBrightness(void)
 void LightHdl::SetBrightness_Fade(uint8_t brightness)
 {
     this->m_desired_brightness = brightness;
+    this->m_datastore_p->SetParameter(Datastore::ParameterId::Brightness, this->m_desired_brightness);
 }
 
 
@@ -148,7 +151,7 @@ void LightHdl::SetBrightness_Fade(uint8_t brightness)
 void LightHdl::SetBrightness_Instantly(uint8_t brightness)
 {
     this->m_current_brightness = brightness;
-    this->m_desired_brightness = brightness;
+    this->SetBrightness_Fade(brightness);
     this->m_led_matrix->SetBrightness(this->m_current_brightness); // Set brigthness for all neo pixels
 }
 
@@ -212,6 +215,7 @@ void LightHdl::SetColor(uint32_t color)
 {
     this->m_color = color;
     this->m_led_matrix->SetColor(color);
+    this->m_datastore_p->SetParameter(Datastore::ParameterId::Color, this->m_color);
 }
 
 
