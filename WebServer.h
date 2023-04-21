@@ -54,7 +54,7 @@ class WebServer
         
         EthernetServer* m_server;
         File webFile;                                // the web page file on the SD card
-        LightSceneHdl* m_light_scene;
+        LightSceneHdl* m_lightSceneHdl_p;
         action_t m_action;
 
         void HandleRequest(char* http_request);

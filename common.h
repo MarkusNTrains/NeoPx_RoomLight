@@ -95,8 +95,8 @@ $Id:  $
 
 
 //--- debug setting -------------------------------------------------------
-#define IS_DEBUG_MODE
-#undef IS_DEBUG_MODE
+#define IS_DEBUG_MODE 1
+//#undef IS_DEBUG_MODE
 
 
 

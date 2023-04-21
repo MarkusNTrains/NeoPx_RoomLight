@@ -70,8 +70,13 @@ void LightScene_Sun::Day_Enter(void)
 //*****************************************************************************
 void LightScene_Sun::Day_Task(void)
 {
-    this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF);  
-    this->m_light_hdl_p->Show();    
+    if (millis() - this->m_task_timestamp_ms > TASK_DayNight_TmoMs)
+    {
+        this->m_task_timestamp_ms = millis();
+        
+        this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF);  
+        this->m_light_hdl_p->Show();
+    }
 }
 
 
@@ -93,8 +98,13 @@ void LightScene_Sun::Night_Enter(void)
 //*****************************************************************************
 void LightScene_Sun::Night_Task(void)
 {
-    this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF);  
-    this->m_light_hdl_p->Show();    
+    if (millis() - this->m_task_timestamp_ms > TASK_DayNight_TmoMs)
+    {
+        this->m_task_timestamp_ms = millis();
+        
+        this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF);  
+        this->m_light_hdl_p->Show();    
+    }
 }
 
 
@@ -108,7 +118,7 @@ void LightScene_Sun::Sunrise_Enter(void)
     this->m_sun_pos = 0;
     this->m_twilight_brightness = NIGHT_BRIGHTNESS;
     this->m_state = LIGHTSCENESUN_STATE_Sunrise;
-    this->m_sun_update_timestamp_ms = millis();
+    this->m_task_timestamp_ms = millis();
 
     this->m_light_hdl_p->SetBrightness_Instantly(255);
     this->m_light_hdl_p->SetColor(Adafruit_NeoPixel::Color(0, 0, NIGHT_BRIGHTNESS, 0));
@@ -135,9 +145,9 @@ void LightScene_Sun::Sunrise_Exit(void)
 //*****************************************************************************
 void LightScene_Sun::Sunrise_Task(void)
 {
-    if (millis() - this->m_sun_update_timestamp_ms > TMO_TILL_NEXT_UPDATE_MS)
+    if (millis() - this->m_task_timestamp_ms > TASK_Sun_TmoMs)
     {
-        this->m_sun_update_timestamp_ms = millis();
+        this->m_task_timestamp_ms = millis();
         
         switch (this->m_state)
         {
@@ -238,7 +248,7 @@ void LightScene_Sun::Sunset_Enter(void)
     this->m_twilight_brightness = SUNRISE_BIRGHTNESS;
     this->m_state = LIGHTSCENESUN_STATE_Fading;
     this->m_day_color = Adafruit_NeoPixel::Color(0, 0, 0, DAY_BRIGHTNESS_WHITE);
-    this->m_sun_update_timestamp_ms = millis();
+    this->m_task_timestamp_ms = millis();
 
     this->m_light_hdl_p->SetBrightness_Instantly(255);
     this->m_light_hdl_p->SetColor(this->m_day_color);
@@ -265,9 +275,9 @@ void LightScene_Sun::Sunset_Exit(void)
 //*****************************************************************************
 void LightScene_Sun::Sunset_Task(void)
 {
-    if (millis() - this->m_sun_update_timestamp_ms > TMO_TILL_NEXT_UPDATE_MS)
+    if (millis() - this->m_task_timestamp_ms > TASK_Sun_TmoMs)
     {
-        this->m_sun_update_timestamp_ms = millis();
+        this->m_task_timestamp_ms = millis();
         
         switch (this->m_state)
         {

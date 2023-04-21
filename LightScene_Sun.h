@@ -74,11 +74,12 @@ class LightScene_Sun
         void Sunset_Task(void);
         void CalculateAndShow_Sunlight(void);
 
+
     private:
         const uint32_t PIXEL_DISTANCE_MM = 16;  // distance between neo pixels in mm
         const uint32_t SUN_MAX_HEIGHT = 10000;
-        const uint32_t TMO_TILL_NEXT_UPDATE_MS = 80; 
-
+        const uint32_t TASK_Sun_TmoMs = 80; 
+        const uint32_t TASK_DayNight_TmoMs = 1000;
 
         LightSceneHdl* m_scene_hdl_p;
         LightHdl* m_light_hdl_p;
@@ -88,7 +89,7 @@ class LightScene_Sun
         uint32_t m_sun_pos;
         uint32_t m_day_color;
         uint8_t m_twilight_brightness;
-        uint32_t m_sun_update_timestamp_ms;
+        uint32_t m_task_timestamp_ms;
 };
 
 #endif // _LIGHT_SCENE_SUN_H

@@ -45,6 +45,9 @@ class Datastore
             Brightness,
             Color,
             UserSetting_Xs,
+            UserSetting_Xe,
+            UserSetting_Ys,
+            UserSetting_Ye,
             Nof
         };
 

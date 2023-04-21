@@ -72,7 +72,7 @@ WebServer::WebServer(LightSceneHdl* led_scene)
     IPAddress subnet(255, 255, 255, 0);
 #endif    
     m_server = new EthernetServer(80);            // server
-    m_light_scene = led_scene;
+    m_lightSceneHdl_p = led_scene;
 
 
     // disable Ethernet chip slave select
@@ -143,6 +143,11 @@ void WebServer::Tasks()
 
     if (client)   // got client?
     {
+#ifdef IS_DEBUG_MODE
+        Serial.println();
+        Serial.println("start request");
+#endif
+
         const uint8_t REQUEST_BUFFER_LENGTH = 100;     // size of read buffer (reads a complete line) 
         const uint8_t SMALL_BUFFER_SIZE = 50;          // a smaller buffer for results
         bool currentLineIsBlank = false;
@@ -160,7 +165,7 @@ void WebServer::Tasks()
             { 
                 char c = client.read(); // read 1 byte (character) from client
   #ifdef IS_DEBUG_MODE
-                Serial.print(c);
+                //Serial.print(c);
   #endif
                 // limit the size of the stored received HTTP request
                 // buffer first part of HTTP request in m_buffer_http_request array (string)
@@ -189,9 +194,9 @@ void WebServer::Tasks()
                     }
                     
 #ifdef IS_DEBUG_MODE
-                    Serial.print(F("method=")); Serial.println(method);
-                    Serial.print(F("requestParameter=")); Serial.println(request_param_a);
-                    Serial.print(F("uri=")); Serial.println(uri);
+                    //Serial.print(F("method=")); Serial.println(method);
+                    //Serial.print(F("requestParameter=")); Serial.println(request_param_a);
+                    //Serial.print(F("uri=")); Serial.println(uri);
 #endif
                   
                     is_uri_complete = true;
@@ -279,7 +284,7 @@ void WebServer::HandleRequest(char* http_request)
         this->m_action = ACTION_SetLightSecene;
         param = this->HttpRequestExtractOneParameter(http_request, needle_scene, sizeof(needle_scene));
         param2 = this->HttpRequestExtractOneParameter(http_request, needle_brightness, sizeof(needle_brightness));
-        this->m_light_scene->ChangeLightScene((LightScene)param, param2);
+        this->m_lightSceneHdl_p->ChangeLightScene((LightScene)param, param2);
 
 #ifdef IS_DEBUG_MODE
         Serial.print("Scene: ");
@@ -292,7 +297,7 @@ void WebServer::HandleRequest(char* http_request)
     {
         this->m_action = ACTION_SetBrightness;
         param = this->HttpRequestExtractOneParameter(http_request, needle_brightness, sizeof(needle_brightness));
-        this->m_light_scene->SetBrightness(param);
+        this->m_lightSceneHdl_p->SetBrightness(param);
         
 #ifdef IS_DEBUG_MODE
         Serial.println(param);
@@ -304,7 +309,7 @@ void WebServer::HandleRequest(char* http_request)
     {
         this->m_action = ACTION_SetColor;
         param = this->HttpRequestExtractOneParameter(http_request, needle_color, sizeof(needle_color));
-        this->m_light_scene->GetLightHdl()->SetColor(param);
+        this->m_lightSceneHdl_p->GetLightHdl()->SetColor(param);
         
 #ifdef IS_DEBUG_MODE
         Serial.println(param);
@@ -365,17 +370,16 @@ void WebServer::HandleRequest(char* http_request)
         param4 = atoi(param_c);
         
 #ifdef IS_DEBUG_MODE
-        Serial.println(param);
-        Serial.println(param2);
-        Serial.println(param3);
-        Serial.println(param4);
+        //Serial.println(param);
+        //Serial.println(param2);
+        //Serial.println(param3);
+        //Serial.println(param4);
 #endif
 
-        this->m_light_scene->ChangeLightScene(LightScene::UserSetting);
-        this->m_light_scene->GetLightHdl()->SetLedArea(param, param2, param3, param4);
+        this->m_lightSceneHdl_p->SetUserSettingArea(param, param2, param3, param4);
     }
 
-    // find color ---------------------------------------------------------
+    // find info ----------------------------------------------------------
     else if (StrContains(http_request, needle_get_info))
     {
         this->m_action = ACTION_GetInfo;
@@ -556,35 +560,37 @@ void WebServer::SendXML(EthernetClient* client)
     {
         // this is standard return
         client->print("<scene>");
-        client->print((int)m_light_scene->GetLightScene());
+        client->print((int)m_lightSceneHdl_p->GetLightScene());
         client->print("</scene>");
 
         if (this->m_action != ACTION_SetBrightness)
         {
             client->print("<brightness>");
-            client->print(m_light_scene->GetLightHdl()->GetBrightness());
+            client->print(m_lightSceneHdl_p->GetLightHdl()->GetBrightness());
             client->print("</brightness>");
         }
 
         if (this->m_action != ACTION_SetColor)
         {
             client->print("<color>");
-            client->print(m_light_scene->GetLightHdl()->GetColor());
+            client->print(m_lightSceneHdl_p->GetLightHdl()->GetColor());
             client->print("</color>");
         }
 
         if (this->m_action != ACTION_SetLedArea)
         {
-            LedArea* area = this->m_light_scene->GetLightHdl()->GetLedArea();
+            //LedArea* area = this->m_light_scene->GetLightHdl()->GetLedArea();
+            LedArea area;
+            this->m_lightSceneHdl_p->GetUserSettingArea(&area);
             client->print("<led_area>");
             client->print("<ys>");
-            client->print(area->GetRowStart());
+            client->print(area.GetRowStart());
             client->print("</ys><ye>");
-            client->print(area->GetRowEnd());
+            client->print(area.GetRowEnd());
             client->print("</ye><xs>");
-            client->print(area->GetColumnStart());
+            client->print(area.GetColumnStart());
             client->print("</xs><xe>");
-            client->print(area->GetColumnEnd());
+            client->print(area.GetColumnEnd());
             client->print("</xe>");
             client->print("</led_area>");
         }

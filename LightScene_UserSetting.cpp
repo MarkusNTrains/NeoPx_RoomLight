@@ -6,7 +6,7 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original 
   source code
   
-  Created 4. November 2021 by MarkusNTrains
+  Created 7. September 2022 by MarkusNTrains
 ================================================================================
 $HeadURL:  $
 $Id:  $
@@ -15,23 +15,12 @@ $Id:  $
 
 //-----------------------------------------------------------------------------
 // includes
-#include "LedArea.h"
+#include "LightScene_UserSetting.h"
+
 
 
 //-----------------------------------------------------------------------------
 // typedef
-
-
-//-----------------------------------------------------------------------------
-// define
-
-
-//-----------------------------------------------------------------------------
-// const
-
-
-//-----------------------------------------------------------------------------
-// static module variable
 
 
 
@@ -39,13 +28,20 @@ $Id:  $
 // description:
 //   constructor
 //*****************************************************************************
-LedArea::LedArea()
+LightScene_UserSetting::LightScene_UserSetting(LightSceneHdl* parent, LightHdl* light_hdl, Datastore* datastore_p)
 {
-    m_xs = 0;
-    m_xe = 0;
-    m_ys = 0;
-    m_ye = 0;
-    m_color = 0;
+    this->m_datastore_p = datastore_p;
+    this->m_scene_hdl_p = parent;
+    this->m_light_hdl_p = light_hdl;
+
+    this->m_led_area_p = new LedArea();
+    this->m_led_area_p->Set(
+        (uint16_t)this->m_datastore_p->GetParameter(Datastore::ParameterId::UserSetting_Xs),
+        (uint16_t)this->m_datastore_p->GetParameter(Datastore::ParameterId::UserSetting_Xe),
+        (uint16_t)this->m_datastore_p->GetParameter(Datastore::ParameterId::UserSetting_Ys),
+        (uint16_t)this->m_datastore_p->GetParameter(Datastore::ParameterId::UserSetting_Ye),
+        this->m_datastore_p->GetParameter(Datastore::ParameterId::Color)
+    );
 }
 
 
@@ -53,96 +49,66 @@ LedArea::LedArea()
 // description:
 //   destructor
 //*****************************************************************************
-LedArea::~LedArea()
+LightScene_UserSetting::~LightScene_UserSetting()
 {
 }
 
 
 //*****************************************************************************
 // description:
-//   GetColumnStart
+//   Enter
 //*****************************************************************************
-uint16_t LedArea::GetColumnStart(void)
+void LightScene_UserSetting::Enter(void)
 {
-    return this->m_xs;
+    this->m_light_hdl_p->Clear();
 }
 
 
 //*****************************************************************************
 // description:
-//   GetColumnEnd
+//   Exit
 //*****************************************************************************
-uint16_t LedArea::GetColumnEnd(void)
+void LightScene_UserSetting::Exit(void)
 {
-    return this->m_xe;
-}
-        
-
-//*****************************************************************************
-// description:
-//   GetRowStart
-//*****************************************************************************
-uint16_t LedArea::GetRowStart(void)
-{
-    return this->m_ys;
 }
 
 
 //*****************************************************************************
 // description:
-//   GetRowEnd
+//   Task
 //*****************************************************************************
-uint16_t LedArea::GetRowEnd(void)
+void LightScene_UserSetting::Task(void)
 {
-    return this->m_ye;
 }
 
 
 //*****************************************************************************
 // description:
-//   GetColor
+//   GetLedArea
 //*****************************************************************************
-uint32_t LedArea::GetColor(void)
+void LightScene_UserSetting::GetLedArea(LedArea* area_p)
 {
-    return this->m_color;    
-}
-        
-
-//*****************************************************************************
-// description:
-//   Get
-//*****************************************************************************
-void LedArea::Get(LedArea* area)
-{
-    area->m_xs = this->m_xs;
-    area->m_xe = this->m_xe;
-    area->m_ys = this->m_ys;
-    area->m_ye = this->m_ye;
-    area->m_color = this->m_color;
+    this->m_led_area_p->Get(area_p);
 }
 
 
 //*****************************************************************************
 // description:
-//   Set
+//   SetLedArea
 //*****************************************************************************
-void LedArea::Set(LedArea* area)
+void LightScene_UserSetting::SetLedArea(LedArea* area)
 {
-    this->Set(area->m_xs, area->m_xe, area->m_ys, area->m_ye, area->m_color);
+    this->m_led_area_p->Set(area);
+
+    this->m_light_hdl_p->Clear();
+    //this->m_light_hdl_p->SetLedArea(area);
+    this->m_light_hdl_p->SetLedArea(area->GetColumnStart(), area->GetColumnEnd(), area->GetRowStart(), area->GetRowEnd(), area->GetColor());
+    this->m_light_hdl_p->Show();
+
+    // save parameter
+    this->m_datastore_p->SetParameter(Datastore::ParameterId::UserSetting_Xs, area->GetColumnStart());
+    this->m_datastore_p->SetParameter(Datastore::ParameterId::UserSetting_Xe, area->GetColumnEnd());
+    this->m_datastore_p->SetParameter(Datastore::ParameterId::UserSetting_Ys, area->GetRowStart());
+    this->m_datastore_p->SetParameter(Datastore::ParameterId::UserSetting_Ye, area->GetRowEnd());
 }
-
-
-//*****************************************************************************
-// description:
-//   Set
-//*****************************************************************************
-void LedArea::Set(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color)
-{
-    this->m_xs = xs;
-    this->m_xe = xe;
-    this->m_ys = ys;
-    this->m_ye = ye;
-    this->m_color = color;
-}
-
 

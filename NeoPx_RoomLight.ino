@@ -20,6 +20,9 @@ $Id:  $
 #include "LightSceneHdl.h"
 #include "WebServer.h"
 
+#include <avr/wdt.h>
+
+
 
 //-----------------------------------------------------------------------------
 // defines
@@ -28,8 +31,8 @@ $Id:  $
 //-----------------------------------------------------------------------------
 // static module variable
 // MAC address from Ethernet shield sticker under board
-static LightSceneHdl* s_led_scene;
-static WebServer* s_web_server;
+static LightSceneHdl* s_lightSceneHdl_p;
+static WebServer* s_webServer_p;
 
 
 
@@ -44,8 +47,10 @@ void setup()
   #endif
     
     delay(50);
-    s_led_scene = new LightSceneHdl();
-    s_web_server = new WebServer(s_led_scene);
+    s_lightSceneHdl_p = new LightSceneHdl();
+    s_webServer_p = new WebServer(s_lightSceneHdl_p);
+
+    wdt_enable(WDTO_2S);
 }
 
 
@@ -55,6 +60,7 @@ void setup()
 //*****************************************************************************
 void loop()
 {
-    s_led_scene->Tasks();
-    s_web_server->Tasks();
+    s_lightSceneHdl_p->Tasks();
+    s_webServer_p->Tasks();
+    wdt_reset();
 }

@@ -27,18 +27,24 @@ $Id:  $
 //*****************************************************************************
 Datastore::Datastore()
 {
-    // init parameter list
-    uint32_t light_scene = (uint32_t)LightScene::LightOn;
+    //--- init parameter list ---------------------------------------------
+    uint32_t light_scene = (uint32_t)LightScene::UserSetting;
 #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
     light_scene = (uint32_t)LightScene::OfficeTable;
 #endif
 
+
+    //--- set parameter definition ----------------------------------------
     this->m_parameter_list[ParameterId::Brightness] = new Parameter(100, 0, 100, 1);
     this->m_parameter_list[ParameterId::Color] = new Parameter(0xFF000000, 0, 0xFFFFFFFF, 4);
     this->m_parameter_list[ParameterId::LightScene] = new Parameter(light_scene, 0, (uint32_t)LightScene::Nof, 1);
-    //this->m_parameter_list[ParameterId::UserSetting] = new Parameter(100, 0, 100, 1);
+    this->m_parameter_list[ParameterId::UserSetting_Xs] = new Parameter(0, 0, 0xFFFF, 2);
+    this->m_parameter_list[ParameterId::UserSetting_Xe] = new Parameter(0, 0, 0xFFFF, 2);
+    this->m_parameter_list[ParameterId::UserSetting_Ys] = new Parameter(0, 0, 0xFFFF, 2);
+    this->m_parameter_list[ParameterId::UserSetting_Ye] = new Parameter(0, 0, 0xFFFF, 2);
 
-    // init parameter address
+
+    //--- init parameter address ------------------------------------------
     uint16_t addr = EEPROM_ParameterStartAddr;
     for (uint8_t idx = 0; idx < ParameterId::Nof; idx++)
     {
@@ -46,7 +52,8 @@ Datastore::Datastore()
         addr += this->m_parameter_list[idx]->GetWidth();
     }
 
-    // check if EEPROM is valid
+
+    //--- check if EEPROM is valid ----------------------------------------
     uint32_t value = 0;
     uint16_t valid_pattern = ((uint16_t)EEPROM.read(EEPROM_ValidPatternAddr_MSB)) << 8;
     valid_pattern |= EEPROM.read(EEPROM_ValidPatternAddr_LSB);
@@ -97,6 +104,8 @@ Datastore::~Datastore()
 //*****************************************************************************
 void Datastore::FactoryReset()
 {
+        Serial.println("factory Reset");
+
     // clear valid pattern
     EEPROM.write(EEPROM_ValidPatternAddr_MSB, 0xFF);
     EEPROM.write(EEPROM_ValidPatternAddr_LSB, 0xFF);
@@ -130,7 +139,7 @@ uint32_t Datastore::GetParameter(ParameterId id)
 //*****************************************************************************
 void Datastore::SetParameter(ParameterId id, uint8_t value)
 {
-    this->m_parameter_list[id]->SetValue(value);
+    this->m_parameter_list[id]->SetValue((uint32_t)value);
     this->WriteToEEPROM(id);
 }
 
@@ -141,7 +150,7 @@ void Datastore::SetParameter(ParameterId id, uint8_t value)
 //*****************************************************************************
 void Datastore::SetParameter(ParameterId id, uint16_t value)
 {
-    this->m_parameter_list[id]->SetValue(value);
+    this->m_parameter_list[id]->SetValue((uint32_t)value);
     this->WriteToEEPROM(id);
 }
 
