@@ -54,11 +54,15 @@ class LightScene_UserSetting
         void SetLedArea(LedArea* area);
 
     private:
+        const uint32_t TASK_TmoMs = 200;
+
         Datastore* m_datastore_p;
         LightSceneHdl* m_scene_hdl_p;
         LightHdl* m_light_hdl_p;
 
         LedArea* m_led_area_p;
+
+        uint32_t m_task_timestamp_ms = 0;
 };
 
 #endif // _LIGHT_SCENE_USER_SETTING_H

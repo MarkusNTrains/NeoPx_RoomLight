@@ -61,6 +61,8 @@ LightScene_UserSetting::~LightScene_UserSetting()
 void LightScene_UserSetting::Enter(void)
 {
     this->m_light_hdl_p->Clear();
+    this->m_light_hdl_p->SetLedArea(this->m_led_area_p);
+    this->m_light_hdl_p->Show();
 }
 
 
@@ -79,6 +81,13 @@ void LightScene_UserSetting::Exit(void)
 //*****************************************************************************
 void LightScene_UserSetting::Task(void)
 {
+    if (millis() - this->m_task_timestamp_ms > TASK_TmoMs)
+    {
+        this->m_task_timestamp_ms = millis();
+
+        this->m_light_hdl_p->UpdateLedArea();
+        this->m_light_hdl_p->Show();
+    }
 }
 
 
@@ -101,8 +110,7 @@ void LightScene_UserSetting::SetLedArea(LedArea* area)
     this->m_led_area_p->Set(area);
 
     this->m_light_hdl_p->Clear();
-    //this->m_light_hdl_p->SetLedArea(area);
-    this->m_light_hdl_p->SetLedArea(area->GetColumnStart(), area->GetColumnEnd(), area->GetRowStart(), area->GetRowEnd(), area->GetColor());
+    this->m_light_hdl_p->SetLedArea(area);
     this->m_light_hdl_p->Show();
 
     // save parameter

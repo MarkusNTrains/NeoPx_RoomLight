@@ -39,12 +39,15 @@ LightHdl::LightHdl(Datastore* datastore_p)
 {
     this->m_datastore_p = datastore_p;
 
-    this->m_current_brightness = this->m_datastore_p->GetParameter(Datastore::ParameterId::Brightness);
-    this->m_desired_brightness = this->m_current_brightness;
-    this->m_color = this->m_datastore_p->GetParameter(Datastore::ParameterId::Color);
+    this->m_current_brightness = 0;
+    this->m_desired_brightness = 0;
+    this->m_color = 0;
     this->m_update_time_ms = 0;
     this->m_led_matrix = new LedMatrix();
     this->m_led_area = new LedArea();
+
+    this->SetColor(this->m_datastore_p->GetParameter(Datastore::ParameterId::Color));
+    this->SetBrightness_Instantly(this->m_datastore_p->GetParameter(Datastore::ParameterId::Brightness));
 }
 
 
@@ -87,6 +90,16 @@ void LightHdl::SetLed(uint16_t row, uint16_t column, uint32_t color)
 LedArea* LightHdl::GetLedArea(void)
 {
     return this->m_led_area;  
+}
+
+
+//*****************************************************************************
+// description:
+//   Get Led Area
+//*****************************************************************************
+void LightHdl::SetLedArea(LedArea* area)
+{
+    this->SetLedArea(area->GetColumnStart(), area->GetColumnEnd(), area->GetRowStart(), area->GetRowEnd(), area->GetColor());
 }
 
 

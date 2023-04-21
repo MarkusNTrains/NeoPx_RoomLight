@@ -51,12 +51,9 @@ WebServer::WebServer(LightSceneHdl* led_scene)
 
 #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
     // IP config MarkusNTrains
-    //IPAddress ip(192, 168, 0, 4);    // IP address, may need to change depending on network
-    //IPAddress myDns(192, 168, 0, 254);
-    //IPAddress gateway(192, 168, 0, 254);  // how to find gateway: open cmd --> type ipconfig
-    IPAddress ip(192, 168, 1, 88);    // IP address, may need to change depending on network
-    IPAddress myDns(192, 168, 1, 2);
-    IPAddress gateway(192, 168, 1, 2);  // how to find gateway: open cmd --> type ipconfig
+    IPAddress ip(192, 168, 0, 4);    // IP address, may need to change depending on network
+    IPAddress myDns(192, 168, 0, 254);
+    IPAddress gateway(192, 168, 0, 254);  // how to find gateway: open cmd --> type ipconfig
     IPAddress subnet(255, 255, 255, 0);
 #elif (ROOM_LIGHT == ROOM_LIGHT_Altenglienicke)
     // IP config Altenglienicke
@@ -165,7 +162,7 @@ void WebServer::Tasks()
             { 
                 char c = client.read(); // read 1 byte (character) from client
   #ifdef IS_DEBUG_MODE
-                //Serial.print(c);
+                Serial.print(c);
   #endif
                 // limit the size of the stored received HTTP request
                 // buffer first part of HTTP request in m_buffer_http_request array (string)
@@ -370,10 +367,10 @@ void WebServer::HandleRequest(char* http_request)
         param4 = atoi(param_c);
         
 #ifdef IS_DEBUG_MODE
-        //Serial.println(param);
-        //Serial.println(param2);
-        //Serial.println(param3);
-        //Serial.println(param4);
+        Serial.println(param);
+        Serial.println(param2);
+        Serial.println(param3);
+        Serial.println(param4);
 #endif
 
         this->m_lightSceneHdl_p->SetUserSettingArea(param, param2, param3, param4);
@@ -538,6 +535,7 @@ void WebServer::SendXML(EthernetClient* client)
     if (this->m_action == ACTION_GetInfo)
     {
         client->print("<info>");
+
         client->print("<version>");
         client->print("<major>");
         client->print(SW_VERSION_Major);
@@ -545,7 +543,8 @@ void WebServer::SendXML(EthernetClient* client)
         client->print("<minor>");
         client->print(SW_VERSION_Minor);
         client->print("</minor>");        
-        client->print("</version>");        
+        client->print("</version>"); 
+
         client->print("<led>");
         client->print("<nof_row>");
         client->print(ROOM_LIGHT_NofRows);
@@ -554,6 +553,21 @@ void WebServer::SendXML(EthernetClient* client)
         client->print(ROOM_LIGHT_RowNofPx);
         client->print("</nof_leds>");        
         client->print("</led>");        
+
+        LedArea area;
+        this->m_lightSceneHdl_p->GetUserSettingArea(&area);
+        client->print("<led_area>");
+        client->print("<ys>");
+        client->print(area.GetRowStart());
+        client->print("</ys><ye>");
+        client->print(area.GetRowEnd());
+        client->print("</ye><xs>");
+        client->print(area.GetColumnStart());
+        client->print("</xs><xe>");
+        client->print(area.GetColumnEnd());
+        client->print("</xe>");
+        client->print("</led_area>");
+
         client->print("</info>");        
     }
     else
@@ -579,7 +593,6 @@ void WebServer::SendXML(EthernetClient* client)
 
         if (this->m_action != ACTION_SetLedArea)
         {
-            //LedArea* area = this->m_light_scene->GetLightHdl()->GetLedArea();
             LedArea area;
             this->m_lightSceneHdl_p->GetUserSettingArea(&area);
             client->print("<led_area>");

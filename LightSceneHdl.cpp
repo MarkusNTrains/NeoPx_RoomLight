@@ -45,6 +45,9 @@ LightSceneHdl::LightSceneHdl()
     this->m_scene_sun_p = new LightScene_Sun(this, this->m_light_hdl_p);
     this->m_scene_userSetting_p = new LightScene_UserSetting(this, this->m_light_hdl_p, this->m_datastore_p);
     this->m_brightnessUpdate_timestamp_ms = 0;
+    this->m_scene = LightScene::LightOff;
+    this->m_last_scene = LightScene::LightOff;
+    this->m_task_timestamp_ms = 0;
 
     // get last lightscene from datastore
     this->ChangeLightScene((LightScene)(this->m_datastore_p->GetParameter(Datastore::ParameterId::LightScene)), 20);
