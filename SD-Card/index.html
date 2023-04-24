@@ -6,470 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>MoBa Room Light</title>
 	<link rel="icon" href="favicon.ico">
-	<script type="text/javascript" charset="utf-8">
-        //--- const ------------------------------------------------------
-		const LIGHT_SCENE = 
-		{
-			OfficeTable: 0,
-			LightOn: 1,
-			Rainbow: 2,
-			Sunset: 3,
-			Sunrise: 4,
-			PowerOff: 5,
-            Disco: 6,
-            Sbh: 7,
-            UserSetting: 8,
-			IDLE: 9,
-            Lightning: 10,
-            Moba: 11,
-            Day: 12,
-            Night: 13,
-            Cloud: 14,
-            NOF: 15
-		};
 
-        const XML_RREQUEST = 
-        {
-            GetCurrentData: "GetCurrentData",
-			GetInfo: "GetInfo",
-            SetArea: "SetArea",
-            SetBrightness: "SetBrightness",
-            SetColor: "SetColor",
-            SetLightScene: "LightScene",
-        };
-
-        const REQUEST_CURRENT_DATA_FROM_ARDUINO_TIMEOUT_MS = 3000;
-        const USER_SETTING_OFFSET = 1;
-        
-
-		//--- static variables --------------------------------------------
-		var s_lock_send_data = false;
-		var s_is_send_data_pending = false;
-        var s_pending_xml_request = "";
-		var s_sendToArduino_timeoutTimer = null;
-        var s_requestDataFromArduino_intervallTimer = null;
-		var xhttp = null;
-
-
-        //--- onload event handler ----------------------------------------
-        window.addEventListener('load', (event) => 
-        {
-            var button = '<button class="button" id="LightScene' + LIGHT_SCENE.PowerOff + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.PowerOff, this)">Off</button>'
-             + '<button class="button" id="LightScene' + LIGHT_SCENE.OfficeTable + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.OfficeTable, this)">B&uuml;rotisch</button>'
-             + '<button class="button" id="LightScene' + LIGHT_SCENE.Moba + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Moba, this)">MoBa</button>'
-             + '<button class="button" id="LightScene' + LIGHT_SCENE.LightOn + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.LightOn, this)">All On</button>'
-             + '<button class="button" id="LightScene' + LIGHT_SCENE.Rainbow + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Rainbow, this)">Rainbow</button>'
-             + '<button class="button" id="LightScene' + LIGHT_SCENE.Disco + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Disco, this)">Disco</button>'
-             + '<button class="button" id="LightScene' + LIGHT_SCENE.UserSetting + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.UserSetting, this)">User Set</button>'
-             + '<br>'
-             + '<button class="button" id="LightScene' + LIGHT_SCENE.Sunrise + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Sunrise, this)">Sunrise</button>'
-             + '<button class="button" id="LightScene' + LIGHT_SCENE.Day + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Day, this)">Day</button>'
-             + '<button class="button" id="LightScene' + LIGHT_SCENE.Sunset + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Sunset, this)">Sunset</button>'
-             + '<button class="button" id="LightScene' + LIGHT_SCENE.Night + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Night, this)">Night</button>'
-             + '<button class="button" id="LightScene' + LIGHT_SCENE.Cloud + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Cloud, this)">Clouds</button>'
-             + '<button class="button" id="LightScene' + LIGHT_SCENE.Lightning + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Lightning, this)">Lightning</button>';
-
-            document.getElementById("LightScene").innerHTML = button;
-
-			RequestArduinoInfo();
-            RequestCurrentDataFromArduino();
-        });
-
-
-        //--- function ----------------------------------------------------
-        function RequestCurrentDataFromArduino()
-        {
-            SendDataToArduino("&" + XML_RREQUEST.GetCurrentData);
-        }
-		
-		function RequestArduinoInfo()
-		{
-            SendDataToArduino("&" + XML_RREQUEST.GetInfo);			
-		}
-
-        function Reset_RequestCurrentDataFromArduino_IntervallTimer()
-        {
-            clearInterval(s_requestDataFromArduino_intervallTimer);
-            s_requestDataFromArduino_intervallTimer = setInterval(RequestCurrentDataFromArduino, REQUEST_CURRENT_DATA_FROM_ARDUINO_TIMEOUT_MS);
-        }
-        
-		function ReleaseLock()
-		{
-			s_lock_send_data = false;
-			s_sendToArduino_timeoutTimer = null;
-
-			if (xhttp != null)
-			{
-				xhttp.abort();
-				xhttp = null;
-			}
-
-			if (s_is_send_data_pending == true)
-			{
-				SendDataToArduino(s_pending_xml_request);
-                s_is_send_data_pending = false;
-                s_pending_xml_request = "";
-			}
-		}
-		
-		function SendDataToArduino(xml_request)
-		{
-			if (s_lock_send_data == false)
-			{
-				s_lock_send_data = true;
-                Reset_RequestCurrentDataFromArduino_IntervallTimer();
-				nocache = "&nocache=" + Math.random() * 1000000;
-
-				xhttp = new XMLHttpRequest();
-				xhttp.onreadystatechange = function()
-				{
-					if (this.readyState == XMLHttpRequest.DONE) 
-					{
-						if (this.status == 200) 
-						{
-							if (this.responseXML != null) 
-							{
-								// XML file received - contains LED states
-								var re = this.responseXML.getElementsByTagName('info');
-								if ((re != undefined) && (re != null) && (re.length > 0))
-                                {
-                                    var version_major = this.responseXML.getElementsByTagName('major')[0].childNodes[0].nodeValue;
-                                    var version_minor = this.responseXML.getElementsByTagName('minor')[0].childNodes[0].nodeValue;
-                                    var led_nof_row = parseInt(this.responseXML.getElementsByTagName('nof_row')[0].childNodes[0].nodeValue) - USER_SETTING_OFFSET;
-                                    var led_nof_px = parseInt(this.responseXML.getElementsByTagName('nof_leds')[0].childNodes[0].nodeValue) - USER_SETTING_OFFSET;
-                                    var xs = parseInt(this.responseXML.getElementsByTagName('xs')[0].childNodes[0].nodeValue);
-                                    var xe = parseInt(this.responseXML.getElementsByTagName('xe')[0].childNodes[0].nodeValue);
-                                    var ys = parseInt(this.responseXML.getElementsByTagName('ys')[0].childNodes[0].nodeValue);
-                                    var ye = parseInt(this.responseXML.getElementsByTagName('ye')[0].childNodes[0].nodeValue);
-
-
-                                    //--- update user setting columen and row slider --------------------------------
-                                    //<!--<div style="transform: rotate(270deg);">-->
-                                    //<div id="slider_row" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: 0; --b: 5; --min: 0; --max: 5;">
-                                    //    <!--<div id="multi-lbl">Multi thumb slider: 0 - 15</div>-->
-                                    //    <input id="a" class="twoThumbSlider" type="range" min="0" value="0" max="5" />
-                                    //    <!--<output for="a" style="--c: var(--a)"></output>-->
-                                    //    <input id="b" class="twoThumbSlider" type="range" min="0" value="5" max="5" />
-                                    //    <!--<output for="b" style="--c: var(--b)"></output>-->
-                                    //</div>
-                                    document.getElementById("led_row").innerHTML = (ys + " - " + ye);
-                                    document.getElementById("led_slider_row").innerHTML = (
-                                        '<div id="slider_row" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: ' + ys + '; --b: ' + ye + '; --min: 0; --max: ' + led_nof_row + ';">'
-                                        +   '<input id="a" class="twoThumbSlider" type="range" min="0" value="' + ys + '" max="' + led_nof_row + '" />'
-                                        +   '<input id="b" class="twoThumbSlider" type="range" min="0" value="' + ye + '" max="' + led_nof_row + '" />'
-                                        + '</div>'
-                                    );
-                                    if (led_nof_row <= 1)
-                                    {
-                                        document.getElementById("led_slider_row").style.visibility = 'hidden';
-                                    }
-
-                                    //<div id="slider_columen" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: 20; --b: 120; --min: 0; --max: 239">
-                                    //    <!--<div id="multi-lbl">Multi thumb slider: 0 - 15</div>-->
-                                    //    <input id="a" class="twoThumbSlider" type="range" min="0" value="20" max="239" />
-                                    //    <!--<output for="a" style="--c: var(--a)"></output>-->
-                                    //    <input id="b" class="twoThumbSlider" type="range" min="0" value="120" max="239" />
-                                    //    <!--<output for="b" style="--c: var(--b)"></output>-->
-                                    //</div>
-                                    document.getElementById("led_column").innerHTML = (xs + " - " + xe);
-                                    document.getElementById("led_slider_column").innerHTML = (
-                                        '<div id="slider_columen" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: ' + xs + '; --b: ' + xe + '; --min: 0; --max: ' + led_nof_px + '">'
-                                        +   '<input id="a" class="twoThumbSlider" type="range" min="0" value="' + xs + '" max="' + led_nof_px + '" />'
-                                        +   '<input id="b" class="twoThumbSlider" type="range" min="0" value="' + xe + '" max="' + led_nof_px + '" />'
-                                        + '</div>'
-                                    );
-
-                                    //--- display Arduino room light firmware version in footer ---------------------
-                                    document.getElementById("footer_version").innerHTML = ("v" + version_major + "." + version_minor);
-                                }
-								
-								re = this.responseXML.getElementsByTagName('scene');
-								if ((re != undefined) && (re != null) && (re.length > 0))
-								{
-                                    LightScene_ShowAsActive(re[0].childNodes[0].nodeValue);
-                                }	
-
-								re = this.responseXML.getElementsByTagName('brightness');
-								if ((re != undefined) && (re != null) && (re.length > 0))
-								{
-									document.getElementById("brightness_slider").value = re[0].childNodes[0].nodeValue;
-									document.getElementById("brightness_value").innerHTML = re[0].childNodes[0].nodeValue;
-								}
-
-								re = this.responseXML.getElementsByTagName('brightness');
-								if ((re != undefined) && (re != null) && (re.length > 0))
-								{
-									document.getElementById("brightness_slider").value = re[0].childNodes[0].nodeValue;
-									document.getElementById("brightness_value").innerHTML = re[0].childNodes[0].nodeValue;
-								}
-
-								re = this.responseXML.getElementsByTagName('color');
-								if ((re != undefined) && (re != null) && (re.length > 0))
-								{
-									var color = parseInt(re[0].childNodes[0].nodeValue);
-                                    if (color > 0xFFFFFF)
-                                    {
-                                        var white = (color >> 24) & 0xFF;
-                                        document.getElementById("color_white_slider").value = white;
-                                        document.getElementById("color_white_value").innerHTML = white;
-                                        colorStr = ('000000' + ((white << 16) | (white << 8) | white).toString(16)).slice(-6);
-                            			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
-                                    }
-                                    else
-                                    {
-                                        var slider_value = 0;
-                                        if (((color >= 0xFF0000) && (color <= 0xFFFF00)) && (((color & 0xFF0000) == 0xFF0000) && (((color & 0xFF) == 0x0))))
-                                        {
-                                            slider_value = ((color & 0xFF00) >> 8);
-                                        }
-                                        else if (((color >= 0x00FF00) && (color <= 0xFFFF00)) && (((color & 0xFF00) == 0xFF00) && (((color & 0xFF) == 0x0))))
-                                        {
-                                            slider_value = 511 - ((color & 0xFF0000) >> 16);
-                                        }
-                                        else if (((color >= 0x00FF00) && (color <= 0x00FFFF)) && (((color & 0xFF00) == 0xFF00) && (((color & 0xFF0000) == 0x0))))
-                                        {
-                                            slider_value = 512 + (color & 0xFF);
-                                        }
-                                        else if (((color >= 0x0000FF) && (color <= 0x00FFFF)) && (((color & 0xFF) == 0xFF) && (((color & 0xFF0000) == 0x0))))
-                                        {
-                                            slider_value = 1023 - ((color & 0x00FF00) >> 8);
-                                        }
-                                        else if (((color >= 0x0000FF) && (color <= 0xFF00FF)) && (((color & 0xFF) == 0xFF) && (((color & 0xFF00) == 0x0))))
-                                        {
-                                            slider_value = 1024 + ((color & 0xFF0000) >> 16);
-                                        }
-                                        else if (((color >= 0xFF0000) && (color <= 0xFF00FF)) && (((color & 0xFF0000) == 0xFF0000) && (((color & 0xFF00) == 0x0))))
-                                        {
-                                            slider_value = 1535 - (color & 0xFF);
-                                        }
-
-                                        // set rgb combined slider
-                                        var colorStr = ('000000' + color.toString(16)).slice(-6);
-                                        document.getElementById("color_rgb_slider").value = slider_value;
-                                        document.getElementById("color_rgb_value").innerHTML = '0x' + colorStr;
-                                        document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
-                                    }
-
-                                    // set rgb single slider
-                                    var red = (color >> 16) & 0xFF;
-                                    var green = (color >> 8) & 0xFF;
-                                    var blue = color & 0xFF;
-                                    document.getElementById("color_red_value").innerHTML = red;
-                                    document.getElementById("color_green_value").innerHTML = green;
-                                    document.getElementById("color_blue_value").innerHTML = blue;
-                                    document.getElementById("color_red_slider").value = red;
-                                    document.getElementById("color_green_slider").value = green;
-                                    document.getElementById("color_blue_slider").value = blue;
-								}
-
-								re = this.responseXML.getElementsByTagName('led_area');
-								if ((re != undefined) && (re != null) && (re.length > 0))
-                                {
-                                    var xs = parseInt(this.responseXML.getElementsByTagName('xs')[0].childNodes[0].nodeValue) + USER_SETTING_OFFSET;
-                                    var xe = parseInt(this.responseXML.getElementsByTagName('xe')[0].childNodes[0].nodeValue) + USER_SETTING_OFFSET;
-                                    var ys = parseInt(this.responseXML.getElementsByTagName('ys')[0].childNodes[0].nodeValue) + USER_SETTING_OFFSET;
-                                    var ye = parseInt(this.responseXML.getElementsByTagName('ye')[0].childNodes[0].nodeValue) + USER_SETTING_OFFSET;
-
-                                    document.getElementById("led_column").innerHTML = (xs + " - " + xe);
-                                    document.getElementById("led_row").innerHTML = (ys + " - " + ye);
-
-                                    //document.getElementById("slider_columen").style.setProperty("--a", xs);
-                                    //document.getElementById("slider_columen").style.setProperty("--b", xe);
-                                    //document.getElementById("slider_row").style.setProperty("--a", ys);
-                                    //document.getElementById("slider_row").style.setProperty("--b", ye);
-                                }
-
-
-								if (s_sendToArduino_timeoutTimer != null)
-								{
-									clearTimeout(s_sendToArduino_timeoutTimer);
-									ReleaseLock();
-								}
-							}
-							else
-							{
-								alert("XML = NULL");
-							}
-						}
-						else
-						{
-							//alert("Keine Verbindung zum Webserver\nStatus: " + this.status);
-						}
-					}
-				}
-
-				// send HTTP GET request with LEDs to switch on/off if any
-				xhttp.open("GET", "ajax_inputs" + xml_request + nocache, true);
-				xhttp.send();
-				
-				// lock Send to Arduino
-				s_sendToArduino_timeoutTimer = setTimeout('ReleaseLock()', REQUEST_CURRENT_DATA_FROM_ARDUINO_TIMEOUT_MS);
-			}
-			else
-			{
-				s_is_send_data_pending = true;
-                s_pending_xml_request = xml_request;
-			}
-		}
-		
-		function LightSceneButtonPushed(scene, bt)
-		{
-			LightScene_ShowAsActive(scene)
-            var brightness = document.getElementById("brightness_slider").value;
-            if (brightness == 0)
-            {
-                brightness = 100;
-            }
-			SendDataToArduino("&" + XML_RREQUEST.SetLightScene + "=" + scene + "&" + XML_RREQUEST.SetBrightness + "=" + brightness);
-		}
-
-        function LightScene_ShowAsActive(scene)
-        {
-			var matches = document.getElementsByClassName('active-class');
-			for (var cnt = 0; cnt < matches.length; cnt++) 
-			{
-				matches[cnt].classList.remove('active-class');
-			}
-
-            if (scene < LIGHT_SCENE.NOF)
-            {
-			    document.getElementById("LightScene" + scene).classList.add("active-class");
-            }
-        }
-		
-		function BrighntessSliderChanged()
-		{
-			var slider = document.getElementById("brightness_slider");
-			var output = document.getElementById("brightness_value");
-			output.innerHTML = slider.value;
-
-			SendDataToArduino("&" + XML_RREQUEST.SetBrightness + "=" + slider.value);
-		}
-
-		function ColorRGBSliderChanged()
-		{
-			var slider = document.getElementById("color_rgb_slider");
-			var output = document.getElementById("color_rgb_value");
-
-			var color = 0;
-			if (slider.value > 1279)
-			{
-				color = 0xFF00FF - (slider.value - 1280);
-			}
-			else if (slider.value > 1023)
-			{
-				color = 0x0000FF + ((slider.value - 1024) << 16);
-			}
-			else if (slider.value > 767)
-			{
-				color = 0x00FFFF - ((slider.value - 768) << 8);
-			}
-			else if (slider.value > 511)
-			{
-				color = 0x00FF00 + (slider.value - 512);
-			}
-			else if (slider.value > 255)
-			{
-				color = 0xFFFF00 - ((slider.value - 256) << 16);
-			}
-			else
-			{
-				color = 0xFF0000 + (slider.value << 8);
-			}
-
-			var colorStr = ('000000' + color.toString(16)).slice(-6);
-			output.innerHTML = '0x' + colorStr;
-			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
-			SendDataToArduino("&" + XML_RREQUEST.SetColor + "=" + color);
-            
-            
-            var red = (color >> 16) & 0xFF;
-            var green = (color >> 8) & 0xFF;
-            var blue = color & 0xFF;
-			document.getElementById("color_red_value").innerHTML = red;
-			document.getElementById("color_green_value").innerHTML = green;
-			document.getElementById("color_blue_value").innerHTML = blue;
-            document.getElementById("color_red_slider").value = red;
-            document.getElementById("color_green_slider").value = green;
-            document.getElementById("color_blue_slider").value = blue;
-		}
-
-        function ColorRGBSingleSliderChanged()
-        {
-			var red_slider = document.getElementById("color_red_slider");
-			var green_slider = document.getElementById("color_green_slider");
-			var blue_slider = document.getElementById("color_blue_slider");
-
-			document.getElementById("color_red_value").innerHTML = red_slider.value;
-			document.getElementById("color_green_value").innerHTML = green_slider.value;
-			document.getElementById("color_blue_value").innerHTML = blue_slider.value;
-
-            var color = 0;
-            color = (red_slider.value << 16);
-            color |= (green_slider.value << 8);
-            color |= blue_slider.value
-
-			var colorStr = ('000000' + color.toString(16)).slice(-6);
-			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
-			SendDataToArduino("&" + XML_RREQUEST.SetColor + "=" + color);			
-        }
-
-		function ColorWhiteSliderChanged()
-		{
-			var slider = document.getElementById("color_white_slider");
-			var output = document.getElementById("color_white_value");
-			
-			var color = slider.value;
-			output.innerHTML = color;
-			colorStr = ('000000' + ((color << 16) | (color << 8) | color).toString(16)).slice(-6);
-			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
-			SendDataToArduino("&" + XML_RREQUEST.SetColor + "=" + (slider.value << 24));			
-		}
-
-		// 2 thumb slider
-		"use strict";
-		addEventListener('input', e => {
-            if (e.target.classList.contains("twoThumbSlider"))
-            {
-                let _t = e.target;
-
-                _t.parentNode.style.setProperty(`--${_t.id}`, +_t.value);
-                
-                SliderTwoThumb_Update();
-            }
-		}, false);
-
-		function SliderTwoThumb_Update()
-		{
-            var xs = parseInt(getComputedStyle(document.getElementById("slider_columen")).getPropertyValue('--a'), 10);
-            var xe = parseInt(getComputedStyle(document.getElementById("slider_columen")).getPropertyValue('--b'), 10);
-            var ys = parseInt(getComputedStyle(document.getElementById("slider_row")).getPropertyValue('--a'), 10);
-            var ye = parseInt(getComputedStyle(document.getElementById("slider_row")).getPropertyValue('--b'), 10);
-
-            if (xs > xe)
-            {
-                var tmp = xs;
-                xs = xe;
-                xe = tmp;
-            }
-            if (ys > ye)
-            {
-                var tmp = ys;
-                ys = ye;
-                ye = tmp;
-            }
-
-			SendDataToArduino("&" + XML_RREQUEST.SetArea + "=X" + xs + "-" + xe + "Y" + ys + "-" + ye);
-            xs += USER_SETTING_OFFSET;
-            xe += USER_SETTING_OFFSET;
-            ys += USER_SETTING_OFFSET;
-            ye += USER_SETTING_OFFSET;
-			document.getElementById("led_column").innerHTML = (xs + " - " + xe);
-			document.getElementById("led_row").innerHTML = (ys + " - " + ye);
-		}
-	</script>
-
-    
 	<style type="text/css">
 		:root {
             --backgroundColor: #222222;
@@ -558,6 +95,14 @@
 			color: var(--textColorDark);
 		}
 		
+        /*----------------------------------------------------------------------*/
+        /* user values */
+        .user_value {
+            border: 0; 
+            color: #f6931f; 
+            font-weight: bold;
+        }
+
 		/*----------------------------------------------------------------------*/
 		/* slider */
 		.slidecontainer {
@@ -709,6 +254,509 @@
         }
 
 	</style>
+
+
+	<script type="text/javascript" charset="utf-8">
+        //--- const ------------------------------------------------------
+		const LIGHT_SCENE = 
+		{
+			OfficeTable: 0,
+			LightOn: 1,
+			Rainbow: 2,
+			Sunset: 3,
+			Sunrise: 4,
+			PowerOff: 5,
+            Disco: 6,
+            Sbh: 7,
+            UserSetting: 8,
+			IDLE: 9,
+            Lightning: 10,
+            Moba: 11,
+            Day: 12,
+            Night: 13,
+            Cloud: 14,
+            NOF: 15
+		};
+
+        const XML_RREQUEST = 
+        {
+            GetCurrentData: "GetCurrentData",
+			GetInfo: "GetInfo",
+            SetArea: "SetArea",
+            SetBrightness: "SetBrightness",
+            SetColor: "SetColor",
+            SetLightScene: "LightScene",
+        };
+
+        const FIND_SERVER_TIMEOUT_MS = 2000;
+        const REQUEST_CURRENT_DATA_FROM_SERVER_TIMEOUT_MS = 3000;
+        const SERVER_RESPONSE_TIMEOUT_MS = 2500;  // must be shorter than REQUEST_CURRENT_DATA_FROM_ARDUINO_TIMEOUT_MS
+        const USER_SETTING_OFFSET = 1;
+        
+
+		//--- static variables --------------------------------------------
+		var s_lock_send_data = false;
+		var s_is_send_data_pending = false;
+        var s_pending_xml_request = "";
+		var s_sendToServer_timeoutTimer = null;
+        var s_requestDataFromServer_intervalTimer = null;
+        var s_findServer_intervalTimer = null;
+        var s_is_server_connected = true;
+		var s_xhttp = null;
+
+
+		//--- function prototypes -----------------------------------------
+
+
+        //--- function ----------------------------------------------------
+        function RequestCurrentDataFromServer()
+        {
+            SendDataToServer("&" + XML_RREQUEST.GetCurrentData);
+        }
+		
+        function FindServer()
+        {
+            RequestInfoFromServer();
+            clearInterval(s_findServer_intervalTimer);
+            s_findServer_intervalTimer = setInterval(RequestInfoFromServer, FIND_SERVER_TIMEOUT_MS)
+        }
+
+		function RequestInfoFromServer()
+		{
+            SendDataToServer("&" + XML_RREQUEST.GetInfo);
+		}
+
+        function Reset_RequestCurrentDataFromServer_IntervallTimer()
+        {
+            clearInterval(s_requestDataFromServer_intervalTimer);
+            s_requestDataFromServer_intervalTimer = setInterval(RequestCurrentDataFromServer, REQUEST_CURRENT_DATA_FROM_SERVER_TIMEOUT_MS);
+        }
+        
+		function ReleaseLock()
+		{
+			s_lock_send_data = false;
+			s_sendToServer_timeoutTimer = null;
+
+			if (s_is_send_data_pending == true)
+			{
+				SendDataToServer(s_pending_xml_request);
+                s_is_send_data_pending = false;
+                s_pending_xml_request = "";
+			}
+		}
+		
+		function SendDataToServer(xml_request)
+		{
+			if (s_lock_send_data == false)
+			{
+				s_lock_send_data = true;
+                Reset_RequestCurrentDataFromServer_IntervallTimer();
+				nocache = "&nocache=" + Math.random() * 1000000;
+
+                if (s_xhttp != null)
+                {
+                    s_xhttp.abort();
+                    s_xhttp = null;
+                }
+
+				s_xhttp = new XMLHttpRequest();
+                s_xhttp.timeout = SERVER_RESPONSE_TIMEOUT_MS;
+                s_xhttp.ontimeout = function()
+                {
+                    s_is_server_connected = false;
+                    clearInterval(s_requestDataFromServer_intervalTimer);
+
+                    LightScene_SetAllAsInactive();
+                    document.getElementById("brightness_value").innerHTML = ("loading...");
+                    document.getElementById("color_rgb_value").innerHTML = ("loading...");
+                    document.getElementById("color_red_value").innerHTML = ("loading...");
+                    document.getElementById("color_green_value").innerHTML = ("loading...");
+                    document.getElementById("color_blue_value").innerHTML = ("loading...");
+                    document.getElementById("color_white_value").innerHTML = ("loading...");
+                    document.getElementById("led_column").innerHTML = ("loading...");
+                    document.getElementById("led_row").innerHTML = ("loading...");
+                    document.querySelector(':root').style.setProperty('--SliderThumbColor', '#3F3F3F');
+
+                    FindServer();
+                }
+				s_xhttp.onreadystatechange = function()
+				{
+					if (this.readyState == XMLHttpRequest.DONE) 
+					{
+						if (this.status == 200) 
+						{
+							if (this.responseXML != null) 
+							{
+								// XML file received from Server
+                                if (s_is_server_connected == false)
+                                {
+                                    s_is_server_connected = true;
+                                    clearInterval(s_findServer_intervalTimer);
+                                    RequestCurrentDataFromServer();
+                                }
+
+								var re = this.responseXML.getElementsByTagName('info');
+								if ((re != undefined) && (re != null) && (re.length > 0))
+                                {
+                                    var version_major = this.responseXML.getElementsByTagName('major')[0].childNodes[0].nodeValue;
+                                    var version_minor = this.responseXML.getElementsByTagName('minor')[0].childNodes[0].nodeValue;
+                                    var led_nof_row = parseInt(this.responseXML.getElementsByTagName('nof_row')[0].childNodes[0].nodeValue) - USER_SETTING_OFFSET;
+                                    var led_nof_px = parseInt(this.responseXML.getElementsByTagName('nof_leds')[0].childNodes[0].nodeValue) - USER_SETTING_OFFSET;
+                                    var xs = parseInt(this.responseXML.getElementsByTagName('xs')[0].childNodes[0].nodeValue);
+                                    var xe = parseInt(this.responseXML.getElementsByTagName('xe')[0].childNodes[0].nodeValue);
+                                    var ys = parseInt(this.responseXML.getElementsByTagName('ys')[0].childNodes[0].nodeValue);
+                                    var ye = parseInt(this.responseXML.getElementsByTagName('ye')[0].childNodes[0].nodeValue);
+
+
+                                    //--- update user setting columen and row slider --------------------------------
+                                    //<!--<div style="transform: rotate(270deg);">-->
+                                    //<div id="slider_row" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: 0; --b: 5; --min: 0; --max: 5;">
+                                    //    <!--<div id="multi-lbl">Multi thumb slider: 0 - 15</div>-->
+                                    //    <input id="a" class="twoThumbSlider" type="range" min="0" value="0" max="5" />
+                                    //    <!--<output for="a" style="--c: var(--a)"></output>-->
+                                    //    <input id="b" class="twoThumbSlider" type="range" min="0" value="5" max="5" />
+                                    //    <!--<output for="b" style="--c: var(--b)"></output>-->
+                                    //</div>
+                                    document.getElementById("led_row").innerHTML = (ys + " - " + ye);
+                                    document.getElementById("led_slider_row").innerHTML = (
+                                        '<div id="slider_row" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: ' + ys + '; --b: ' + ye + '; --min: 0; --max: ' + led_nof_row + ';">'
+                                        +   '<input id="a" class="twoThumbSlider" type="range" min="0" value="' + ys + '" max="' + led_nof_row + '" />'
+                                        +   '<input id="b" class="twoThumbSlider" type="range" min="0" value="' + ye + '" max="' + led_nof_row + '" />'
+                                        + '</div>'
+                                    );
+                                    if (led_nof_row <= 1)
+                                    {
+                                        document.getElementById("led_slider_row").style.visibility = 'hidden';
+                                    }
+
+                                    //<div id="slider_columen" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: 20; --b: 120; --min: 0; --max: 239">
+                                    //    <!--<div id="multi-lbl">Multi thumb slider: 0 - 15</div>-->
+                                    //    <input id="a" class="twoThumbSlider" type="range" min="0" value="20" max="239" />
+                                    //    <!--<output for="a" style="--c: var(--a)"></output>-->
+                                    //    <input id="b" class="twoThumbSlider" type="range" min="0" value="120" max="239" />
+                                    //    <!--<output for="b" style="--c: var(--b)"></output>-->
+                                    //</div>
+                                    document.getElementById("led_column").innerHTML = (xs + " - " + xe);
+                                    document.getElementById("led_slider_column").innerHTML = (
+                                        '<div id="slider_columen" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: ' + xs + '; --b: ' + xe + '; --min: 0; --max: ' + led_nof_px + '">'
+                                        +   '<input id="a" class="twoThumbSlider" type="range" min="0" value="' + xs + '" max="' + led_nof_px + '" />'
+                                        +   '<input id="b" class="twoThumbSlider" type="range" min="0" value="' + xe + '" max="' + led_nof_px + '" />'
+                                        + '</div>'
+                                    );
+
+                                    //--- display Arduino room light firmware version in footer ---------------------
+                                    document.getElementById("footer_version").innerHTML = ("v" + version_major + "." + version_minor);
+                                }
+								
+								re = this.responseXML.getElementsByTagName('scene');
+								if ((re != undefined) && (re != null) && (re.length > 0))
+								{
+                                    LightScene_ShowAsActive(re[0].childNodes[0].nodeValue);
+                                }	
+
+								re = this.responseXML.getElementsByTagName('brightness');
+								if ((re != undefined) && (re != null) && (re.length > 0))
+								{
+									document.getElementById("brightness_slider").value = re[0].childNodes[0].nodeValue;
+									document.getElementById("brightness_value").innerHTML = re[0].childNodes[0].nodeValue;
+								}
+
+								re = this.responseXML.getElementsByTagName('color');
+								if ((re != undefined) && (re != null) && (re.length > 0))
+								{
+									var color = parseInt(re[0].childNodes[0].nodeValue);
+                                    if (color > 0xFFFFFF)
+                                    {
+                                        var white = (color >> 24) & 0xFF;
+                                        document.getElementById("color_white_slider").value = white;
+                                        document.getElementById("color_white_value").innerHTML = white;
+                                        colorStr = ('000000' + ((white << 16) | (white << 8) | white).toString(16)).slice(-6);
+                            			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
+                                    }
+                                    else
+                                    {
+                                        var slider_value = 0;
+                                        if (((color >= 0xFF0000) && (color <= 0xFFFF00)) && (((color & 0xFF0000) == 0xFF0000) && (((color & 0xFF) == 0x0))))
+                                        {
+                                            slider_value = ((color & 0xFF00) >> 8);
+                                        }
+                                        else if (((color >= 0x00FF00) && (color <= 0xFFFF00)) && (((color & 0xFF00) == 0xFF00) && (((color & 0xFF) == 0x0))))
+                                        {
+                                            slider_value = 511 - ((color & 0xFF0000) >> 16);
+                                        }
+                                        else if (((color >= 0x00FF00) && (color <= 0x00FFFF)) && (((color & 0xFF00) == 0xFF00) && (((color & 0xFF0000) == 0x0))))
+                                        {
+                                            slider_value = 512 + (color & 0xFF);
+                                        }
+                                        else if (((color >= 0x0000FF) && (color <= 0x00FFFF)) && (((color & 0xFF) == 0xFF) && (((color & 0xFF0000) == 0x0))))
+                                        {
+                                            slider_value = 1023 - ((color & 0x00FF00) >> 8);
+                                        }
+                                        else if (((color >= 0x0000FF) && (color <= 0xFF00FF)) && (((color & 0xFF) == 0xFF) && (((color & 0xFF00) == 0x0))))
+                                        {
+                                            slider_value = 1024 + ((color & 0xFF0000) >> 16);
+                                        }
+                                        else if (((color >= 0xFF0000) && (color <= 0xFF00FF)) && (((color & 0xFF0000) == 0xFF0000) && (((color & 0xFF00) == 0x0))))
+                                        {
+                                            slider_value = 1535 - (color & 0xFF);
+                                        }
+
+                                        // set rgb combined slider
+                                        var colorStr = ('000000' + color.toString(16)).slice(-6);
+                                        document.getElementById("color_rgb_slider").value = slider_value;
+                                        document.getElementById("color_rgb_value").innerHTML = '0x' + colorStr;
+                                        document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
+                                    }
+
+                                    // set rgb single slider
+                                    var red = (color >> 16) & 0xFF;
+                                    var green = (color >> 8) & 0xFF;
+                                    var blue = color & 0xFF;
+                                    document.getElementById("color_red_value").innerHTML = red;
+                                    document.getElementById("color_green_value").innerHTML = green;
+                                    document.getElementById("color_blue_value").innerHTML = blue;
+                                    document.getElementById("color_red_slider").value = red;
+                                    document.getElementById("color_green_slider").value = green;
+                                    document.getElementById("color_blue_slider").value = blue;
+								}
+
+								re = this.responseXML.getElementsByTagName('led_area');
+								if ((re != undefined) && (re != null) && (re.length > 0))
+                                {
+                                    var xs = parseInt(this.responseXML.getElementsByTagName('xs')[0].childNodes[0].nodeValue) + USER_SETTING_OFFSET;
+                                    var xe = parseInt(this.responseXML.getElementsByTagName('xe')[0].childNodes[0].nodeValue) + USER_SETTING_OFFSET;
+                                    var ys = parseInt(this.responseXML.getElementsByTagName('ys')[0].childNodes[0].nodeValue) + USER_SETTING_OFFSET;
+                                    var ye = parseInt(this.responseXML.getElementsByTagName('ye')[0].childNodes[0].nodeValue) + USER_SETTING_OFFSET;
+
+                                    document.getElementById("led_column").innerHTML = (xs + " - " + xe);
+                                    document.getElementById("led_row").innerHTML = (ys + " - " + ye);
+
+                                    //document.getElementById("slider_columen").style.setProperty("--a", xs);
+                                    //document.getElementById("slider_columen").style.setProperty("--b", xe);
+                                    //document.getElementById("slider_row").style.setProperty("--a", ys);
+                                    //document.getElementById("slider_row").style.setProperty("--b", ye);
+                                }
+
+
+								if (s_sendToServer_timeoutTimer != null)
+								{
+									clearTimeout(s_sendToServer_timeoutTimer);
+									ReleaseLock();
+								}
+							}
+							else
+							{
+								alert("XML = NULL");
+							}
+						}
+						else
+						{
+							//alert("Keine Verbindung zum Webserver\nStatus: " + this.status);
+						}
+					}
+				}
+
+				// send HTTP GET request with data
+				s_xhttp.open("GET", "ajax_inputs" + xml_request + nocache, true);
+				s_xhttp.send();
+				
+				// lock Send to Arduino
+				s_sendToServer_timeoutTimer = setTimeout('ReleaseLock()', REQUEST_CURRENT_DATA_FROM_SERVER_TIMEOUT_MS);
+			}
+			else
+			{
+				s_is_send_data_pending = true;
+                s_pending_xml_request = xml_request;
+			}
+		}
+		
+		function LightSceneButtonPushed(scene, bt)
+		{
+			LightScene_ShowAsActive(scene)
+            var brightness = document.getElementById("brightness_slider").value;
+            if (brightness == 0)
+            {
+                brightness = 100;
+            }
+			SendDataToServer("&" + XML_RREQUEST.SetLightScene + "=" + scene + "&" + XML_RREQUEST.SetBrightness + "=" + brightness);
+		}
+
+        function LightScene_SetAllAsInactive()
+        {
+			var matches = document.getElementsByClassName('active-class');
+			for (var cnt = 0; cnt < matches.length; cnt++) 
+			{
+				matches[cnt].classList.remove('active-class');
+			}
+        }
+		
+        function LightScene_ShowAsActive(scene)
+        {
+            LightScene_SetAllAsInactive();
+            
+            if (scene < LIGHT_SCENE.NOF)
+            {
+			    document.getElementById("LightScene" + scene).classList.add("active-class");
+            }
+        }
+
+		function BrighntessSliderChanged()
+		{
+			var slider = document.getElementById("brightness_slider");
+			var output = document.getElementById("brightness_value");
+			output.innerHTML = slider.value;
+
+			SendDataToServer("&" + XML_RREQUEST.SetBrightness + "=" + slider.value);
+		}
+
+		function ColorRGBSliderChanged()
+		{
+			var slider = document.getElementById("color_rgb_slider");
+			var output = document.getElementById("color_rgb_value");
+
+			var color = 0;
+			if (slider.value > 1279)
+			{
+				color = 0xFF00FF - (slider.value - 1280);
+			}
+			else if (slider.value > 1023)
+			{
+				color = 0x0000FF + ((slider.value - 1024) << 16);
+			}
+			else if (slider.value > 767)
+			{
+				color = 0x00FFFF - ((slider.value - 768) << 8);
+			}
+			else if (slider.value > 511)
+			{
+				color = 0x00FF00 + (slider.value - 512);
+			}
+			else if (slider.value > 255)
+			{
+				color = 0xFFFF00 - ((slider.value - 256) << 16);
+			}
+			else
+			{
+				color = 0xFF0000 + (slider.value << 8);
+			}
+
+			var colorStr = ('000000' + color.toString(16)).slice(-6);
+			output.innerHTML = '0x' + colorStr;
+			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
+			SendDataToServer("&" + XML_RREQUEST.SetColor + "=" + color);
+            
+            
+            var red = (color >> 16) & 0xFF;
+            var green = (color >> 8) & 0xFF;
+            var blue = color & 0xFF;
+			document.getElementById("color_red_value").innerHTML = red;
+			document.getElementById("color_green_value").innerHTML = green;
+			document.getElementById("color_blue_value").innerHTML = blue;
+            document.getElementById("color_red_slider").value = red;
+            document.getElementById("color_green_slider").value = green;
+            document.getElementById("color_blue_slider").value = blue;
+		}
+
+        function ColorRGBSingleSliderChanged()
+        {
+			var red_slider = document.getElementById("color_red_slider");
+			var green_slider = document.getElementById("color_green_slider");
+			var blue_slider = document.getElementById("color_blue_slider");
+
+			document.getElementById("color_red_value").innerHTML = red_slider.value;
+			document.getElementById("color_green_value").innerHTML = green_slider.value;
+			document.getElementById("color_blue_value").innerHTML = blue_slider.value;
+
+            var color = 0;
+            color = (red_slider.value << 16);
+            color |= (green_slider.value << 8);
+            color |= blue_slider.value
+
+			var colorStr = ('000000' + color.toString(16)).slice(-6);
+			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
+			document.getElementById("color_rgb_value").innerHTML = colorStr;
+			SendDataToServer("&" + XML_RREQUEST.SetColor + "=" + color);			
+        }
+
+		function ColorWhiteSliderChanged()
+		{
+			var slider = document.getElementById("color_white_slider");
+			var output = document.getElementById("color_white_value");
+			
+			var color = slider.value;
+			output.innerHTML = color;
+			colorStr = ('000000' + ((color << 16) | (color << 8) | color).toString(16)).slice(-6);
+			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
+			SendDataToServer("&" + XML_RREQUEST.SetColor + "=" + (slider.value << 24));			
+		}
+
+		// 2 thumb slider
+		"use strict";
+		addEventListener('input', e => {
+            if (e.target.classList.contains("twoThumbSlider"))
+            {
+                let _t = e.target;
+
+                _t.parentNode.style.setProperty(`--${_t.id}`, +_t.value);
+                
+                SliderTwoThumb_Update();
+            }
+		}, false);
+
+		function SliderTwoThumb_Update()
+		{
+            var xs = parseInt(getComputedStyle(document.getElementById("slider_columen")).getPropertyValue('--a'), 10);
+            var xe = parseInt(getComputedStyle(document.getElementById("slider_columen")).getPropertyValue('--b'), 10);
+            var ys = parseInt(getComputedStyle(document.getElementById("slider_row")).getPropertyValue('--a'), 10);
+            var ye = parseInt(getComputedStyle(document.getElementById("slider_row")).getPropertyValue('--b'), 10);
+
+            if (xs > xe)
+            {
+                var tmp = xs;
+                xs = xe;
+                xe = tmp;
+            }
+            if (ys > ye)
+            {
+                var tmp = ys;
+                ys = ye;
+                ye = tmp;
+            }
+
+			SendDataToServer("&" + XML_RREQUEST.SetArea + "=X" + xs + "-" + xe + "Y" + ys + "-" + ye);
+            xs += USER_SETTING_OFFSET;
+            xe += USER_SETTING_OFFSET;
+            ys += USER_SETTING_OFFSET;
+            ye += USER_SETTING_OFFSET;
+			document.getElementById("led_column").innerHTML = (xs + " - " + xe);
+			document.getElementById("led_row").innerHTML = (ys + " - " + ye);
+		}
+
+
+        //--- onload event handler ----------------------------------------
+        window.addEventListener('load', (event) => 
+        {
+            var button = '<button class="button" id="LightScene' + LIGHT_SCENE.PowerOff + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.PowerOff, this)">Off</button>'
+             + '<button class="button" id="LightScene' + LIGHT_SCENE.OfficeTable + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.OfficeTable, this)">B&uuml;rotisch</button>'
+             + '<button class="button" id="LightScene' + LIGHT_SCENE.Moba + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Moba, this)">MoBa</button>'
+             + '<button class="button" id="LightScene' + LIGHT_SCENE.LightOn + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.LightOn, this)">All On</button>'
+             + '<button class="button" id="LightScene' + LIGHT_SCENE.Rainbow + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Rainbow, this)">Rainbow</button>'
+             + '<button class="button" id="LightScene' + LIGHT_SCENE.Disco + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Disco, this)">Disco</button>'
+             + '<button class="button" id="LightScene' + LIGHT_SCENE.UserSetting + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.UserSetting, this)">User Set</button>'
+             + '<br>'
+             + '<button class="button" id="LightScene' + LIGHT_SCENE.Sunrise + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Sunrise, this)">Sunrise</button>'
+             + '<button class="button" id="LightScene' + LIGHT_SCENE.Day + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Day, this)">Day</button>'
+             + '<button class="button" id="LightScene' + LIGHT_SCENE.Sunset + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Sunset, this)">Sunset</button>'
+             + '<button class="button" id="LightScene' + LIGHT_SCENE.Night + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Night, this)">Night</button>'
+             + '<button class="button" id="LightScene' + LIGHT_SCENE.Cloud + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Cloud, this)">Clouds</button>'
+             + '<button class="button" id="LightScene' + LIGHT_SCENE.Lightning + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Lightning, this)">Lightning</button>';
+
+            document.getElementById("LightScene").innerHTML = button;
+
+			FindServer();
+        });
+
+    </script>    
 </head>
 
 <body>
@@ -723,7 +771,7 @@
     <br>
     <div class="slidecontainer">
         <label for="brightness_value">Helligkeit</label>
-        <label id="brightness_value"></label>
+        <label id="brightness_value" class="user_value"></label>
         <input type="range" min="1" max="255" value="50" class="slider" id="brightness_slider" oninput="BrighntessSliderChanged()">
     </div>
     <br>
@@ -733,25 +781,25 @@
     <br>
     <div class="slidecontainer">
         <label for="color_rgb_value">RGB</label>
-        <label id="color_rgb_value"></label>
+        <label id="color_rgb_value" class="user_value"></label>
         <input type="range" min="0" max="1535" value="50" class="slider" id="color_rgb_slider" oninput="ColorRGBSliderChanged()" style="background-image: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);">
     </div>
     <br>
     <div class="slidecontainer">
         <label for="color_red_value">Rot</label>
-        <label id="color_red_value"></label>
+        <label id="color_red_value" class="user_value"></label>
         <input type="range" min="0" max="255" value="50" class="slider" id="color_red_slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, red)">
 
         <label for="color_green_value">Gr&uuml;n</label>
-        <label id="color_green_value"></label>
+        <label id="color_green_value" class="user_value"></label>
         <input type="range" min="0" max="255" value="50" class="slider" id="color_green_slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, rgb(0, 255, 0))">
 
         <label for="color_blue_value">Blau</label>
-        <label id="color_blue_value"></label>
+        <label id="color_blue_value" class="user_value"></label>
         <input type="range" min="0" max="255" value="50" class="slider" id="color_blue_slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, blue)">
 
         <label for="color_white_value">Weiss</label>
-        <label id="color_white_value"></label>
+        <label id="color_white_value" class="user_value"></label>
         <input type="range" min="0" max="255" value="50" class="slider" id="color_white_slider" oninput="ColorWhiteSliderChanged()" style="background-image: linear-gradient(90deg, black, white)">
     </div>
     <br>
@@ -762,11 +810,11 @@
         <tr>
             <td>
                 <label for="led_row">Reihen</label>
-                <label type="text" id="led_row" readonly style="border:0; color:#f6931f; font-weight:bold;"> loading...</label>      
+                <label type="text" id="led_row" class="user_value"> loading...</label>      
             </td>
             <td>
                 <label for="led_column">L&auml;nge</label>
-                <label type="text" id="led_column" readonly style="border:0; color:#f6931f; font-weight:bold;"> loading...</label>
+                <label type="text" id="led_column" class="user_value"> loading...</label>
             </td>
         </tr>
         <tr>
