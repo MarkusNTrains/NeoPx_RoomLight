@@ -45,10 +45,6 @@ LedMatrix::LedMatrix()
         this->m_led_strip[idx]->begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
     }
 
-    this->Clear();
-    this->SetBrightness(0);
-    this->Show();
-    
 #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
     // set led strip map to led row --> it is possible to splite one strip into more than one row
     this->m_led_row[0] = new LedRow(m_led_strip[0], 0);
