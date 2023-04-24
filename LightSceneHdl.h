@@ -86,8 +86,8 @@ class LightSceneHdl
         const uint32_t TASK_SceneLightOn_TmoMs = 1000;
         const uint32_t TASK_SceneLightOff_TmoMs = 20;
         const uint32_t TASK_SceneMoBa_TmoMs = 1000;
-        const uint32_t TASK_SceneDisco_TmoMs = 20;
-        const uint32_t TASK_SceneRainbow_TmoMs = 20;
+        const uint32_t TASK_SceneDisco_TmoMs = 100;
+        const uint32_t TASK_SceneRainbow_TmoMs = 100;
         const uint32_t TASK_SceneOfficeTable_TmoMs = 1000;
 
         Datastore* m_datastore_p;
