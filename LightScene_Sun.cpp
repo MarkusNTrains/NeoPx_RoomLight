@@ -59,8 +59,8 @@ LightScene_Sun::~LightScene_Sun()
 void LightScene_Sun::Day_Enter(void)
 {
     this->m_light_hdl_p->Clear();
-    this->m_light_hdl_p->SetColor(DAY_COLOR);
-    this->m_light_hdl_p->SetBrightness_Fade(DAY_BRIGHTNESS_WHITE);
+    this->m_light_hdl_p->SetColor(DAY_COLOR, false);
+    this->m_light_hdl_p->SetBrightness_Fade(DAY_BRIGHTNESS_WHITE, false);
 }
 
 
@@ -87,8 +87,8 @@ void LightScene_Sun::Day_Task(void)
 void LightScene_Sun::Night_Enter(void)
 {
     this->m_light_hdl_p->Clear();
-    this->m_light_hdl_p->SetColor(NIGHT_COLOR);
-    this->m_light_hdl_p->SetBrightness_Fade(NIGHT_BRIGHTNESS);
+    this->m_light_hdl_p->SetColor(NIGHT_COLOR, false);
+    this->m_light_hdl_p->SetBrightness_Fade(NIGHT_BRIGHTNESS, false);
 }
 
 
@@ -120,8 +120,8 @@ void LightScene_Sun::Sunrise_Enter(void)
     this->m_state = LIGHTSCENESUN_STATE_Sunrise;
     this->m_task_timestamp_ms = millis();
 
-    this->m_light_hdl_p->SetBrightness_Instantly(255);
-    this->m_light_hdl_p->SetColor(Adafruit_NeoPixel::Color(0, 0, NIGHT_BRIGHTNESS, 0));
+    this->m_light_hdl_p->SetBrightness_Instantly(255, false);
+    this->m_light_hdl_p->SetColor(Adafruit_NeoPixel::Color(0, 0, NIGHT_BRIGHTNESS, 0), false);
     this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF);  
     this->m_light_hdl_p->Show();
 }
@@ -133,8 +133,8 @@ void LightScene_Sun::Sunrise_Enter(void)
 //*****************************************************************************
 void LightScene_Sun::Sunrise_Exit(void)
 {
-    this->m_light_hdl_p->SetBrightness_Instantly(DAY_BRIGHTNESS_WHITE);
-    this->m_light_hdl_p->SetColor(DAY_COLOR);
+    this->m_light_hdl_p->SetBrightness_Instantly(DAY_BRIGHTNESS_WHITE, false);
+    this->m_light_hdl_p->SetColor(DAY_COLOR, false);
     this->m_scene_hdl_p->ChangeLightScene(LightScene::Day);   
 }
 
@@ -196,7 +196,7 @@ void LightScene_Sun::Sunrise_Task(void)
                         white = DAY_BRIGHTNESS_WHITE;
                     }
 
-                    if (white > ((DAY_BRIGHTNESS_WHITE * 2) / 5))
+                    if (white > ((DAY_BRIGHTNESS_WHITE * 3) / 10))
                     {
                         tmp = (red / 10) + 1;
                         if (tmp < red) {
@@ -224,7 +224,7 @@ void LightScene_Sun::Sunrise_Task(void)
                     }
 
                     this->m_day_color = Adafruit_NeoPixel::Color(red, green, blue, white);
-                    this->m_light_hdl_p->SetColor(this->m_day_color);
+                    this->m_light_hdl_p->SetColor(this->m_day_color, false);
                     this->m_light_hdl_p->Show();    
                 }
                 break;  
@@ -250,8 +250,8 @@ void LightScene_Sun::Sunset_Enter(void)
     this->m_day_color = Adafruit_NeoPixel::Color(0, 0, 0, DAY_BRIGHTNESS_WHITE);
     this->m_task_timestamp_ms = millis();
 
-    this->m_light_hdl_p->SetBrightness_Instantly(255);
-    this->m_light_hdl_p->SetColor(this->m_day_color);
+    this->m_light_hdl_p->SetBrightness_Instantly(255, false);
+    this->m_light_hdl_p->SetColor(this->m_day_color, false);
     this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF);  
     this->m_light_hdl_p->Show();
 }
@@ -263,8 +263,8 @@ void LightScene_Sun::Sunset_Enter(void)
 //*****************************************************************************
 void LightScene_Sun::Sunset_Exit(void)
 {
-    this->m_light_hdl_p->SetBrightness_Instantly(NIGHT_BRIGHTNESS);
-    this->m_light_hdl_p->SetColor(NIGHT_COLOR);
+    this->m_light_hdl_p->SetBrightness_Instantly(NIGHT_BRIGHTNESS, false);
+    this->m_light_hdl_p->SetColor(NIGHT_COLOR, false);
     this->m_scene_hdl_p->ChangeLightScene(LightScene::Night);   
 }
 
@@ -326,7 +326,7 @@ void LightScene_Sun::Sunset_Task(void)
                         blue = BLUE_MAX;
                     }
 
-                    if (red > ((RED_MAX * 2) / 5))
+                    if (red > ((RED_MAX * 3) / 10))
                     {
                         tmp = (white / 10) + 1;
                         if (tmp < white) {
@@ -338,7 +338,7 @@ void LightScene_Sun::Sunset_Task(void)
                     }
 
                     this->m_day_color = Adafruit_NeoPixel::Color(red, green, blue, white);
-                    this->m_light_hdl_p->SetColor(this->m_day_color);
+                    this->m_light_hdl_p->SetColor(this->m_day_color, false);
                     this->m_light_hdl_p->Show();    
                 }
                 break;   

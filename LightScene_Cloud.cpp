@@ -61,7 +61,6 @@ void LightScene_Cloud::Enter(void)
 {
     uint8_t cnt = 0;
 
-    this->m_scene_brightness = this->m_light_hdl_p->GetBrightness();
     this->m_scene_color = this->m_light_hdl_p->GetColor();
     this->m_start_next_cloud_idx = 0;
     this->m_start_cloud_timestamp_ms = 0;
@@ -80,7 +79,6 @@ void LightScene_Cloud::Enter(void)
         this->m_cloud_p[cnt]->width = (rand() % ((MAX_CLOUD_WIDTH + 1) - MIN_CLOUD_WIDTH)) + MIN_CLOUD_WIDTH;;
         this->m_cloud_p[cnt]->length_px = (rand() % ((MAX_CLOUD_LENGTH_PX + 1) - MIN_CLOUD_LENGTH_PX)) + MIN_CLOUD_LENGTH_PX;
         this->m_cloud_p[cnt]->speed = (rand() % ((MAX_CLOUD_SPEED + 1) - MIN_CLOUD_SPEED)) + MIN_CLOUD_SPEED;
-        //this->m_cloud_p[cnt]->speed = 1;
         this->m_cloud_p[cnt]->darkness = (rand() % ((MAX_CLOUD_DARKNESS + 1) - MIN_CLOUD_DARKNESS)) + MIN_CLOUD_DARKNESS;
     }
 }
@@ -120,7 +118,6 @@ void LightScene_Cloud::Task(void)
 
             srand(millis());
             this->m_start_next_cloud_tmo_ms = (rand() % ((MAX_ADD_NEW_CLOUD_LENGTH_MS + 1) / this->m_nof_clouds))  + MIN_ADD_NEXT_CLOUD_TMO_MS;
-            //this->m_start_next_cloud_tmo_ms = 1000;
         }
     }
 
@@ -140,9 +137,6 @@ void LightScene_Cloud::Task(void)
         uint32_t color = 0;
         uint32_t darkness = 0;
 
-        //this->m_light_hdl_p->Clear();
-        //this->m_light_hdl_p->SetColor(this->m_scene_color);
-        //this->m_light_hdl_p->UpdateLedArea();
         this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF, this->m_scene_color);
         for (cnt = 0; cnt < this->m_nof_clouds; cnt++) 
         {

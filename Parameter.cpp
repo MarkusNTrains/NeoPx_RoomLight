@@ -52,3 +52,20 @@ void Parameter::Reset()
     this->m_value = this->m_default_value;
 }
 
+
+//*****************************************************************************
+// description:
+//   set value
+// return:
+//   true if value did change
+//*****************************************************************************
+bool Parameter::SetValue(uint32_t value) 
+{
+    if (this->m_value != value)
+    {
+        this->m_value = value;
+        return true;
+    }
+
+    return false;
+}

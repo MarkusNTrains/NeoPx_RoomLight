@@ -57,7 +57,7 @@ void LightScene_Lightning::Enter(void)
     this->m_last_brightness = this->m_light_hdl_p->GetBrightness();
     // set overall brightness to maximum and the background color to current brightness, so that flashes will bi visible
     this->m_light_hdl_p->Clear();
-    this->m_light_hdl_p->SetBrightness_Instantly(255);
+    this->m_light_hdl_p->SetBrightness_Instantly(255, false);
     this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, (LedRow::LED_ROW_NOF - 1), Adafruit_NeoPixel::Color(0, 0, LightScene_Sun::NIGHT_BRIGHTNESS, 0));
     this->m_light_hdl_p->Show();
 
@@ -74,7 +74,7 @@ void LightScene_Lightning::Enter(void)
 //*****************************************************************************
 void LightScene_Lightning::Exit(void)
 {
-    this->m_light_hdl_p->SetBrightness_Instantly(this->m_last_brightness);
+    this->m_light_hdl_p->SetBrightness_Instantly(this->m_last_brightness, false);
     this->m_scene_hdl_p->ChangeLightScene(this->m_scene_hdl_p->GetLastScene());
 }
 

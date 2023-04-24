@@ -56,6 +56,7 @@ class Datastore
         Datastore();
         ~Datastore();
 		
+        void Task();
         void FactoryReset();
         uint32_t GetParameter(ParameterId id);
         void SetParameter(ParameterId id, uint8_t value);
@@ -63,15 +64,27 @@ class Datastore
         void SetParameter(ParameterId id, uint32_t value);
 
     private:
+        const uint32_t AFTER_PARAMETER_CHANGE_EEPROM_WriteLockTmoMs = 5000;
+        const uint32_t EEPROM_WriteLockTmoMs = 60000;
+
         const uint16_t EEPROM_ValidPatternAddr_MSB = 0;
         const uint16_t EEPROM_ValidPatternAddr_LSB = 1;
         const uint16_t EEPROM_ParameterStartAddr = 2;
 
-        const uint16_t EEPROM_ValidPattern = 0x55AA;
+        const uint16_t EEPROM_PageValidPattern = 0x55AA;
 
         Parameter* m_parameter_list[ParameterId::Nof];
+        uint32_t m_last_parameter_changed_timestamp_ms = 0;
+        uint32_t m_eeprom_last_update_timestamp_ms = 0;
+        uint16_t m_eeprom_pageSize = 0;
+        uint16_t m_eeprom_nofPages = 0;
+        uint16_t m_eeprom_active_page = 0;
+        bool m_is_eeprom_update_needed = false;
 
-        void WriteToEEPROM(ParameterId id);
+        void EEPROM_WriteToNextPage();
+        void EEPROM_WritePage();
+        uint32_t EEPROM_ReadParameter(ParameterId id, uint16_t page_start_addr);
+        void EEPROM_WriteParameter(ParameterId id, uint16_t page_start_addr);
 };
 
 #endif  // _DATASTORE_H

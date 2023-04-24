@@ -143,15 +143,6 @@ void LedRow::SetPixel(uint16_t start_idx, uint16_t width, uint16_t space, uint16
     for (cnt = 0; cnt < nof_repeat; cnt++)
     {
         nof_px_to_fill = 0;
-        /*for (px = 0; px < width; px++)
-        {
-            // check if position is further than the rowlength
-            if ((offset + px) >= this->m_length) { break; }
-            
-            idx = offset + px;
-        Serial.println(idx);
-            this->m_led_strip_p->setPixelColor(this->m_lookup_table_p[idx], color);    
-        }*/
         end_idx = start_idx + width;
         if (end_idx >= LED_ROW_LENGTH) {
             end_idx = LED_ROW_LENGTH - 1;

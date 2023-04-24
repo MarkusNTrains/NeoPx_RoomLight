@@ -316,7 +316,7 @@
 		
         function FindServer()
         {
-            RequestInfoFromServer();
+            s_is_server_connected = false;
             clearInterval(s_findServer_intervalTimer);
             s_findServer_intervalTimer = setInterval(RequestInfoFromServer, FIND_SERVER_TIMEOUT_MS)
         }
@@ -367,6 +367,7 @@
                     clearInterval(s_requestDataFromServer_intervalTimer);
 
                     LightScene_SetAllAsInactive();
+                    document.body.style.cursor = "progress";
                     document.getElementById("brightness_value").innerHTML = ("loading...");
                     document.getElementById("color_rgb_value").innerHTML = ("loading...");
                     document.getElementById("color_red_value").innerHTML = ("loading...");
@@ -391,6 +392,7 @@
                                 if (s_is_server_connected == false)
                                 {
                                     s_is_server_connected = true;
+                                    document.body.style.cursor = "default";
                                     clearInterval(s_findServer_intervalTimer);
                                     RequestCurrentDataFromServer();
                                 }

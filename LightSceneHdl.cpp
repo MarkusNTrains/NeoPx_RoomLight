@@ -88,7 +88,6 @@ void LightSceneHdl::ChangeLightScene(LightScene scene, uint8_t brightness)
         this->m_last_scene = this->m_scene;
         this->m_scene = scene;
     }
-    this->m_light_hdl_p->SetBrightness_Fade(brightness);
     
     //--- enter light scene -----
     bool save_light_scene = false;
@@ -100,7 +99,6 @@ void LightSceneHdl::ChangeLightScene(LightScene scene, uint8_t brightness)
 
         case LightScene::Day:
             this->m_scene_sun_p->Day_Enter();
-            save_light_scene = true;
             break;
 
         case LightScene::Lightning:
@@ -128,7 +126,6 @@ void LightSceneHdl::ChangeLightScene(LightScene scene, uint8_t brightness)
 
         case LightScene::Night:
             this->m_scene_sun_p->Night_Enter();
-            save_light_scene = true;
             break;
           
         case LightScene::OfficeTable:
@@ -177,12 +174,17 @@ void LightSceneHdl::ChangeLightScene(LightScene scene, uint8_t brightness)
 //*****************************************************************************
 void LightSceneHdl::Tasks()
 {
+    // run datsatore task
+    this->m_datastore_p->Task();
+
+    // update brightness
     if (millis() - this->m_brightnessUpdate_timestamp_ms > BRIGHTNESS_UPDATE_TMO_MS)
     {
         this->m_brightnessUpdate_timestamp_ms += BRIGHTNESS_UPDATE_TMO_MS;
         this->m_light_hdl_p->UpdateBrightness();
     }
 
+    // run scene tasks
     switch (this->m_scene)
     {
         case LightScene::Cloud:

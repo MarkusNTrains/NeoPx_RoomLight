@@ -82,7 +82,6 @@ class LightScene_Cloud
         LightHdl* m_light_hdl_p;
         SkyCloud* m_cloud_p[MAX_NOF_CLOUDS];
         uint8_t m_nof_clouds;
-        uint8_t m_scene_brightness;
         uint32_t m_scene_color;
         uint32_t m_task_hdl_timestamp_ms;
         uint32_t m_task_cycle_cnt;

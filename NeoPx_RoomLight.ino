@@ -42,7 +42,7 @@ static WebServer* s_webServer_p;
 //*****************************************************************************
 void setup()
 {
-  #ifdef IS_DEBUG_MODE
+  #if (IS_DEBUG_MODE == ON)
     Serial.begin(115200);       // for debugging
   #endif
     

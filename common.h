@@ -40,6 +40,11 @@ typedef struct
 #define SW_VERSION_Minor 3
 
 
+//--- switch --------------------------------------------------------------
+#define ON  1
+#define OFF 0
+
+
 //--- hardware setting ----------------------------------------------------
 // enhance the following setting to use it for another room light
 // and enhance the following files:
@@ -126,8 +131,7 @@ typedef struct
 
 
 //--- debug setting -------------------------------------------------------
-#define IS_DEBUG_MODE 1
-#undef IS_DEBUG_MODE
+#define IS_DEBUG_MODE OFF  // can be ON or OFF
 
 
 

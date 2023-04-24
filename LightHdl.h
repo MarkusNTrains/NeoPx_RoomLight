@@ -47,11 +47,11 @@ class LightHdl
         void SetLedArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color);
         void UpdateLedArea(void);
         uint8_t GetBrightness(void);
-        void SetBrightness_Fade(uint8_t brightness);
-        void SetBrightness_Instantly(uint8_t brightness);
+        void SetBrightness_Fade(uint8_t brightness, bool save_parameter = true);
+        void SetBrightness_Instantly(uint8_t brightness, bool save_parameter = true);
         void UpdateBrightness(void);
         uint32_t GetColor(void);
-        void SetColor(uint32_t color);
+        void SetColor(uint32_t color, bool save_parameter = true);
         void Clear(void);
         void Show(void);
 

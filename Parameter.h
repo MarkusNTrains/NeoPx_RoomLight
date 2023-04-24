@@ -38,9 +38,7 @@ class Parameter
         uint32_t GetValue() {
             return this->m_value;
         }
-        void SetValue(uint32_t value) {
-            this->m_value = value;
-        }
+        bool SetValue(uint32_t value);
         uint32_t GetMin() {
             return this->m_min;
         }

@@ -81,29 +81,29 @@ WebServer::WebServer(LightSceneHdl* led_scene)
     
     // initialize SD card
 #ifdef USE_SD_CARD
-  #ifdef IS_DEBUG_MODE
+  #if (IS_DEBUG_MODE == ON)
     Serial.println("Initializing SD card...");
   #endif
     if (!SD.begin(4)) 
     {
-      #ifdef IS_DEBUG_MODE
+  #if (IS_DEBUG_MODE == ON)
         Serial.println("ERROR - SD card initialization failed!");
-      #endif
+  #endif
         return;    // init failed
     }
-  #ifdef IS_DEBUG_MODE
+  #if (IS_DEBUG_MODE == ON)
     Serial.println("SUCCESS - SD card initialized.");
   #endif
     
     // check for index.htm file
     if (!SD.exists("index.htm")) 
     {
-      #ifdef IS_DEBUG_MODE
+  #if (IS_DEBUG_MODE == ON)
         Serial.println("ERROR - Can't find index.htm file!");
-      #endif
+  #endif
         return;  // can't find index file
     }
-  #ifdef IS_DEBUG_MODE
+  #if (IS_DEBUG_MODE == ON)
     Serial.println("SUCCESS - Found index.htm file.");
   #endif
 #endif
@@ -115,7 +115,7 @@ WebServer::WebServer(LightSceneHdl* led_scene)
     // start the server
     m_server->begin();           // start to listen for clients
 
-#ifdef IS_DEBUG_MODE
+#if (IS_DEBUG_MODE == ON)
     PrintHardwareInfo();
     Serial.print("server is at ");
     Serial.println(Ethernet.localIP());     
@@ -143,9 +143,9 @@ void WebServer::Tasks()
 
     if (client)   // got client?
     {
-#ifdef IS_DEBUG_MODE
-        Serial.println();
-        Serial.println("start request");
+#if (IS_DEBUG_MODE == ON)
+        //Serial.println();
+        //Serial.println("start request");
 #endif
 
         const uint8_t REQUEST_BUFFER_LENGTH = 100;     // size of read buffer (reads a complete line) 
@@ -164,9 +164,9 @@ void WebServer::Tasks()
             if (client.available())    // client data available to read
             { 
                 char c = client.read(); // read 1 byte (character) from client
-  #ifdef IS_DEBUG_MODE
-                Serial.print(c);
-  #endif
+#if (IS_DEBUG_MODE == ON)
+              //Serial.print(c);
+#endif
                 // limit the size of the stored received HTTP request
                 // buffer first part of HTTP request in m_buffer_http_request array (string)
                 // leave last element in array as 0 to null terminate string (REQUEST_BUFFER_LENGTH - 1)
@@ -193,7 +193,7 @@ void WebServer::Tasks()
                         strcpy(request_param_a, request_param_p);
                     }
                     
-#ifdef IS_DEBUG_MODE
+#if (IS_DEBUG_MODE == ON)
                     //Serial.print(F("method=")); Serial.println(method);
                     //Serial.print(F("requestParameter=")); Serial.println(request_param_a);
                     //Serial.print(F("uri=")); Serial.println(uri);
@@ -248,8 +248,8 @@ void WebServer::Tasks()
         delay(1);      // give the web browser time to receive the data
         client.stop(); // close the connection
         
-#ifdef IS_DEBUG_MODE
-        Serial.println("connection closed");
+#if (IS_DEBUG_MODE == ON)
+        //Serial.println("connection closed");
 #endif
     } // end if (client)
 }
@@ -286,7 +286,7 @@ void WebServer::HandleRequest(char* http_request)
         param2 = this->HttpRequestExtractOneParameter(http_request, needle_brightness, sizeof(needle_brightness));
         this->m_lightSceneHdl_p->ChangeLightScene((LightScene)param, param2);
 
-#ifdef IS_DEBUG_MODE
+#if (IS_DEBUG_MODE == ON)
         Serial.print("Scene: ");
         Serial.println(param);
 #endif
@@ -299,7 +299,7 @@ void WebServer::HandleRequest(char* http_request)
         param = this->HttpRequestExtractOneParameter(http_request, needle_brightness, sizeof(needle_brightness));
         this->m_lightSceneHdl_p->SetBrightness(param);
         
-#ifdef IS_DEBUG_MODE
+#if (IS_DEBUG_MODE == ON)
         Serial.println(param);
 #endif
     }
@@ -311,7 +311,7 @@ void WebServer::HandleRequest(char* http_request)
         param = this->HttpRequestExtractOneParameter(http_request, needle_color, sizeof(needle_color));
         this->m_lightSceneHdl_p->GetLightHdl()->SetColor(param);
         
-#ifdef IS_DEBUG_MODE
+#if (IS_DEBUG_MODE == ON)
         Serial.println(param);
 #endif
     }
@@ -369,7 +369,7 @@ void WebServer::HandleRequest(char* http_request)
         }
         param4 = atoi(param_c);
         
-#ifdef IS_DEBUG_MODE
+#if (IS_DEBUG_MODE == ON)
         Serial.println(param);
         Serial.println(param2);
         Serial.println(param3);
@@ -389,8 +389,8 @@ void WebServer::HandleRequest(char* http_request)
     {
         this->m_action = ACTION_Unknown;
 
-#ifdef IS_DEBUG_MODE
-        Serial.println("ACTION_Unknown");
+#if (IS_DEBUG_MODE == ON)
+        //Serial.println("ACTION_Unknown");
 #endif
     }  
 }
