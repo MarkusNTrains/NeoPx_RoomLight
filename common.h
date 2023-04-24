@@ -22,8 +22,19 @@ $Id:  $
 #include "Arduino.h"
 
 
+
+//----------------------------------------------------------------------------
+// typedef
+typedef struct 
+{
+    uint8_t pin;
+    uint16_t nof_pixel;
+} ledStrip_t;
+
+
 //-----------------------------------------------------------------------------
 // defines
+
 //--- version -------------------------------------------------------------
 #define SW_VERSION_Major 1
 #define SW_VERSION_Minor 3
@@ -58,6 +69,13 @@ $Id:  $
     #define ROOM_LIGHT_LedStrip3_NofLed 285
     #define ROOM_LIGHT_LedStrip4_NofLed 285
 
+    const ledStrip_t ROOM_LIGHT_LedStripList[ROOM_LIGHT_NofLedStrips] = {
+        { ROOM_LIGHT_LedStrip1_Pin, ROOM_LIGHT_LedStrip1_NofLed},
+        { ROOM_LIGHT_LedStrip2_Pin, ROOM_LIGHT_LedStrip2_NofLed},
+        { ROOM_LIGHT_LedStrip3_Pin, ROOM_LIGHT_LedStrip3_NofLed},
+        { ROOM_LIGHT_LedStrip4_Pin, ROOM_LIGHT_LedStrip4_NofLed},
+    };
+
 #elif (ROOM_LIGHT == ROOM_LIGHT_Altenglienicke)
     // LED Matrix defines -----------------------------
     #define ROOM_LIGHT_NofRows  6
@@ -80,7 +98,16 @@ $Id:  $
     #define ROOM_LIGHT_LedStrip5_NofLed 240
     #define ROOM_LIGHT_LedStrip6_NofLed 66
 
-#else 
+    const ledStrip_t ROOM_LIGHT_LedStripList[ROOM_LIGHT_NofLedStrips] = {
+        { ROOM_LIGHT_LedStrip1_Pin, ROOM_LIGHT_LedStrip1_NofLed},
+        { ROOM_LIGHT_LedStrip2_Pin, ROOM_LIGHT_LedStrip2_NofLed},
+        { ROOM_LIGHT_LedStrip3_Pin, ROOM_LIGHT_LedStrip3_NofLed},
+        { ROOM_LIGHT_LedStrip4_Pin, ROOM_LIGHT_LedStrip4_NofLed},
+        { ROOM_LIGHT_LedStrip5_Pin, ROOM_LIGHT_LedStrip5_NofLed},
+        { ROOM_LIGHT_LedStrip6_Pin, ROOM_LIGHT_LedStrip6_NofLed},
+    };
+
+#else // ROOM_LIGHT_TestBoard
     // LED Matrix defines -----------------------------
     #define ROOM_LIGHT_NofRows  1
     #define ROOM_LIGHT_RowNofPx 14
@@ -91,6 +118,10 @@ $Id:  $
     #define ROOM_LIGHT_LedStrip1_Pin 22
 
     #define ROOM_LIGHT_LedStrip1_NofLed ROOM_LIGHT_RowNofPx
+
+    const ledStrip_t ROOM_LIGHT_LedStripList[ROOM_LIGHT_NofLedStrips] = {
+        { ROOM_LIGHT_LedStrip1_Pin, ROOM_LIGHT_LedStrip1_NofLed},
+    };
 #endif
 
 

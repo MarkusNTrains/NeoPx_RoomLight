@@ -23,16 +23,14 @@ $Id:  $
 #include "LedRow.h"
 
 
-//----------------------------------------------------------------------------
-// define
-#define LED_STRIP_NOF ROOM_LIGHT_NofLedStrips
-
 
 //----------------------------------------------------------------------------
 // class
 class LedMatrix
 {
     public:
+        const static uint8_t LED_STRIP_NOF = ROOM_LIGHT_NofLedStrips;
+
         LedMatrix();
         ~LedMatrix();
         uint32_t GetPixelColor(uint16_t row, uint16_t column);

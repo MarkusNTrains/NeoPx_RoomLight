@@ -39,13 +39,9 @@ LedMatrix::LedMatrix()
 {
     uint8_t idx = 0;
     
-#if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
-    this->m_led_strip[0] = new Adafruit_NeoPixel(ROOM_LIGHT_LedStrip1_NofLed, ROOM_LIGHT_LedStrip1_Pin, NEO_GRBW + NEO_KHZ800);
-    this->m_led_strip[1] = new Adafruit_NeoPixel(ROOM_LIGHT_LedStrip2_NofLed, ROOM_LIGHT_LedStrip2_Pin, NEO_GRBW + NEO_KHZ800);
-    this->m_led_strip[2] = new Adafruit_NeoPixel(ROOM_LIGHT_LedStrip3_NofLed, ROOM_LIGHT_LedStrip3_Pin, NEO_GRBW + NEO_KHZ800);
-    this->m_led_strip[3] = new Adafruit_NeoPixel(ROOM_LIGHT_LedStrip4_NofLed, ROOM_LIGHT_LedStrip4_Pin, NEO_GRBW + NEO_KHZ800);
     for (idx = 0; idx < LED_STRIP_NOF; idx++)
     {
+        this->m_led_strip[idx] = new Adafruit_NeoPixel(ROOM_LIGHT_LedStripList[idx].nof_pixel, ROOM_LIGHT_LedStripList[idx].pin, NEO_GRBW + NEO_KHZ800);
         this->m_led_strip[idx]->begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
     }
 
@@ -53,27 +49,15 @@ LedMatrix::LedMatrix()
     this->SetBrightness(0);
     this->Show();
     
+#if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
+    // set led strip map to led row --> it is possible to splite one strip into more than one row
     this->m_led_row[0] = new LedRow(m_led_strip[0], 0);
     this->m_led_row[1] = new LedRow(m_led_strip[1], 1);
     this->m_led_row[2] = new LedRow(m_led_strip[2], 2);
     this->m_led_row[3] = new LedRow(m_led_strip[3], 3);
 
 #elif (ROOM_LIGHT == ROOM_LIGHT_Altenglienicke)
-    this->m_led_strip[0] = new Adafruit_NeoPixel(ROOM_LIGHT_LedStrip1_NofLed, ROOM_LIGHT_LedStrip1_Pin, NEO_GRBW + NEO_KHZ800);
-    this->m_led_strip[1] = new Adafruit_NeoPixel(ROOM_LIGHT_LedStrip2_NofLed, ROOM_LIGHT_LedStrip2_Pin, NEO_GRBW + NEO_KHZ800);
-    this->m_led_strip[2] = new Adafruit_NeoPixel(ROOM_LIGHT_LedStrip3_NofLed, ROOM_LIGHT_LedStrip3_Pin, NEO_GRBW + NEO_KHZ800);
-    this->m_led_strip[3] = new Adafruit_NeoPixel(ROOM_LIGHT_LedStrip4_NofLed, ROOM_LIGHT_LedStrip4_Pin, NEO_GRBW + NEO_KHZ800);
-    this->m_led_strip[4] = new Adafruit_NeoPixel(ROOM_LIGHT_LedStrip5_NofLed, ROOM_LIGHT_LedStrip5_Pin, NEO_GRBW + NEO_KHZ800);
-    this->m_led_strip[5] = new Adafruit_NeoPixel(ROOM_LIGHT_LedStrip6_NofLed, ROOM_LIGHT_LedStrip6_Pin, NEO_GRBW + NEO_KHZ800);
-    for (idx = 0; idx < LED_STRIP_NOF; idx++)
-    {
-        this->m_led_strip[idx]->begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
-    }
-
-    this->Clear();
-    this->SetBrightness(0);
-    this->Show();
-    
+    // set led strip map to led row --> it is possible to splite one strip into more than one row
     this->m_led_row[0] = new LedRow(m_led_strip[0], 0);
     this->m_led_row[1] = new LedRow(m_led_strip[1], 1);
     this->m_led_row[2] = new LedRow(m_led_strip[2], 2);
@@ -81,17 +65,8 @@ LedMatrix::LedMatrix()
     this->m_led_row[4] = new LedRow(m_led_strip[4], 4);
     this->m_led_row[5] = new LedRow(m_led_strip[5], 5);
 
-#else // test board
-    this->m_led_strip[0] = new Adafruit_NeoPixel(ROOM_LIGHT_LedStrip1_NofLed, ROOM_LIGHT_LedStrip1_Pin, NEO_GRBW + NEO_KHZ800);
-    for (idx = 0; idx < LED_STRIP_NOF; idx++)
-    {
-        this->m_led_strip[idx]->begin(); // INITIALIZE NeoPixel strip object (REQUIRED)
-    }
-
-    this->Clear();
-    this->SetBrightness(0);
-    this->Show();
-    
+#else // ROOM_LIGHT_TestBoard
+    // set led strip map to led row --> it is possible to splite one strip into more than one row
     this->m_led_row[0] = new LedRow(m_led_strip[0], 0);
 #endif
 }

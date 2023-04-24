@@ -50,7 +50,7 @@ LightSceneHdl::LightSceneHdl()
     this->m_task_timestamp_ms = 0;
 
     // get last lightscene from datastore
-    this->ChangeLightScene((LightScene)(this->m_datastore_p->GetParameter(Datastore::ParameterId::LightScene)), 20);
+    this->ChangeLightScene((LightScene)(this->m_datastore_p->GetParameter(Datastore::ParameterId::LightScene)));
 }
 
 

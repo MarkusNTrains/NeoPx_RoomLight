@@ -39,9 +39,9 @@ Datastore::Datastore()
     this->m_parameter_list[ParameterId::Color] = new Parameter(0xFF000000, 0, 0xFFFFFFFF, 4);
     this->m_parameter_list[ParameterId::LightScene] = new Parameter(light_scene, 0, (uint32_t)LightScene::Nof, 1);
     this->m_parameter_list[ParameterId::UserSetting_Xs] = new Parameter(0, 0, 0xFFFF, 2);
-    this->m_parameter_list[ParameterId::UserSetting_Xe] = new Parameter(0, 0, 0xFFFF, 2);
+    this->m_parameter_list[ParameterId::UserSetting_Xe] = new Parameter(ROOM_LIGHT_RowNofPx - 1, 0, 0xFFFF, 2);
     this->m_parameter_list[ParameterId::UserSetting_Ys] = new Parameter(0, 0, 0xFFFF, 2);
-    this->m_parameter_list[ParameterId::UserSetting_Ye] = new Parameter(0, 0, 0xFFFF, 2);
+    this->m_parameter_list[ParameterId::UserSetting_Ye] = new Parameter((ROOM_LIGHT_NofRows - 1), 0, 0xFFFF, 2);
 
 
     //--- init parameter address ------------------------------------------

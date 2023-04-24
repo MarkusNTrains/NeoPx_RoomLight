@@ -32,8 +32,8 @@ $Id:  $
 class LedRow
 {
     public:
-        static const uint16_t LED_ROW_NOF = ROOM_LIGHT_NofRows;
-        static const uint16_t LED_ROW_LENGTH = ROOM_LIGHT_RowNofPx;
+        const static uint16_t LED_ROW_NOF = ROOM_LIGHT_NofRows;
+        const static uint16_t LED_ROW_LENGTH = ROOM_LIGHT_RowNofPx;
     
 	LedRow(Adafruit_NeoPixel* led_strip_p, uint8_t row_idx);
 	~LedRow();

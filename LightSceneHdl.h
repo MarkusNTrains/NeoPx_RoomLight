@@ -77,8 +77,6 @@ class LightSceneHdl
         LightHdl* GetLightHdl(void);
         void GetUserSettingArea(LedArea* area);
         void SetUserSettingArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye);
-        //this->m_light_scene->ChangeLightScene(LightScene::UserSetting);
-        //this->m_light_scene->GetLightHdl()->SetLedArea(param, param2, param3, param4);
         void SetBrightness(uint8_t brightness);
 
     protected:

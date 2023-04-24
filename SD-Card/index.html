@@ -159,6 +159,10 @@
                                         +   '<input id="b" class="twoThumbSlider" type="range" min="0" value="' + ye + '" max="' + led_nof_row + '" />'
                                         + '</div>'
                                     );
+                                    if (led_nof_row <= 1)
+                                    {
+                                        document.getElementById("led_slider_row").style.visibility = 'hidden';
+                                    }
 
                                     //<div id="slider_columen" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: 20; --b: 120; --min: 0; --max: 239">
                                     //    <!--<div id="multi-lbl">Multi thumb slider: 0 - 15</div>-->
@@ -720,7 +724,7 @@
     <div class="slidecontainer">
         <label for="brightness_value">Helligkeit</label>
         <label id="brightness_value"></label>
-        <input type="range" min="0" max="255" value="50" class="slider" id="brightness_slider" oninput="BrighntessSliderChanged()">
+        <input type="range" min="1" max="255" value="50" class="slider" id="brightness_slider" oninput="BrighntessSliderChanged()">
     </div>
     <br>
     <br>
@@ -758,11 +762,11 @@
         <tr>
             <td>
                 <label for="led_row">Reihen</label>
-                <label type="text" id="led_row" readonly style="border:0; color:#f6931f; font-weight:bold;"></label>      
+                <label type="text" id="led_row" readonly style="border:0; color:#f6931f; font-weight:bold;"> loading...</label>      
             </td>
             <td>
                 <label for="led_column">L&auml;nge</label>
-                <label type="text" id="led_column" readonly style="border:0; color:#f6931f; font-weight:bold;"></label>
+                <label type="text" id="led_column" readonly style="border:0; color:#f6931f; font-weight:bold;"> loading...</label>
             </td>
         </tr>
         <tr>

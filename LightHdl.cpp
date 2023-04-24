@@ -46,8 +46,14 @@ LightHdl::LightHdl(Datastore* datastore_p)
     this->m_led_matrix = new LedMatrix();
     this->m_led_area = new LedArea();
 
+    // restore last values
+    uint8_t brightness = this->m_datastore_p->GetParameter(Datastore::ParameterId::Brightness);
+    if (brightness == 0)
+    {
+        brightness = 1;
+    }
+    this->SetBrightness_Instantly(brightness);
     this->SetColor(this->m_datastore_p->GetParameter(Datastore::ParameterId::Color));
-    this->SetBrightness_Instantly(this->m_datastore_p->GetParameter(Datastore::ParameterId::Brightness));
 }
 
 
@@ -187,6 +193,9 @@ void LightHdl::UpdateBrightness(void)
         {
             this->m_current_brightness = this->m_desired_brightness;
         }
+
+        this->m_led_matrix->SetBrightness(this->m_current_brightness); // Set brigthness for all neo pixels
+        this->Show();
     }
     else if (this->m_current_brightness > this->m_desired_brightness)
     {
@@ -198,13 +207,14 @@ void LightHdl::UpdateBrightness(void)
         {
             this->m_current_brightness = this->m_desired_brightness;      
         }
+
+        this->m_led_matrix->SetBrightness(this->m_current_brightness); // Set brigthness for all neo pixels
+        this->Show();
     }
     else
     {
         // IDLE;
     }    
-    
-    this->m_led_matrix->SetBrightness(this->m_current_brightness); // Set brigthness for all neo pixels
 }
 
 
