@@ -55,7 +55,7 @@ void setup()
     s_lightSceneHdl_p = new LightSceneHdl();
     s_webServer_p = new WebServer(s_lightSceneHdl_p);
 
-    wdt_enable(WDTO_2S);
+    wdt_enable(WDTO_8S);
 }
 
 

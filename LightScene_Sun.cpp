@@ -196,7 +196,7 @@ void LightScene_Sun::Sunrise_Task(void)
                         white = DAY_BRIGHTNESS_WHITE;
                     }
 
-                    if (white > ((DAY_BRIGHTNESS_WHITE * 3) / 10))
+                    if (white > ((DAY_BRIGHTNESS_WHITE * 2) / 5))
                     {
                         tmp = (red / 10) + 1;
                         if (tmp < red) {
@@ -326,7 +326,7 @@ void LightScene_Sun::Sunset_Task(void)
                         blue = BLUE_MAX;
                     }
 
-                    if (red > ((RED_MAX * 3) / 10))
+                    if (red > ((RED_MAX * 2) / 5))
                     {
                         tmp = (white / 10) + 1;
                         if (tmp < white) {

@@ -76,6 +76,8 @@ void LightScene_Rainbow::TaskHdl()
     uint32_t color = 0;
     uint16_t pixelHue = 0;
 
+    Serial.println("Task Rainbow");
+    
     for (uint32_t idx = 0; idx < LedRow::LED_ROW_LENGTH; idx++)   // For each pixel in strip...
     {
         pixelHue = this->m_firstPixelHue + (idx * 65536L / LedRow::LED_ROW_LENGTH);

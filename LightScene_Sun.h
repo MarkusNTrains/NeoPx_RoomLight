@@ -57,7 +57,7 @@ class LightScene_Sun
         const uint8_t SUNRISE_BIRGHTNESS = 15;
         const uint32_t NIGHT_COLOR = Adafruit_NeoPixel::Color(0, 0, 255, 0);
         const uint8_t RED_MAX = (255 * DAY_BRIGHTNESS_RGB) / 255;
-        const uint8_t GREEN_MAX = (130 * DAY_BRIGHTNESS_RGB) / 255;
+        const uint8_t GREEN_MAX = (120 * DAY_BRIGHTNESS_RGB) / 255;
         const uint8_t BLUE_MAX = (32 * DAY_BRIGHTNESS_RGB ) / 255;
 
         LightScene_Sun(LightSceneHdl* parent, LightHdl* light_hdl);

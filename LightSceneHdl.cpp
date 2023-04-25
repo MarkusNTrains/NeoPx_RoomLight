@@ -50,6 +50,7 @@ LightSceneHdl::LightSceneHdl()
 {
     this->m_datastore_p = new Datastore();
     this->m_light_hdl_p = new LightHdl(this->m_datastore_p);
+
     this->m_active_light_scene_p = nullptr;
     this->m_scene_cloud_p = new LightScene_Cloud(this, this->m_light_hdl_p);
     this->m_scene_disco_p = new LightScene_Disco(this->m_light_hdl_p, this->m_datastore_p);
@@ -57,8 +58,10 @@ LightSceneHdl::LightSceneHdl()
     this->m_scene_light_on_p = new LightScene_LightOn(this->m_light_hdl_p, this->m_datastore_p);
     this->m_scene_moba_p = new LightScene_MoBa(this->m_light_hdl_p, this->m_datastore_p);
     this->m_scene_office_table_p = new LightScene_OfficeTable(this->m_light_hdl_p, this->m_datastore_p);
+    this->m_scene_rainbow_p = new LightScene_Rainbow(this->m_light_hdl_p, this->m_datastore_p);
     this->m_scene_sun_p = new LightScene_Sun(this, this->m_light_hdl_p);
     this->m_scene_userSetting_p = new LightScene_UserSetting(this, this->m_light_hdl_p, this->m_datastore_p);
+
     this->m_brightnessUpdate_timestamp_ms = 0;
     this->m_scene = LightSceneID::LightOff;
     this->m_last_scene = LightSceneID::LightOff;
@@ -66,6 +69,7 @@ LightSceneHdl::LightSceneHdl()
 
     // get last lightscene from datastore
     this->ChangeLightScene((LightSceneID)(this->m_datastore_p->GetParameter(Datastore::ParameterId::LightSceneID)));
+    //this->ChangeLightScene(LightSceneID::OfficeTable);
 }
 
 
