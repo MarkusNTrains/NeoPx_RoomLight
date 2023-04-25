@@ -48,18 +48,18 @@ Datastore::Datastore()
 #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
     light_scene = (uint32_t)LightSceneID::OfficeTable;
 #endif
-    this->m_parameter_list[ParameterId::Brightness] = new Parameter(100, 0, 100, 1);
-    this->m_parameter_list[ParameterId::Color] = new Parameter(0xFF000000, 0, 0xFFFFFFFF, 4);
+    this->m_parameter_list[ParameterId::Brightness] = new Parameter(BRIGHTNESS_Default, BRIGHTNESS_Min, BRIGHTNESS_Max, BRIGHTNESS_Width);
+    this->m_parameter_list[ParameterId::Color] = new Parameter(COLOR_Default, COLOR_Min, COLOR_Max, COLOR_Width);
     this->m_parameter_list[ParameterId::LightSceneID] = new Parameter(light_scene, 0, (uint32_t)LightSceneID::Nof, 1);
+    this->m_parameter_list[ParameterId::SceneDisco_Brightness] = new Parameter(BRIGHTNESS_Default, BRIGHTNESS_Min, BRIGHTNESS_Max, BRIGHTNESS_Width);
+    this->m_parameter_list[ParameterId::SceneDisco_Color] = new Parameter(COLOR_Default, COLOR_Min, COLOR_Max, COLOR_Width);
+    this->m_parameter_list[ParameterId::SceneMoBa_Brightness] = new Parameter(BRIGHTNESS_Default, BRIGHTNESS_Min, BRIGHTNESS_Max, BRIGHTNESS_Width);
+    this->m_parameter_list[ParameterId::SceneMoBa_Color] = new Parameter(COLOR_Default, COLOR_Min, COLOR_Max, COLOR_Width);
+    this->m_parameter_list[ParameterId::SceneLightOn_Brightness] = new Parameter(BRIGHTNESS_Default, BRIGHTNESS_Min, BRIGHTNESS_Max, BRIGHTNESS_Width);
+    this->m_parameter_list[ParameterId::SceneLightOn_Color] = new Parameter(COLOR_Default, COLOR_Min, COLOR_Max, COLOR_Width);
+    this->m_parameter_list[ParameterId::SceneOfficeTable_Brightness] = new Parameter(BRIGHTNESS_Default, BRIGHTNESS_Min, BRIGHTNESS_Max, BRIGHTNESS_Width);
+    this->m_parameter_list[ParameterId::SceneOfficeTable_Color] = new Parameter(COLOR_Default, COLOR_Min, COLOR_Max, COLOR_Width);
     this->m_parameter_list[ParameterId::UserSetting_Xs] = new Parameter(0, 0, 0xFFFF, 2);
-    this->m_parameter_list[ParameterId::SceneDisco_Brightness] = new Parameter(100, 0, 100, 1);
-    this->m_parameter_list[ParameterId::SceneDisco_Color] = new Parameter(0xFF000000, 0, 0xFFFFFFFF, 4);
-    this->m_parameter_list[ParameterId::SceneMoBa_Brightness] = new Parameter(100, 0, 100, 1);
-    this->m_parameter_list[ParameterId::SceneMoBa_Color] = new Parameter(0xFF000000, 0, 0xFFFFFFFF, 4);
-    this->m_parameter_list[ParameterId::SceneLightOn_Brightness] = new Parameter(100, 0, 100, 1);
-    this->m_parameter_list[ParameterId::SceneLightOn_Color] = new Parameter(0xFF000000, 0, 0xFFFFFFFF, 4);
-    this->m_parameter_list[ParameterId::SceneOfficeTable_Brightness] = new Parameter(100, 0, 100, 1);
-    this->m_parameter_list[ParameterId::SceneOfficeTable_Color] = new Parameter(0xFF000000, 0, 0xFFFFFFFF, 4);
     this->m_parameter_list[ParameterId::UserSetting_Xe] = new Parameter(ROOM_LIGHT_RowNofPx - 1, 0, 0xFFFF, 2);
     this->m_parameter_list[ParameterId::UserSetting_Ys] = new Parameter(0, 0, 0xFFFF, 2);
     this->m_parameter_list[ParameterId::UserSetting_Ye] = new Parameter((ROOM_LIGHT_NofRows - 1), 0, 0xFFFF, 2);
@@ -259,7 +259,7 @@ void Datastore::SetParameter(ParameterId id, uint32_t value)
     if (value > this->m_parameter_list[id]->GetMax()) {
         value = this->m_parameter_list[id]->GetMax();
     }
-    
+
     if (this->m_parameter_list[id]->SetValue(value) == true)
     {
         this->m_is_eeprom_update_needed = true;

@@ -64,6 +64,7 @@ class Datastore
         void SetParameter(ParameterId id, uint32_t value);
 
     private:
+        //--- EEPROM ---
         const uint32_t AFTER_PARAMETER_CHANGE_EEPROM_WriteLockTmoMs = 5000;
         const uint32_t EEPROM_WriteLockTmoMs = 60000;
 
@@ -73,11 +74,18 @@ class Datastore
 
         const uint16_t EEPROM_PageValidPattern = 0x55AA;
 
+        //--- Parameter ---
         const uint8_t BRIGHTNESS_Default = 100;
         const uint8_t BRIGHTNESS_Min = 0;
         const uint8_t BRIGHTNESS_Max = 255;
         const uint8_t BRIGHTNESS_Width = 1;
 
+        const uint32_t COLOR_Default = 0xFF000000;
+        const uint32_t COLOR_Min = 0;
+        const uint32_t COLOR_Max = 0xFFFFFFFF;
+        const uint8_t COLOR_Width = 4;
+
+        //--- Memeber Variable ---
         Parameter* m_parameter_list[ParameterId::Nof];
         uint32_t m_last_parameter_changed_timestamp_ms;
         uint32_t m_eeprom_last_update_timestamp_ms;
@@ -86,6 +94,7 @@ class Datastore
         uint16_t m_eeprom_active_page;
         bool m_is_eeprom_update_needed;
 
+        //--- Member Function ---
         void EEPROM_WriteToNextPage();
         void EEPROM_WritePage();
         uint32_t EEPROM_ReadParameter(ParameterId id, uint16_t page_start_addr);
