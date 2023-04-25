@@ -28,10 +28,9 @@ $Id:  $
 // description:
 //   constructor
 //*****************************************************************************
-LightScene::LightScene(LightSceneHdl* parent, LightHdl* light_hdl, Datastore* datastore_p, uint32_t task_tmo_m, Datastore::ParameterId brightness_param_id, Datastore::ParameterId color_param_id)
+LightScene::LightScene(LightHdl* light_hdl, Datastore* datastore_p, uint32_t task_tmo_m, Datastore::ParameterId brightness_param_id, Datastore::ParameterId color_param_id)
 {
     this->m_datastore_p = datastore_p;
-    this->m_scene_hdl_p = parent;
     this->m_light_hdl_p = light_hdl;
     this->m_task_tmo_ms = task_tmo_m;
     this->m_brightness_param_id = brightness_param_id;

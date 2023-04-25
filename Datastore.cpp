@@ -52,6 +52,8 @@ Datastore::Datastore()
     this->m_parameter_list[ParameterId::Color] = new Parameter(0xFF000000, 0, 0xFFFFFFFF, 4);
     this->m_parameter_list[ParameterId::LightSceneID] = new Parameter(light_scene, 0, (uint32_t)LightSceneID::Nof, 1);
     this->m_parameter_list[ParameterId::UserSetting_Xs] = new Parameter(0, 0, 0xFFFF, 2);
+    this->m_parameter_list[ParameterId::SceneDisco_Brightness] = new Parameter(100, 0, 100, 1);
+    this->m_parameter_list[ParameterId::SceneDisco_Color] = new Parameter(0xFF000000, 0, 0xFFFFFFFF, 4);
     this->m_parameter_list[ParameterId::SceneMoBa_Brightness] = new Parameter(100, 0, 100, 1);
     this->m_parameter_list[ParameterId::SceneMoBa_Color] = new Parameter(0xFF000000, 0, 0xFFFFFFFF, 4);
     this->m_parameter_list[ParameterId::UserSetting_Xe] = new Parameter(ROOM_LIGHT_RowNofPx - 1, 0, 0xFFFF, 2);

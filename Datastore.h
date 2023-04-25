@@ -38,6 +38,8 @@ class Datastore
             LightSceneID = 0,
             Brightness,
             Color,
+            SceneDisco_Brightness,
+            SceneDisco_Color,
             SceneMoBa_Brightness,
             SceneMoBa_Color,
             UserSetting_Xs,

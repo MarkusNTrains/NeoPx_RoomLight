@@ -54,6 +54,7 @@ enum class LightSceneID
 // extern
 class LightScene;
 class LightScene_Cloud;
+class LightScene_Disco;
 class LightScene_Lightning;
 class LightScene_MoBa;
 class LightScene_Sun;
@@ -76,6 +77,7 @@ class LightSceneHdl
         void GetUserSettingArea(LedArea* area);
         void SetUserSettingArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye);
         void SetBrightness(uint8_t brightness);
+        void SetColor(uint32_t color);
 
     protected:
 
@@ -83,7 +85,6 @@ class LightSceneHdl
         const uint32_t BRIGHTNESS_UPDATE_TMO_MS = 20;
         const uint32_t TASK_SceneLightOn_TmoMs = 1000;
         const uint32_t TASK_SceneLightOff_TmoMs = 20;
-        const uint32_t TASK_SceneDisco_TmoMs = 100;
         const uint32_t TASK_SceneRainbow_TmoMs = 100;
         const uint32_t TASK_SceneOfficeTable_TmoMs = 1000;
 
@@ -96,6 +97,7 @@ class LightSceneHdl
         LightSceneID m_last_scene;
         LightScene* m_active_light_scene_p;
         LightScene_Cloud* m_scene_cloud_p;
+        LightScene_Disco* m_scene_disco_p;
         LightScene_Lightning* m_scene_lightning_p;
         LightScene_MoBa* m_scene_moba_p;
         LightScene_Sun* m_scene_sun_p;
@@ -114,7 +116,6 @@ class LightSceneHdl
         void LightScene_LightOn_Enter(uint16_t brightness);
         void LightScene_LightOn_Task(void);
         void LightScene_LightOff_Task(void);
-        void LightScene_Disco_Task(void);
         void LightScene_WhiteOverRainbow_Task(void);
 };
 

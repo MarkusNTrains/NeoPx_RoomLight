@@ -18,6 +18,7 @@ $Id:  $
 // includes
 #include "LightSceneHdl.h"
 #include "LightScene_Cloud.h"
+#include "LightScene_Disco.h"
 #include "LightScene_Lightning.h"
 #include "LightScene_MoBa.h"
 #include "LightScene_Sun.h"
@@ -48,8 +49,9 @@ LightSceneHdl::LightSceneHdl()
     this->m_light_hdl_p = new LightHdl(this->m_datastore_p);
     this->m_active_light_scene_p = nullptr;
     this->m_scene_cloud_p = new LightScene_Cloud(this, this->m_light_hdl_p);
+    this->m_scene_disco_p = new LightScene_Disco(this->m_light_hdl_p, this->m_datastore_p);
     this->m_scene_lightning_p = new LightScene_Lightning(this, this->m_light_hdl_p);
-    this->m_scene_moba_p = new LightScene_MoBa(this, this->m_light_hdl_p, this->m_datastore_p);
+    this->m_scene_moba_p = new LightScene_MoBa(this->m_light_hdl_p, this->m_datastore_p);
     this->m_scene_sun_p = new LightScene_Sun(this, this->m_light_hdl_p);
     this->m_scene_userSetting_p = new LightScene_UserSetting(this, this->m_light_hdl_p, this->m_datastore_p);
     this->m_brightnessUpdate_timestamp_ms = 0;
@@ -128,12 +130,13 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene, uint8_t brightness)
             break;
         
         case LightSceneID::Disco:
-            this->m_light_hdl_p->Clear();
+            this->m_active_light_scene_p = this->m_scene_disco_p;
+            this->m_active_light_scene_p->Enter();
             save_light_scene = true;
             break;
 
         case LightSceneID::MoBa:
-            this->m_active_light_scene_p = (LightScene*)this->m_scene_moba_p;
+            this->m_active_light_scene_p = this->m_scene_moba_p;
             this->m_active_light_scene_p->Enter();
             save_light_scene = true;
             break;
@@ -229,7 +232,7 @@ void LightSceneHdl::Tasks()
             break;
 
         case LightSceneID::Disco:
-            LightScene_Disco_Task();
+            this->m_active_light_scene_p->Task();
             break;
         
         case LightSceneID::Night:
@@ -351,110 +354,6 @@ void LightSceneHdl::LightScene_LightOn_Task(void)
 
 //*****************************************************************************
 // description:
-//   Disco Task
-//*****************************************************************************
-void LightSceneHdl::LightScene_Disco_Task(void)
-{
-    if (millis() - this->m_task_timestamp_ms > TASK_SceneDisco_TmoMs)
-    {
-        this->m_task_timestamp_ms = millis();
-
-        /*m_pixel->clear();
-        m_pixel->setPixelColor(m_moving_dot_current_px, Adafruit_NeoPixel::Color(0, 0, 0, this->m_light_hdl_p->m_desired_brightness));
-        m_pixel->show();
-        m_moving_dot_current_px++;
-        if (m_moving_dot_current_px >= m_nof_px)
-        {
-            m_moving_dot_current_px = 0;
-        }*/
-
-        srand(millis());
-
-        uint16_t col_start = rand() % LedRow::LED_ROW_LENGTH;
-        uint16_t col_end = col_start + (rand() % LedRow::LED_ROW_LENGTH);
-        uint16_t row_start = rand() % LedRow::LED_ROW_NOF;
-        uint16_t row_end = row_end + rand() % LedRow::LED_ROW_NOF;
-        uint32_t color = 0;
-        /*switch (rand() % 3)
-        {
-            case 0:
-                color = Adafruit_NeoPixel::Color(rand() % 255, rand() % 255, 0, 0);
-                break;
-
-            case 1:
-                color = Adafruit_NeoPixel::Color(rand() % 255, 0, rand() % 255, 0);
-                break;
-
-            case 2:
-                color = Adafruit_NeoPixel::Color(0, rand() % 255, rand() % 255, 0);
-                break;
-
-            default:
-                break;
-        }*/
-
-        switch (rand() % 12)
-        {
-            case 0:
-                color = Adafruit_NeoPixel::Color(255, 0, 0, 0);
-                break;
-
-            case 1:
-                color = Adafruit_NeoPixel::Color(0, 255, 0, 0);
-                break;
-
-            case 2:
-                color = Adafruit_NeoPixel::Color(0, 0, 255, 0);
-                break;
-
-            case 3:
-                color = Adafruit_NeoPixel::Color(255, 255, 0, 0);
-                break;
-
-            case 4:
-                color = Adafruit_NeoPixel::Color(255, 0, 255, 0);
-                break;
-
-            case 5:
-                color = Adafruit_NeoPixel::Color(0, 255, 255, 0);
-                break;
-
-            case 6:
-                color = Adafruit_NeoPixel::Color(255, 127, 0, 0);
-                break;
-
-            case 7:
-                color = Adafruit_NeoPixel::Color(127, 255, 0, 0);
-                break;
-
-            case 8:
-                color = Adafruit_NeoPixel::Color(255, 0, 127, 0);
-                break;
-
-            case 9:
-                color = Adafruit_NeoPixel::Color(127, 0, 255, 0);
-                break;
-
-            case 10:
-                color = Adafruit_NeoPixel::Color(0, 255, 127, 0);
-                break;
-
-            case 11:
-                color = Adafruit_NeoPixel::Color(0, 127, 255, 0);
-                break;
-
-            default:
-                break;
-        }
-
-        this->m_light_hdl_p->SetLedArea(col_start, col_end, row_start, row_end, color);
-        this->m_light_hdl_p->Show();
-    }
-}
-
-
-//*****************************************************************************
-// description:
 //   Show Rainbow with moving white dots
 //*****************************************************************************
 void LightSceneHdl::LightScene_WhiteOverRainbow_Task(void) 
@@ -545,5 +444,23 @@ void LightSceneHdl::SetBrightness(uint8_t brightness)
         }
     }
 }
+
+
+//*****************************************************************************
+// description:
+//   Set Brightness
+//*****************************************************************************
+void LightSceneHdl::SetColor(uint32_t color)
+{
+    if (this->m_active_light_scene_p != nullptr)
+    {
+        this->m_active_light_scene_p->SetColor(color);
+    }
+    else
+    {
+        this->m_light_hdl_p->SetColor(color);
+    }
+}
+
 
 

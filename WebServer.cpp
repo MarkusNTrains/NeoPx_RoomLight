@@ -309,7 +309,7 @@ void WebServer::HandleRequest(char* http_request)
     {
         this->m_action = ACTION_SetColor;
         param = this->HttpRequestExtractOneParameter(http_request, needle_color, sizeof(needle_color));
-        this->m_lightSceneHdl_p->GetLightHdl()->SetColor(param);
+        this->m_lightSceneHdl_p->SetColor(param);
         
 #if (IS_DEBUG_MODE == ON)
         Serial.println(param);

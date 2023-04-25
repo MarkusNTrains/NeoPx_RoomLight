@@ -39,7 +39,7 @@ class LightSceneHdl;
 class LightScene_MoBa : public LightScene
 {
     public:
-        LightScene_MoBa(LightSceneHdl* parent, LightHdl* light_hdl, Datastore* datastore_p);
+        LightScene_MoBa(LightHdl* light_hdl, Datastore* datastore_p);
         ~LightScene_MoBa();
         
         void Enter();
