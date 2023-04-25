@@ -12,6 +12,7 @@
             --backgroundColor: #222222;
             --headerBackgroundColor: #444444;
             --BackgroundColorActive: #ffbf00;
+            --BackgroundColorHover: #009fff;
             --sliderBackgroundColor: #4b4b4b;
 		    --SliderThumbColor: var(--sliderBackgroundColor);
             --textColorDark: #000000;
@@ -82,7 +83,7 @@
 		}
 
 		.button:hover {
-			background-color: var(--BackgroundColorActive);
+			background-color: var(--BackgroundColorHover);
 			color: var(--textColorDark);
 		}
 		.button:active {
@@ -366,8 +367,10 @@
                     s_is_server_connected = false;
                     clearInterval(s_requestDataFromServer_intervalTimer);
 
-                    LightScene_SetAllAsInactive();
                     document.body.style.cursor = "progress";
+
+                    LightScene_SetAllAsInactive();
+
                     document.getElementById("brightness_value").innerHTML = ("loading...");
                     document.getElementById("color_rgb_value").innerHTML = ("loading...");
                     document.getElementById("color_red_value").innerHTML = ("loading...");
@@ -377,6 +380,8 @@
                     document.getElementById("led_column").innerHTML = ("loading...");
                     document.getElementById("led_row").innerHTML = ("loading...");
                     document.querySelector(':root').style.setProperty('--SliderThumbColor', '#3F3F3F');
+
+                    document.getElementById("footer_version").innerHTML = ("vX.Y");
 
                     FindServer();
                 }
@@ -774,7 +779,7 @@
     <div class="slidecontainer">
         <label for="brightness_value">Helligkeit</label>
         <label id="brightness_value" class="user_value"></label>
-        <input type="range" min="1" max="255" value="50" class="slider" id="brightness_slider" oninput="BrighntessSliderChanged()">
+        <input type="range" min="0" max="255" value="50" class="slider" id="brightness_slider" oninput="BrighntessSliderChanged()">
     </div>
     <br>
     <br>

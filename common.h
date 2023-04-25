@@ -45,6 +45,10 @@ typedef struct
 #define OFF 0
 
 
+//--- debug setting -------------------------------------------------------
+#define IS_DEBUG_MODE ON  // can be ON or OFF
+
+
 //--- hardware setting ----------------------------------------------------
 // enhance the following setting to use it for another room light
 // and enhance the following files:
@@ -54,7 +58,7 @@ typedef struct
 #define ROOM_LIGHT_MarkusNTrains    0
 #define ROOM_LIGHT_Altenglienicke   1
 #define ROOM_LIGHT_TestBoard        2
-#define ROOM_LIGHT ROOM_LIGHT_MarkusNTrains
+#define ROOM_LIGHT ROOM_LIGHT_TestBoard
 
 #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
     // LED Matrix defines -----------------------------
@@ -128,10 +132,6 @@ typedef struct
         { ROOM_LIGHT_LedStrip1_Pin, ROOM_LIGHT_LedStrip1_NofLed},
     };
 #endif
-
-
-//--- debug setting -------------------------------------------------------
-#define IS_DEBUG_MODE OFF  // can be ON or OFF
 
 
 

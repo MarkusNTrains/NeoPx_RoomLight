@@ -135,7 +135,7 @@ void LightScene_Sun::Sunrise_Exit(void)
 {
     this->m_light_hdl_p->SetBrightness_Instantly(DAY_BRIGHTNESS_WHITE, false);
     this->m_light_hdl_p->SetColor(DAY_COLOR, false);
-    this->m_scene_hdl_p->ChangeLightScene(LightScene::Day);   
+    this->m_scene_hdl_p->ChangeLightScene(LightSceneID::Day);   
 }
 
 
@@ -265,7 +265,7 @@ void LightScene_Sun::Sunset_Exit(void)
 {
     this->m_light_hdl_p->SetBrightness_Instantly(NIGHT_BRIGHTNESS, false);
     this->m_light_hdl_p->SetColor(NIGHT_COLOR, false);
-    this->m_scene_hdl_p->ChangeLightScene(LightScene::Night);   
+    this->m_scene_hdl_p->ChangeLightScene(LightSceneID::Night);   
 }
 
 

@@ -26,14 +26,6 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // enum
-enum class ParameterId
-{
-    LightScene = 0,
-    Brightness,
-    Color,
-    UserSetting_Xs,
-    Nof
-};
 
 
 //----------------------------------------------------------------------------
@@ -43,9 +35,11 @@ class Datastore
 	public:
         enum ParameterId
         {
-            LightScene = 0,
+            LightSceneID = 0,
             Brightness,
             Color,
+            SceneMoBa_Brightness,
+            SceneMoBa_Color,
             UserSetting_Xs,
             UserSetting_Xe,
             UserSetting_Ys,
@@ -74,12 +68,12 @@ class Datastore
         const uint16_t EEPROM_PageValidPattern = 0x55AA;
 
         Parameter* m_parameter_list[ParameterId::Nof];
-        uint32_t m_last_parameter_changed_timestamp_ms = 0;
-        uint32_t m_eeprom_last_update_timestamp_ms = 0;
-        uint16_t m_eeprom_pageSize = 0;
-        uint16_t m_eeprom_nofPages = 0;
-        uint16_t m_eeprom_active_page = 0;
-        bool m_is_eeprom_update_needed = false;
+        uint32_t m_last_parameter_changed_timestamp_ms;
+        uint32_t m_eeprom_last_update_timestamp_ms;
+        uint16_t m_eeprom_pageSize;
+        uint16_t m_eeprom_nofPages;
+        uint16_t m_eeprom_active_page;
+        bool m_is_eeprom_update_needed;
 
         void EEPROM_WriteToNextPage();
         void EEPROM_WritePage();

@@ -27,20 +27,33 @@ $Id:  $
 //*****************************************************************************
 Datastore::Datastore()
 {
+  #if (IS_DEBUG_MODE == ON)
+    Serial.println("Datastor Init");
+  #endif
+
     //--- init member parameter -------------------------------------------
     this->m_eeprom_last_update_timestamp_ms = millis();
     this->m_last_parameter_changed_timestamp_ms = millis();
-
+    this->m_eeprom_pageSize = 0;
+    this->m_eeprom_nofPages = 0;
+    this->m_eeprom_active_page = 0;
+    this->m_is_eeprom_update_needed = false;
+    for (uint8_t idx = 0; idx < ParameterId::Nof; idx++)
+    {
+        this->m_parameter_list[idx] = nullptr;
+    }
 
     //--- set parameter definition ----------------------------------------
-    uint32_t light_scene = (uint32_t)LightScene::UserSetting;
+    uint32_t light_scene = (uint32_t)LightSceneID::UserSetting;
 #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
-    light_scene = (uint32_t)LightScene::OfficeTable;
+    light_scene = (uint32_t)LightSceneID::OfficeTable;
 #endif
     this->m_parameter_list[ParameterId::Brightness] = new Parameter(100, 0, 100, 1);
     this->m_parameter_list[ParameterId::Color] = new Parameter(0xFF000000, 0, 0xFFFFFFFF, 4);
-    this->m_parameter_list[ParameterId::LightScene] = new Parameter(light_scene, 0, (uint32_t)LightScene::Nof, 1);
+    this->m_parameter_list[ParameterId::LightSceneID] = new Parameter(light_scene, 0, (uint32_t)LightSceneID::Nof, 1);
     this->m_parameter_list[ParameterId::UserSetting_Xs] = new Parameter(0, 0, 0xFFFF, 2);
+    this->m_parameter_list[ParameterId::SceneMoBa_Brightness] = new Parameter(100, 0, 100, 1);
+    this->m_parameter_list[ParameterId::SceneMoBa_Color] = new Parameter(0xFF000000, 0, 0xFFFFFFFF, 4);
     this->m_parameter_list[ParameterId::UserSetting_Xe] = new Parameter(ROOM_LIGHT_RowNofPx - 1, 0, 0xFFFF, 2);
     this->m_parameter_list[ParameterId::UserSetting_Ys] = new Parameter(0, 0, 0xFFFF, 2);
     this->m_parameter_list[ParameterId::UserSetting_Ye] = new Parameter((ROOM_LIGHT_NofRows - 1), 0, 0xFFFF, 2);
@@ -50,6 +63,15 @@ Datastore::Datastore()
     uint16_t addr = EEPROM_ParameterStartAddr;
     for (uint8_t idx = 0; idx < ParameterId::Nof; idx++)
     {
+        if (this->m_parameter_list[idx] == nullptr)
+        {
+  #if (IS_DEBUG_MODE == ON)
+            Serial.println();
+            Serial.println("Error: Not all Parameter are initialized of m_parameter_list\nGo to Datastore.cpp Datastore::Datastore constructor");
+  #endif
+            while(1);
+        }
+
         this->m_parameter_list[idx]->SetAddr(addr);
         addr += this->m_parameter_list[idx]->GetWidth();
         this->m_eeprom_pageSize += this->m_parameter_list[idx]->GetWidth();
@@ -95,6 +117,11 @@ Datastore::Datastore()
     {
         this->FactoryReset();
     }
+
+  #if (IS_DEBUG_MODE == ON)
+    Serial.println("Datastore Ready");
+  #endif
+    
 }
 
 
@@ -172,6 +199,12 @@ void Datastore::FactoryReset()
     {
         this->m_parameter_list[id]->Reset();
     }
+
+    // clear EEPROM
+    /*for (uint16_t addr = 0; addr < EEPROM.length(); addr++)
+    {
+        EEPROM.write(addr, 0xFF);
+    }*/
 
     this->m_eeprom_active_page = 0;
     EEPROM_WritePage();

@@ -6,7 +6,7 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original 
   source code
   
-  Created 7. September 2022 by MarkusNTrains
+  Created 21. April 2023 by MarkusNTrains
 ================================================================================
 $HeadURL:  $
 $Id:  $
@@ -34,14 +34,27 @@ LightScene_UserSetting::LightScene_UserSetting(LightSceneHdl* parent, LightHdl* 
     this->m_scene_hdl_p = parent;
     this->m_light_hdl_p = light_hdl;
 
+    uint16_t xs = (uint16_t)this->m_datastore_p->GetParameter(Datastore::ParameterId::UserSetting_Xs);
+    uint16_t xe = (uint16_t)this->m_datastore_p->GetParameter(Datastore::ParameterId::UserSetting_Xe);
+    uint16_t ys = (uint16_t)this->m_datastore_p->GetParameter(Datastore::ParameterId::UserSetting_Ys);
+    uint16_t ye = (uint16_t)this->m_datastore_p->GetParameter(Datastore::ParameterId::UserSetting_Ye);
+
+    if (xs >= ROOM_LIGHT_RowNofPx) {
+        xs = ROOM_LIGHT_RowNofPx - 1;
+    }
+    if (xe >= ROOM_LIGHT_RowNofPx) {
+        xe = ROOM_LIGHT_RowNofPx - 1;
+    }
+
+    if (ys >= ROOM_LIGHT_NofRows) {
+        ys = ROOM_LIGHT_NofRows - 1;
+    }
+    if (ye >= ROOM_LIGHT_NofRows) {
+        ye = ROOM_LIGHT_NofRows - 1;
+    }
+
     this->m_led_area_p = new LedArea();
-    this->m_led_area_p->Set(
-        (uint16_t)this->m_datastore_p->GetParameter(Datastore::ParameterId::UserSetting_Xs),
-        (uint16_t)this->m_datastore_p->GetParameter(Datastore::ParameterId::UserSetting_Xe),
-        (uint16_t)this->m_datastore_p->GetParameter(Datastore::ParameterId::UserSetting_Ys),
-        (uint16_t)this->m_datastore_p->GetParameter(Datastore::ParameterId::UserSetting_Ye),
-        this->m_datastore_p->GetParameter(Datastore::ParameterId::Color)
-    );
+    this->m_led_area_p->Set(xs, xe, ys, ye, this->m_datastore_p->GetParameter(Datastore::ParameterId::Color));
 }
 
 
