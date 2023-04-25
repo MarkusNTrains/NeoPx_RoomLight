@@ -42,6 +42,8 @@ class Datastore
             SceneDisco_Color,
             SceneMoBa_Brightness,
             SceneMoBa_Color,
+            SceneLightOn_Brightness,
+            SceneLightOn_Color,
             SceneOfficeTable_Brightness,
             SceneOfficeTable_Color,
             UserSetting_Xs,
@@ -70,6 +72,11 @@ class Datastore
         const uint16_t EEPROM_ParameterStartAddr = 2;
 
         const uint16_t EEPROM_PageValidPattern = 0x55AA;
+
+        const uint8_t BRIGHTNESS_Default = 100;
+        const uint8_t BRIGHTNESS_Min = 0;
+        const uint8_t BRIGHTNESS_Max = 255;
+        const uint8_t BRIGHTNESS_Width = 1;
 
         Parameter* m_parameter_list[ParameterId::Nof];
         uint32_t m_last_parameter_changed_timestamp_ms;

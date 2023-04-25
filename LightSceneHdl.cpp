@@ -20,6 +20,7 @@ $Id:  $
 #include "LightScene_Cloud.h"
 #include "LightScene_Disco.h"
 #include "LightScene_Lightning.h"
+#include "LightScene_LightOn.h"
 #include "LightScene_MoBa.h"
 #include "LightScene_OfficeTable.h"
 #include "LightScene_Sun.h"
@@ -52,6 +53,7 @@ LightSceneHdl::LightSceneHdl()
     this->m_scene_cloud_p = new LightScene_Cloud(this, this->m_light_hdl_p);
     this->m_scene_disco_p = new LightScene_Disco(this->m_light_hdl_p, this->m_datastore_p);
     this->m_scene_lightning_p = new LightScene_Lightning(this, this->m_light_hdl_p);
+    this->m_scene_light_on_p = new LightScene_LightOn(this->m_light_hdl_p, this->m_datastore_p);
     this->m_scene_moba_p = new LightScene_MoBa(this->m_light_hdl_p, this->m_datastore_p);
     this->m_scene_office_table_p = new LightScene_OfficeTable(this->m_light_hdl_p, this->m_datastore_p);
     this->m_scene_sun_p = new LightScene_Sun(this, this->m_light_hdl_p);
@@ -123,7 +125,7 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene, uint8_t brightness)
             break;
 
         case LightSceneID::LightOn:
-            this->LightScene_LightOn_Enter(brightness);
+            this->m_active_light_scene_p = this->m_scene_light_on_p;
             save_light_scene = true;
             break;
         
@@ -231,7 +233,6 @@ void LightSceneHdl::Tasks()
                 break;
                 
             case LightSceneID::LightOn:
-                LightScene_LightOn_Task();
                 break;
         
             case LightSceneID::LightOff:
@@ -301,34 +302,6 @@ LightSceneID LightSceneHdl::GetLastScene(void)
 LightHdl* LightSceneHdl::GetLightHdl(void)
 {
     return this->m_light_hdl_p;
-}
-
-
-//*****************************************************************************
-// description:
-//   Show White Pixel
-//*****************************************************************************
-void LightSceneHdl::LightScene_LightOn_Enter(uint16_t brightness)
-{
-    this->m_light_hdl_p->SetBrightness_Fade(brightness);
-    this->m_light_hdl_p->Clear();
-}
-
-
-//*****************************************************************************
-// description:
-//   Show White Pixel
-//*****************************************************************************
-void LightSceneHdl::LightScene_LightOn_Task(void)
-{
-    if (millis() - this->m_task_timestamp_ms > TASK_SceneLightOn_TmoMs)
-    {
-        this->m_task_timestamp_ms = millis();
-        
-        //uint32_t color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
-        this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, (LedRow::LED_ROW_NOF - 1));  
-        this->m_light_hdl_p->Show();
-    }
 }
 
 
