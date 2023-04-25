@@ -62,7 +62,7 @@ class LightScene_UserSetting
 
         LedArea* m_led_area_p;
 
-        uint32_t m_task_timestamp_ms = 0;
+        uint32_t m_task_timestamp_ms;
 };
 
 #endif // _LIGHT_SCENE_USER_SETTING_H
