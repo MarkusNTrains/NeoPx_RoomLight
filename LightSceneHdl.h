@@ -59,6 +59,7 @@ class LightScene_Lightning;
 class LightScene_LightOn;
 class LightScene_MoBa;
 class LightScene_OfficeTable;
+class LightScene_Rainbow;
 class LightScene_Sun;
 class LightScene_UserSetting;
 
@@ -86,7 +87,6 @@ class LightSceneHdl
     private:
         const uint32_t BRIGHTNESS_UPDATE_TMO_MS = 20;
         const uint32_t TASK_SceneLightOff_TmoMs = 20;
-        const uint32_t TASK_SceneRainbow_TmoMs = 100;
 
         Datastore* m_datastore_p;
         uint32_t m_brightnessUpdate_timestamp_ms;
@@ -102,19 +102,13 @@ class LightSceneHdl
         LightScene_LightOn* m_scene_light_on_p;
         LightScene_MoBa* m_scene_moba_p;
         LightScene_OfficeTable* m_scene_office_table_p;
+        LightScene_Rainbow* m_scene_rainbow_p;
         LightScene_Sun* m_scene_sun_p;
         LightScene_UserSetting* m_scene_userSetting_p;
-
-        // moving dot task
-        uint16_t m_moving_dot_current_px;
-
-        // rainbow
-        uint16_t m_rainbow_firstPixelHue;
 
 
         // light scene
         void LightScene_LightOff_Task(void);
-        void LightScene_WhiteOverRainbow_Task(void);
 };
 
 #endif // _LIGHT_SCENE_HDL_H

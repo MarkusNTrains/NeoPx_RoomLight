@@ -23,6 +23,7 @@ $Id:  $
 #include "LightScene_LightOn.h"
 #include "LightScene_MoBa.h"
 #include "LightScene_OfficeTable.h"
+#include "LightScene_Rainbow.h"
 #include "LightScene_Sun.h"
 #include "LightScene_UserSetting.h"
 
@@ -153,8 +154,7 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene, uint8_t brightness)
             break;
         
         case LightSceneID::Rainbow:
-            this->m_light_hdl_p->Clear();
-            this->m_rainbow_firstPixelHue = 0;
+            this->m_active_light_scene_p = this->m_scene_rainbow_p;
             save_light_scene = true;
             break;
             
@@ -253,7 +253,6 @@ void LightSceneHdl::Tasks()
                 break;
         
             case LightSceneID::Rainbow:
-                this->LightScene_WhiteOverRainbow_Task();
                 break;
             
             case LightSceneID::Sunrise:
@@ -302,33 +301,6 @@ LightSceneID LightSceneHdl::GetLastScene(void)
 LightHdl* LightSceneHdl::GetLightHdl(void)
 {
     return this->m_light_hdl_p;
-}
-
-
-//*****************************************************************************
-// description:
-//   Show Rainbow with moving white dots
-//*****************************************************************************
-void LightSceneHdl::LightScene_WhiteOverRainbow_Task(void) 
-{
-    if (millis() - this->m_task_timestamp_ms > TASK_SceneRainbow_TmoMs)
-    {
-        this->m_task_timestamp_ms = millis();
-
-        uint32_t color = 0;
-        uint16_t pixelHue = 0;
-
-        for (uint32_t idx = 0; idx < LedRow::LED_ROW_LENGTH; idx++)   // For each pixel in strip...
-        {
-            pixelHue = this->m_rainbow_firstPixelHue + (idx * 65536L / LedRow::LED_ROW_LENGTH);
-            color = Adafruit_NeoPixel::gamma32(Adafruit_NeoPixel::ColorHSV(pixelHue));
-            this->m_light_hdl_p->SetLedArea(idx, idx, 0, (LedRow::LED_ROW_NOF - 1), color);  
-        }
-
-        // Update strip with new contents
-        this->m_light_hdl_p->Show();
-        this->m_rainbow_firstPixelHue += 542; // Advance just a little along the color wheel
-    }
 }
 
 
