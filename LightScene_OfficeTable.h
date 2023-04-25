@@ -12,8 +12,8 @@ $HeadURL:  $
 $Id:  $
 *******************************************************************************/
 
-#ifndef _LIGHT_SCENE_DISCO_H
-#define _LIGHT_SCENE_DISCO_H
+#ifndef _LIGHT_SCENE_OFFICE_TABLE_H
+#define _LIGHT_SCENE_OFFICE_TABLE_H
 
 
 //----------------------------------------------------------------------------
@@ -36,19 +36,19 @@ class LightSceneHdl;
 
 //----------------------------------------------------------------------------
 // class
-class LightScene_Disco : public LightScene
+class LightScene_OfficeTable : public LightScene
 {
     public:
-        LightScene_Disco(LightHdl* light_hdl, Datastore* datastore_p);
-        ~LightScene_Disco();
+        LightScene_OfficeTable(LightHdl* light_hdl, Datastore* datastore_p);
+        ~LightScene_OfficeTable();
         
         void Enter();
         void Exit();
 
     private:
-        const uint32_t TASK_TmoMs = 100;
+        const uint32_t TASK_TmoMs = 1000;
 
         void TaskHdl();
 };
 
-#endif // _LIGHT_SCENE_DISCO_H
+#endif // _LIGHT_SCENE_OFFICE_TABLE_H

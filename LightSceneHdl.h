@@ -57,6 +57,7 @@ class LightScene_Cloud;
 class LightScene_Disco;
 class LightScene_Lightning;
 class LightScene_MoBa;
+class LightScene_OfficeTable;
 class LightScene_Sun;
 class LightScene_UserSetting;
 
@@ -86,7 +87,6 @@ class LightSceneHdl
         const uint32_t TASK_SceneLightOn_TmoMs = 1000;
         const uint32_t TASK_SceneLightOff_TmoMs = 20;
         const uint32_t TASK_SceneRainbow_TmoMs = 100;
-        const uint32_t TASK_SceneOfficeTable_TmoMs = 1000;
 
         Datastore* m_datastore_p;
         uint32_t m_brightnessUpdate_timestamp_ms;
@@ -100,6 +100,7 @@ class LightSceneHdl
         LightScene_Disco* m_scene_disco_p;
         LightScene_Lightning* m_scene_lightning_p;
         LightScene_MoBa* m_scene_moba_p;
+        LightScene_OfficeTable* m_scene_office_table_p;
         LightScene_Sun* m_scene_sun_p;
         LightScene_UserSetting* m_scene_userSetting_p;
 
@@ -111,8 +112,6 @@ class LightSceneHdl
 
 
         // light scene
-        void LightScene_OfficeTable_Enter(uint16_t brightness);
-        void LightScene_OfficeTable_Task(void);
         void LightScene_LightOn_Enter(uint16_t brightness);
         void LightScene_LightOn_Task(void);
         void LightScene_LightOff_Task(void);

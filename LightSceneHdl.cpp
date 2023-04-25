@@ -21,6 +21,7 @@ $Id:  $
 #include "LightScene_Disco.h"
 #include "LightScene_Lightning.h"
 #include "LightScene_MoBa.h"
+#include "LightScene_OfficeTable.h"
 #include "LightScene_Sun.h"
 #include "LightScene_UserSetting.h"
 
@@ -52,6 +53,7 @@ LightSceneHdl::LightSceneHdl()
     this->m_scene_disco_p = new LightScene_Disco(this->m_light_hdl_p, this->m_datastore_p);
     this->m_scene_lightning_p = new LightScene_Lightning(this, this->m_light_hdl_p);
     this->m_scene_moba_p = new LightScene_MoBa(this->m_light_hdl_p, this->m_datastore_p);
+    this->m_scene_office_table_p = new LightScene_OfficeTable(this->m_light_hdl_p, this->m_datastore_p);
     this->m_scene_sun_p = new LightScene_Sun(this, this->m_light_hdl_p);
     this->m_scene_userSetting_p = new LightScene_UserSetting(this, this->m_light_hdl_p, this->m_datastore_p);
     this->m_brightnessUpdate_timestamp_ms = 0;
@@ -131,13 +133,11 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene, uint8_t brightness)
         
         case LightSceneID::Disco:
             this->m_active_light_scene_p = this->m_scene_disco_p;
-            this->m_active_light_scene_p->Enter();
             save_light_scene = true;
             break;
 
         case LightSceneID::MoBa:
             this->m_active_light_scene_p = this->m_scene_moba_p;
-            this->m_active_light_scene_p->Enter();
             save_light_scene = true;
             break;
 
@@ -146,7 +146,7 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene, uint8_t brightness)
             break;
           
         case LightSceneID::OfficeTable:
-            this->LightScene_OfficeTable_Enter(brightness);
+            this->m_active_light_scene_p = this->m_scene_office_table_p;
             save_light_scene = true;
             break;
         
@@ -177,6 +177,11 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene, uint8_t brightness)
             break;
     }
 
+    if (this->m_active_light_scene_p != nullptr)
+    {
+        this->m_active_light_scene_p->Enter();
+    }
+
     // save light scene if needed
     if (save_light_scene == true)
     {
@@ -191,76 +196,80 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene, uint8_t brightness)
 //*****************************************************************************
 void LightSceneHdl::Tasks()
 {
-    // run datsatore task
+    //--- run datsatore task ----------------------
     this->m_datastore_p->Task();
 
-    // update brightness
+    //--- update brightness -----------------------
     if (millis() - this->m_brightnessUpdate_timestamp_ms > BRIGHTNESS_UPDATE_TMO_MS)
     {
         this->m_brightnessUpdate_timestamp_ms += BRIGHTNESS_UPDATE_TMO_MS;
         this->m_light_hdl_p->UpdateBrightness();
     }
 
-    // run scene tasks
-    switch (this->m_scene)
+    //--- run scene tasks -------------------------
+    if (this->m_active_light_scene_p != nullptr)
     {
-        case LightSceneID::Cloud:
-            this->m_scene_cloud_p->Task();
-            break;
+        this->m_active_light_scene_p->Task();
+    }
+    else
+    {
+        switch (this->m_scene)
+        {
+            case LightSceneID::Cloud:
+                this->m_scene_cloud_p->Task();
+                break;
+                
+            case LightSceneID::Day:
+                this->m_scene_sun_p->Day_Task();
+                break;
+
+            case LightSceneID::Idle:
+                break;
+
+            case LightSceneID::Lightning:
+                this->m_scene_lightning_p->Task();
+                break;
+                
+            case LightSceneID::LightOn:
+                LightScene_LightOn_Task();
+                break;
+        
+            case LightSceneID::LightOff:
+                LightScene_LightOff_Task();
+                break;
+
+            case LightSceneID::MoBa:
+                break;
+
+            case LightSceneID::Disco:
+                break;
             
-        case LightSceneID::Day:
-            this->m_scene_sun_p->Day_Task();
-            break;
-
-        case LightSceneID::Idle:
-            break;
-
-        case LightSceneID::Lightning:
-            this->m_scene_lightning_p->Task();
-            break;
+            case LightSceneID::Night:
+                this->m_scene_sun_p->Night_Task();
+                break;
             
-        case LightSceneID::LightOn:
-            LightScene_LightOn_Task();
-            break;
-    
-        case LightSceneID::LightOff:
-            LightScene_LightOff_Task();
-            break;
-
-        case LightSceneID::MoBa:
-            this->m_active_light_scene_p->Task();
-            break;
-
-        case LightSceneID::Disco:
-            this->m_active_light_scene_p->Task();
-            break;
+            case LightSceneID::OfficeTable:
+                break;
         
-        case LightSceneID::Night:
-            this->m_scene_sun_p->Night_Task();
-            break;
-        
-        case LightSceneID::OfficeTable:
-            LightScene_OfficeTable_Task();
-            break;
-    
-        case LightSceneID::Rainbow:
-            this->LightScene_WhiteOverRainbow_Task();
-            break;
-        
-        case LightSceneID::Sunrise:
-            this->m_scene_sun_p->Sunrise_Task();
-            break;
+            case LightSceneID::Rainbow:
+                this->LightScene_WhiteOverRainbow_Task();
+                break;
+            
+            case LightSceneID::Sunrise:
+                this->m_scene_sun_p->Sunrise_Task();
+                break;
 
-        case LightSceneID::Sunset:
-            this->m_scene_sun_p->Sunset_Task();
-            break;
-        
-        case LightSceneID::UserSetting:
-            this->m_scene_userSetting_p->Task();
-            break;
+            case LightSceneID::Sunset:
+                this->m_scene_sun_p->Sunset_Task();
+                break;
+            
+            case LightSceneID::UserSetting:
+                this->m_scene_userSetting_p->Task();
+                break;
 
-        default:
-            break;
+            default:
+                break;
+        }
     }
 }
 
@@ -292,35 +301,6 @@ LightSceneID LightSceneHdl::GetLastScene(void)
 LightHdl* LightSceneHdl::GetLightHdl(void)
 {
     return this->m_light_hdl_p;
-}
-
-
-//*****************************************************************************
-// description:
-//   LightScene_OfficeTableWW_Enter
-//*****************************************************************************
-void LightSceneHdl::LightScene_OfficeTable_Enter(uint16_t brightness)
-{
-    this->m_light_hdl_p->SetBrightness_Fade(brightness);
-    this->m_light_hdl_p->Clear();
-}
-
-
-//*****************************************************************************
-// description:
-//   ShowOfficeTable_Task
-//*****************************************************************************
-void LightSceneHdl::LightScene_OfficeTable_Task(void)
-{
-    if (millis() - this->m_task_timestamp_ms > TASK_SceneOfficeTable_TmoMs)
-    {
-        this->m_task_timestamp_ms = millis();
-
-        this->m_light_hdl_p->SetLedArea(0, 20, 0, 0);  
-        this->m_light_hdl_p->SetLedArea(120, 140, 0, 0);  
-        this->m_light_hdl_p->SetLedArea(0, 140, 1, (LedRow::LED_ROW_NOF - 1));  
-        this->m_light_hdl_p->Show();
-    }
 }
 
 

@@ -44,10 +44,11 @@ class LightScene_MoBa : public LightScene
         
         void Enter();
         void Exit();
-        void TaskHdl();
 
     private:
         const uint32_t TASK_TmoMs = 1000;
+
+        void TaskHdl();
 };
 
 #endif // _LIGHT_SCENE_MOBA_H

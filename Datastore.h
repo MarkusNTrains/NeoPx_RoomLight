@@ -42,6 +42,8 @@ class Datastore
             SceneDisco_Color,
             SceneMoBa_Brightness,
             SceneMoBa_Color,
+            SceneOfficeTable_Brightness,
+            SceneOfficeTable_Color,
             UserSetting_Xs,
             UserSetting_Xe,
             UserSetting_Ys,
