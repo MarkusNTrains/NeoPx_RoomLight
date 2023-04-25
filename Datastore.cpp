@@ -253,6 +253,13 @@ void Datastore::SetParameter(ParameterId id, uint16_t value)
 //*****************************************************************************
 void Datastore::SetParameter(ParameterId id, uint32_t value)
 {
+    if (value < this->m_parameter_list[id]->GetMin()) {
+        value = this->m_parameter_list[id]->GetMin();
+    }
+    if (value > this->m_parameter_list[id]->GetMax()) {
+        value = this->m_parameter_list[id]->GetMax();
+    }
+    
     if (this->m_parameter_list[id]->SetValue(value) == true)
     {
         this->m_is_eeprom_update_needed = true;
