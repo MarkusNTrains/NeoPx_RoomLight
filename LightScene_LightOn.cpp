@@ -29,7 +29,7 @@ $Id:  $
 //   constructor
 //*****************************************************************************
 LightScene_LightOn::LightScene_LightOn(LightHdl* light_hdl, Datastore* datastore_p) : 
-    LightScene(light_hdl, datastore_p, LIGHTSCENE_LIGHTON_TaskTmoMs, Datastore::ParameterId::SceneLightOn_Brightness, Datastore::ParameterId::SceneLightOn_Color)
+    LightScene(light_hdl, datastore_p, TASK_TmoMs, Datastore::ParameterId::SceneLightOn_Brightness, Datastore::ParameterId::SceneLightOn_Color)
 {
 }
 

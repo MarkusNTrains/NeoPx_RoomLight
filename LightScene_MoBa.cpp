@@ -29,7 +29,7 @@ $Id:  $
 //   constructor
 //*****************************************************************************
 LightScene_MoBa::LightScene_MoBa(LightHdl* light_hdl, Datastore* datastore_p) : 
-    LightScene(light_hdl, datastore_p, LIGHTSCENE_MOBA_TaskTmoMs, Datastore::ParameterId::SceneMoBa_Brightness, Datastore::ParameterId::SceneMoBa_Color)
+    LightScene(light_hdl, datastore_p, TASK_TmoMs, Datastore::ParameterId::SceneMoBa_Brightness, Datastore::ParameterId::SceneMoBa_Color)
 {
 }
 

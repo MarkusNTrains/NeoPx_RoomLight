@@ -49,34 +49,14 @@ void setup()
   #if (IS_DEBUG_MODE == ON)
     Serial.begin(115200);       // for debugging
     Serial.println(F("\nStart Room Light"));
-    Serial.print(F("Memory: "));
-    Serial.println(availableMemory());
   #endif
     
     delay(50);
     s_lightSceneHdl_p = new LightSceneHdl();
-
-  #if (IS_DEBUG_MODE == ON)
-    Serial.print(F("Memory: "));
-    Serial.println(availableMemory());
-  #endif
-    
     s_webServer_p = new WebServer(s_lightSceneHdl_p);
 
     wdt_enable(WDTO_8S);
 }
-
-
-uint32_t print_free_memory_timestamp_ms = 0;
-int availableMemory() {
-    // Use 1024 with ATmega168
-    int size = 8192;
-    byte *buf;
-    while ((buf = (byte *) malloc(--size)) == NULL);
-        free(buf);
-    return size;
-}
-
 
 
 //*****************************************************************************
@@ -87,15 +67,5 @@ void loop()
 {
     s_lightSceneHdl_p->Tasks();
     s_webServer_p->Tasks();
-
-  #if (IS_DEBUG_MODE == ON)
-    if (millis() - print_free_memory_timestamp_ms > 2000)
-    {
-        print_free_memory_timestamp_ms = millis();
-        Serial.print(F("Memory: "));
-        Serial.println(availableMemory());
-    }
-  #endif
-    
     wdt_reset();
 }

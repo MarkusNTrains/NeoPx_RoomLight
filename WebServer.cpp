@@ -109,6 +109,7 @@ WebServer::WebServer(LightSceneHdl* led_scene)
 #endif
     
     
+    //Ethernet.begin(mac, ip);  // initialize Ethernet device
     Ethernet.begin(mac, ip, myDns, gateway, subnet); // initialize Ethernet device
 
     // start the server
@@ -258,13 +259,6 @@ void WebServer::Tasks()
 //   checks if received HTTP request is switching on/off LEDs
 //   also saves the state of the LEDs
 //*****************************************************************************
-const char WEBSERVER_Needle_Scene[] PROGMEM = "LightScene";
-const char WEBSERVER_Needle_Brightness[] PROGMEM = "SetBrightness";
-const char WEBSERVER_Needle_Color[] PROGMEM = "SetColor";
-const char WEBSERVER_Needle_SetLedArea[] PROGMEM = "SetArea";
-const char WEBSERVER_Needle_GetCurrentData[] PROGMEM = "GetCurrentData";
-const char WEBSERVER_Needle_GetInfo[] PROGMEM = "GetInfo";
-
 void WebServer::HandleRequest(char* http_request)
 {
     char param_c[12];
@@ -275,13 +269,20 @@ void WebServer::HandleRequest(char* http_request)
     char* start_pos = 0;
     char* end_pos = 0;
     uint16_t cnt = 0;
+    char needle_scene[] = "LightScene";
+    char needle_brightness[] = "SetBrightness";
+    char needle_color[] = "SetColor";
+    char needle_set_led_area[] = "SetArea";
+    char needle_get_current_data[] = "GetCurrentData";
+    char needle_get_info[] = "GetInfo";
+
 
     // find LightScene ---------------------------------------------------------
-    if (StrContains(http_request, WEBSERVER_Needle_Scene))
+    if (StrContains(http_request, needle_scene))
     {
         this->m_action = ACTION_SetLightSecene;
-        param = this->HttpRequestExtractOneParameter(http_request, WEBSERVER_Needle_Scene, sizeof(WEBSERVER_Needle_Scene));
-        param2 = this->HttpRequestExtractOneParameter(http_request, WEBSERVER_Needle_Brightness, sizeof(WEBSERVER_Needle_Brightness));
+        param = this->HttpRequestExtractOneParameter(http_request, needle_scene, sizeof(needle_scene));
+        param2 = this->HttpRequestExtractOneParameter(http_request, needle_brightness, sizeof(needle_brightness));
         this->m_lightSceneHdl_p->ChangeLightScene((LightSceneID)param, param2);
 
 #if (IS_DEBUG_MODE == ON)
@@ -291,10 +292,10 @@ void WebServer::HandleRequest(char* http_request)
     }
     
     // find brightness ---------------------------------------------------------
-    else if (StrContains(http_request, WEBSERVER_Needle_Brightness))
+    else if (StrContains(http_request, needle_brightness))
     {
         this->m_action = ACTION_SetBrightness;
-        param = this->HttpRequestExtractOneParameter(http_request, WEBSERVER_Needle_Brightness, sizeof(WEBSERVER_Needle_Brightness));
+        param = this->HttpRequestExtractOneParameter(http_request, needle_brightness, sizeof(needle_brightness));
         this->m_lightSceneHdl_p->SetBrightness(param);
         
 #if (IS_DEBUG_MODE == ON)
@@ -304,10 +305,10 @@ void WebServer::HandleRequest(char* http_request)
     }
     
     // find color ---------------------------------------------------------
-    else if (StrContains(http_request, WEBSERVER_Needle_Color))
+    else if (StrContains(http_request, needle_color))
     {
         this->m_action = ACTION_SetColor;
-        param = this->HttpRequestExtractOneParameter(http_request, WEBSERVER_Needle_Color, sizeof(WEBSERVER_Needle_Color));
+        param = this->HttpRequestExtractOneParameter(http_request, needle_color, sizeof(needle_color));
         this->m_lightSceneHdl_p->SetColor(param);
         
 #if (IS_DEBUG_MODE == ON)
@@ -317,17 +318,17 @@ void WebServer::HandleRequest(char* http_request)
     }
     
     // find set led area data -------------------------------------------------
-    else if (StrContains(http_request, WEBSERVER_Needle_SetLedArea))
+    else if (StrContains(http_request, needle_set_led_area))
     {
         this->m_action = ACTION_SetLedArea;
         
-        start_pos = strstr(http_request, WEBSERVER_Needle_SetLedArea);
+        start_pos = strstr(http_request, needle_set_led_area);
         if (start_pos == 0) return;  // no String found
 
         end_pos = strstr(start_pos, "-");
         if (end_pos == 0) return;  // no String found
 
-        start_pos += (sizeof(WEBSERVER_Needle_SetLedArea) + 1);
+        start_pos += (sizeof(needle_set_led_area) + 1);
 
         for (cnt = 0; cnt < end_pos - start_pos; cnt++)
         {
@@ -381,7 +382,7 @@ void WebServer::HandleRequest(char* http_request)
     }
 
     // find info ----------------------------------------------------------
-    else if (StrContains(http_request, WEBSERVER_Needle_GetInfo))
+    else if (StrContains(http_request, needle_get_info))
     {
         this->m_action = ACTION_GetInfo;
     }

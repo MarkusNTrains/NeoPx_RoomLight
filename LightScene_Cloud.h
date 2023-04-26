@@ -47,24 +47,6 @@ struct SkyCloud
 
 
 //----------------------------------------------------------------------------
-// const
-const uint32_t LIGHTSCENE_CLOUD_Task_TmoMs = 50;
-
-const uint32_t LIGHTSCENE_CLOUD_Cloud_AddNextMinTmoMs = 200;
-const uint32_t LIGHTSCENE_CLOUD_Cloud_AddNewMaxLengthMs = 60000;
-const uint32_t LIGHTSCENE_CLOUD_Cloud_MinSpeed = 1;
-const uint32_t LIGHTSCENE_CLOUD_Cloud_MaxSpeed = 6;
-const uint32_t LIGHTSCENE_CLOUD_Cloud_MinLengthPx = 20;
-const uint32_t LIGHTSCENE_CLOUD_Cloud_MaxLengthPx = 100;
-const uint32_t LIGHTSCENE_CLOUD_Cloud_MinWidth = 1;
-const uint32_t LIGHTSCENE_CLOUD_Cloud_MaxWidth = LedRow::LED_ROW_NOF;
-const uint32_t LIGHTSCENE_CLOUD_Cloud_MinDarkness = 180;
-const uint32_t LIGHTSCENE_CLOUD_Cloud_MaxDarkness = 255;
-const uint8_t LIGHTSCENE_CLOUD_Cloud_MinNof = 5;
-const uint8_t LIGHTSCENE_CLOUD_Cloud_MaxNof = 30;
-
-
-//----------------------------------------------------------------------------
 // extern
 class LightSceneHdl;
 
@@ -81,9 +63,24 @@ class LightScene_Cloud
         void Task(void);
 
     private:
+        // lightning task
+        const uint32_t TASK_HDL_TMO_MS = 50;
+        const uint32_t MIN_ADD_NEXT_CLOUD_TMO_MS = 200;
+        const uint32_t MAX_ADD_NEW_CLOUD_LENGTH_MS = 60000;
+        const uint32_t MIN_CLOUD_SPEED = 1;
+        const uint32_t MAX_CLOUD_SPEED = 6;
+        const uint32_t MIN_CLOUD_LENGTH_PX = 20;
+        const uint32_t MAX_CLOUD_LENGTH_PX = 100;
+        const uint32_t MIN_CLOUD_WIDTH = 1;
+        const uint32_t MAX_CLOUD_WIDTH = LedRow::LED_ROW_NOF;
+        const uint32_t MIN_CLOUD_DARKNESS = 180;
+        const uint32_t MAX_CLOUD_DARKNESS = 255;
+        const uint8_t MIN_NOF_CLOUDS = 5;
+        static const uint8_t MAX_NOF_CLOUDS = 30;
+
         LightSceneHdl* m_scene_hdl_p;
         LightHdl* m_light_hdl_p;
-        SkyCloud* m_cloud_p[LIGHTSCENE_CLOUD_Cloud_MaxNof];
+        SkyCloud* m_cloud_p[MAX_NOF_CLOUDS];
         uint8_t m_nof_clouds;
         uint32_t m_scene_color;
         uint32_t m_task_hdl_timestamp_ms;

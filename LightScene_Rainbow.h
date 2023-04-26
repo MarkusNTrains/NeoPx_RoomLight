@@ -30,11 +30,6 @@ $Id:  $
 
 
 //----------------------------------------------------------------------------
-// const
-const uint32_t LIGHTSCENE_RAINBOW_TaskTmoMs = 1000;
-
-
-//----------------------------------------------------------------------------
 // extern
 class LightSceneHdl;
 
@@ -51,6 +46,8 @@ class LightScene_Rainbow : public LightScene
         void Exit();
 
     private:
+        const uint32_t TASK_TmoMs = 1000;
+        
         uint16_t m_firstPixelHue;
 
         void TaskHdl();

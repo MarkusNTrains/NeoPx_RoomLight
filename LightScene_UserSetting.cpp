@@ -94,7 +94,7 @@ void LightScene_UserSetting::Exit(void)
 //*****************************************************************************
 void LightScene_UserSetting::Task(void)
 {
-    if (millis() - this->m_task_timestamp_ms > LIGHTSCENE_USERSETTING_TaskTmoMs)
+    if (millis() - this->m_task_timestamp_ms > TASK_TmoMs)
     {
         this->m_task_timestamp_ms = millis();
 

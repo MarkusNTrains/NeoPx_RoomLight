@@ -30,11 +30,6 @@ $Id:  $
 
 
 //----------------------------------------------------------------------------
-// const
-const uint32_t LIGHTSCENE_OFFICETABLE_TaskTmoMs = 1000;
-
-
-//----------------------------------------------------------------------------
 // extern
 class LightSceneHdl;
 
@@ -51,6 +46,8 @@ class LightScene_OfficeTable : public LightScene
         void Exit();
 
     private:
+        const uint32_t TASK_TmoMs = 1000;
+
         void TaskHdl();
 };
 
