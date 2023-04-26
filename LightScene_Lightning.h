@@ -23,11 +23,6 @@ $Id:  $
 #include "LightHdl.h"
 
 
-
-//----------------------------------------------------------------------------
-// enum
-
-
 //----------------------------------------------------------------------------
 // extern
 class LightSceneHdl;
@@ -46,9 +41,9 @@ class LightScene_Lightning
 
     private:
         // lightning task
-        const uint32_t MAX_FLASH_LENGHT_MS = 100;
-        const uint32_t MAX_FLASH_WIDTH_PX = 40;
-        const uint8_t MIN_NOF_FLASHES = 10;
+        const static uint32_t MAX_FLASH_LENGHT_MS = 100;
+        const static uint32_t MAX_FLASH_WIDTH_PX = 40;
+        const static uint8_t MIN_NOF_FLASHES = 10;
 
         LightSceneHdl* m_scene_hdl_p;
         LightHdl* m_light_hdl_p;

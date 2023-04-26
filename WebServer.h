@@ -34,6 +34,16 @@ $Id:  $
 
 
 //----------------------------------------------------------------------------
+// const
+const char WEBSERVER_Request_Needle_Scene[] PROGMEM = "LightScene";
+const char WEBSERVER_Request_Needle_brightness[] PROGMEM = "SetBrightness";
+const char WEBSERVER_Request_Needle_Color[] PROGMEM = "SetColor";
+const char WEBSERVER_Request_Needle_SetLedArea[] PROGMEM = "SetArea";
+const char WEBSERVER_Request_Needle_GetCurrentData[] PROGMEM = "GetCurrentData";
+const char WEBSERVER_Request_Needle_GetInfo[] PROGMEM = "GetInfo";
+
+
+//----------------------------------------------------------------------------
 // class
 class WebServer
 {
@@ -52,6 +62,10 @@ class WebServer
             ACTION_Unknown
         } action_t;
         
+        //--- task ---
+        const static uint8_t TASK_RequestBufferLength = 100;     // size of read buffer (reads a complete line) 
+        const static uint8_t TASK_SmallBufferSize = 50;          // a smaller buffer for results
+
         EthernetServer* m_server;
         File webFile;                                // the web page file on the SD card
         LightSceneHdl* m_lightSceneHdl_p;

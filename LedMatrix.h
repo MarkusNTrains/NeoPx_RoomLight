@@ -29,10 +29,9 @@ $Id:  $
 class LedMatrix
 {
     public:
-        const static uint8_t LED_STRIP_NOF = ROOM_LIGHT_NofLedStrips;
-
         LedMatrix();
         ~LedMatrix();
+
         uint32_t GetPixelColor(uint16_t row, uint16_t column);
         void SetPixel(uint16_t row, uint16_t column, uint32_t color);
         void SetPixelArray(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color);
@@ -42,6 +41,10 @@ class LedMatrix
         void SetColor(uint32_t color);
     
     private:  
+        //--- Const ---
+        const static uint8_t LED_STRIP_NOF = ROOM_LIGHT_NofLedStrips;
+
+        //--- Memeber Variable ---
         Adafruit_NeoPixel* m_led_strip[LED_STRIP_NOF];  
         LedRow* m_led_row[LedRow::LED_ROW_NOF];
 };

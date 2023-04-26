@@ -147,9 +147,9 @@ void Datastore::Task()
 {
     if (this->m_is_eeprom_update_needed == true)
     {
-        if (millis() - this->m_eeprom_last_update_timestamp_ms > EEPROM_WriteLockTmoMs)
+        if (millis() - this->m_eeprom_last_update_timestamp_ms > EEPROM_WriteLockAfterEepromWriteTmoMs)
         {
-            if (millis() - this->m_last_parameter_changed_timestamp_ms > AFTER_PARAMETER_CHANGE_EEPROM_WriteLockTmoMs)
+            if (millis() - this->m_last_parameter_changed_timestamp_ms > EEPROM_WriteLockAfterParameterChangeTmoMs)
             {
                 this->m_is_eeprom_update_needed = false;
 

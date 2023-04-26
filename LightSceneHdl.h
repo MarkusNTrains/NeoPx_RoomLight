@@ -85,8 +85,8 @@ class LightSceneHdl
     protected:
 
     private:
-        const uint32_t BRIGHTNESS_UPDATE_TMO_MS = 20;
-        const uint32_t TASK_SceneLightOff_TmoMs = 20;
+        const static uint32_t BRIGHTNESS_UPDATE_TMO_MS = 20;
+        const static uint32_t TASK_SceneLightOff_TmoMs = 20;
 
         Datastore* m_datastore_p;
         uint32_t m_brightnessUpdate_timestamp_ms;

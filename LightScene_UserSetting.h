@@ -27,14 +27,6 @@ $Id:  $
 
 
 //----------------------------------------------------------------------------
-// define
-
-
-//----------------------------------------------------------------------------
-// enum
-
-
-//----------------------------------------------------------------------------
 // extern
 class LightSceneHdl;
 
@@ -54,7 +46,7 @@ class LightScene_UserSetting
         void SetLedArea(LedArea* area);
 
     private:
-        const uint32_t TASK_TmoMs = 200;
+        const static uint32_t TASK_TmoMs = 200;
 
         Datastore* m_datastore_p;
         LightSceneHdl* m_scene_hdl_p;

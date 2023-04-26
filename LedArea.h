@@ -44,6 +44,7 @@ class LedArea
         void Set(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color);
         
     private:    
+        //--- Memeber Variable ---
         uint16_t m_xs;
         uint16_t m_xe;
         uint16_t m_ys;

@@ -109,7 +109,6 @@ WebServer::WebServer(LightSceneHdl* led_scene)
 #endif
     
     
-    //Ethernet.begin(mac, ip);  // initialize Ethernet device
     Ethernet.begin(mac, ip, myDns, gateway, subnet); // initialize Ethernet device
 
     // start the server
@@ -147,15 +146,13 @@ void WebServer::Tasks()
         //Serial.println(F("\nWebserver: start request"));
 #endif
 
-        const uint8_t REQUEST_BUFFER_LENGTH = 100;     // size of read buffer (reads a complete line) 
-        const uint8_t SMALL_BUFFER_SIZE = 50;          // a smaller buffer for results
         bool currentLineIsBlank = false;
         bool is_uri_complete = false;
         uint8_t buffer_idx = 0;
-        char lineBuffer[REQUEST_BUFFER_LENGTH] {'\0'}; // buffer for incomming data
-        char uri[SMALL_BUFFER_SIZE];                   // the requestet page, shorter than smallbuffersize - method
+        char lineBuffer[TASK_RequestBufferLength] {'\0'}; // buffer for incomming data
+        char uri[TASK_SmallBufferSize];                   // the requestet page, shorter than smallbuffersize - method
         char method[8];                                // largest one 7+1. HTTP request methods in RFC7231 + RFC5789: GET HEAD POST PUT DELETE CONNECT OPTONS TRACE PATCH
-        char request_param_a[SMALL_BUFFER_SIZE];      // parameter appended to the URI after a ?
+        char request_param_a[TASK_SmallBufferSize];      // parameter appended to the URI after a ?
         char* request_param_p;
         
         while (client.connected()) 
@@ -169,7 +166,7 @@ void WebServer::Tasks()
                 // limit the size of the stored received HTTP request
                 // buffer first part of HTTP request in m_buffer_http_request array (string)
                 // leave last element in array as 0 to null terminate string (REQUEST_BUFFER_LENGTH - 1)
-                if (buffer_idx < (REQUEST_BUFFER_LENGTH - 1)) 
+                if (buffer_idx < (TASK_RequestBufferLength - 1)) 
                 {
                     lineBuffer[buffer_idx] = c;   // save HTTP request character
                     buffer_idx++;
@@ -181,9 +178,9 @@ void WebServer::Tasks()
                 {
                     //get uri
                     request_param_p = strtok(lineBuffer, " ");  // strtok willdestroy the newRequest
-                    strlcpy(method, request_param_p, SMALL_BUFFER_SIZE);
+                    strlcpy(method, request_param_p, TASK_SmallBufferSize);
                     request_param_p = strtok(NULL, " ");
-                    strlcpy(uri, request_param_p, SMALL_BUFFER_SIZE);   // enthält noch evtl. parameter
+                    strlcpy(uri, request_param_p, TASK_SmallBufferSize);   // enthält noch evtl. parameter
                     if (strchr(uri, '?') != NULL)
                     {
                         request_param_p = strtok(uri, "?");  // split URI from parameters
@@ -269,20 +266,14 @@ void WebServer::HandleRequest(char* http_request)
     char* start_pos = 0;
     char* end_pos = 0;
     uint16_t cnt = 0;
-    char needle_scene[] = "LightScene";
-    char needle_brightness[] = "SetBrightness";
-    char needle_color[] = "SetColor";
-    char needle_set_led_area[] = "SetArea";
-    char needle_get_current_data[] = "GetCurrentData";
-    char needle_get_info[] = "GetInfo";
 
 
     // find LightScene ---------------------------------------------------------
-    if (StrContains(http_request, needle_scene))
+    if (StrContains(http_request, WEBSERVER_Request_Needle_Scene))
     {
         this->m_action = ACTION_SetLightSecene;
-        param = this->HttpRequestExtractOneParameter(http_request, needle_scene, sizeof(needle_scene));
-        param2 = this->HttpRequestExtractOneParameter(http_request, needle_brightness, sizeof(needle_brightness));
+        param = this->HttpRequestExtractOneParameter(http_request, WEBSERVER_Request_Needle_Scene, sizeof(WEBSERVER_Request_Needle_Scene));
+        param2 = this->HttpRequestExtractOneParameter(http_request, WEBSERVER_Request_Needle_brightness, sizeof(WEBSERVER_Request_Needle_brightness));
         this->m_lightSceneHdl_p->ChangeLightScene((LightSceneID)param, param2);
 
 #if (IS_DEBUG_MODE == ON)
@@ -292,10 +283,10 @@ void WebServer::HandleRequest(char* http_request)
     }
     
     // find brightness ---------------------------------------------------------
-    else if (StrContains(http_request, needle_brightness))
+    else if (StrContains(http_request, WEBSERVER_Request_Needle_brightness))
     {
         this->m_action = ACTION_SetBrightness;
-        param = this->HttpRequestExtractOneParameter(http_request, needle_brightness, sizeof(needle_brightness));
+        param = this->HttpRequestExtractOneParameter(http_request, WEBSERVER_Request_Needle_brightness, sizeof(WEBSERVER_Request_Needle_brightness));
         this->m_lightSceneHdl_p->SetBrightness(param);
         
 #if (IS_DEBUG_MODE == ON)
@@ -305,10 +296,10 @@ void WebServer::HandleRequest(char* http_request)
     }
     
     // find color ---------------------------------------------------------
-    else if (StrContains(http_request, needle_color))
+    else if (StrContains(http_request, WEBSERVER_Request_Needle_Color))
     {
         this->m_action = ACTION_SetColor;
-        param = this->HttpRequestExtractOneParameter(http_request, needle_color, sizeof(needle_color));
+        param = this->HttpRequestExtractOneParameter(http_request, WEBSERVER_Request_Needle_Color, sizeof(WEBSERVER_Request_Needle_Color));
         this->m_lightSceneHdl_p->SetColor(param);
         
 #if (IS_DEBUG_MODE == ON)
@@ -318,17 +309,17 @@ void WebServer::HandleRequest(char* http_request)
     }
     
     // find set led area data -------------------------------------------------
-    else if (StrContains(http_request, needle_set_led_area))
+    else if (StrContains(http_request, WEBSERVER_Request_Needle_SetLedArea))
     {
         this->m_action = ACTION_SetLedArea;
         
-        start_pos = strstr(http_request, needle_set_led_area);
+        start_pos = strstr(http_request, WEBSERVER_Request_Needle_SetLedArea);
         if (start_pos == 0) return;  // no String found
 
         end_pos = strstr(start_pos, "-");
         if (end_pos == 0) return;  // no String found
 
-        start_pos += (sizeof(needle_set_led_area) + 1);
+        start_pos += (sizeof(WEBSERVER_Request_Needle_SetLedArea) + 1);
 
         for (cnt = 0; cnt < end_pos - start_pos; cnt++)
         {
@@ -382,7 +373,7 @@ void WebServer::HandleRequest(char* http_request)
     }
 
     // find info ----------------------------------------------------------
-    else if (StrContains(http_request, needle_get_info))
+    else if (StrContains(http_request, WEBSERVER_Request_Needle_GetInfo))
     {
         this->m_action = ACTION_GetInfo;
     }
@@ -659,7 +650,7 @@ void WebServer::Send404(EthernetClient* client)
 #endif
 
     const size_t MESSAGE_BUFFER_SIZE = 64;
-    char buffer[MESSAGE_BUFFER_SIZE];  // a buffer needed for the StreamLib
+    char buffer[64];  // a buffer needed for the StreamLib
     BufferedPrint message(*client, buffer, sizeof(buffer));
 
     //--- send http header ----------------------------------------------    

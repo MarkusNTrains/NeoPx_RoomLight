@@ -25,10 +25,6 @@ $Id:  $
 
 
 //----------------------------------------------------------------------------
-// enum
-
-
-//----------------------------------------------------------------------------
 // class
 class Datastore
 {
@@ -65,25 +61,25 @@ class Datastore
 
     private:
         //--- EEPROM ---
-        const uint32_t AFTER_PARAMETER_CHANGE_EEPROM_WriteLockTmoMs = 5000;
-        const uint32_t EEPROM_WriteLockTmoMs = 60000;
+        const static uint32_t EEPROM_WriteLockAfterParameterChangeTmoMs = 5000;
+        const static uint32_t EEPROM_WriteLockAfterEepromWriteTmoMs = 60000;
 
-        const uint16_t EEPROM_ValidPatternAddr_MSB = 0;
-        const uint16_t EEPROM_ValidPatternAddr_LSB = 1;
-        const uint16_t EEPROM_ParameterStartAddr = 2;
+        const static uint16_t EEPROM_ValidPatternAddr_MSB = 0;
+        const static uint16_t EEPROM_ValidPatternAddr_LSB = 1;
+        const static uint16_t EEPROM_ParameterStartAddr = 2;
 
-        const uint16_t EEPROM_PageValidPattern = 0x55AA;
+        const static uint16_t EEPROM_PageValidPattern = 0x55AA;
 
         //--- Parameter ---
-        const uint8_t BRIGHTNESS_Default = 100;
-        const uint8_t BRIGHTNESS_Min = 0;
-        const uint8_t BRIGHTNESS_Max = 255;
-        const uint8_t BRIGHTNESS_Width = 1;
+        const static uint8_t BRIGHTNESS_Default = 100;
+        const static uint8_t BRIGHTNESS_Min = 0;
+        const static uint8_t BRIGHTNESS_Max = 255;
+        const static uint8_t BRIGHTNESS_Width = 1;
 
-        const uint32_t COLOR_Default = 0xFF000000;
-        const uint32_t COLOR_Min = 0;
-        const uint32_t COLOR_Max = 0xFFFFFFFF;
-        const uint8_t COLOR_Width = 4;
+        const static uint32_t COLOR_Default = 0xFF000000;
+        const static uint32_t COLOR_Min = 0;
+        const static uint32_t COLOR_Max = 0xFFFFFFFF;
+        const static uint8_t COLOR_Width = 4;
 
         //--- Memeber Variable ---
         Parameter* m_parameter_list[ParameterId::Nof];

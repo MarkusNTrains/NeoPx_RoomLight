@@ -35,8 +35,9 @@ class LedRow
         const static uint16_t LED_ROW_NOF = ROOM_LIGHT_NofRows;
         const static uint16_t LED_ROW_LENGTH = ROOM_LIGHT_RowNofPx;
     
-	LedRow(Adafruit_NeoPixel* led_strip_p, uint8_t row_idx);
-	~LedRow();
+	    LedRow(Adafruit_NeoPixel* led_strip_p, uint8_t row_idx);
+	    ~LedRow();
+        
         void SetBrightness(uint8_t brightness);
         void Show(void);
         uint32_t GetPixelColor(uint16_t idx);

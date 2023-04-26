@@ -25,20 +25,18 @@ $Id:  $
 
 
 //----------------------------------------------------------------------------
-// define
-
-
-//----------------------------------------------------------------------------
-// enum
-
-
-//----------------------------------------------------------------------------
 // class
 class LightHdl
 {
     public:
+        const static uint32_t COLOR_BLUE = 0x000000FF;
+        const static uint32_t COLOR_GREEN = 0x0000FF00;
+        const static uint32_t COLOR_RED = 0x00FF0000;
+        const static uint32_t COLOR_WHITE = 0xFF000000;
+
         LightHdl(Datastore* datastore_p);
         ~LightHdl();
+
         uint32_t GetLedColor(uint16_t row, uint16_t column);
         void SetLed(uint16_t row, uint16_t column, uint32_t color);
         LedArea* GetLedArea(void);
@@ -59,11 +57,6 @@ class LightHdl
         LedMatrix* m_led_matrix;
 
     private:
-        const uint32_t COLOR_BLUE = 0x000000FF;
-        const uint32_t COLOR_GREEN = 0x0000FF00;
-        const uint32_t COLOR_RED = 0x00FF0000;
-        const uint32_t COLOR_WHITE = 0xFF000000;
-
         LedArea* m_led_area;
         uint8_t m_current_brightness;
         uint8_t m_desired_brightness;

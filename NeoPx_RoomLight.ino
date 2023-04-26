@@ -49,6 +49,8 @@ void setup()
   #if (IS_DEBUG_MODE == ON)
     Serial.begin(115200);       // for debugging
     Serial.println(F("\nStart Room Light"));
+    Serial.print(F("Memory: "));
+    Serial.println(availableMemory());
   #endif
     
     delay(50);
@@ -59,6 +61,18 @@ void setup()
 }
 
 
+uint32_t print_free_memory_timestamp_ms = 0;
+int availableMemory() {
+    // Use 1024 with ATmega168
+    int size = 8192;
+    byte *buf;
+    while ((buf = (byte *) malloc(--size)) == NULL);
+        free(buf);
+    return size;
+}
+
+
+
 //*****************************************************************************
 // description:
 //   Statemachine
@@ -67,5 +81,15 @@ void loop()
 {
     s_lightSceneHdl_p->Tasks();
     s_webServer_p->Tasks();
-    wdt_reset();
+
+  #if (IS_DEBUG_MODE == ON)
+    if (millis() - print_free_memory_timestamp_ms > 2000)
+    {
+        print_free_memory_timestamp_ms = millis();
+        Serial.print(F("Memory: "));
+        Serial.println(availableMemory());
+    }
+  #endif
+    
+        wdt_reset();
 }

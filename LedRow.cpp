@@ -19,14 +19,6 @@ $Id:  $
 
 
 //-----------------------------------------------------------------------------
-// typedef
-
-
-//-----------------------------------------------------------------------------
-// define
-
-
-//-----------------------------------------------------------------------------
 // const
 #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
 const uint16_t LED_MATRIX_LUT[LedRow::LED_ROW_NOF][LedRow::LED_ROW_LENGTH] PROGMEM = {  // PROGMEM -> store data in flash
@@ -51,10 +43,6 @@ const uint16_t LED_MATRIX_LUT[LedRow::LED_ROW_NOF][LedRow::LED_ROW_LENGTH] PROGM
     {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 }
 };
 #endif
-
-
-//-----------------------------------------------------------------------------
-// static module variable
 
 
 

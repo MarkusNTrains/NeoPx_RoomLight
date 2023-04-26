@@ -431,7 +431,11 @@
                                         +   '<input id="b" class="twoThumbSlider" type="range" min="0" value="' + ye + '" max="' + led_nof_row + '" />'
                                         + '</div>'
                                     );
-                                    if (led_nof_row <= 1)
+                                    if (led_nof_row > 1)
+                                    {
+                                        document.getElementById("led_slider_row").style.visibility = 'visible';
+                                    }
+                                    else
                                     {
                                         document.getElementById("led_slider_row").style.visibility = 'hidden';
                                     }
