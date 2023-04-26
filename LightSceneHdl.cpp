@@ -108,7 +108,7 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene, uint8_t brightness)
         this->m_last_scene = this->m_scene;
         this->m_scene = scene;
 #if (IS_DEBUG_MODE == ON)
-        Serial.print("Change to Scene: ");
+        Serial.print(F("Change to Scene: "));
         Serial.println((int)scene);
 #endif
     }

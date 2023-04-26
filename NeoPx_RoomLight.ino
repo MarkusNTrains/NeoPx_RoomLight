@@ -48,7 +48,7 @@ void setup()
 {
   #if (IS_DEBUG_MODE == ON)
     Serial.begin(115200);       // for debugging
-    Serial.println("\nStart Room Light");
+    Serial.println(F("\nStart Room Light"));
   #endif
     
     delay(50);

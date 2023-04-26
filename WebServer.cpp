@@ -51,9 +51,12 @@ WebServer::WebServer(LightSceneHdl* led_scene)
 
 #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
     // IP config MarkusNTrains
-    IPAddress ip(192, 168, 0, 4);    // IP address, may need to change depending on network
-    IPAddress myDns(192, 168, 0, 254);
-    IPAddress gateway(192, 168, 0, 254);  // how to find gateway: open cmd --> type ipconfig
+//    IPAddress ip(192, 168, 0, 4);    // IP address, may need to change depending on network
+  //  IPAddress myDns(192, 168, 0, 254);
+    //IPAddress gateway(192, 168, 0, 254);  // how to find gateway: open cmd --> type ipconfig
+    IPAddress ip(192, 168, 1, 88);    // IP address, may need to change depending on network
+    IPAddress myDns(192, 168, 1, 2);
+    IPAddress gateway(192, 168, 1, 2);  // how to find gateway: open cmd --> type ipconfig
     IPAddress subnet(255, 255, 255, 0);
 #elif (ROOM_LIGHT == ROOM_LIGHT_Altenglienicke)
     // IP config Altenglienicke
@@ -79,29 +82,29 @@ WebServer::WebServer(LightSceneHdl* led_scene)
     // initialize SD card
 #ifdef USE_SD_CARD
   #if (IS_DEBUG_MODE == ON)
-    Serial.println("Initializing SD card...");
+    Serial.println(F("Initializing SD card..."));
   #endif
     if (!SD.begin(4)) 
     {
   #if (IS_DEBUG_MODE == ON)
-        Serial.println("ERROR - SD card initialization failed!");
+        Serial.println(F("ERROR - SD card initialization failed!"));
   #endif
         return;    // init failed
     }
   #if (IS_DEBUG_MODE == ON)
-    Serial.println("SUCCESS - SD card initialized.");
+    Serial.println(F("SUCCESS - SD card initialized."));
   #endif
     
     // check for index.htm file
     if (!SD.exists("index.htm")) 
     {
   #if (IS_DEBUG_MODE == ON)
-        Serial.println("ERROR - Can't find index.htm file!");
+        Serial.println(F("ERROR - Can't find index.htm file!"));
   #endif
         return;  // can't find index file
     }
   #if (IS_DEBUG_MODE == ON)
-    Serial.println("SUCCESS - Found index.htm file.");
+    Serial.println(F("SUCCESS - Found index.htm file."));
   #endif
 #endif
     
@@ -114,7 +117,7 @@ WebServer::WebServer(LightSceneHdl* led_scene)
 
 #if (IS_DEBUG_MODE == ON)
     PrintHardwareInfo();
-    Serial.print("server is at ");
+    Serial.print(F("server is at "));
     Serial.println(Ethernet.localIP());     
 #endif
 }
@@ -141,8 +144,7 @@ void WebServer::Tasks()
     if (client)   // got client?
     {
 #if (IS_DEBUG_MODE == ON)
-        //Serial.println();
-        //Serial.println("start request");
+        //Serial.println(F("\nWebserver: start request"));
 #endif
 
         const uint8_t REQUEST_BUFFER_LENGTH = 100;     // size of read buffer (reads a complete line) 
@@ -246,7 +248,7 @@ void WebServer::Tasks()
         client.stop(); // close the connection
         
 #if (IS_DEBUG_MODE == ON)
-        //Serial.println("connection closed");
+        //Serial.println(F("Webserer: connection closed"));
 #endif
     } // end if (client)
 }
@@ -284,7 +286,7 @@ void WebServer::HandleRequest(char* http_request)
         this->m_lightSceneHdl_p->ChangeLightScene((LightSceneID)param, param2);
 
 #if (IS_DEBUG_MODE == ON)
-        Serial.print("Scene: ");
+        Serial.print(F("Scene: "));
         Serial.println(param);
 #endif
     }
@@ -297,6 +299,7 @@ void WebServer::HandleRequest(char* http_request)
         this->m_lightSceneHdl_p->SetBrightness(param);
         
 #if (IS_DEBUG_MODE == ON)
+        Serial.print(F("Brightness: "));
         Serial.println(param);
 #endif
     }
@@ -309,6 +312,7 @@ void WebServer::HandleRequest(char* http_request)
         this->m_lightSceneHdl_p->SetColor(param);
         
 #if (IS_DEBUG_MODE == ON)
+        Serial.print(F("Color: "));
         Serial.println(param);
 #endif
     }
@@ -367,6 +371,7 @@ void WebServer::HandleRequest(char* http_request)
         param4 = atoi(param_c);
         
 #if (IS_DEBUG_MODE == ON)
+        Serial.print(F("Area: "));
         Serial.println(param);
         Serial.println(param2);
         Serial.println(param3);
@@ -387,7 +392,7 @@ void WebServer::HandleRequest(char* http_request)
         this->m_action = ACTION_Unknown;
 
 #if (IS_DEBUG_MODE == ON)
-        //Serial.println("ACTION_Unknown");
+        //Serial.println(F("ACTION_Unknown"));
 #endif
     }  
 }
@@ -489,6 +494,7 @@ char WebServer::StrContains(char *str, char *sfind)
 //*****************************************************************************
 void WebServer::PrintHardwareInfo()
 {
+#if (IS_DEBUG_MODE == ON)
     if (Ethernet.hardwareStatus() == EthernetNoHardware) {
         Serial.println(F("Ethernet shield was not found"));
     }
@@ -513,6 +519,7 @@ void WebServer::PrintHardwareInfo()
             Serial.println(F("Link status: Off"));
         }
     }
+#endif
 }
 
 
@@ -523,92 +530,92 @@ void WebServer::PrintHardwareInfo()
 void WebServer::SendXML(EthernetClient* client)
 {
     //--- send http header ----------------------------------------------
-    client->println("HTTP/1.1 200 OK");
-    client->println("Content-Type: text/xml");
-    client->println("Connection: close");  // the connection will be closed after completion of the response
+    client->println(F("HTTP/1.1 200 OK"));
+    client->println(F("Content-Type: text/xml"));
+    client->println(F("Connection: close"));  // the connection will be closed after completion of the response
     client->println();
 
     //--- send xml response ---------------------------------------------
-    client->print("<?xml version = \"1.0\" ?>");
-    client->print("<inputs>");
+    client->print(F("<?xml version = \"1.0\" ?>"));
+    client->print(F("<inputs>"));
 
     if (this->m_action == ACTION_GetInfo)
     {
-        client->print("<info>");
+        client->print(F("<info>"));
 
-        client->print("<version>");
-        client->print("<major>");
+        client->print(F("<version>"));
+        client->print(F("<major>"));
         client->print(SW_VERSION_Major);
-        client->print("</major>");        
-        client->print("<minor>");
+        client->print(F("</major>"));        
+        client->print(F("<minor>"));
         client->print(SW_VERSION_Minor);
-        client->print("</minor>");        
-        client->print("</version>"); 
+        client->print(F("</minor>"));
+        client->print(F("</version>")); 
 
-        client->print("<led>");
-        client->print("<nof_row>");
+        client->print(F("<led>"));
+        client->print(F("<nof_row>"));
         client->print(ROOM_LIGHT_NofRows);
-        client->print("</nof_row>");        
-        client->print("<nof_leds>");
+        client->print(F("</nof_row>"));        
+        client->print(F("<nof_leds>"));
         client->print(ROOM_LIGHT_RowNofPx);
-        client->print("</nof_leds>");        
-        client->print("</led>");        
+        client->print(F("</nof_leds>"));
+        client->print(F("</led>"));    
 
         LedArea area;
         this->m_lightSceneHdl_p->GetUserSettingArea(&area);
-        client->print("<led_area>");
-        client->print("<ys>");
+        client->print(F("<led_area>"));
+        client->print(F("<ys>"));
         client->print(area.GetRowStart());
-        client->print("</ys><ye>");
+        client->print(F("</ys><ye>"));
         client->print(area.GetRowEnd());
-        client->print("</ye><xs>");
+        client->print(F("</ye><xs>"));
         client->print(area.GetColumnStart());
-        client->print("</xs><xe>");
+        client->print(F("</xs><xe>"));
         client->print(area.GetColumnEnd());
-        client->print("</xe>");
-        client->print("</led_area>");
+        client->print(F("</xe>"));
+        client->print(F("</led_area>"));
 
-        client->print("</info>");        
+        client->print(F("</info>"));
     }
     else
     {
         // this is standard return
-        client->print("<scene>");
+        client->print(F("<scene>"));
         client->print((int)m_lightSceneHdl_p->GetLightScene());
-        client->print("</scene>");
+        client->print(F("</scene>"));
 
         if (this->m_action != ACTION_SetBrightness)
         {
-            client->print("<brightness>");
+            client->print(F("<brightness>"));
             client->print(m_lightSceneHdl_p->GetLightHdl()->GetBrightness());
-            client->print("</brightness>");
+            client->print(F("</brightness>"));
         }
 
         if (this->m_action != ACTION_SetColor)
         {
-            client->print("<color>");
+            client->print(F("<color>"));
             client->print(m_lightSceneHdl_p->GetLightHdl()->GetColor());
-            client->print("</color>");
+            client->print(F("</color>"));
         }
 
         if (this->m_action != ACTION_SetLedArea)
         {
             LedArea area;
             this->m_lightSceneHdl_p->GetUserSettingArea(&area);
-            client->print("<led_area>");
-            client->print("<ys>");
+            client->print(F("<led_area>"));
+            client->print(F("<ys>"));
             client->print(area.GetRowStart());
-            client->print("</ys><ye>");
+            client->print(F("</ys><ye>"));
             client->print(area.GetRowEnd());
-            client->print("</ye><xs>");
+            client->print(F("</ye><xs>"));
             client->print(area.GetColumnStart());
-            client->print("</xs><xe>");
+            client->print(F("</xs><xe>"));
             client->print(area.GetColumnEnd());
-            client->print("</xe>");
-            client->print("</led_area>");
+            client->print(F("</xe>"));
+            client->print(F("</led_area>"));
         }
     }
-    client->println("</inputs>");
+    client->println(F("</inputs>"));
 }
 
 
@@ -619,9 +626,9 @@ void WebServer::SendXML(EthernetClient* client)
 void WebServer::SendWebPage(EthernetClient* client)
 {
     //--- send http header ----------------------------------------------
-    client->println("HTTP/1.1 200 OK");
-    client->println("Content-Type: text/html");
-    client->println("Connection: close");  // the connection will be closed after completion of the response
+    client->println(F("HTTP/1.1 200 OK"));
+    client->println(F("Content-Type: text/html"));
+    client->println(F("Connection: close"));  // the connection will be closed after completion of the response
     client->println();
 
     //--- send webpage --------------------------------------------------
@@ -647,7 +654,10 @@ void WebServer::SendWebPage(EthernetClient* client)
 //*****************************************************************************
 void WebServer::Send404(EthernetClient* client)
 {
-    // Serial.println("[server] response 404 file not found");
+#if (IS_DEBUG_MODE == ON)
+    Serial.println(F("[server] response 404 file not found"));
+#endif
+
     const size_t MESSAGE_BUFFER_SIZE = 64;
     char buffer[MESSAGE_BUFFER_SIZE];  // a buffer needed for the StreamLib
     BufferedPrint message(*client, buffer, sizeof(buffer));
@@ -1279,9 +1289,9 @@ void WebServer::SendFavicon(EthernetClient* client)
     BufferedPrint message(*client, buffer, sizeof(buffer));
     
     //--- send http header ----------------------------------------------
-    message.println("HTTP/1.1 200 OK");
-    message.println("Content-Type: image/x-icon");
-    message.println("Connection: close");  // the connection will be closed after completion of the response
+    message.println(F("HTTP/1.1 200 OK"));
+    message.println(F("Content-Type: image/x-icon"));
+    message.println(F("Connection: close"));  // the connection will be closed after completion of the response
     message.println();
                      
     //--- send favicon --------------------------------------------------

@@ -28,7 +28,7 @@ $Id:  $
 Datastore::Datastore()
 {
   #if (IS_DEBUG_MODE == ON)
-    Serial.println("Datastor Init");
+    Serial.println(F("Datastor Init"));
   #endif
 
     //--- init member parameter -------------------------------------------
@@ -72,8 +72,7 @@ Datastore::Datastore()
         if (this->m_parameter_list[idx] == nullptr)
         {
   #if (IS_DEBUG_MODE == ON)
-            Serial.println();
-            Serial.println("Error: Not all Parameter are initialized of m_parameter_list\nGo to Datastore.cpp Datastore::Datastore constructor");
+            Serial.println(F("\nError: Not all Parameter are initialized of m_parameter_list\nGo to Datastore.cpp Datastore::Datastore constructor"));
   #endif
             while(1);
         }
@@ -105,7 +104,7 @@ Datastore::Datastore()
             this->m_eeprom_active_page = page;
             valid_page_found = true; 
 #if (IS_DEBUG_MODE == ON)
-            Serial.print("Valid Page: ");
+            Serial.print(F("Valid Page: "));
             Serial.println(this->m_eeprom_active_page);
 #endif
 
@@ -125,7 +124,7 @@ Datastore::Datastore()
     }
 
   #if (IS_DEBUG_MODE == ON)
-    Serial.println("Datastore Ready");
+    Serial.println(F("Datastore Ready"));
   #endif
     
 }
@@ -162,7 +161,7 @@ void Datastore::Task()
                     if (this->m_parameter_list[id]->GetValue() != this->EEPROM_ReadParameter(id, page_start_addr))
                     {
     #if (IS_DEBUG_MODE == ON)
-                        Serial.print("Parameter changed: ");
+                        Serial.print(F("Parameter changed: "));
                         Serial.println(id);
     #endif
                         is_eeprom_write_needed = true;
@@ -174,14 +173,14 @@ void Datastore::Task()
                     this->m_eeprom_last_update_timestamp_ms = millis();
                     this->EEPROM_WriteToNextPage();
     #if (IS_DEBUG_MODE == ON)
-                    Serial.print("Write to next page: ");
+                    Serial.print(F("Write to next page: "));
                     Serial.println(this->m_eeprom_active_page);
     #endif
                 }
                 else
                 {
     #if (IS_DEBUG_MODE == ON)
-                    Serial.println("EEPROM write not needed");
+                    Serial.println(F("EEPROM write not needed"));
     #endif
                 }
             }
@@ -197,7 +196,7 @@ void Datastore::Task()
 void Datastore::FactoryReset()
 {
 #if (IS_DEBUG_MODE == ON)
-    Serial.println("factory Reset");
+    Serial.println(F("factory Reset"));
 #endif
 
     // reset all parameter

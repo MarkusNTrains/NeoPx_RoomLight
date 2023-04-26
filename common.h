@@ -46,7 +46,7 @@ typedef struct
 
 
 //--- debug setting -------------------------------------------------------
-#define IS_DEBUG_MODE OFF  // can be ON or OFF
+#define IS_DEBUG_MODE ON  // can be ON or OFF
 
 
 //--- hardware setting ----------------------------------------------------
