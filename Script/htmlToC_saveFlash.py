@@ -62,6 +62,7 @@ cpp_file.write("#include \"Website.h\"\n")
 cpp_file.write("\n")
 cpp_file.write("\n")
 cpp_file.write("//-----------------------------------------------------------------------------\n")
+cpp_file.write("// This variant needs more heap but less flash\n")
 cpp_file.write("// PROGMEM -> store data in flash\n")
 
 nof_lines = 0

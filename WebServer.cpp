@@ -51,12 +51,9 @@ WebServer::WebServer(LightSceneHdl* led_scene)
 
 #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
     // IP config MarkusNTrains
-//    IPAddress ip(192, 168, 0, 4);    // IP address, may need to change depending on network
-  //  IPAddress myDns(192, 168, 0, 254);
-    //IPAddress gateway(192, 168, 0, 254);  // how to find gateway: open cmd --> type ipconfig
-    IPAddress ip(192, 168, 1, 88);    // IP address, may need to change depending on network
-    IPAddress myDns(192, 168, 1, 2);
-    IPAddress gateway(192, 168, 1, 2);  // how to find gateway: open cmd --> type ipconfig
+    IPAddress ip(192, 168, 0, 4);    // IP address, may need to change depending on network
+    IPAddress myDns(192, 168, 0, 254);
+    IPAddress gateway(192, 168, 0, 254);  // how to find gateway: open cmd --> type ipconfig
     IPAddress subnet(255, 255, 255, 0);
 #elif (ROOM_LIGHT == ROOM_LIGHT_Altenglienicke)
     // IP config Altenglienicke
@@ -143,7 +140,7 @@ void WebServer::Tasks()
     if (client)   // got client?
     {
 #if (IS_DEBUG_MODE == ON)
-        Serial.println(F("\nWebserver: start request"));
+        //Serial.println(F("\nWebserver: start request"));
 #endif
 
         bool currentLineIsBlank = false;
@@ -245,7 +242,7 @@ void WebServer::Tasks()
         client.stop(); // close the connection
         
 #if (IS_DEBUG_MODE == ON)
-        Serial.println(F("Webserer: connection closed"));
+        //Serial.println(F("Webserer: connection closed"));
 #endif
     } // end if (client)
 }
@@ -259,6 +256,7 @@ void WebServer::Tasks()
 void WebServer::HandleRequest(char* http_request)
 {
     char param_c[12];
+    char needle_str[16];
     uint32_t param = 0;
     uint16_t param2 = 0;
     uint16_t param3 = 0;
@@ -269,16 +267,17 @@ void WebServer::HandleRequest(char* http_request)
 
 
 #if (IS_DEBUG_MODE == ON)
-        Serial.print(F("HTTP Request: "));
-        Serial.println(http_request);
+//        Serial.print(F("HTTP Request: "));
+//        Serial.println(http_request);
 #endif
 
     // find LightScene ---------------------------------------------------------
+    //strcpy_P(needle_str, (char*)pgm_read_word(&(WEBSERVER_Request_Needle_Scene)));
     if (StrContains(http_request, WEBSERVER_Request_Needle_Scene))
     {
         this->m_action = ACTION_SetLightSecene;
         param = this->HttpRequestExtractOneParameter(http_request, WEBSERVER_Request_Needle_Scene, sizeof(WEBSERVER_Request_Needle_Scene));
-        param2 = this->HttpRequestExtractOneParameter(http_request, WEBSERVER_Request_Needle_brightness, sizeof(WEBSERVER_Request_Needle_brightness));
+        param2 = 0;//this->HttpRequestExtractOneParameter(http_request, WEBSERVER_Request_Needle_brightness, sizeof(WEBSERVER_Request_Needle_brightness));
         this->m_lightSceneHdl_p->ChangeLightScene((LightSceneID)param, param2);
 
 #if (IS_DEBUG_MODE == ON)

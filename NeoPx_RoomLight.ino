@@ -86,7 +86,7 @@ void loop()
     if (millis() - print_free_memory_timestamp_ms > 2000)
     {
         print_free_memory_timestamp_ms = millis();
-        Serial.print(F("Memory: "));
+        Serial.print(F("Free Memory: "));
         Serial.println(availableMemory());
     }
   #endif

@@ -35,12 +35,12 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // const
-const char WEBSERVER_Request_Needle_Scene[] PROGMEM = "LightScene";
-const char WEBSERVER_Request_Needle_brightness[] PROGMEM = "SetBrightness";
-const char WEBSERVER_Request_Needle_Color[] PROGMEM = "SetColor";
-const char WEBSERVER_Request_Needle_SetLedArea[] PROGMEM = "SetArea";
-const char WEBSERVER_Request_Needle_GetCurrentData[] PROGMEM = "GetCurrentData";
-const char WEBSERVER_Request_Needle_GetInfo[] PROGMEM = "GetInfo";
+const char WEBSERVER_Request_Needle_Scene[] = "LightScene";
+const char WEBSERVER_Request_Needle_brightness[] = "SetBrightness";
+const char WEBSERVER_Request_Needle_Color[] = "SetColor";
+const char WEBSERVER_Request_Needle_SetLedArea[] = "SetArea";
+const char WEBSERVER_Request_Needle_GetCurrentData[] = "GetCurrentData";
+const char WEBSERVER_Request_Needle_GetInfo[] = "GetInfo";
 
 
 //----------------------------------------------------------------------------
