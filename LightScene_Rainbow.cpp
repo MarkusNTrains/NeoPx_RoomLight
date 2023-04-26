@@ -29,7 +29,7 @@ $Id:  $
 //   constructor
 //*****************************************************************************
 LightScene_Rainbow::LightScene_Rainbow(LightHdl* light_hdl, Datastore* datastore_p) : 
-    LightScene(light_hdl, datastore_p, TASK_TmoMs, Datastore::ParameterId::SceneMoBa_Brightness, Datastore::ParameterId::Color)
+    LightScene(light_hdl, datastore_p, LIGHTSCENE_RAINBOW_TaskTmoMs, Datastore::ParameterId::SceneMoBa_Brightness, Datastore::ParameterId::Color)
 {
 }
 

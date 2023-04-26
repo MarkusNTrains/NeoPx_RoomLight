@@ -64,22 +64,22 @@ void LightScene_Cloud::Enter(void)
     this->m_scene_color = this->m_light_hdl_p->GetColor();
     this->m_start_next_cloud_idx = 0;
     this->m_start_cloud_timestamp_ms = 0;
-    this->m_start_next_cloud_tmo_ms = TASK_HDL_TMO_MS;
+    this->m_start_next_cloud_tmo_ms = LIGHTSCENE_CLOUD_Task_TmoMs;
     this->m_task_hdl_timestamp_ms = 0;
     this->m_task_cycle_cnt = 0;
 
     srand(millis());
-    this->m_nof_clouds = (rand() % ((MAX_NOF_CLOUDS + 1) - MIN_NOF_CLOUDS)) + MIN_NOF_CLOUDS;
+    this->m_nof_clouds = (rand() % ((LIGHTSCENE_CLOUD_Cloud_MaxNof + 1) - LIGHTSCENE_CLOUD_Cloud_MinNof)) + LIGHTSCENE_CLOUD_Cloud_MinNof;
     for (cnt = 0; cnt < this->m_nof_clouds; cnt++) 
     {
         this->m_cloud_p[cnt] = new SkyCloud();
         this->m_cloud_p[cnt]->is_enable = false;
         this->m_cloud_p[cnt]->position_px = 0;
         this->m_cloud_p[cnt]->row = rand() % LedRow::LED_ROW_NOF;
-        this->m_cloud_p[cnt]->width = (rand() % ((MAX_CLOUD_WIDTH + 1) - MIN_CLOUD_WIDTH)) + MIN_CLOUD_WIDTH;;
-        this->m_cloud_p[cnt]->length_px = (rand() % ((MAX_CLOUD_LENGTH_PX + 1) - MIN_CLOUD_LENGTH_PX)) + MIN_CLOUD_LENGTH_PX;
-        this->m_cloud_p[cnt]->speed = (rand() % ((MAX_CLOUD_SPEED + 1) - MIN_CLOUD_SPEED)) + MIN_CLOUD_SPEED;
-        this->m_cloud_p[cnt]->darkness = (rand() % ((MAX_CLOUD_DARKNESS + 1) - MIN_CLOUD_DARKNESS)) + MIN_CLOUD_DARKNESS;
+        this->m_cloud_p[cnt]->width = (rand() % ((LIGHTSCENE_CLOUD_Cloud_MaxWidth + 1) - LIGHTSCENE_CLOUD_Cloud_MinWidth)) + LIGHTSCENE_CLOUD_Cloud_MinWidth;;
+        this->m_cloud_p[cnt]->length_px = (rand() % ((LIGHTSCENE_CLOUD_Cloud_MaxLengthPx + 1) - LIGHTSCENE_CLOUD_Cloud_MinLengthPx)) + LIGHTSCENE_CLOUD_Cloud_MinLengthPx;
+        this->m_cloud_p[cnt]->speed = (rand() % ((LIGHTSCENE_CLOUD_Cloud_MaxSpeed + 1) - LIGHTSCENE_CLOUD_Cloud_MinSpeed)) + LIGHTSCENE_CLOUD_Cloud_MinSpeed;
+        this->m_cloud_p[cnt]->darkness = (rand() % ((LIGHTSCENE_CLOUD_Cloud_MaxDarkness + 1) - LIGHTSCENE_CLOUD_Cloud_MinDarkness)) + LIGHTSCENE_CLOUD_Cloud_MinDarkness;
     }
 }
 
@@ -117,12 +117,12 @@ void LightScene_Cloud::Task(void)
             this->m_start_next_cloud_idx++;
 
             srand(millis());
-            this->m_start_next_cloud_tmo_ms = (rand() % ((MAX_ADD_NEW_CLOUD_LENGTH_MS + 1) / this->m_nof_clouds))  + MIN_ADD_NEXT_CLOUD_TMO_MS;
+            this->m_start_next_cloud_tmo_ms = (rand() % ((LIGHTSCENE_CLOUD_Cloud_AddNewMaxLengthMs + 1) / this->m_nof_clouds))  + LIGHTSCENE_CLOUD_Cloud_AddNextMinTmoMs;
         }
     }
 
     //--- move clouds ---------------------------------------------------------
-    if (millis() >= this->m_task_hdl_timestamp_ms + TASK_HDL_TMO_MS) 
+    if (millis() >= this->m_task_hdl_timestamp_ms + LIGHTSCENE_CLOUD_Task_TmoMs) 
     {
         this->m_task_hdl_timestamp_ms = millis();
         this->m_task_cycle_cnt++;

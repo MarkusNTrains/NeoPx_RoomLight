@@ -30,6 +30,11 @@ $Id:  $
 
 
 //----------------------------------------------------------------------------
+// const
+const uint32_t LIGHTSCENE_DISCO_TaskTmoMs = 100;
+
+
+//----------------------------------------------------------------------------
 // extern
 class LightSceneHdl;
 
@@ -46,8 +51,6 @@ class LightScene_Disco : public LightScene
         void Exit();
 
     private:
-        const uint32_t TASK_TmoMs = 100;
-
         void TaskHdl();
 };
 
