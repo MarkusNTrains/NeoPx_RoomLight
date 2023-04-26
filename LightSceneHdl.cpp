@@ -60,7 +60,7 @@ LightSceneHdl::LightSceneHdl()
     this->m_scene_office_table_p = new LightScene_OfficeTable(this->m_light_hdl_p, this->m_datastore_p);
     this->m_scene_rainbow_p = new LightScene_Rainbow(this->m_light_hdl_p, this->m_datastore_p);
     this->m_scene_sun_p = new LightScene_Sun(this, this->m_light_hdl_p);
-    this->m_scene_userSetting_p = new LightScene_UserSetting(this, this->m_light_hdl_p, this->m_datastore_p);
+    this->m_scene_userSetting_p = new LightScene_UserSetting(this->m_light_hdl_p, this->m_datastore_p);
 
     this->m_brightnessUpdate_timestamp_ms = 0;
     this->m_scene = LightSceneID::LightOff;
@@ -175,7 +175,7 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene, uint8_t brightness)
             break;
           
         case LightSceneID::UserSetting:
-            this->m_scene_userSetting_p->Enter();
+            this->m_active_light_scene_p = this->m_scene_userSetting_p;
             save_light_scene = true;
             break;
 
@@ -268,7 +268,6 @@ void LightSceneHdl::Tasks()
                 break;
             
             case LightSceneID::UserSetting:
-                this->m_scene_userSetting_p->Task();
                 break;
 
             default:

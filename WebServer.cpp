@@ -143,7 +143,7 @@ void WebServer::Tasks()
     if (client)   // got client?
     {
 #if (IS_DEBUG_MODE == ON)
-        //Serial.println(F("\nWebserver: start request"));
+        Serial.println(F("\nWebserver: start request"));
 #endif
 
         bool currentLineIsBlank = false;
@@ -245,7 +245,7 @@ void WebServer::Tasks()
         client.stop(); // close the connection
         
 #if (IS_DEBUG_MODE == ON)
-        //Serial.println(F("Webserer: connection closed"));
+        Serial.println(F("Webserer: connection closed"));
 #endif
     } // end if (client)
 }
@@ -267,6 +267,11 @@ void WebServer::HandleRequest(char* http_request)
     char* end_pos = 0;
     uint16_t cnt = 0;
 
+
+#if (IS_DEBUG_MODE == ON)
+        Serial.print(F("HTTP Request: "));
+        Serial.println(http_request);
+#endif
 
     // find LightScene ---------------------------------------------------------
     if (StrContains(http_request, WEBSERVER_Request_Needle_Scene))

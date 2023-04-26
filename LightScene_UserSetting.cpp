@@ -28,16 +28,16 @@ $Id:  $
 // description:
 //   constructor
 //*****************************************************************************
-LightScene_UserSetting::LightScene_UserSetting(LightSceneHdl* parent, LightHdl* light_hdl, Datastore* datastore_p)
+LightScene_UserSetting::LightScene_UserSetting(LightHdl* light_hdl, Datastore* datastore_p) : 
+    LightScene(light_hdl, datastore_p, TASK_TmoMs, Datastore::ParameterId::SceneMoBa_Brightness, Datastore::ParameterId::SceneMoBa_Color)
 {
     this->m_datastore_p = datastore_p;
-    this->m_scene_hdl_p = parent;
     this->m_light_hdl_p = light_hdl;
 
-    uint16_t xs = (uint16_t)this->m_datastore_p->GetParameter(Datastore::ParameterId::UserSetting_Xs);
-    uint16_t xe = (uint16_t)this->m_datastore_p->GetParameter(Datastore::ParameterId::UserSetting_Xe);
-    uint16_t ys = (uint16_t)this->m_datastore_p->GetParameter(Datastore::ParameterId::UserSetting_Ys);
-    uint16_t ye = (uint16_t)this->m_datastore_p->GetParameter(Datastore::ParameterId::UserSetting_Ye);
+    uint16_t xs = (uint16_t)this->m_datastore_p->GetParameter(Datastore::ParameterId::SceneUserSetting_Xs);
+    uint16_t xe = (uint16_t)this->m_datastore_p->GetParameter(Datastore::ParameterId::SceneUserSetting_Xe);
+    uint16_t ys = (uint16_t)this->m_datastore_p->GetParameter(Datastore::ParameterId::SceneUserSetting_Ys);
+    uint16_t ye = (uint16_t)this->m_datastore_p->GetParameter(Datastore::ParameterId::SceneUserSetting_Ye);
 
     if (xs >= ROOM_LIGHT_RowNofPx) {
         xs = ROOM_LIGHT_RowNofPx - 1;
@@ -74,8 +74,12 @@ LightScene_UserSetting::~LightScene_UserSetting()
 void LightScene_UserSetting::Enter(void)
 {
     this->m_light_hdl_p->Clear();
+    this->m_light_hdl_p->SetBrightness_Fade((uint8_t)this->m_datastore_p->GetParameter(this->m_brightness_param_id), false);
+    this->m_led_area_p->SetColor(this->m_datastore_p->GetParameter(this->m_color_param_id));
     this->m_light_hdl_p->SetLedArea(this->m_led_area_p);
     this->m_light_hdl_p->Show();
+
+    this->TaskHdl();
 }
 
 
@@ -92,15 +96,10 @@ void LightScene_UserSetting::Exit(void)
 // description:
 //   Task
 //*****************************************************************************
-void LightScene_UserSetting::Task(void)
+void LightScene_UserSetting::TaskHdl(void)
 {
-    if (millis() - this->m_task_timestamp_ms > TASK_TmoMs)
-    {
-        this->m_task_timestamp_ms = millis();
-
-        this->m_light_hdl_p->UpdateLedArea();
-        this->m_light_hdl_p->Show();
-    }
+    this->m_light_hdl_p->UpdateLedArea();
+    this->m_light_hdl_p->Show();
 }
 
 
@@ -127,9 +126,9 @@ void LightScene_UserSetting::SetLedArea(LedArea* area)
     this->m_light_hdl_p->Show();
 
     // save parameter
-    this->m_datastore_p->SetParameter(Datastore::ParameterId::UserSetting_Xs, area->GetColumnStart());
-    this->m_datastore_p->SetParameter(Datastore::ParameterId::UserSetting_Xe, area->GetColumnEnd());
-    this->m_datastore_p->SetParameter(Datastore::ParameterId::UserSetting_Ys, area->GetRowStart());
-    this->m_datastore_p->SetParameter(Datastore::ParameterId::UserSetting_Ye, area->GetRowEnd());
+    this->m_datastore_p->SetParameter(Datastore::ParameterId::SceneUserSetting_Xs, area->GetColumnStart());
+    this->m_datastore_p->SetParameter(Datastore::ParameterId::SceneUserSetting_Xe, area->GetColumnEnd());
+    this->m_datastore_p->SetParameter(Datastore::ParameterId::SceneUserSetting_Ys, area->GetRowStart());
+    this->m_datastore_p->SetParameter(Datastore::ParameterId::SceneUserSetting_Ye, area->GetRowEnd());
 }
 

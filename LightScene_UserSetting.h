@@ -20,24 +20,24 @@ $Id:  $
 // include
 #include "common.h"
 #include "Datastore.h"
-#include "LightSceneHdl.h"
-#include "LightHdl.h"
 #include "LedArea.h"
+#include "LightHdl.h"
+#include "LightScene.h"
 
 
 
 //----------------------------------------------------------------------------
 // extern
-class LightSceneHdl;
 
 
 //----------------------------------------------------------------------------
 // class
-class LightScene_UserSetting
+class LightScene_UserSetting : public LightScene
 {
     public:
-        LightScene_UserSetting(LightSceneHdl* parent, LightHdl* light_hdl, Datastore* datastore_p);
+        LightScene_UserSetting(LightHdl* light_hdl, Datastore* datastore_p);
         ~LightScene_UserSetting();
+
         void Enter(void);
         void Exit(void);
         void Task(void);
@@ -46,15 +46,14 @@ class LightScene_UserSetting
         void SetLedArea(LedArea* area);
 
     private:
-        const static uint32_t TASK_TmoMs = 200;
+        const static uint32_t TASK_TmoMs = 1000;
 
         Datastore* m_datastore_p;
-        LightSceneHdl* m_scene_hdl_p;
         LightHdl* m_light_hdl_p;
 
         LedArea* m_led_area_p;
 
-        uint32_t m_task_timestamp_ms;
+        void TaskHdl();
 };
 
 #endif // _LIGHT_SCENE_USER_SETTING_H

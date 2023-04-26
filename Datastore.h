@@ -42,10 +42,12 @@ class Datastore
             SceneOfficeTable_Brightness,
             SceneOfficeTable_Color,
             SceneRainbow_Brightness,
-            UserSetting_Xs,
-            UserSetting_Xe,
-            UserSetting_Ys,
-            UserSetting_Ye,
+            SceneUserSetting_Brightness,
+            SceneUserSetting_Color,
+            SceneUserSetting_Xs,
+            SceneUserSetting_Xe,
+            SceneUserSetting_Ys,
+            SceneUserSetting_Ye,
             Nof
         };
 
