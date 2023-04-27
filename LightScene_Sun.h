@@ -19,8 +19,9 @@ $Id:  $
 //----------------------------------------------------------------------------
 // include
 #include "common.h"
-#include "LightSceneHdl.h"
 #include "LightHdl.h"
+#include "LightSceneHdl.h"
+#include "LightScene_Night.h"
 
 
 
@@ -46,13 +47,9 @@ class LightSceneHdl;
 class LightScene_Sun
 {
     public:
-        const static uint8_t NIGHT_BRIGHTNESS = 4;
-
         LightScene_Sun(LightSceneHdl* parent, LightHdl* light_hdl, Datastore* datastore_p);
         ~LightScene_Sun();
 
-        void Night_Enter();
-        void Night_Task();
         void Sunrise_Enter();
         void Sunrise_Exit();
         void Sunrise_Task();
@@ -65,13 +62,11 @@ class LightScene_Sun
 
     private:
         const static uint32_t TASK_Sun_TmoMs = 80; 
-        const static uint32_t TASK_DayNight_TmoMs = 1000;
 
         const static uint32_t PIXEL_DISTANCE_MM = 16;  // distance between neo pixels in mm
         const static uint32_t SUN_MAX_HEIGHT = 10000;
 
-        const static uint8_t SUNRISE_BIRGHTNESS = 15;
-        const static uint32_t NIGHT_COLOR = LightHdl::COLOR_BLUE;
+        const static uint8_t SUNRISE_BIRGHTNESS = LightScene_Night::BRIGHTNESS_Max;
         const static uint8_t RED_MAX = 255;
         const static uint8_t GREEN_MAX = 120;
         const static uint8_t BLUE_MAX = 32;
@@ -85,13 +80,14 @@ class LightScene_Sun
         uint32_t m_sun_pos;
         uint32_t m_day_color;
         uint32_t m_task_timestamp_ms;
-        uint8_t m_twilight_brightness;
 
         uint8_t m_day_brightness_white;
         uint8_t m_day_brightness_rgb;
         uint8_t m_red_max;
         uint8_t m_green_max;
         uint8_t m_blue_max;
+        uint8_t m_twilight_brightness;
+        uint8_t m_night_brightness;
 };
 
 #endif // _LIGHT_SCENE_SUN_H

@@ -14,10 +14,10 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original
   source code
 
-  Created 27.04.2023 18:11:38 by MarkusNTrains
+  Created 27.04.2023 20:06:37 by MarkusNTrains
 ================================================================================
 $HeadURL: file:///C:/_my/Arduino/NeoPx_RoomLight/Parameter.h $
-$Id: 27.04.2023 18:11:38 automatic gen. $
+$Id: 27.04.2023 20:06:37 automatic gen. $
 *******************************************************************************/
 
 /*
@@ -50,6 +50,7 @@ class Parameter
             SceneMoBa_Color ,
             SceneLightOn_Brightness ,
             SceneLightOn_Color ,
+            SceneNight_Brightness,
             SceneOfficeTable_Brightness ,
             SceneOfficeTable_Color ,
             SceneRainbow_Brightness ,
@@ -75,7 +76,7 @@ class Parameter
         const static uint32_t COLOR_Min = 0;
         const static uint32_t COLOR_Max = 0xFFFFFFFF;
 
-        const static uint16_t BUFFER_Size = 32;
+        const static uint16_t BUFFER_Size = 33;
 
         Parameter();
         ~Parameter();

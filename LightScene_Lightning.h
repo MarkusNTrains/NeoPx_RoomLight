@@ -33,7 +33,7 @@ class LightSceneHdl;
 class LightScene_Lightning
 {
     public:
-        LightScene_Lightning(LightSceneHdl* parent, LightHdl* light_hdl);
+        LightScene_Lightning(LightSceneHdl* parent, LightHdl* light_hdl, Datastore* datastore_p);
         ~LightScene_Lightning();
         void Enter(void);
         void Exit(void);
@@ -47,6 +47,8 @@ class LightScene_Lightning
 
         LightSceneHdl* m_scene_hdl_p;
         LightHdl* m_light_hdl_p;
+        Datastore* m_datastore_p;
+
         uint32_t m_flash_timestamp_ms;
         uint32_t m_flash_pause_ms;
         uint8_t m_nof_flashes;

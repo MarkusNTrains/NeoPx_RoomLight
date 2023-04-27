@@ -23,6 +23,7 @@ $Id:  $
 #include "LightScene_Lightning.h"
 #include "LightScene_LightOn.h"
 #include "LightScene_MoBa.h"
+#include "LightScene_Night.h"
 #include "LightScene_OfficeTable.h"
 #include "LightScene_Rainbow.h"
 #include "LightScene_Sun.h"
@@ -56,9 +57,10 @@ LightSceneHdl::LightSceneHdl()
     this->m_scene_cloud_p = new LightScene_Cloud(this, this->m_light_hdl_p);
     this->m_scene_day_p = new LightScene_Day(this->m_light_hdl_p, this->m_datastore_p);
     this->m_scene_disco_p = new LightScene_Disco(this->m_light_hdl_p, this->m_datastore_p);
-    this->m_scene_lightning_p = new LightScene_Lightning(this, this->m_light_hdl_p);
+    this->m_scene_lightning_p = new LightScene_Lightning(this, this->m_light_hdl_p, this->m_datastore_p);
     this->m_scene_light_on_p = new LightScene_LightOn(this->m_light_hdl_p, this->m_datastore_p);
     this->m_scene_moba_p = new LightScene_MoBa(this->m_light_hdl_p, this->m_datastore_p);
+    this->m_scene_night_p = new LightScene_Night(this->m_light_hdl_p, this->m_datastore_p);
     this->m_scene_office_table_p = new LightScene_OfficeTable(this->m_light_hdl_p, this->m_datastore_p);
     this->m_scene_rainbow_p = new LightScene_Rainbow(this->m_light_hdl_p, this->m_datastore_p);
     this->m_scene_sun_p = new LightScene_Sun(this, this->m_light_hdl_p, this->m_datastore_p);
@@ -141,7 +143,7 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene)
             break;
 
         case LightSceneID::Night:
-            this->m_scene_sun_p->Night_Enter();
+            this->m_active_light_scene_p = this->m_scene_night_p;
             break;
           
         case LightSceneID::OfficeTable:
@@ -228,10 +230,6 @@ void LightSceneHdl::Tasks()
                 LightScene_LightOff_Task();
                 break;
 
-            case LightSceneID::Night:
-                this->m_scene_sun_p->Night_Task();
-                break;
-            
             case LightSceneID::Sunrise:
                 this->m_scene_sun_p->Sunrise_Task();
                 break;

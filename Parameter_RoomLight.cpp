@@ -14,10 +14,10 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original
   source code
 
-  Created 27.04.2023 18:11:38 by MarkusNTrains
+  Created 27.04.2023 20:06:37 by MarkusNTrains
 ================================================================================
 $HeadURL: file:///C:/_my/Arduino/NeoPx_RoomLight/Parameter_RoomLight.cpp $
-$Id: 27.04.2023 18:11:38 automatic gen. $
+$Id: 27.04.2023 20:06:37 automatic gen. $
 *******************************************************************************/
 
 /*
@@ -31,6 +31,7 @@ Defines the Parameter of RoomLight device and their properties.
 #include "Parameter.h"
 #include "LightSceneHdl.h"
 #include "LightScene_Day.h"
+#include "LightScene_Night.h"
 
 
 
@@ -63,7 +64,7 @@ const static parameter_t PARAM_TABLE[Parameter::Id::Nof] PROGMEM = {
         .width = 1,
     },
     [Parameter::Id::SceneDay_Brightness] = {
-        .default_value = LightScene_Day::BRIGHTNESS_White_Default ,
+        .default_value = LightScene_Day::BRIGHTNESS_Default ,
         .min = Parameter::BRIGHTNESS_Min ,
         .max = Parameter::BRIGHTNESS_Max ,
         .addr = 3,
@@ -104,67 +105,74 @@ const static parameter_t PARAM_TABLE[Parameter::Id::Nof] PROGMEM = {
         .addr = 11,
         .width = 4,
     },
+    [Parameter::Id::SceneNight_Brightness] = {
+        .default_value = LightScene_Night::BRIGHTNESS_Default ,
+        .min = 0,
+        .max = LightScene_Night::BRIGHTNESS_Max,
+        .addr = 15,
+        .width = 1,
+    },
     [Parameter::Id::SceneOfficeTable_Brightness ] = {
         .default_value = Parameter::BRIGHTNESS_Default ,
         .min = Parameter::BRIGHTNESS_Min ,
         .max = Parameter::BRIGHTNESS_Max ,
-        .addr = 15,
+        .addr = 16,
         .width = 1,
     },
     [Parameter::Id::SceneOfficeTable_Color ] = {
         .default_value = Parameter::COLOR_Default,
         .min = Parameter::COLOR_Min,
         .max = Parameter::COLOR_Max,
-        .addr = 16,
+        .addr = 17,
         .width = 4,
     },
     [Parameter::Id::SceneRainbow_Brightness ] = {
         .default_value = Parameter::BRIGHTNESS_Default ,
         .min = Parameter::BRIGHTNESS_Min ,
         .max = Parameter::BRIGHTNESS_Max ,
-        .addr = 20,
+        .addr = 21,
         .width = 1,
     },
     [Parameter::Id::SceneUserSetting_Brightness ] = {
         .default_value = Parameter::BRIGHTNESS_Default ,
         .min = Parameter::BRIGHTNESS_Min ,
         .max = Parameter::BRIGHTNESS_Max ,
-        .addr = 21,
+        .addr = 22,
         .width = 1,
     },
     [Parameter::Id::SceneUserSetting_Color ] = {
         .default_value = Parameter::COLOR_Default,
         .min = Parameter::COLOR_Min,
         .max = Parameter::COLOR_Max,
-        .addr = 22,
+        .addr = 23,
         .width = 4,
     },
     [Parameter::Id::SceneUserSetting_Xs ] = {
         .default_value = 0,
         .min = 0,
         .max = (ROOM_LIGHT_RowNofPx - 1) ,
-        .addr = 26,
+        .addr = 27,
         .width = 2,
     },
     [Parameter::Id::SceneUserSetting_Xe ] = {
         .default_value = (ROOM_LIGHT_RowNofPx - 1) ,
         .min = 0,
         .max = (ROOM_LIGHT_RowNofPx - 1) ,
-        .addr = 28,
+        .addr = 29,
         .width = 2,
     },
     [Parameter::Id::SceneUserSetting_Ys ] = {
         .default_value = 0,
         .min = 0,
         .max = (ROOM_LIGHT_NofRows - 1) ,
-        .addr = 30,
+        .addr = 31,
         .width = 1,
     },
     [Parameter::Id::SceneUserSetting_Ye ] = {
         .default_value = (ROOM_LIGHT_NofRows - 1) ,
         .min = 0,
         .max = (ROOM_LIGHT_NofRows - 1) ,
-        .addr = 31,
+        .addr = 32,
         .width = 1,
     },
 };

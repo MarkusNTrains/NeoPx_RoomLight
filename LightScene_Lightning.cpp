@@ -28,10 +28,11 @@ $Id:  $
 // description:
 //   constructor
 //*****************************************************************************
-LightScene_Lightning::LightScene_Lightning(LightSceneHdl* parent, LightHdl* light_hdl)
+LightScene_Lightning::LightScene_Lightning(LightSceneHdl* parent, LightHdl* light_hdl, Datastore* datastore_p)
 {
     this->m_scene_hdl_p = parent;
     this->m_light_hdl_p = light_hdl;
+    this->m_datastore_p = datastore_p;
 
     this->m_flash_timestamp_ms = 0;
     this->m_flash_pause_ms = 0;
@@ -59,7 +60,7 @@ void LightScene_Lightning::Enter(void)
     // set overall brightness to maximum and the background color to current brightness, so that flashes will bi visible
     this->m_light_hdl_p->Clear();
     this->m_light_hdl_p->SetBrightness_Instantly(255);
-    this->m_light_hdl_p->SetLedArea(0, (LedRow::LED_ROW_LENGTH - 1), 0, (LedRow::LED_ROW_NOF - 1), Adafruit_NeoPixel::Color(0, 0, LightScene_Sun::NIGHT_BRIGHTNESS, 0));
+    this->m_light_hdl_p->SetLedArea(0, (LedRow::LED_ROW_LENGTH - 1), 0, (LedRow::LED_ROW_NOF - 1), Adafruit_NeoPixel::Color(0, 0, this->m_datastore_p->GetParameter(Parameter::Id::SceneNight_Brightness), 0));
     this->m_light_hdl_p->Show();
 
     this->m_nof_flashes = (rand() % 10) + MIN_NOF_FLASHES;
@@ -111,7 +112,7 @@ void LightScene_Lightning::Task(void)
             delay(flash_length_ms);
 
             // hide flash
-            this->m_light_hdl_p->SetLedArea(0, (LedRow::LED_ROW_LENGTH - 1), flash_row, flash_row, Adafruit_NeoPixel::Color(0, 0, LightScene_Sun::NIGHT_BRIGHTNESS, 0));
+            this->m_light_hdl_p->SetLedArea(0, (LedRow::LED_ROW_LENGTH - 1), flash_row, flash_row, Adafruit_NeoPixel::Color(0, 0, this->m_datastore_p->GetParameter(Parameter::Id::SceneNight_Brightness), 0));
             this->m_light_hdl_p->Show();
 
             this->m_flash_counter++;

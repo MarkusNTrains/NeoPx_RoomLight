@@ -59,6 +59,7 @@ class LightScene_Disco;
 class LightScene_Lightning;
 class LightScene_LightOn;
 class LightScene_MoBa;
+class LightScene_Night;
 class LightScene_OfficeTable;
 class LightScene_Rainbow;
 class LightScene_Sun;
@@ -102,6 +103,7 @@ class LightSceneHdl
         LightScene_Lightning* m_scene_lightning_p;
         LightScene_LightOn* m_scene_light_on_p;
         LightScene_MoBa* m_scene_moba_p;
+        LightScene_Night* m_scene_night_p;
         LightScene_OfficeTable* m_scene_office_table_p;
         LightScene_Rainbow* m_scene_rainbow_p;
         LightScene_Sun* m_scene_sun_p;

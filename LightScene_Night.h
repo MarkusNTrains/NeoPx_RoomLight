@@ -12,8 +12,8 @@ $HeadURL:  $
 $Id:  $
 *******************************************************************************/
 
-#ifndef _LIGHT_SCENE_DAY_H
-#define _LIGHT_SCENE_DAY_H
+#ifndef _LIGHT_SCENE_NIGHT_H
+#define _LIGHT_SCENE_NIGHT_H
 
 
 //----------------------------------------------------------------------------
@@ -27,14 +27,15 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // class
-class LightScene_Day : public LightScene
+class LightScene_Night : public LightScene
 {
     public:
-        const static uint8_t BRIGHTNESS_Default = 150;
-        const static uint32_t COLOR = LightHdl::COLOR_WHITE;
+        const static uint8_t BRIGHTNESS_Default = 4;
+        const static uint8_t BRIGHTNESS_Max = 15;
+        const static uint32_t COLOR = LightHdl::COLOR_BLUE;
 
-        LightScene_Day(LightHdl* light_hdl, Datastore* datastore_p);
-        ~LightScene_Day();
+        LightScene_Night(LightHdl* light_hdl, Datastore* datastore_p);
+        ~LightScene_Night();
         
         void Enter();
         void Exit();
@@ -45,4 +46,4 @@ class LightScene_Day : public LightScene
         void TaskHdl();
 };
 
-#endif // _LIGHT_SCENE_DAY_H
+#endif // _LIGHT_SCENE_NIGHT_H

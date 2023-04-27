@@ -57,45 +57,17 @@ LightScene_Sun::~LightScene_Sun()
 // description:
 //   Enter
 //*****************************************************************************
-void LightScene_Sun::Night_Enter(void)
-{
-    this->m_light_hdl_p->Clear();
-    this->m_light_hdl_p->SetColor(NIGHT_COLOR);
-    this->m_light_hdl_p->SetBrightness_Fade(NIGHT_BRIGHTNESS);
-}
-
-
-//*****************************************************************************
-// description:
-//   Task
-//*****************************************************************************
-void LightScene_Sun::Night_Task(void)
-{
-    if (millis() - this->m_task_timestamp_ms > TASK_DayNight_TmoMs)
-    {
-        this->m_task_timestamp_ms = millis();
-        
-        this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF);  
-        this->m_light_hdl_p->Show();    
-    }
-}
-
-
-//*****************************************************************************
-// description:
-//   Enter
-//*****************************************************************************
 void LightScene_Sun::Sunrise_Enter(void)
 {
     this->m_sun_height = 0;
     this->m_sun_pos = 0;
-    this->m_twilight_brightness = NIGHT_BRIGHTNESS;
+    this->m_twilight_brightness = this->m_datastore_p->GetParameter(Parameter::Id::SceneNight_Brightness);
     this->m_state = LIGHTSCENESUN_STATE_Sunrise;
     this->m_task_timestamp_ms = millis();
     this->Update_DayParameter();
 
     this->m_light_hdl_p->SetBrightness_Instantly(255);
-    this->m_light_hdl_p->SetColor(Adafruit_NeoPixel::Color(0, 0, NIGHT_BRIGHTNESS, 0));
+    this->m_light_hdl_p->SetColor(Adafruit_NeoPixel::Color(0, 0, this->m_twilight_brightness, 0));
     this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF);  
     this->m_light_hdl_p->Show();
 }
@@ -238,8 +210,8 @@ void LightScene_Sun::Sunset_Enter(void)
 //*****************************************************************************
 void LightScene_Sun::Sunset_Exit(void)
 {
-    this->m_light_hdl_p->SetBrightness_Instantly(NIGHT_BRIGHTNESS);
-    this->m_light_hdl_p->SetColor(NIGHT_COLOR);
+    this->m_light_hdl_p->SetBrightness_Instantly(this->m_night_brightness);
+    this->m_light_hdl_p->SetColor(LightScene_Night::COLOR);
     this->m_scene_hdl_p->ChangeLightScene(LightSceneID::Night);   
 }
 
@@ -328,7 +300,7 @@ void LightScene_Sun::Sunset_Task(void)
                     this->m_sun_height -= (this->m_sun_height / 10) + 1;
                     this->m_sun_pos = this->m_sun_pos % LedRow::LED_ROW_LENGTH;
                 }
-                else if (this->m_twilight_brightness > NIGHT_BRIGHTNESS)
+                else if (this->m_twilight_brightness > this->m_night_brightness)
                 {
                     this->m_twilight_brightness--;
                 }
@@ -383,7 +355,7 @@ void LightScene_Sun::CalculateAndShow_Sunlight(void)
 
         tmp_color = (green * this->m_sun_height) / (SUN_MAX_HEIGHT * 2);
         tmp_color = (cnt * (this->m_day_brightness_white / (LedRow::LED_ROW_LENGTH / 2))) + tmp_color;
-        tmp_color += NIGHT_BRIGHTNESS;
+        tmp_color += this->m_night_brightness;
         if (tmp_color > this->m_blue_max) {
             tmp_color = this->m_blue_max;
         }
@@ -423,5 +395,6 @@ void LightScene_Sun::Update_DayParameter()
     this->m_red_max = (uint8_t)((RED_MAX * day_brightness) / 255);
     this->m_green_max = (uint8_t)((GREEN_MAX * day_brightness) / 255);
     this->m_blue_max = (uint8_t)((BLUE_MAX * day_brightness ) / 255);
+    this->m_night_brightness = this->m_datastore_p->GetParameter(Parameter::Id::SceneNight_Brightness);
 }
 
