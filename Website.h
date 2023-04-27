@@ -1,6 +1,6 @@
 /*##############################################################################
 
-  THIS IS GENERATED CODE (use C:\_my\Arduino\NeoPx_RoomLight\Script\htmlToC_saveRAM.py.ods)
+  THIS IS GENERATED CODE (use C:\_my\Arduino\NeoPx_RoomLight\Script\htmlToC_saveRAM_compact.py.ods)
     ==> DO NOT EDIT MANUALLY !!!
 
 ##############################################################################*/
