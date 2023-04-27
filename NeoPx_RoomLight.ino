@@ -78,7 +78,7 @@ void loop()
     s_webServer_p->Tasks();
 
 #if (IS_DEBUG_MODE == ON)
-    if (millis() - s_main_printFreeMemoryTimestampMs > 5000)
+    if (millis() - s_main_printFreeMemoryTimestampMs > 10000)
     {
         s_main_printFreeMemoryTimestampMs = millis();
         Serial.print(F("Free Memory: "));
