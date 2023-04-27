@@ -73,7 +73,6 @@ class LightSceneHdl
         ~LightSceneHdl();
         void Tasks(void);
         void ChangeLightScene(LightSceneID scene);
-        void ChangeLightScene(LightSceneID scene, uint8_t brightness);
         LightSceneID GetLightScene(void);
         LightSceneID GetLastScene(void);
         LightHdl* GetLightHdl(void);

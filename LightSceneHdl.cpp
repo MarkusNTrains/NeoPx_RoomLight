@@ -92,16 +92,6 @@ LightSceneHdl::~LightSceneHdl()
 //*****************************************************************************
 void LightSceneHdl::ChangeLightScene(LightSceneID scene)
 {
-    this->ChangeLightScene(scene, this->m_light_hdl_p->GetBrightness());
-}
-
-
-//*****************************************************************************
-// description:
-//   ChangeLightScene
-//*****************************************************************************
-void LightSceneHdl::ChangeLightScene(LightSceneID scene, uint8_t brightness)
-{
     if (this->m_scene != scene)
     {
         this->m_active_light_scene_p = nullptr;
@@ -364,12 +354,10 @@ void LightSceneHdl::SetBrightness(uint8_t brightness)
         if (this->m_scene == LightSceneID::LightOff)
         {
             this->m_scene = this->m_last_scene;
-            this->ChangeLightScene(m_scene, brightness);
+            this->ChangeLightScene(m_scene);
         }
-        else
-        {
-            this->m_light_hdl_p->SetBrightness_Fade(brightness);
-        }
+
+        this->m_light_hdl_p->SetBrightness_Fade(brightness);
     }
 }
 

@@ -277,8 +277,7 @@ void WebServer::HandleRequest(char* http_request)
     {
         this->m_action = ACTION_SetLightSecene;
         param = this->HttpRequestExtractOneParameter(http_request, needle_str, sizeof(WEBSERVER_Request_Needle_Scene));
-        param2 = 0;//this->HttpRequestExtractOneParameter(http_request, WEBSERVER_Request_Needle_brightness, sizeof(WEBSERVER_Request_Needle_brightness));
-        this->m_lightSceneHdl_p->ChangeLightScene((LightSceneID)param, param2);
+        this->m_lightSceneHdl_p->ChangeLightScene((LightSceneID)param);
 
 #if (IS_DEBUG_MODE == ON)
         Serial.print(F("Scene: "));
