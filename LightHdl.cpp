@@ -172,7 +172,7 @@ void LightHdl::SetBrightness_Instantly(uint8_t brightness)
 void LightHdl::UpdateBrightness(void)
 {
     uint8_t factor = 10;
-    
+
     if (this->m_current_brightness < this->m_desired_brightness)
     {
         if (((this->m_current_brightness + ((this->m_current_brightness / factor) + 1))) < this->m_desired_brightness)
