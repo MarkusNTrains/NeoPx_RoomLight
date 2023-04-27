@@ -19,6 +19,7 @@ $Id:  $
 //----------------------------------------------------------------------------
 // include
 #include "LightScene.h"
+#include "LightScene_Night.h"
 
 
 //----------------------------------------------------------------------------
@@ -31,6 +32,7 @@ class LightScene_Day : public LightScene
 {
     public:
         const static uint8_t BRIGHTNESS_Default = 150;
+        const static uint8_t BRIGHTNESS_Min = LightScene_Night::BRIGHTNESS_Max + 20;
         const static uint32_t COLOR = LightHdl::COLOR_WHITE;
 
         LightScene_Day(LightHdl* light_hdl, Datastore* datastore_p);

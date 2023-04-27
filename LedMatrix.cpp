@@ -153,7 +153,7 @@ void LedMatrix::SetPixelArray(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye
 
     for (row = ys; row <= ye; row++)
     {
-        m_led_row[row]->SetPixel(xs, ((xe+1)-xs), 0, 1, color);
+        this->m_led_row[row]->SetPixel(xs, ((xe+1)-xs), 0, 1, color);
     }
 }
 
@@ -168,7 +168,7 @@ void LedMatrix::Clear(void)
     
     for (idx = 0; idx < LED_STRIP_NOF; idx++)
     {
-        m_led_strip[idx]->clear();
+        this->m_led_strip[idx]->clear();
     }
 }
 
@@ -183,7 +183,7 @@ void LedMatrix::Show(void)
 
     for (idx = 0; idx < LED_STRIP_NOF; idx++)
     {
-        m_led_strip[idx]->show();
+        this->m_led_strip[idx]->show();
     }
 }
 
@@ -198,7 +198,7 @@ void LedMatrix::SetBrightness(uint8_t brightness)
 
     for (idx = 0; idx < LED_STRIP_NOF; idx++)
     {
-        m_led_strip[idx]->setBrightness(brightness); // Set brigthness for all neo pixels
+        this->m_led_strip[idx]->setBrightness(brightness); // Set brigthness for all neo pixels
     }
 }
 
@@ -212,13 +212,13 @@ void LedMatrix::SetColor(uint32_t color)
     uint16_t col;
     uint8_t row;
 
-    for (row = 0; row < LedRow::LED_ROW_NOF; row++)
+    for (uint8_t strip = 0; strip < LED_STRIP_NOF; strip++)
     {
-        for (col = 0; col < LedRow::LED_ROW_LENGTH; col++)
+        for (uint16_t px = 0; px < ROOM_LIGHT_LedStripList[strip].nof_pixel; px++)
         {
-            if (this->m_led_row[row]->GetPixelColor(col) > 0)
+            if (this->m_led_strip[strip]->getPixelColor(px) > 0)
             {
-                this->m_led_row[row]->SetPixel(col, color);
+                this->m_led_strip[strip]->setPixelColor(px, color);
             }
         }
     }

@@ -14,10 +14,10 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original
   source code
 
-  Created 27.04.2023 20:06:37 by MarkusNTrains
+  Created 27.04.2023 20:36:09 by MarkusNTrains
 ================================================================================
 $HeadURL: file:///C:/_my/Arduino/NeoPx_RoomLight/Parameter_RoomLight.cpp $
-$Id: 27.04.2023 20:06:37 automatic gen. $
+$Id: 27.04.2023 20:36:09 automatic gen. $
 *******************************************************************************/
 
 /*
@@ -65,7 +65,7 @@ const static parameter_t PARAM_TABLE[Parameter::Id::Nof] PROGMEM = {
     },
     [Parameter::Id::SceneDay_Brightness] = {
         .default_value = LightScene_Day::BRIGHTNESS_Default ,
-        .min = Parameter::BRIGHTNESS_Min ,
+        .min = LightScene_Day::BRIGHTNESS_Min,
         .max = Parameter::BRIGHTNESS_Max ,
         .addr = 3,
         .width = 1,

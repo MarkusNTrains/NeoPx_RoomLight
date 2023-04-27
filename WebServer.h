@@ -65,14 +65,15 @@ class WebServer
         void Tasks(void);		
         
     private:
-        typedef enum {
+        enum Action
+        {
             ACTION_SetLightSecene = 0,
             ACTION_SetBrightness,
             ACTION_SetColor,
             ACTION_SetLedArea,
             ACTION_GetInfo,
             ACTION_Unknown
-        } action_t;
+        };
         
         //--- task ---
         const static uint8_t TASK_RequestBufferLength = 100;     // size of read buffer (reads a complete line) 
@@ -81,7 +82,7 @@ class WebServer
         EthernetServer* m_server;
         File webFile;                                // the web page file on the SD card
         LightSceneHdl* m_lightSceneHdl_p;
-        action_t m_action;
+        Action m_action;
 
         void HandleRequest(char* http_request);
         uint32_t HttpRequestExtractOneParameter(char* http_request, char* needle, uint8_t needle_length);

@@ -71,7 +71,7 @@ void LightScene::Task()
 void LightScene::SetBrightness(uint8_t brightness)
 {
     this->m_datastore_p->SetParameter(this->m_brightness_param_id, brightness);
-    this->m_light_hdl_p->SetBrightness_Fade(brightness);
+    this->m_light_hdl_p->SetBrightness_Fade(this->m_datastore_p->GetParameter(this->m_brightness_param_id));
     this->TaskHdl();
 }
 
@@ -83,6 +83,6 @@ void LightScene::SetBrightness(uint8_t brightness)
 void LightScene::SetColor(uint32_t color)
 {
     this->m_datastore_p->SetParameter(this->m_color_param_id, color);
-    this->m_light_hdl_p->SetColor(color);
+    this->m_light_hdl_p->SetColor(this->m_datastore_p->GetParameter(this->m_color_param_id));
     this->TaskHdl();
 }

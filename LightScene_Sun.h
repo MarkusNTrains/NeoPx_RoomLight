@@ -26,18 +26,6 @@ $Id:  $
 
 
 //----------------------------------------------------------------------------
-// enum
-enum LightningState
-{
-    LIGHTSCENESUN_STATE_Sunrise = 0,
-    LIGHTSCENESUN_STATE_Sunset,
-    LIGHTSCENESUN_STATE_Fading,
-    LIGHTSCENESUN_STATE_FadingToNight,
-    LIGHTSCENESUN_STATE_Unknown,
-};
-
-
-//----------------------------------------------------------------------------
 // extern
 class LightSceneHdl;
 
@@ -61,6 +49,15 @@ class LightScene_Sun
 
 
     private:
+        enum SunState
+        {
+            Sunrise = 0,
+            Sunset,
+            Fading,
+            FadingToNight,
+            Unknown,
+        };
+
         const static uint32_t TASK_Sun_TmoMs = 80; 
 
         const static uint32_t PIXEL_DISTANCE_MM = 16;  // distance between neo pixels in mm
@@ -75,7 +72,7 @@ class LightScene_Sun
         LightHdl* m_light_hdl_p;
         Datastore* m_datastore_p;
 
-        LightningState m_state;
+        SunState m_state;
         uint32_t m_sun_height;
         uint32_t m_sun_pos;
         uint32_t m_day_color;

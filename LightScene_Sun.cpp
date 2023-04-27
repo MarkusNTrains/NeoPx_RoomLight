@@ -62,7 +62,7 @@ void LightScene_Sun::Sunrise_Enter(void)
     this->m_sun_height = 0;
     this->m_sun_pos = 0;
     this->m_twilight_brightness = this->m_datastore_p->GetParameter(Parameter::Id::SceneNight_Brightness);
-    this->m_state = LIGHTSCENESUN_STATE_Sunrise;
+    this->m_state = Sunrise;
     this->m_task_timestamp_ms = millis();
     this->Update_DayParameter();
 
@@ -97,7 +97,7 @@ void LightScene_Sun::Sunrise_Task(void)
         
         switch (this->m_state)
         {
-            case LIGHTSCENESUN_STATE_Sunrise:
+            case Sunrise:
             {
                 this->CalculateAndShow_Sunlight();
 
@@ -113,12 +113,12 @@ void LightScene_Sun::Sunrise_Task(void)
                 else
                 {
                     this->m_day_color = Adafruit_NeoPixel::Color(this->m_red_max, this->m_green_max, this->m_blue_max, 0);
-                    this->m_state = LIGHTSCENESUN_STATE_Fading;   
+                    this->m_state = Fading;   
                 }
 
                 break;
             }
-            case LIGHTSCENESUN_STATE_Fading:
+            case Fading:
             {
                 if (this->m_day_color == Adafruit_NeoPixel::Color(0, 0, 0, this->m_day_brightness_white))
                 {
@@ -193,7 +193,7 @@ void LightScene_Sun::Sunset_Enter(void)
     this->m_sun_height = SUN_MAX_HEIGHT;
     this->m_sun_pos = LedRow::LED_ROW_LENGTH - 1;
     this->m_twilight_brightness = SUNRISE_BIRGHTNESS;
-    this->m_state = LIGHTSCENESUN_STATE_Fading;
+    this->m_state = Fading;
     this->m_day_color = Adafruit_NeoPixel::Color(0, 0, 0, this->m_day_brightness_white);
     this->m_task_timestamp_ms = millis();
     
@@ -228,11 +228,11 @@ void LightScene_Sun::Sunset_Task(void)
         
         switch (this->m_state)
         {
-            case LIGHTSCENESUN_STATE_Fading:
+            case Fading:
             {
                 if (this->m_day_color == Adafruit_NeoPixel::Color(this->m_red_max, this->m_green_max, this->m_blue_max, 0))
                 {
-                    this->m_state = LIGHTSCENESUN_STATE_Sunset;   
+                    this->m_state = Sunset;   
                 }
                 else
                 {
@@ -291,7 +291,7 @@ void LightScene_Sun::Sunset_Task(void)
                 break;   
             }
 
-            case LIGHTSCENESUN_STATE_Sunset:
+            case Sunset:
             {
                 this->CalculateAndShow_Sunlight();
 
