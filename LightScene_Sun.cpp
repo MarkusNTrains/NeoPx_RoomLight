@@ -16,6 +16,7 @@ $Id:  $
 //-----------------------------------------------------------------------------
 // includes
 #include "LightScene_Sun.h"
+#include "LightScene_Day.h"
 
 
 //-----------------------------------------------------------------------------
@@ -35,11 +36,11 @@ $Id:  $
 // description:
 //   constructor
 //*****************************************************************************
-LightScene_Sun::LightScene_Sun(LightSceneHdl* parent, LightHdl* light_hdl)
+LightScene_Sun::LightScene_Sun(LightSceneHdl* parent, LightHdl* light_hdl, Datastore* datastore_p)
 {
     this->m_scene_hdl_p = parent;
     this->m_light_hdl_p = light_hdl;
-
+    this->m_datastore_p = datastore_p;
 }
 
 
@@ -49,34 +50,6 @@ LightScene_Sun::LightScene_Sun(LightSceneHdl* parent, LightHdl* light_hdl)
 //*****************************************************************************
 LightScene_Sun::~LightScene_Sun()
 {
-}
-
-
-//*****************************************************************************
-// description:
-//   Enter
-//*****************************************************************************
-void LightScene_Sun::Day_Enter(void)
-{
-    this->m_light_hdl_p->Clear();
-    this->m_light_hdl_p->SetColor(DAY_COLOR);
-    this->m_light_hdl_p->SetBrightness_Fade(DAY_BRIGHTNESS_WHITE);
-}
-
-
-//*****************************************************************************
-// description:
-//   Task
-//*****************************************************************************
-void LightScene_Sun::Day_Task(void)
-{
-    if (millis() - this->m_task_timestamp_ms > TASK_DayNight_TmoMs)
-    {
-        this->m_task_timestamp_ms = millis();
-        
-        this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF);  
-        this->m_light_hdl_p->Show();
-    }
 }
 
 
@@ -119,6 +92,7 @@ void LightScene_Sun::Sunrise_Enter(void)
     this->m_twilight_brightness = NIGHT_BRIGHTNESS;
     this->m_state = LIGHTSCENESUN_STATE_Sunrise;
     this->m_task_timestamp_ms = millis();
+    this->Update_DayParameter();
 
     this->m_light_hdl_p->SetBrightness_Instantly(255);
     this->m_light_hdl_p->SetColor(Adafruit_NeoPixel::Color(0, 0, NIGHT_BRIGHTNESS, 0));
@@ -133,8 +107,8 @@ void LightScene_Sun::Sunrise_Enter(void)
 //*****************************************************************************
 void LightScene_Sun::Sunrise_Exit(void)
 {
-    this->m_light_hdl_p->SetBrightness_Instantly(DAY_BRIGHTNESS_WHITE);
-    this->m_light_hdl_p->SetColor(DAY_COLOR);
+    this->m_light_hdl_p->SetBrightness_Instantly(this->m_day_brightness_white);
+    this->m_light_hdl_p->SetColor(LightScene_Day::COLOR);
     this->m_scene_hdl_p->ChangeLightScene(LightSceneID::Day);   
 }
 
@@ -166,7 +140,7 @@ void LightScene_Sun::Sunrise_Task(void)
                 }
                 else
                 {
-                    this->m_day_color = Adafruit_NeoPixel::Color(RED_MAX, GREEN_MAX, BLUE_MAX, 0);
+                    this->m_day_color = Adafruit_NeoPixel::Color(this->m_red_max, this->m_green_max, this->m_blue_max, 0);
                     this->m_state = LIGHTSCENESUN_STATE_Fading;   
                 }
 
@@ -174,7 +148,7 @@ void LightScene_Sun::Sunrise_Task(void)
             }
             case LIGHTSCENESUN_STATE_Fading:
             {
-                if (this->m_day_color == Adafruit_NeoPixel::Color(0, 0, 0, DAY_BRIGHTNESS_WHITE))
+                if (this->m_day_color == Adafruit_NeoPixel::Color(0, 0, 0, this->m_day_brightness_white))
                 {
                     this->Sunrise_Exit();
                 }
@@ -187,16 +161,16 @@ void LightScene_Sun::Sunrise_Task(void)
                     uint8_t white = (uint8_t)(this->m_day_color >> 24);
 
                     tmp = (white / 10) + 1;
-                    if ((white + tmp) < DAY_BRIGHTNESS_WHITE) 
+                    if ((white + tmp) < this->m_day_brightness_white) 
                     {
                         white += tmp;
                     }
                     else 
                     {
-                        white = DAY_BRIGHTNESS_WHITE;
+                        white = this->m_day_brightness_white;
                     }
 
-                    if (white > ((DAY_BRIGHTNESS_WHITE * 2) / 5))
+                    if (white > ((this->m_day_brightness_white * 2) / 5))
                     {
                         tmp = (red / 10) + 1;
                         if (tmp < red) {
@@ -243,13 +217,14 @@ void LightScene_Sun::Sunrise_Task(void)
 //*****************************************************************************
 void LightScene_Sun::Sunset_Enter(void)
 {
+    this->Update_DayParameter();
     this->m_sun_height = SUN_MAX_HEIGHT;
     this->m_sun_pos = LedRow::LED_ROW_LENGTH - 1;
     this->m_twilight_brightness = SUNRISE_BIRGHTNESS;
     this->m_state = LIGHTSCENESUN_STATE_Fading;
-    this->m_day_color = Adafruit_NeoPixel::Color(0, 0, 0, DAY_BRIGHTNESS_WHITE);
+    this->m_day_color = Adafruit_NeoPixel::Color(0, 0, 0, this->m_day_brightness_white);
     this->m_task_timestamp_ms = millis();
-
+    
     this->m_light_hdl_p->SetBrightness_Instantly(255);
     this->m_light_hdl_p->SetColor(this->m_day_color);
     this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF);  
@@ -283,7 +258,7 @@ void LightScene_Sun::Sunset_Task(void)
         {
             case LIGHTSCENESUN_STATE_Fading:
             {
-                if (this->m_day_color == Adafruit_NeoPixel::Color(RED_MAX, GREEN_MAX, BLUE_MAX, 0))
+                if (this->m_day_color == Adafruit_NeoPixel::Color(this->m_red_max, this->m_green_max, this->m_blue_max, 0))
                 {
                     this->m_state = LIGHTSCENESUN_STATE_Sunset;   
                 }
@@ -297,36 +272,36 @@ void LightScene_Sun::Sunset_Task(void)
                     bool is_rgb_color_ready = true;
 
                     tmp = (red / 10) + 1;
-                    if ((tmp + red) < RED_MAX) 
+                    if ((tmp + red) < this->m_red_max) 
                     {
                         red += tmp;
                     }
                     else
                     {
-                        red = RED_MAX;
+                        red = this->m_red_max;
                     }
 
                     tmp = (green / 10) + 1;
-                    if ((tmp + green) < GREEN_MAX) 
+                    if ((tmp + green) < this->m_green_max) 
                     {
                         green += tmp;
                     }
                     else
                     {
-                        green = GREEN_MAX;
+                        green = this->m_green_max;
                     }
 
                     tmp = (blue / 10) + 1;
-                    if ((tmp + blue) < BLUE_MAX) 
+                    if ((tmp + blue) < this->m_blue_max) 
                     {
                         blue += tmp;
                     }
                     else
                     {
-                        blue = BLUE_MAX;
+                        blue = this->m_blue_max;
                     }
 
-                    if (red > ((RED_MAX * 2) / 5))
+                    if (red > ((this->m_red_max * 2) / 5))
                     {
                         tmp = (white / 10) + 1;
                         if (tmp < white) {
@@ -397,20 +372,20 @@ void LightScene_Sun::CalculateAndShow_Sunlight(void)
         brightness = asin_alpha / 255;
 
         red = 255 * brightness;
-        if (red > RED_MAX) {
-            red = RED_MAX;
+        if (red > this->m_red_max) {
+            red = this->m_red_max;
         }
 
         green = asin_alpha * brightness;
-        if (green > GREEN_MAX) {
-            green = GREEN_MAX;
+        if (green > this->m_green_max) {
+            green = this->m_green_max;
         }
 
         tmp_color = (green * this->m_sun_height) / (SUN_MAX_HEIGHT * 2);
-        tmp_color = (cnt * (DAY_BRIGHTNESS_WHITE / (LedRow::LED_ROW_LENGTH / 2))) + tmp_color;
+        tmp_color = (cnt * (this->m_day_brightness_white / (LedRow::LED_ROW_LENGTH / 2))) + tmp_color;
         tmp_color += NIGHT_BRIGHTNESS;
-        if (tmp_color > BLUE_MAX) {
-            tmp_color = BLUE_MAX;
+        if (tmp_color > this->m_blue_max) {
+            tmp_color = this->m_blue_max;
         }
         blue = (tmp_color * brightness) + this->m_twilight_brightness;
 
@@ -433,3 +408,20 @@ void LightScene_Sun::CalculateAndShow_Sunlight(void)
     this->m_light_hdl_p->Show();    
 
 }
+
+
+//*****************************************************************************
+// description:
+//   Update_DayParameter
+//*****************************************************************************
+void LightScene_Sun::Update_DayParameter()
+{
+    uint32_t day_brightness = this->m_datastore_p->GetParameter(Parameter::Id::SceneDay_Brightness);
+    
+    this->m_day_brightness_white = (uint8_t)day_brightness;
+    this->m_day_brightness_rgb = (uint8_t)((day_brightness * 5) / 3);
+    this->m_red_max = (uint8_t)((RED_MAX * day_brightness) / 255);
+    this->m_green_max = (uint8_t)((GREEN_MAX * day_brightness) / 255);
+    this->m_blue_max = (uint8_t)((BLUE_MAX * day_brightness ) / 255);
+}
+

@@ -78,6 +78,7 @@ void LightScene_MoBa::TaskHdl()
     this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 3, 3);  
     this->m_light_hdl_p->Show();
   #elif (ROOM_LIGHT == ROOM_LIGHT_Altenglienicke)
+    this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, (LedRow::LED_ROW_NOF - 1));  
     this->m_light_hdl_p->Show();
   #else
     this->m_light_hdl_p->SetLedArea(3, 5, 0, 0);  

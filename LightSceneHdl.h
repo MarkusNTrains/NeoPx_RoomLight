@@ -54,6 +54,7 @@ enum class LightSceneID
 // extern
 class LightScene;
 class LightScene_Cloud;
+class LightScene_Day;
 class LightScene_Disco;
 class LightScene_Lightning;
 class LightScene_LightOn;
@@ -96,6 +97,7 @@ class LightSceneHdl
         LightSceneID m_last_scene;
         LightScene* m_active_light_scene_p;
         LightScene_Cloud* m_scene_cloud_p;
+        LightScene_Day* m_scene_day_p;
         LightScene_Disco* m_scene_disco_p;
         LightScene_Lightning* m_scene_lightning_p;
         LightScene_LightOn* m_scene_light_on_p;
