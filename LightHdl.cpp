@@ -45,6 +45,8 @@ LightHdl::LightHdl(Datastore* datastore_p)
     this->m_update_time_ms = 0;
     this->m_led_matrix = new LedMatrix();
     this->m_led_area = new LedArea();
+
+    this->SetBrightness_Instantly(0);
 }
 
 
