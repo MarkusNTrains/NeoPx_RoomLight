@@ -59,6 +59,10 @@ Parameter::~Parameter()
 //*****************************************************************************
 void Parameter::Reset(Id id)
 {
+    if (id >= Id::Nof) {
+        return;  // invalid parameter id
+    }
+
     parameter_t param;
     memcpy_P(&param, &PARAM_TABLE[id], sizeof(parameter_t));
 
@@ -103,6 +107,10 @@ void Parameter::ResetAll()
 //*****************************************************************************
 uint32_t Parameter::GetValue(Id id)
 {
+    if (id >= Id::Nof) {
+        return;  // invalid parameter id
+    }
+
     parameter_t param;
     memcpy_P(&param, &PARAM_TABLE[id], sizeof(parameter_t));
 
@@ -137,6 +145,10 @@ uint32_t Parameter::GetValue(Id id)
 //*****************************************************************************
 bool Parameter::SetValue(Id id, uint32_t value) 
 {
+    if (id >= Id::Nof) {
+        return;  // invalid parameter id
+    }
+
     parameter_t param;
     memcpy_P(&param, &PARAM_TABLE[id], sizeof(parameter_t));
 
@@ -178,6 +190,10 @@ bool Parameter::SetValue(Id id, uint32_t value)
 //*****************************************************************************
 static uint16_t Parameter::GetAddr(Id id)
 {
+    if (id >= Id::Nof) {
+        return;  // invalid parameter id
+    }
+
     parameter_t param;
     memcpy_P(&param, &PARAM_TABLE[id], sizeof(parameter_t));
 
@@ -191,6 +207,10 @@ static uint16_t Parameter::GetAddr(Id id)
 //*****************************************************************************
 static uint8_t Parameter::GetWidth(Id id)
 {
+    if (id >= Id::Nof) {
+        return;  // invalid parameter id
+    }
+
     parameter_t param;
     memcpy_P(&param, &PARAM_TABLE[id], sizeof(parameter_t));
 

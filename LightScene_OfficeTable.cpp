@@ -50,7 +50,7 @@ LightScene_OfficeTable::~LightScene_OfficeTable()
 void LightScene_OfficeTable::Enter()
 {
     this->m_light_hdl_p->Clear();
-    this->m_light_hdl_p->SetBrightness_Fade((uint8_t)this->m_datastore_p->GetParameter(this->m_brightness_param_id), false);
+    this->m_light_hdl_p->SetBrightness_Fade((uint8_t)this->m_datastore_p->GetParameter(this->m_brightness_param_id));
     this->m_light_hdl_p->SetColor(this->m_datastore_p->GetParameter(this->m_color_param_id));
     this->TaskHdl();
 }

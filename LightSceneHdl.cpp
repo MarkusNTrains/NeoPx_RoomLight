@@ -125,7 +125,7 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene)
             break;
         
         case LightSceneID::LightOff:
-            this->m_light_hdl_p->SetBrightness_Fade(0, false);
+            this->m_light_hdl_p->SetBrightness_Fade(0);
             break;
         
         case LightSceneID::Disco:

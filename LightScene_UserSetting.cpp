@@ -29,7 +29,7 @@ $Id:  $
 //   constructor
 //*****************************************************************************
 LightScene_UserSetting::LightScene_UserSetting(LightHdl* light_hdl, Datastore* datastore_p) : 
-    LightScene(light_hdl, datastore_p, TASK_TmoMs, Parameter::Id::SceneMoBa_Brightness, Parameter::Id::SceneMoBa_Color)
+    LightScene(light_hdl, datastore_p, TASK_TmoMs, Parameter::Id::SceneUserSetting_Brightness, Parameter::Id::SceneUserSetting_Color)
 {
     this->m_datastore_p = datastore_p;
     this->m_light_hdl_p = light_hdl;
@@ -54,7 +54,7 @@ LightScene_UserSetting::LightScene_UserSetting(LightHdl* light_hdl, Datastore* d
     }
 
     this->m_led_area_p = new LedArea();
-    this->m_led_area_p->Set(xs, xe, ys, ye, this->m_datastore_p->GetParameter(Parameter::Id::Color));
+    this->m_led_area_p->Set(xs, xe, ys, ye, this->m_datastore_p->GetParameter(this->m_color_param_id));
 }
 
 
@@ -74,7 +74,7 @@ LightScene_UserSetting::~LightScene_UserSetting()
 void LightScene_UserSetting::Enter(void)
 {
     this->m_light_hdl_p->Clear();
-    this->m_light_hdl_p->SetBrightness_Fade((uint8_t)this->m_datastore_p->GetParameter(this->m_brightness_param_id), false);
+    this->m_light_hdl_p->SetBrightness_Fade((uint8_t)this->m_datastore_p->GetParameter(this->m_brightness_param_id));
     this->m_led_area_p->SetColor(this->m_datastore_p->GetParameter(this->m_color_param_id));
     this->m_light_hdl_p->SetLedArea(this->m_led_area_p);
     this->m_light_hdl_p->Show();

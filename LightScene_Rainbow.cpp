@@ -29,7 +29,7 @@ $Id:  $
 //   constructor
 //*****************************************************************************
 LightScene_Rainbow::LightScene_Rainbow(LightHdl* light_hdl, Datastore* datastore_p) : 
-    LightScene(light_hdl, datastore_p, TASK_TmoMs, Parameter::Id::SceneMoBa_Brightness, Parameter::Id::Color)
+    LightScene(light_hdl, datastore_p, TASK_TmoMs, Parameter::Id::SceneRainbow_Brightness, Parameter::Id::Unknown)
 {
 }
 
@@ -52,8 +52,7 @@ void LightScene_Rainbow::Enter()
     this->m_firstPixelHue = 0;
 
     this->m_light_hdl_p->Clear();
-    this->m_light_hdl_p->SetBrightness_Fade((uint8_t)this->m_datastore_p->GetParameter(this->m_brightness_param_id), false);
-    //this->m_light_hdl_p->SetColor(this->m_datastore_p->GetParameter(this->m_color_param_id));
+    this->m_light_hdl_p->SetBrightness_Fade((uint8_t)this->m_datastore_p->GetParameter(this->m_brightness_param_id));
     this->TaskHdl();
 }
 

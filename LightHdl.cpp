@@ -45,15 +45,6 @@ LightHdl::LightHdl(Datastore* datastore_p)
     this->m_update_time_ms = 0;
     this->m_led_matrix = new LedMatrix();
     this->m_led_area = new LedArea();
-
-    // restore last values
-    uint8_t brightness = this->m_datastore_p->GetParameter(Parameter::Id::Brightness);
-    if (brightness == 0)
-    {
-        brightness = 1;
-    }
-    this->SetBrightness_Instantly(brightness);
-    this->SetColor(this->m_datastore_p->GetParameter(Parameter::Id::Color));
 }
 
 
@@ -156,13 +147,9 @@ uint8_t LightHdl::GetBrightness(void)
 // description:
 //   Set Brightness
 //*****************************************************************************
-void LightHdl::SetBrightness_Fade(uint8_t brightness, bool save_parameter)
+void LightHdl::SetBrightness_Fade(uint8_t brightness)
 {
     this->m_desired_brightness = brightness;
-    if (save_parameter == true)
-    {
-        this->m_datastore_p->SetParameter(Parameter::Id::Brightness, this->m_desired_brightness);
-    }
 }
 
 
@@ -170,10 +157,10 @@ void LightHdl::SetBrightness_Fade(uint8_t brightness, bool save_parameter)
 // description:
 //   Set Brightness
 //*****************************************************************************
-void LightHdl::SetBrightness_Instantly(uint8_t brightness, bool save_parameter)
+void LightHdl::SetBrightness_Instantly(uint8_t brightness)
 {
     this->m_current_brightness = brightness;
-    this->SetBrightness_Fade(brightness, save_parameter);
+    this->SetBrightness_Fade(brightness);
     this->m_led_matrix->SetBrightness(this->m_current_brightness); // Set brigthness for all neo pixels
 }
 
@@ -237,14 +224,10 @@ uint32_t LightHdl::GetColor(void)
 // parameter:
 //   color: RGBW --> 8888
 //*****************************************************************************
-void LightHdl::SetColor(uint32_t color, bool save_parameter)
+void LightHdl::SetColor(uint32_t color)
 {
     this->m_color = color;
     this->m_led_matrix->SetColor(color);
-    if (save_parameter == true)
-    {
-        this->m_datastore_p->SetParameter(Parameter::Id::Color, this->m_color);
-    }
 }
 
 

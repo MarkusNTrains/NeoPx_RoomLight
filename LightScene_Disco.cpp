@@ -29,7 +29,7 @@ $Id:  $
 //   constructor
 //*****************************************************************************
 LightScene_Disco::LightScene_Disco(LightHdl* light_hdl, Datastore* datastore_p) : 
-    LightScene(light_hdl, datastore_p, TASK_TmoMs, Parameter::Id::SceneDisco_Brightness, Parameter::Id::Color)
+    LightScene(light_hdl, datastore_p, TASK_TmoMs, Parameter::Id::SceneDisco_Brightness, Parameter::Id::Unknown)
 {
 }
 
@@ -50,7 +50,7 @@ LightScene_Disco::~LightScene_Disco()
 void LightScene_Disco::Enter()
 {
     this->m_light_hdl_p->Clear();
-    this->m_light_hdl_p->SetBrightness_Fade((uint8_t)this->m_datastore_p->GetParameter(this->m_brightness_param_id), false);
+    this->m_light_hdl_p->SetBrightness_Fade((uint8_t)this->m_datastore_p->GetParameter(this->m_brightness_param_id));
     //this->m_light_hdl_p->SetColor(this->m_datastore_p->GetParameter(this->m_color_param_id));
     this->TaskHdl();
 }
