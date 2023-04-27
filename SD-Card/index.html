@@ -584,12 +584,7 @@
 		function LightSceneButtonPushed(scene, bt)
 		{
 			LightScene_ShowAsActive(scene)
-            var brightness = document.getElementById("brightness_slider").value;
-            if (brightness == 0)
-            {
-                brightness = 100;
-            }
-			SendDataToServer("&" + XML_RREQUEST.SetLightScene + "=" + scene + "&" + XML_RREQUEST.SetBrightness + "=" + brightness);
+			SendDataToServer("&" + XML_RREQUEST.SetLightScene + "=" + scene);
 		}
 
         function LightScene_SetAllAsInactive()

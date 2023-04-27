@@ -631,12 +631,7 @@ void Website_SendToClient(EthernetClient* client)
     client->println(F("function LightSceneButtonPushed(scene, bt)"));
     client->println(F("{"));
     client->println(F("LightScene_ShowAsActive(scene)"));
-    client->println(F("var brightness = document.getElementById(\"brightness_slider\").value;"));
-    client->println(F("if (brightness == 0)"));
-    client->println(F("{"));
-    client->println(F("brightness = 100;"));
-    client->println(F("}"));
-    client->println(F("SendDataToServer(\"&\" + XML_RREQUEST.SetLightScene + \"=\" + scene + \"&\" + XML_RREQUEST.SetBrightness + \"=\" + brightness);"));
+    client->println(F("SendDataToServer(\"&\" + XML_RREQUEST.SetLightScene + \"=\" + scene);"));
     client->println(F("}"));
     client->println(F(""));
     client->println(F("function LightScene_SetAllAsInactive()"));

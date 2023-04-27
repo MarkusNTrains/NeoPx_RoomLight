@@ -29,7 +29,6 @@ LedArea::LedArea()
     m_xe = 0;
     m_ys = 0;
     m_ye = 0;
-    m_color = 0;
 }
 
 
@@ -84,26 +83,6 @@ uint16_t LedArea::GetRowEnd(void)
 
 //*****************************************************************************
 // description:
-//   GetColor
-//*****************************************************************************
-uint32_t LedArea::GetColor(void)
-{
-    return this->m_color;    
-}
-
-
-//*****************************************************************************
-// description:
-//   SetColor
-//*****************************************************************************
-void LedArea::SetColor(uint32_t color)
-{
-    this->m_color;
-}
-        
-
-//*****************************************************************************
-// description:
 //   Get
 //*****************************************************************************
 void LedArea::Get(LedArea* area)
@@ -112,7 +91,6 @@ void LedArea::Get(LedArea* area)
     area->m_xe = this->m_xe;
     area->m_ys = this->m_ys;
     area->m_ye = this->m_ye;
-    area->m_color = this->m_color;
 }
 
 
@@ -122,7 +100,7 @@ void LedArea::Get(LedArea* area)
 //*****************************************************************************
 void LedArea::Set(LedArea* area)
 {
-    this->Set(area->m_xs, area->m_xe, area->m_ys, area->m_ye, area->m_color);
+    this->Set(area->m_xs, area->m_xe, area->m_ys, area->m_ye);
 }
 
 
@@ -130,13 +108,12 @@ void LedArea::Set(LedArea* area)
 // description:
 //   Set
 //*****************************************************************************
-void LedArea::Set(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color)
+void LedArea::Set(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye)
 {
     this->m_xs = xs;
     this->m_xe = xe;
     this->m_ys = ys;
     this->m_ye = ye;
-    this->m_color = color;
 }
 
 

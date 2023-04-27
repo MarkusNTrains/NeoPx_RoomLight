@@ -96,7 +96,7 @@ LedArea* LightHdl::GetLedArea(void)
 //*****************************************************************************
 void LightHdl::SetLedArea(LedArea* area)
 {
-    this->SetLedArea(area->GetColumnStart(), area->GetColumnEnd(), area->GetRowStart(), area->GetRowEnd(), area->GetColor());
+    this->SetLedArea(area->GetColumnStart(), area->GetColumnEnd(), area->GetRowStart(), area->GetRowEnd());
 }
 
 
@@ -106,7 +106,7 @@ void LightHdl::SetLedArea(LedArea* area)
 //*****************************************************************************
 void LightHdl::SetLedArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye)
 {
-    this->m_led_area->Set(xs, xe, ys, ye, this->m_color);
+    this->m_led_area->Set(xs, xe, ys, ye);
     this->m_led_matrix->SetPixelArray(xs, xe, ys, ye, this->m_color);    
 }
 

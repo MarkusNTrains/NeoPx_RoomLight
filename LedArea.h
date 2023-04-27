@@ -39,10 +39,9 @@ class LedArea
         uint16_t GetRowStart(void);
         uint16_t GetRowEnd(void);
         uint32_t GetColor(void);
-        void SetColor(uint32_t color);
         void Get(LedArea* area);
         void Set(LedArea* area);
-        void Set(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color);
+        void Set(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye);
         
     private:    
         //--- Memeber Variable ---
@@ -50,7 +49,6 @@ class LedArea
         uint16_t m_xe;
         uint16_t m_ys;
         uint16_t m_ye;
-        uint32_t m_color;        
 };
 
 #endif  // _LED_ROW_H

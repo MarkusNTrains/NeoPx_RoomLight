@@ -334,7 +334,7 @@ void LightSceneHdl::SetUserSettingArea(uint16_t xs, uint16_t xe, uint16_t ys, ui
     }
 
     LedArea area;
-    area.Set(xs, xe, ys, ye, this->m_light_hdl_p->GetColor());
+    area.Set(xs, xe, ys, ye);
     this->m_scene_userSetting_p->SetLedArea(&area);
 }
 
