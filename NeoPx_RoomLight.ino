@@ -34,9 +34,15 @@ $Id:  $
 
 //-----------------------------------------------------------------------------
 // static module variable
-// MAC address from Ethernet shield sticker under board
 static LightSceneHdl* s_lightSceneHdl_p;
 static WebServer* s_webServer_p;
+
+static uint32_t s_main_printFreeMemoryTimestampMs = 0;
+
+
+//-----------------------------------------------------------------------------
+// function prototype
+uint16_t GetAvailableMemory(void);
 
 
 
@@ -46,12 +52,13 @@ static WebServer* s_webServer_p;
 //*****************************************************************************
 void setup()
 {
-  #if (IS_DEBUG_MODE == ON)
+#if (IS_DEBUG_MODE == ON)
     Serial.begin(115200);       // for debugging
-    Serial.println(F("\nStart Room Light"));
-    Serial.print(F("Memory: "));
-    Serial.println(availableMemory());
-  #endif
+    Serial.println(F("\n\n************************************"));
+    Serial.println(F("Start Room Light"));
+    Serial.print(F("Free Memory: "));
+    Serial.println(GetAvailableMemory());
+ #endif
     
     delay(50);
     s_lightSceneHdl_p = new LightSceneHdl();
@@ -59,18 +66,6 @@ void setup()
 
     wdt_enable(WDTO_8S);
 }
-
-
-uint32_t print_free_memory_timestamp_ms = 0;
-int availableMemory() {
-    // Use 1024 with ATmega168
-    int size = 8192;
-    byte *buf;
-    while ((buf = (byte *) malloc(--size)) == NULL);
-        free(buf);
-    return size;
-}
-
 
 
 //*****************************************************************************
@@ -82,14 +77,34 @@ void loop()
     s_lightSceneHdl_p->Tasks();
     s_webServer_p->Tasks();
 
-  #if (IS_DEBUG_MODE == ON)
-    if (millis() - print_free_memory_timestamp_ms > 2000)
+#if (IS_DEBUG_MODE == ON)
+    if (millis() - s_main_printFreeMemoryTimestampMs > 5000)
     {
-        print_free_memory_timestamp_ms = millis();
+        s_main_printFreeMemoryTimestampMs = millis();
         Serial.print(F("Free Memory: "));
-        Serial.println(availableMemory());
+        Serial.println(GetAvailableMemory());
     }
-  #endif
+#endif
     
-        wdt_reset();
+    wdt_reset();
 }
+
+
+#if (IS_DEBUG_MODE == ON)
+//*****************************************************************************
+// description:
+//   GetAvailableMemory
+//*****************************************************************************
+uint16_t GetAvailableMemory(void) 
+{
+    // Use 1024 with ATmega168
+    uint16_t size = 8192; // SRAM size of target
+    byte *buf;
+    while ((buf = (byte *) malloc(--size)) == NULL);
+        free(buf);
+
+    return size;
+}
+#endif
+
+
