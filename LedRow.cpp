@@ -19,6 +19,17 @@ $Id:  $
 
 
 //-----------------------------------------------------------------------------
+// Info
+// PROGMEM -> store data in flash
+//   to read out the sored data from PROGMEM use one macro of <avr/pgmspace.h>
+//   - e.g. (char*)pgm_read_word(&(PARAM_IN_PROGMEM))
+//   - or use memcpy_P
+//      data_type_t param_SRAM
+//      memcpy_P(&param_SRAM, &PARAM_IN_PROGMEM, sizeof(data_type_t))
+//   more infos: https://www.arduino.cc/reference/en/language/variables/utilities/progmem/
+
+
+//-----------------------------------------------------------------------------
 // const
 #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
 const uint16_t LED_MATRIX_LUT[LedRow::LED_ROW_NOF][LedRow::LED_ROW_LENGTH] PROGMEM = {  // PROGMEM -> store data in flash
@@ -72,7 +83,7 @@ LedRow::~LedRow()
 //*****************************************************************************
 uint16_t LedRow::GetLedIdxOfLut(uint16_t idx)
 {
-    return pgm_read_word_near(&LED_MATRIX_LUT[this->m_row_idx][idx]);
+    return pgm_read_word(&LED_MATRIX_LUT[this->m_row_idx][idx]);
 }
 
 

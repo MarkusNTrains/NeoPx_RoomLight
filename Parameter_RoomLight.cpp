@@ -33,6 +33,17 @@ Defines the Parameter of RoomLight device and their properties.
 
 
 
+//-----------------------------------------------------------------------------
+// Info
+// PROGMEM -> store data in flash
+//   to read out the sored data from PROGMEM use one macro of <avr/pgmspace.h>
+//   - e.g. (char*)pgm_read_word(&(PARAM_IN_PROGMEM))
+//   - or use memcpy_P
+//      data_type_t param_SRAM
+//      memcpy_P(&param_SRAM, &PARAM_IN_PROGMEM, sizeof(data_type_t))
+//   more infos: https://www.arduino.cc/reference/en/language/variables/utilities/progmem/
+
+
 //------------------------------------------------------------------------------
 // const parameter
 const static parameter_t PARAM_TABLE[Parameter::Id::Nof] PROGMEM = {

@@ -80,6 +80,16 @@ cpp_file.write("\n")
 cpp_file.write("//-----------------------------------------------------------------------------\n")
 cpp_file.write("// This variant needs more heap but less flash\n")
 cpp_file.write("// PROGMEM -> store data in flash\n")
+cpp_file.write("//   to read out the sored data from PROGMEM use one macro of <avr/pgmspace.h>\n")
+cpp_file.write("//   - e.g. (char*)pgm_read_word(&(PARAM_IN_PROGMEM))\n")
+cpp_file.write("//   - or use memcpy_P\n")
+cpp_file.write("//      data_type_t param_SRAM\n")
+cpp_file.write("//      memcpy_P(&param_SRAM, &PARAM_IN_PROGMEM, sizeof(data_type_t))\n")
+cpp_file.write("//   more infos: https://www.arduino.cc/reference/en/language/variables/utilities/progmem/\n")
+cpp_file.write("\n")
+cpp_file.write("// F Macro within println (exp.  println(F('Hello World'))) -> store string in flash\n")
+cpp_file.write("\n")
+cpp_file.write("\n")
 
 nof_lines = 0
 max_line_length = 0;

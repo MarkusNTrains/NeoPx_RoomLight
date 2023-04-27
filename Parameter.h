@@ -14,10 +14,10 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original
   source code
 
-  Created 27.04.2023 11:42:28 by MarkusNTrains
+  Created 27.04.2023 13:13:51 by MarkusNTrains
 ================================================================================
 $HeadURL: file:///C:/_my/Arduino/NeoPx_RoomLight/Parameter.h $
-$Id: 27.04.2023 11:42:28 automatic gen. $
+$Id: 27.04.2023 13:13:51 automatic gen. $
 *******************************************************************************/
 
 /*

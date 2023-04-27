@@ -21,9 +21,6 @@ $Id:  $
 *******************************************************************************/
 
 
-
-
-
 //-----------------------------------------------------------------------------
 // includes
 #include "WebServer.h"
@@ -32,12 +29,14 @@ $Id:  $
 
 
 //-----------------------------------------------------------------------------
-// define
-
-
-//-----------------------------------------------------------------------------
-// static module variable
-
+// Info
+// PROGMEM -> store data in flash
+//   to read out the sored data from PROGMEM use one macro of <avr/pgmspace.h>
+//   - e.g. (char*)pgm_read_word(&(PARAM_IN_PROGMEM))
+//   - or use memcpy_P
+//      data_type_t param_SRAM
+//      memcpy_P(&param_SRAM, &PARAM_IN_PROGMEM, sizeof(data_type_t))
+//   more infos: https://www.arduino.cc/reference/en/language/variables/utilities/progmem/
 
 
 //*****************************************************************************
@@ -256,7 +255,7 @@ void WebServer::Tasks()
 void WebServer::HandleRequest(char* http_request)
 {
     char param_c[12];
-    char needle_str[16];
+    char needle_str[WEBSERVER_Request_Needle_MaxLength];
     uint32_t param = 0;
     uint16_t param2 = 0;
     uint16_t param3 = 0;
@@ -265,6 +264,7 @@ void WebServer::HandleRequest(char* http_request)
     char* end_pos = 0;
     uint16_t cnt = 0;
 
+    this->m_action = ACTION_Unknown;
 
 #if (IS_DEBUG_MODE == ON)
 //        Serial.print(F("HTTP Request: "));
@@ -272,11 +272,11 @@ void WebServer::HandleRequest(char* http_request)
 #endif
 
     // find LightScene ---------------------------------------------------------
-    //strcpy_P(needle_str, (char*)pgm_read_word(&(WEBSERVER_Request_Needle_Scene)));
-    if (StrContains(http_request, WEBSERVER_Request_Needle_Scene))
+    memcpy_P(&needle_str, &WEBSERVER_Request_Needle_Scene, sizeof(WEBSERVER_Request_Needle_Scene));
+    if (StrContains(http_request, needle_str))
     {
         this->m_action = ACTION_SetLightSecene;
-        param = this->HttpRequestExtractOneParameter(http_request, WEBSERVER_Request_Needle_Scene, sizeof(WEBSERVER_Request_Needle_Scene));
+        param = this->HttpRequestExtractOneParameter(http_request, needle_str, sizeof(WEBSERVER_Request_Needle_Scene));
         param2 = 0;//this->HttpRequestExtractOneParameter(http_request, WEBSERVER_Request_Needle_brightness, sizeof(WEBSERVER_Request_Needle_brightness));
         this->m_lightSceneHdl_p->ChangeLightScene((LightSceneID)param, param2);
 
@@ -287,10 +287,11 @@ void WebServer::HandleRequest(char* http_request)
     }
     
     // find brightness ---------------------------------------------------------
-    else if (StrContains(http_request, WEBSERVER_Request_Needle_brightness))
+    memcpy_P(&needle_str, &WEBSERVER_Request_Needle_brightness, sizeof(WEBSERVER_Request_Needle_brightness));
+    if (StrContains(http_request, needle_str))
     {
         this->m_action = ACTION_SetBrightness;
-        param = this->HttpRequestExtractOneParameter(http_request, WEBSERVER_Request_Needle_brightness, sizeof(WEBSERVER_Request_Needle_brightness));
+        param = this->HttpRequestExtractOneParameter(http_request, needle_str, sizeof(WEBSERVER_Request_Needle_brightness));
         this->m_lightSceneHdl_p->SetBrightness(param);
         
 #if (IS_DEBUG_MODE == ON)
@@ -300,10 +301,11 @@ void WebServer::HandleRequest(char* http_request)
     }
     
     // find color ---------------------------------------------------------
-    else if (StrContains(http_request, WEBSERVER_Request_Needle_Color))
+    memcpy_P(&needle_str, &WEBSERVER_Request_Needle_Color, sizeof(WEBSERVER_Request_Needle_Color));
+    if (StrContains(http_request, needle_str))
     {
         this->m_action = ACTION_SetColor;
-        param = this->HttpRequestExtractOneParameter(http_request, WEBSERVER_Request_Needle_Color, sizeof(WEBSERVER_Request_Needle_Color));
+        param = this->HttpRequestExtractOneParameter(http_request, needle_str, sizeof(WEBSERVER_Request_Needle_Color));
         this->m_lightSceneHdl_p->SetColor(param);
         
 #if (IS_DEBUG_MODE == ON)
@@ -313,11 +315,12 @@ void WebServer::HandleRequest(char* http_request)
     }
     
     // find set led area data -------------------------------------------------
-    else if (StrContains(http_request, WEBSERVER_Request_Needle_SetLedArea))
+    memcpy_P(&needle_str, &WEBSERVER_Request_Needle_SetLedArea, sizeof(WEBSERVER_Request_Needle_SetLedArea));
+    if (StrContains(http_request, needle_str))
     {
         this->m_action = ACTION_SetLedArea;
         
-        start_pos = strstr(http_request, WEBSERVER_Request_Needle_SetLedArea);
+        start_pos = strstr(http_request, needle_str);
         if (start_pos == 0) return;  // no String found
 
         end_pos = strstr(start_pos, "-");
@@ -377,19 +380,11 @@ void WebServer::HandleRequest(char* http_request)
     }
 
     // find info ----------------------------------------------------------
-    else if (StrContains(http_request, WEBSERVER_Request_Needle_GetInfo))
+    memcpy_P(&needle_str, &WEBSERVER_Request_Needle_GetInfo, sizeof(WEBSERVER_Request_Needle_GetInfo));
+    if (StrContains(http_request, needle_str))
     {
         this->m_action = ACTION_GetInfo;
     }
-    
-    else
-    {
-        this->m_action = ACTION_Unknown;
-
-#if (IS_DEBUG_MODE == ON)
-        //Serial.println(F("ACTION_Unknown"));
-#endif
-    }  
 }
 
 
@@ -1292,7 +1287,7 @@ void WebServer::SendFavicon(EthernetClient* client)
     //--- send favicon --------------------------------------------------
     for (uint16_t idx = 0; idx < sizeof(favicon); idx++)
     {
-        byte p = pgm_read_byte_near(favicon + idx);
+        byte p = pgm_read_byte(favicon + idx);
         message.write(p);
     }
     message.flush();

@@ -27,6 +27,17 @@ $Id:  $
 
 
 
+//-----------------------------------------------------------------------------
+// Info
+// PROGMEM -> store data in flash
+//   to read out the sored data from PROGMEM use one macro of <avr/pgmspace.h>
+//   - e.g. (char*)pgm_read_word(&(PARAM_IN_PROGMEM))
+//   - or use memcpy_P
+//      data_type_t param_SRAM
+//      memcpy_P(&param_SRAM, &PARAM_IN_PROGMEM, sizeof(data_type_t))
+//   more infos: https://www.arduino.cc/reference/en/language/variables/utilities/progmem/
+
+
 //----------------------------------------------------------------------------
 // define
 #define USE_SD_CARD
@@ -35,12 +46,13 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // const
-const char WEBSERVER_Request_Needle_Scene[] = "LightScene";
-const char WEBSERVER_Request_Needle_brightness[] = "SetBrightness";
-const char WEBSERVER_Request_Needle_Color[] = "SetColor";
-const char WEBSERVER_Request_Needle_SetLedArea[] = "SetArea";
-const char WEBSERVER_Request_Needle_GetCurrentData[] = "GetCurrentData";
-const char WEBSERVER_Request_Needle_GetInfo[] = "GetInfo";
+const static char WEBSERVER_Request_Needle_Scene[] PROGMEM = "LightScene";
+const static char WEBSERVER_Request_Needle_brightness[] PROGMEM = "SetBrightness";
+const static char WEBSERVER_Request_Needle_Color[] PROGMEM = "SetColor";
+const static char WEBSERVER_Request_Needle_SetLedArea[] PROGMEM = "SetArea";
+const static char WEBSERVER_Request_Needle_GetCurrentData[] PROGMEM = "GetCurrentData";
+const static char WEBSERVER_Request_Needle_GetInfo[] PROGMEM = "GetInfo";
+const static uint8_t WEBSERVER_Request_Needle_MaxLength = 16;  // musst longer than the longest needle + 1
 
 
 //----------------------------------------------------------------------------

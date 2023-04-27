@@ -14,7 +14,7 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original
   source code
 
-  Created 26. April 2023 by MarkusNTrains
+  Created 27. April 2023 by MarkusNTrains
 ================================================================================
 $HeadURL:  $
 $Id:  $
@@ -29,6 +29,13 @@ $Id:  $
 //-----------------------------------------------------------------------------
 // This variant needs more flash but less heap
 // PROGMEM -> store data in flash
+//   to read out the sored data from PROGMEM use one macro of <avr/pgmspace.h>
+//   - e.g. (char*)pgm_read_word(&(PARAM_IN_PROGMEM))
+//   - or use memcpy_P
+//      data_type_t param_SRAM
+//      memcpy_P(&param_SRAM, &PARAM_IN_PROGMEM, sizeof(data_type_t))
+//   more infos: https://www.arduino.cc/reference/en/language/variables/utilities/progmem/
+
 // F Macro within println (exp.  println(F('Hello World'))) -> store string in flash
 
 
@@ -884,7 +891,7 @@ void Website_SendToClient(EthernetClient* client)
     client->println(F("<br>"));
     client->println(F("<hr>"));
     client->println(F("<div id=\"footer_version\" style=\"float:left\"></div>"));
-    client->println(F("&nbsp;&nbsp;|&nbsp;&nbsp;26. April 2023 &nbsp; &copy; MarkusNTrains"));
+    client->println(F("&nbsp;&nbsp;|&nbsp;&nbsp;27. April 2023 &nbsp; &copy; MarkusNTrains"));
     client->println(F("<a href='mailto:markusntrains@gmx.ch'>E-Mail</a>"));
     client->println(F("</div>"));
     client->println(F("</footer>"));
