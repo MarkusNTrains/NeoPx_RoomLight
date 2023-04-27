@@ -68,7 +68,7 @@ LightSceneHdl::LightSceneHdl()
     this->m_task_timestamp_ms = 0;
 
     // get last lightscene from datastore
-    this->ChangeLightScene((LightSceneID)(this->m_datastore_p->GetParameter(Datastore::ParameterId::LightSceneID)));
+    this->ChangeLightScene((LightSceneID)(this->m_datastore_p->GetParameter(Parameter::Id::LightSceneID)));
     //this->ChangeLightScene(LightSceneID::OfficeTable);
 }
 
@@ -191,7 +191,7 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene, uint8_t brightness)
     // save light scene if needed
     if (save_light_scene == true)
     {
-        this->m_datastore_p->SetParameter(Datastore::ParameterId::LightSceneID, (uint8_t)scene);
+        this->m_datastore_p->SetParameter(Parameter::Id::LightSceneID, (uint8_t)scene);
     }
 }
 

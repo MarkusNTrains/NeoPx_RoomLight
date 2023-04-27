@@ -34,7 +34,7 @@ class LightSceneHdl;
 class LightScene
 {
     public:
-        LightScene(LightHdl* light_hdl, Datastore* datastore_p, uint32_t task_tmo_m, Datastore::ParameterId brightness_param_id, Datastore::ParameterId color_param_id);
+        LightScene(LightHdl* light_hdl, Datastore* datastore_p, uint32_t task_tmo_m, Parameter::Id brightness_param_id, Parameter::Id color_param_id);
         ~LightScene();
 
         virtual void Enter() = 0;
@@ -48,8 +48,8 @@ class LightScene
     protected:
         Datastore* m_datastore_p = nullptr;
         LightHdl* m_light_hdl_p;
-        Datastore::ParameterId m_brightness_param_id;
-        Datastore::ParameterId m_color_param_id;
+        Parameter::Id m_brightness_param_id;
+        Parameter::Id m_color_param_id;
 
     private:
         uint32_t m_task_tmo_ms;

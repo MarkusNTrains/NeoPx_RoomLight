@@ -29,62 +29,23 @@ $Id:  $
 class Datastore
 {
 	public:
-        enum ParameterId
-        {
-            LightSceneID = 0,
-            Brightness,
-            Color,
-            SceneDisco_Brightness,
-            SceneMoBa_Brightness,
-            SceneMoBa_Color,
-            SceneLightOn_Brightness,
-            SceneLightOn_Color,
-            SceneOfficeTable_Brightness,
-            SceneOfficeTable_Color,
-            SceneRainbow_Brightness,
-            SceneUserSetting_Brightness,
-            SceneUserSetting_Color,
-            SceneUserSetting_Xs,
-            SceneUserSetting_Xe,
-            SceneUserSetting_Ys,
-            SceneUserSetting_Ye,
-            Nof
-        };
-
         Datastore();
         ~Datastore();
 		
         void Task();
         void FactoryReset();
-        uint32_t GetParameter(ParameterId id);
-        void SetParameter(ParameterId id, uint8_t value);
-        void SetParameter(ParameterId id, uint16_t value);
-        void SetParameter(ParameterId id, uint32_t value);
+        uint32_t GetParameter(Parameter::Id id);
+        void SetParameter(Parameter::Id id, uint8_t value);
+        void SetParameter(Parameter::Id id, uint16_t value);
+        void SetParameter(Parameter::Id id, uint32_t value);
 
     private:
         //--- EEPROM ---
         const static uint32_t EEPROM_WriteLockAfterParameterChangeTmoMs = 5000;
         const static uint32_t EEPROM_WriteLockAfterEepromWriteTmoMs = 60000;
 
-        const static uint16_t EEPROM_ValidPatternAddr_MSB = 0;
-        const static uint16_t EEPROM_ValidPatternAddr_LSB = 1;
-        const static uint16_t EEPROM_ParameterStartAddr = 2;
-
-        const static uint16_t EEPROM_PageValidPattern = 0x55AA;
-
-        //--- Parameter ---
-        const static uint8_t BRIGHTNESS_Default = 100;
-        const static uint8_t BRIGHTNESS_Min = 0;
-        const static uint8_t BRIGHTNESS_Max = 255;
-        const static uint8_t BRIGHTNESS_Width = 1;
-
-        const static uint32_t COLOR_Default = 0xFF000000;
-        const static uint32_t COLOR_Min = 0;
-        const static uint32_t COLOR_Max = 0xFFFFFFFF;
-        const static uint8_t COLOR_Width = 4;
-
         //--- Memeber Variable ---
-        Parameter* m_parameter_list[ParameterId::Nof];
+        Parameter* m_parameter_p;
         uint32_t m_last_parameter_changed_timestamp_ms;
         uint32_t m_eeprom_last_update_timestamp_ms;
         uint16_t m_eeprom_pageSize;
@@ -95,8 +56,9 @@ class Datastore
         //--- Member Function ---
         void EEPROM_WriteToNextPage();
         void EEPROM_WritePage();
-        uint32_t EEPROM_ReadParameter(ParameterId id, uint16_t page_start_addr);
-        void EEPROM_WriteParameter(ParameterId id, uint16_t page_start_addr);
+        uint32_t EEPROM_ReadParameter(Parameter::Id id, uint16_t page_start_addr);
+        void EEPROM_WriteParameter(Parameter::Id id, uint16_t page_start_addr);
+        void EEPROM_WriteParameter(Parameter::Id id, uint16_t page_start_addr, uint32_t value);
 };
 
 #endif  // _DATASTORE_H

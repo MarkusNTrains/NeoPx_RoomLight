@@ -47,13 +47,13 @@ LightHdl::LightHdl(Datastore* datastore_p)
     this->m_led_area = new LedArea();
 
     // restore last values
-    uint8_t brightness = this->m_datastore_p->GetParameter(Datastore::ParameterId::Brightness);
+    uint8_t brightness = this->m_datastore_p->GetParameter(Parameter::Id::Brightness);
     if (brightness == 0)
     {
         brightness = 1;
     }
     this->SetBrightness_Instantly(brightness);
-    this->SetColor(this->m_datastore_p->GetParameter(Datastore::ParameterId::Color));
+    this->SetColor(this->m_datastore_p->GetParameter(Parameter::Id::Color));
 }
 
 
@@ -161,7 +161,7 @@ void LightHdl::SetBrightness_Fade(uint8_t brightness, bool save_parameter)
     this->m_desired_brightness = brightness;
     if (save_parameter == true)
     {
-        this->m_datastore_p->SetParameter(Datastore::ParameterId::Brightness, this->m_desired_brightness);
+        this->m_datastore_p->SetParameter(Parameter::Id::Brightness, this->m_desired_brightness);
     }
 }
 
@@ -243,7 +243,7 @@ void LightHdl::SetColor(uint32_t color, bool save_parameter)
     this->m_led_matrix->SetColor(color);
     if (save_parameter == true)
     {
-        this->m_datastore_p->SetParameter(Datastore::ParameterId::Color, this->m_color);
+        this->m_datastore_p->SetParameter(Parameter::Id::Color, this->m_color);
     }
 }
 

@@ -29,7 +29,7 @@ $Id:  $
 //   constructor
 //*****************************************************************************
 LightScene_OfficeTable::LightScene_OfficeTable(LightHdl* light_hdl, Datastore* datastore_p) : 
-    LightScene(light_hdl, datastore_p, TASK_TmoMs, Datastore::ParameterId::SceneOfficeTable_Brightness, Datastore::ParameterId::SceneOfficeTable_Color)
+    LightScene(light_hdl, datastore_p, TASK_TmoMs, Parameter::Id::SceneOfficeTable_Brightness, Parameter::Id::SceneOfficeTable_Color)
 {
 }
 

@@ -42,55 +42,11 @@ Datastore::Datastore()
     this->m_eeprom_nofPages = 0;
     this->m_eeprom_active_page = 0;
     this->m_is_eeprom_update_needed = false;
-    for (uint8_t idx = 0; idx < ParameterId::Nof; idx++)
-    {
-        this->m_parameter_list[idx] = nullptr;
-    }
-
-    //--- set parameter definition ----------------------------------------
-    uint32_t light_scene = (uint32_t)LightSceneID::UserSetting;
-#if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
-    light_scene = (uint32_t)LightSceneID::OfficeTable;
-#endif
-    this->m_parameter_list[ParameterId::Brightness] = new Parameter(BRIGHTNESS_Default, BRIGHTNESS_Min, BRIGHTNESS_Max, BRIGHTNESS_Width);
-    this->m_parameter_list[ParameterId::Color] = new Parameter(COLOR_Default, COLOR_Min, COLOR_Max, COLOR_Width);
-    this->m_parameter_list[ParameterId::LightSceneID] = new Parameter(light_scene, 0, (uint32_t)LightSceneID::Nof, 1);
-    this->m_parameter_list[ParameterId::SceneDisco_Brightness] = new Parameter(BRIGHTNESS_Default, BRIGHTNESS_Min, BRIGHTNESS_Max, BRIGHTNESS_Width);
-    this->m_parameter_list[ParameterId::SceneMoBa_Brightness] = new Parameter(BRIGHTNESS_Default, BRIGHTNESS_Min, BRIGHTNESS_Max, BRIGHTNESS_Width);
-    this->m_parameter_list[ParameterId::SceneMoBa_Color] = new Parameter(COLOR_Default, COLOR_Min, COLOR_Max, COLOR_Width);
-    this->m_parameter_list[ParameterId::SceneLightOn_Brightness] = new Parameter(BRIGHTNESS_Default, BRIGHTNESS_Min, BRIGHTNESS_Max, BRIGHTNESS_Width);
-    this->m_parameter_list[ParameterId::SceneLightOn_Color] = new Parameter(COLOR_Default, COLOR_Min, COLOR_Max, COLOR_Width);
-    this->m_parameter_list[ParameterId::SceneOfficeTable_Brightness] = new Parameter(BRIGHTNESS_Default, BRIGHTNESS_Min, BRIGHTNESS_Max, BRIGHTNESS_Width);
-    this->m_parameter_list[ParameterId::SceneOfficeTable_Color] = new Parameter(COLOR_Default, COLOR_Min, COLOR_Max, COLOR_Width);
-    this->m_parameter_list[ParameterId::SceneRainbow_Brightness] = new Parameter(BRIGHTNESS_Default, BRIGHTNESS_Min, BRIGHTNESS_Max, BRIGHTNESS_Width);
-    this->m_parameter_list[ParameterId::SceneUserSetting_Brightness] = new Parameter(BRIGHTNESS_Default, BRIGHTNESS_Min, BRIGHTNESS_Max, BRIGHTNESS_Width);
-    this->m_parameter_list[ParameterId::SceneUserSetting_Color] = new Parameter(COLOR_Default, COLOR_Min, COLOR_Max, COLOR_Width);
-    this->m_parameter_list[ParameterId::SceneUserSetting_Xs] = new Parameter(0, 0, (ROOM_LIGHT_RowNofPx - 1), 2);
-    this->m_parameter_list[ParameterId::SceneUserSetting_Xe] = new Parameter((ROOM_LIGHT_RowNofPx - 1), 0, (ROOM_LIGHT_RowNofPx - 1), 2);
-    this->m_parameter_list[ParameterId::SceneUserSetting_Ys] = new Parameter(0, 0, (ROOM_LIGHT_NofRows - 1), 1);
-    this->m_parameter_list[ParameterId::SceneUserSetting_Ye] = new Parameter((ROOM_LIGHT_NofRows - 1), 0, (ROOM_LIGHT_NofRows - 1), 1);
-
-
-    //--- init parameter address and EEPROM page size ---------------------
-    uint16_t addr = EEPROM_ParameterStartAddr;
-    for (uint8_t idx = 0; idx < ParameterId::Nof; idx++)
-    {
-        if (this->m_parameter_list[idx] == nullptr)
-        {
-  #if (IS_DEBUG_MODE == ON)
-            Serial.println(F("\nError: Not all Parameter are initialized of m_parameter_list\nGo to Datastore.cpp Datastore::Datastore constructor"));
-  #endif
-            while(1);
-        }
-
-        this->m_parameter_list[idx]->SetAddr(addr);
-        addr += this->m_parameter_list[idx]->GetWidth();
-        this->m_eeprom_pageSize += this->m_parameter_list[idx]->GetWidth();
-    }
+    this->m_parameter_p = new Parameter();
 
 
     //--- calculate page size and nof pages -------------------------------
-    this->m_eeprom_pageSize = addr;
+    this->m_eeprom_pageSize = Parameter::BUFFER_Size;
     this->m_eeprom_nofPages = EEPROM.length() / this->m_eeprom_pageSize;
 
 
@@ -102,9 +58,8 @@ Datastore::Datastore()
     for (uint16_t page = 0; page < this->m_eeprom_nofPages; page++)
     {
         page_start_addr = page * this->m_eeprom_pageSize;
-        valid_pattern = ((uint16_t)EEPROM.read(page_start_addr + EEPROM_ValidPatternAddr_MSB)) << 8;
-        valid_pattern |= (uint16_t)EEPROM.read(page_start_addr + EEPROM_ValidPatternAddr_LSB);
-        if (valid_pattern == EEPROM_PageValidPattern)
+        valid_pattern = (uint16_t)EEPROM_ReadParameter(Parameter::Id::ParameterSet_Validity, page_start_addr);
+        if (valid_pattern == Parameter::PARAMETERSET_Valid)
         {
             // valid page found
             this->m_eeprom_active_page = page;
@@ -115,15 +70,16 @@ Datastore::Datastore()
 #endif
 
             // so read data from EEPROM
-            for (uint8_t id = 0; id < ParameterId::Nof; id++)
+            for (uint8_t id = 0; id < Parameter::Id::Nof; id++)
             {
-                this->m_parameter_list[id]->SetValue(this->EEPROM_ReadParameter(id, page_start_addr));
+                this->m_parameter_p->SetValue(id, this->EEPROM_ReadParameter(id, page_start_addr));
             }
 
             break;  // skip for loop
         }
     }
     
+    //--- check if factory reset is needed
     if (valid_page_found == false)
     {
         this->FactoryReset();
@@ -162,9 +118,9 @@ void Datastore::Task()
                 uint16_t page_start_addr = this->m_eeprom_active_page * this->m_eeprom_pageSize;
                 bool is_eeprom_write_needed = false;
 
-                for (uint8_t id = 0; id < ParameterId::Nof; id++)
+                for (uint8_t id = 0; id < Parameter::Id::Nof; id++)
                 {
-                    if (this->m_parameter_list[id]->GetValue() != this->EEPROM_ReadParameter(id, page_start_addr))
+                    if (this->m_parameter_p->GetValue(id) != this->EEPROM_ReadParameter(id, page_start_addr))
                     {
     #if (IS_DEBUG_MODE == ON)
                         Serial.print(F("Parameter changed: "));
@@ -205,18 +161,15 @@ void Datastore::FactoryReset()
     Serial.println(F("factory Reset"));
 #endif
 
-    // reset all parameter
-    for (uint8_t id = 0; id < ParameterId::Nof; id++)
-    {
-        this->m_parameter_list[id]->Reset();
-    }
-
     // clear EEPROM
-    /*for (uint16_t addr = 0; addr < EEPROM.length(); addr++)
+    for (uint16_t addr = 0; addr < EEPROM.length(); addr++)
     {
         EEPROM.write(addr, 0xFF);
-    }*/
+    }
 
+    // reset all parameter
+    this->m_parameter_p->ResetAll();
+    this->m_parameter_p->SetValue(Parameter::Id::ParameterSet_Validity, Parameter::PARAMETERSET_Valid);
     this->m_eeprom_active_page = 0;
     EEPROM_WritePage();
 }
@@ -226,9 +179,9 @@ void Datastore::FactoryReset()
 // description:
 //   Get Parameter
 //*****************************************************************************
-uint32_t Datastore::GetParameter(ParameterId id)
+uint32_t Datastore::GetParameter(Parameter::Id id)
 {
-    return this->m_parameter_list[id]->GetValue();
+    return this->m_parameter_p->GetValue(id);
 }
 
 
@@ -236,7 +189,7 @@ uint32_t Datastore::GetParameter(ParameterId id)
 // description:
 //   Set Parameter
 //*****************************************************************************
-void Datastore::SetParameter(ParameterId id, uint8_t value)
+void Datastore::SetParameter(Parameter::Id id, uint8_t value)
 {
     this->SetParameter(id, (uint32_t)value);
 }
@@ -246,7 +199,7 @@ void Datastore::SetParameter(ParameterId id, uint8_t value)
 // description:
 //   Set Parameter
 //*****************************************************************************
-void Datastore::SetParameter(ParameterId id, uint16_t value)
+void Datastore::SetParameter(Parameter::Id id, uint16_t value)
 {
     this->SetParameter(id, (uint32_t)value);
 }
@@ -256,16 +209,9 @@ void Datastore::SetParameter(ParameterId id, uint16_t value)
 // description:
 //   Set Parameter
 //*****************************************************************************
-void Datastore::SetParameter(ParameterId id, uint32_t value)
+void Datastore::SetParameter(Parameter::Id id, uint32_t value)
 {
-    if (value < this->m_parameter_list[id]->GetMin()) {
-        value = this->m_parameter_list[id]->GetMin();
-    }
-    if (value > this->m_parameter_list[id]->GetMax()) {
-        value = this->m_parameter_list[id]->GetMax();
-    }
-
-    if (this->m_parameter_list[id]->SetValue(value) == true)
+    if (this->m_parameter_p->SetValue(id, value) == true)
     {
         this->m_is_eeprom_update_needed = true;
         this->m_last_parameter_changed_timestamp_ms = millis();
@@ -291,9 +237,7 @@ void Datastore::EEPROM_WriteToNextPage()
     this->EEPROM_WritePage();
 
     // clear valid pattern of last page
-    EEPROM.write(last_page_start_addr + EEPROM_ValidPatternAddr_MSB, 0xFF);
-    EEPROM.write(last_page_start_addr + EEPROM_ValidPatternAddr_LSB, 0xFF);
-
+    EEPROM_WriteParameter(Parameter::Id::ParameterSet_Validity, last_page_start_addr, Parameter::PARAMETERSET_Invalid);
 }
 
 
@@ -306,14 +250,16 @@ void Datastore::EEPROM_WritePage()
     uint16_t page_start_addr = this->m_eeprom_active_page * this->m_eeprom_pageSize;
 
     // write all parameter
-    for (uint8_t id = 0; id < ParameterId::Nof; id++)
+    for (uint8_t id = 0; id < Parameter::Id::Nof; id++)
     {
-        EEPROM_WriteParameter(id, page_start_addr);
+        if (id != Parameter::Id::ParameterSet_Validity)
+        {
+            EEPROM_WriteParameter(id, page_start_addr);
+        }
     }
 
     // set valid pattern
-    EEPROM.write(page_start_addr + EEPROM_ValidPatternAddr_MSB, (uint8_t)(EEPROM_PageValidPattern >> 8));
-    EEPROM.write(page_start_addr + EEPROM_ValidPatternAddr_LSB, (uint8_t)EEPROM_PageValidPattern);
+    EEPROM_WriteParameter(Parameter::Id::ParameterSet_Validity, page_start_addr);
 }
 
 
@@ -321,12 +267,12 @@ void Datastore::EEPROM_WritePage()
 // description:
 //   Read Parameter from EEPROM
 //*****************************************************************************
-uint32_t Datastore::EEPROM_ReadParameter(ParameterId id, uint16_t page_start_addr)
+uint32_t Datastore::EEPROM_ReadParameter(Parameter::Id id, uint16_t page_start_addr)
 {
     uint32_t value = 0;
-    uint16_t addr = page_start_addr + this->m_parameter_list[id]->GetAddr();
+    uint16_t addr = page_start_addr + Parameter::GetAddr(id);
     
-    switch (this->m_parameter_list[id]->GetWidth())
+    switch (Parameter::GetWidth(id))
     {
         case 4:
             value |= (((uint32_t)EEPROM.read(addr++)) << 24);
@@ -350,12 +296,11 @@ uint32_t Datastore::EEPROM_ReadParameter(ParameterId id, uint16_t page_start_add
 // description:
 //   Write Parameter to EEPROM
 //*****************************************************************************
-void Datastore::EEPROM_WriteParameter(ParameterId id, uint16_t page_start_addr)
+void Datastore::EEPROM_WriteParameter(Parameter::Id id, uint16_t page_start_addr, uint32_t value)
 {
-    uint32_t value = this->m_parameter_list[id]->GetValue();
-    uint16_t addr = page_start_addr + this->m_parameter_list[id]->GetAddr();
+    uint16_t addr = page_start_addr + Parameter::GetAddr(id);
 
-    switch (this->m_parameter_list[id]->GetWidth())
+    switch (Parameter::GetWidth(id))
     {
         case 4:
             EEPROM.update(addr++, (uint8_t)(value >> 24));
@@ -370,6 +315,17 @@ void Datastore::EEPROM_WriteParameter(ParameterId id, uint16_t page_start_addr)
         default:
             break;
     }
+}
+
+
+//*****************************************************************************
+// description:
+//   Write Parameter to EEPROM
+//*****************************************************************************
+void Datastore::EEPROM_WriteParameter(Parameter::Id id, uint16_t page_start_addr)
+{
+    uint32_t value = this->m_parameter_p->GetValue(id);
+    this->EEPROM_WriteParameter(id, page_start_addr, value);
 }
 
 

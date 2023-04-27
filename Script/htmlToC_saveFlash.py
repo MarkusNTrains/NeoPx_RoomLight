@@ -1,9 +1,17 @@
 import json
+from datetime import date
 
 html_file_path = "../SD-Card/index.html"
 
 # generate h file
 h_file = open("../Website.h", "w+")
+h_file.write("/*##############################################################################\n")
+h_file.write("\n")
+h_file.write("  THIS IS GENERATED CODE (use " + __file__ + ".ods)\n")
+h_file.write("    ==> DO NOT EDIT MANUALLY !!!\n")
+h_file.write("\n")
+h_file.write("##############################################################################*/\n")
+h_file.write("\n")
 h_file.write("\n")
 h_file.write("/*******************************************************************************\n")
 h_file.write("Project   RoomLight\n")
@@ -13,7 +21,7 @@ h_file.write("  You can use, share or improve this project. If you improve this 
 h_file.write("  please share with the comunity or at least with the author of the original\n")
 h_file.write("  source code\n")
 h_file.write("\n")
-h_file.write("  Created 03. April 2023 by MarkusNTrains\n")
+h_file.write("  Created " + date.today().strftime("%d. %B %Y") + " by MarkusNTrains\n")
 h_file.write("================================================================================\n")
 h_file.write("$HeadURL:  $\n")
 h_file.write("$Id:  $\n")
@@ -41,6 +49,14 @@ h_file.write("#endif  // _WEBSITE_H\n")
 # generate cpp file
 cpp_file = open("../Website.cpp", "w+")
 
+cpp_file.write("/*##############################################################################\n")
+cpp_file.write("\n")
+cpp_file.write("  THIS IS GENERATED CODE (use " + __file__ + ".ods)\n")
+cpp_file.write("    ==> DO NOT EDIT MANUALLY !!!\n")
+cpp_file.write("\n")
+cpp_file.write("##############################################################################*/\n")
+cpp_file.write("\n")
+cpp_file.write("\n")
 cpp_file.write("/*******************************************************************************\n")
 cpp_file.write("Project   RoomLight\n")
 cpp_file.write("\n")
@@ -49,7 +65,7 @@ cpp_file.write("  You can use, share or improve this project. If you improve thi
 cpp_file.write("  please share with the comunity or at least with the author of the original\n")
 cpp_file.write("  source code\n")
 cpp_file.write("\n")
-cpp_file.write("  Created 29. October 2021 by MarkusNTrains\n")
+cpp_file.write("  Created " + date.today().strftime("%d. %B %Y") + " by MarkusNTrains\n")
 cpp_file.write("================================================================================\n")
 cpp_file.write("$HeadURL:  $\n")
 cpp_file.write("$Id:  $\n")

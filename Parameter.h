@@ -1,17 +1,30 @@
+/*##############################################################################
+
+  THIS IS GENERATED CODE (use RoomLight_Parameter.ods)
+    ==> DO NOT EDIT MANUALLY !!!
+
+##############################################################################*/
+
+
 /*******************************************************************************
 Project   RoomLight
 
   This is an OpenSource Project.
   You can use, share or improve this project. If you improve this source code
-  please share with the comunity or at least with the author of the original 
+  please share with the comunity or at least with the author of the original
   source code
-  
-  Created 20. April 2023 by MarkusNTrains
+
+  Created 27.04.2023 11:42:28 by MarkusNTrains
 ================================================================================
-$HeadURL:  $
-$Id:  $
+$HeadURL: file:///C:/_my/Arduino/NeoPx_RoomLight/Parameter.h $
+$Id: 27.04.2023 11:42:28 automatic gen. $
 *******************************************************************************/
 
+/*
+Defines the Parameter of RoomLight device and their properties.
+ Usage of this file allows to have configuration parameter specific information
+ only within this file. See RoomLight_Parameter.ods for more Information.
+*/
 
 #ifndef _PARAMETER_H
 #define _PARAMETER_H
@@ -26,39 +39,77 @@ $Id:  $
 // class
 class Parameter
 {
-	public:
-        Parameter(uint32_t default_value, uint32_t min, uint32_t max, uint8_t width);
-        ~Parameter();
-		
+    public:
+        enum Id
+        {
+            ParameterSet_Validity = 0,
+            LightSceneID,
+            Brightness ,
+            Color,
+            SceneDisco_Brightness ,
+            SceneMoBa_Brightness ,
+            SceneMoBa_Color ,
+            SceneLightOn_Brightness ,
+            SceneLightOn_Color ,
+            SceneOfficeTable_Brightness ,
+            SceneOfficeTable_Color ,
+            SceneRainbow_Brightness ,
+            SceneUserSetting_Brightness ,
+            SceneUserSetting_Color ,
+            SceneUserSetting_Xs ,
+            SceneUserSetting_Xe ,
+            SceneUserSetting_Ys ,
+            SceneUserSetting_Ye ,
+            Nof
+        };
 
-        uint32_t GetValue() {
-            return this->m_value;
-        }
-        bool SetValue(uint32_t value);
-        uint32_t GetMin() {
-            return this->m_min;
-        }
-        uint32_t GetMax() {
-            return this->m_max;
-        }
-        uint8_t GetWidth() {
-            return this->m_width;
-        }
-        uint16_t GetAddr() {
-            return this->m_addr;
-        }
-        void SetAddr(uint16_t addr) {
-            this->m_addr = addr;
-        }
-        void Reset();
+        //--- Parameter ---
+        const static uint16_t PARAMETERSET_Valid = 0x55AA;
+        const static uint16_t PARAMETERSET_Invalid = 0xFFFF;
+
+        const static uint8_t BRIGHTNESS_Default = 100;
+        const static uint8_t BRIGHTNESS_Min = 0;
+        const static uint8_t BRIGHTNESS_Max = 255;
+
+        const static uint32_t COLOR_Default = 0xFF000000;
+        const static uint32_t COLOR_Min = 0;
+        const static uint32_t COLOR_Max = 0xFFFFFFFF;
+
+        const static uint16_t BUFFER_Size = 36;
+
+        Parameter();
+        ~Parameter();
+
+        void Reset(Id id);
+        void ResetAll();
+        uint32_t GetValue(Id id);
+        bool SetValue(Id id, uint32_t value);
+
+        static uint16_t GetAddr(Id id);
+        static uint8_t GetWidth(Id id);
 
     private:
-        uint32_t m_value;
-        uint32_t m_default_value;
-        uint32_t m_min;
-        uint32_t m_max;
-        uint8_t m_width;
-        uint16_t m_addr;
+        uint8_t m_buffer[BUFFER_Size];
 };
 
+
+//----------------------------------------------------------------------------
+// typedef struct
+typedef struct
+{
+    uint32_t default_value;
+    uint32_t min;
+    uint32_t max;
+    uint16_t addr;
+    uint8_t width;
+} parameter_t;
+
+
+
+//----------------------------------------------------------------------------
+// extern
+extern const parameter_t PARAM_TABLE[Parameter::Id::Nof];
+
+
 #endif  // _PARAMETER_H
+
