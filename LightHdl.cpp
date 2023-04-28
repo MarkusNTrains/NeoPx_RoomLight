@@ -77,8 +77,8 @@ uint32_t LightHdl::GetLedColor(uint16_t row, uint16_t column)
 //*****************************************************************************
 void LightHdl::SetLedColor(uint16_t row, uint16_t column, uint32_t color)
 {
-    this->m_led_matrix->SetPixel(row, column, color);
-    //this->m_led_matrix->SetPixelArray(column, column, row, row, color);
+    //this->m_led_matrix->SetPixel(row, column, color);
+    this->m_led_matrix->SetPixelArray(column, column, row, row, color);
 }
 
 

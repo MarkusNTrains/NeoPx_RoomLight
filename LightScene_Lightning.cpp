@@ -207,15 +207,14 @@ bool LightScene_Lightning::Task()
                 is_fading_finished &= this->FadeColor(target_color.blue, &this->m_background_color.blue);
                 is_fading_finished &= this->FadeColor(target_color.white, &this->m_background_color.white);
 
+                this->m_light_hdl_p->SetColor(this->m_background_color.color);
+                is_update_needed = true;
+
                 if (is_fading_finished == true)
                 {
                     this->Exit();
                 }
-                else
-                {
-                    this->m_light_hdl_p->SetColor(this->m_background_color.color);
-                    is_update_needed = true;
-                }
+                    
                 break;
             }
             default:
