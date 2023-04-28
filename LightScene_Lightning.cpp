@@ -237,12 +237,15 @@ bool LightScene_Lightning::Task()
 //*****************************************************************************
 static bool LightScene_Lightning::FadeColor(uint8_t target_color, uint8_t* current_color)
 {
-    uint16_t change_value = 0;
     bool is_target_reached = false;
+    uint8_t change_value = (*current_color / FADING_Factor);
+
+    if (change_value == 0) {
+        change_value = 1;
+    }
 
     if (target_color < *current_color)
     {
-        uint8_t change_value = (*current_color / FADING_Factor) + 1;
         if (change_value < *current_color) 
         {
             *current_color -= change_value;
@@ -260,7 +263,6 @@ static bool LightScene_Lightning::FadeColor(uint8_t target_color, uint8_t* curre
     }
     else if (target_color > *current_color)
     {
-        uint8_t change_value = (*current_color / FADING_Factor) + 1;
         if (target_color > ((uint16_t)*current_color + change_value)) 
         {
             *current_color += change_value;
