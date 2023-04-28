@@ -64,7 +64,13 @@ void setup()
     s_lightSceneHdl_p = new LightSceneHdl();
     s_webServer_p = new WebServer(s_lightSceneHdl_p);
 
-    wdt_enable(WDTO_8S);
+    wdt_enable(WDTO_4S);
+
+#if (IS_DEBUG_MODE == ON)
+    s_main_printFreeMemoryTimestampMs = millis();
+    Serial.print(F("Free Memory: "));
+    Serial.println(GetAvailableMemory());
+#endif
 }
 
 

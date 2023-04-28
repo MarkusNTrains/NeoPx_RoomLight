@@ -136,7 +136,7 @@ bool LightScene_Sun::Sunrise_Task()
                     uint8_t blue = (uint8_t)this->m_day_color;
                     uint8_t white = (uint8_t)(this->m_day_color >> 24);
 
-                    tmp = (white / 10) + 1;
+                    tmp = (white / FADING_Factor) + 1;
                     if ((white + tmp) < this->m_day_brightness_white) 
                     {
                         white += tmp;
@@ -148,7 +148,7 @@ bool LightScene_Sun::Sunrise_Task()
 
                     if (white > ((this->m_day_brightness_white * 2) / 5))
                     {
-                        tmp = (red / 10) + 1;
+                        tmp = (red / FADING_Factor) + 1;
                         if (tmp < red) {
                             red -= tmp;
                         }
@@ -156,7 +156,7 @@ bool LightScene_Sun::Sunrise_Task()
                             red = 0;
                         }
 
-                        tmp = (green / 10) + 1;
+                        tmp = (green / FADING_Factor) + 1;
                         if (tmp < green) {
                             green -= tmp;
                         }
@@ -164,7 +164,7 @@ bool LightScene_Sun::Sunrise_Task()
                             green = 0;
                         }
 
-                        tmp = (blue / 10) + 1;
+                        tmp = (blue / FADING_Factor) + 1;
                         if (tmp < blue) {
                             blue -= tmp;
                         }
@@ -253,7 +253,7 @@ bool LightScene_Sun::Sunset_Task()
                     uint8_t white = (uint8_t)(this->m_day_color >> 24);
                     bool is_rgb_color_ready = true;
 
-                    tmp = (red / 10) + 1;
+                    tmp = (red / FADING_Factor) + 1;
                     if ((tmp + red) < this->m_red_max) 
                     {
                         red += tmp;
@@ -263,7 +263,7 @@ bool LightScene_Sun::Sunset_Task()
                         red = this->m_red_max;
                     }
 
-                    tmp = (green / 10) + 1;
+                    tmp = (green / FADING_Factor) + 1;
                     if ((tmp + green) < this->m_green_max) 
                     {
                         green += tmp;
@@ -273,7 +273,7 @@ bool LightScene_Sun::Sunset_Task()
                         green = this->m_green_max;
                     }
 
-                    tmp = (blue / 10) + 1;
+                    tmp = (blue / FADING_Factor) + 1;
                     if ((tmp + blue) < this->m_blue_max) 
                     {
                         blue += tmp;
@@ -285,7 +285,7 @@ bool LightScene_Sun::Sunset_Task()
 
                     if (red > ((this->m_red_max * 2) / 5))
                     {
-                        tmp = (white / 10) + 1;
+                        tmp = (white / FADING_Factor) + 1;
                         if (tmp < white) {
                             white -= tmp;
                         }

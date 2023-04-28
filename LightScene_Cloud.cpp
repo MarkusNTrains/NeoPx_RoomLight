@@ -108,7 +108,7 @@ void LightScene_Cloud::Exit()
 //*****************************************************************************
 bool LightScene_Cloud::Task() 
 {
-    bool update_needed = false;
+    bool is_update_needed = false;
 
     //--- check if a new cloud has to be enabled -----------------------------
     if (this->m_start_next_cloud_idx < this->m_nof_clouds) 
@@ -232,14 +232,14 @@ bool LightScene_Cloud::Task()
                         {
                             if (this->m_light_hdl_p->GetLedColor(row, column) > color) 
                             {
-                                this->m_light_hdl_p->SetLed(row, column, color);
+                                this->m_light_hdl_p->SetLedColor(row, column, color);
                             }
                         }
                     }
                 }*/
                 
                 this->m_light_hdl_p->SetLedArea(start_pos, end_pos, this->m_cloud_p[cnt]->row, this->m_cloud_p[cnt]->row + this->m_cloud_p[cnt]->width, color);
-                update_needed = true;
+                is_update_needed = true;
 
                 //--- update position -----------------------------------------
                 if ((this->m_task_cycle_cnt % this->m_cloud_p[cnt]->speed) == 0) 
@@ -252,10 +252,10 @@ bool LightScene_Cloud::Task()
         //--- check exit condition --------------------------------------------
         if ((nof_active_clouds == 0) && (this->m_start_next_cloud_idx >= this->m_nof_clouds)) 
         {
-            update_needed = false;
+            is_update_needed = false;
             this->Exit();
         }
     }
 
-    return update_needed;
+    return is_update_needed;
 }

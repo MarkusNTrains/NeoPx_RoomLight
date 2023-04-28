@@ -25,6 +25,21 @@ $Id:  $
 
 
 //----------------------------------------------------------------------------
+// struct
+typedef union 
+{
+    struct 
+    {
+        uint8_t blue;
+        uint8_t green;
+        uint8_t red;
+        uint8_t white;
+    };
+    uint32_t color;
+} wrgb_color_t;
+
+
+//----------------------------------------------------------------------------
 // class
 class LightHdl
 {
@@ -33,14 +48,14 @@ class LightHdl
         const static uint32_t COLOR_GREEN = 0x0000FF00;
         const static uint32_t COLOR_RED = 0x00FF0000;
         const static uint32_t COLOR_WHITE = 0xFF000000;
+        const static uint32_t COLOR_BLACK = 0;
 
         LightHdl(Datastore* datastore_p);
         ~LightHdl();
 
         uint32_t GetLedColor(uint16_t row, uint16_t column);
-        void SetLed(uint16_t row, uint16_t column, uint32_t color);
-        LedArea* GetLedArea();
-        void LightHdl::SetLedArea(LedArea* area);
+        void SetLedColor(uint16_t row, uint16_t column, uint32_t color);
+        void SetLedArea(LedArea* area);
         void SetLedArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye);
         void SetLedArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color);
         void UpdateLedArea();
