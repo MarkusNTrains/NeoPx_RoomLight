@@ -95,7 +95,7 @@ bool LightScene_Sun::Sunrise_Task()
 {
     bool is_update_needed = false;
 
-    if (millis() - this->m_task_timestamp_ms > TASK_Sun_TmoMs)
+    if (millis() - this->m_task_timestamp_ms > TASK_TmoMs)
     {
         this->m_task_timestamp_ms = millis();
         
@@ -105,11 +105,11 @@ bool LightScene_Sun::Sunrise_Task()
             {
                 is_update_needed = this->CalculateAndShow_Sunlight();
 
-                if (this->m_twilight_brightness < SUNRISE_BIRGHTNESS)
+                if (this->m_twilight_brightness < SUNRISE_StartBrightness)
                 {
                     this->m_twilight_brightness++;
                 }
-                else if (this->m_sun_height < SUN_MAX_HEIGHT)
+                else if (this->m_sun_height < SUN_MaxHeight)
                 {
                     this->m_sun_height += (this->m_sun_height / 10) + 1;
                     this->m_sun_pos = this->m_sun_pos % LedRow::LED_ROW_LENGTH;
@@ -196,9 +196,9 @@ bool LightScene_Sun::Sunrise_Task()
 void LightScene_Sun::Sunset_Enter()
 {
     this->Update_DayParameter();
-    this->m_sun_height = SUN_MAX_HEIGHT;
+    this->m_sun_height = SUN_MaxHeight;
     this->m_sun_pos = LedRow::LED_ROW_LENGTH - 1;
-    this->m_twilight_brightness = SUNRISE_BIRGHTNESS;
+    this->m_twilight_brightness = SUNRISE_StartBrightness;
     this->m_state = Fading;
     this->m_day_color = Adafruit_NeoPixel::Color(0, 0, 0, this->m_day_brightness_white);
     this->m_task_timestamp_ms = millis();
@@ -232,7 +232,7 @@ bool LightScene_Sun::Sunset_Task()
 {
     bool is_update_needed = false;
 
-    if (millis() - this->m_task_timestamp_ms > TASK_Sun_TmoMs)
+    if (millis() - this->m_task_timestamp_ms > TASK_TmoMs)
     {
         this->m_task_timestamp_ms = millis();
         
@@ -353,7 +353,7 @@ bool LightScene_Sun::CalculateAndShow_Sunlight()
     for (cnt = 0; cnt < LedRow::LED_ROW_LENGTH; cnt++)
     {
         // calculate pixel color ----------------------------------------------
-        hypothenuse = sqrt(pow(this->m_sun_height, 2) + pow(PIXEL_DISTANCE_MM * cnt, 2));
+        hypothenuse = sqrt(pow(this->m_sun_height, 2) + pow(STRIPE_PixelDistanceMM * cnt, 2));
         asin_alpha = (255 * this->m_sun_height) / hypothenuse;
         brightness = asin_alpha / 255;
 
@@ -367,7 +367,7 @@ bool LightScene_Sun::CalculateAndShow_Sunlight()
             green = this->m_green_max;
         }
 
-        tmp_color = (green * this->m_sun_height) / (SUN_MAX_HEIGHT * 2);
+        tmp_color = (green * this->m_sun_height) / (SUN_MaxHeight * 2);
         tmp_color = (cnt * (this->m_day_brightness_white / (LedRow::LED_ROW_LENGTH / 2))) + tmp_color;
         tmp_color += this->m_night_brightness;
         if (tmp_color > this->m_blue_max) {
@@ -405,9 +405,9 @@ void LightScene_Sun::Update_DayParameter()
     
     this->m_day_brightness_white = (uint8_t)day_brightness;
     this->m_day_brightness_rgb = (uint8_t)((day_brightness * 5) / 3);
-    this->m_red_max = (uint8_t)((RED_MAX * day_brightness) / 255);
-    this->m_green_max = (uint8_t)((GREEN_MAX * day_brightness) / 255);
-    this->m_blue_max = (uint8_t)((BLUE_MAX * day_brightness ) / 255);
+    this->m_red_max = (uint8_t)((RED_Max * day_brightness) / 255);
+    this->m_green_max = (uint8_t)((GREEN_Max * day_brightness) / 255);
+    this->m_blue_max = (uint8_t)((BLUE_Max * day_brightness ) / 255);
     this->m_night_brightness = this->m_datastore_p->GetParameter(Parameter::Id::SceneNight_Brightness);
 }
 

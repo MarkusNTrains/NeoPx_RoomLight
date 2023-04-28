@@ -63,7 +63,7 @@ void LightScene_Lightning::Enter()
     this->m_light_hdl_p->SetLedArea(0, (LedRow::LED_ROW_LENGTH - 1), 0, (LedRow::LED_ROW_NOF - 1), Adafruit_NeoPixel::Color(0, 0, this->m_datastore_p->GetParameter(Parameter::Id::SceneNight_Brightness), 0));
     this->m_light_hdl_p->Show();
 
-    this->m_nof_flashes = (rand() % 10) + MIN_NOF_FLASHES;
+    this->m_nof_flashes = (rand() % 10) + FLASH_MinNof;
     this->m_flash_counter = 0;
     this->m_flash_timestamp_ms = millis();
     this->m_flash_pause_ms = 5000;
@@ -103,15 +103,15 @@ bool LightScene_Lightning::Task()
             this->m_flash_pause_ms = rand() % 5000;
 
             uint32_t flash_color = Adafruit_NeoPixel::Color(0, 0, 0, 255);
-            uint8_t flash_start_pos = rand() % (LedRow::LED_ROW_LENGTH - MAX_FLASH_WIDTH_PX);
-            uint8_t flash_width = rand() % (MAX_FLASH_WIDTH_PX + 1);
-            uint32_t flash_length_ms = rand() % (MAX_FLASH_LENGHT_MS + 1);
+            uint8_t flash_start_pos = rand() % (LedRow::LED_ROW_LENGTH - FLASH_MaxWidthPx);
+            uint8_t flash_width = rand() % (FLASH_MaxWidthPx + 1);
+            uint32_t flash_duration_ms = rand() % (FLASH_MaxDurationMs + 1);
             uint8_t flash_row = rand() % LedRow::LED_ROW_NOF;
 
             // show flash
             this->m_light_hdl_p->SetLedArea(flash_start_pos, flash_start_pos + flash_width, flash_row, flash_row, flash_color);
             this->m_light_hdl_p->Show();
-            delay(flash_length_ms);
+            delay(flash_duration_ms);
 
             // hide flash
             this->m_light_hdl_p->SetLedArea(0, (LedRow::LED_ROW_LENGTH - 1), flash_row, flash_row, Adafruit_NeoPixel::Color(0, 0, this->m_datastore_p->GetParameter(Parameter::Id::SceneNight_Brightness), 0));

@@ -58,15 +58,15 @@ class LightScene_Sun
             Unknown,
         };
 
-        const static uint32_t TASK_Sun_TmoMs = 80; 
+        const static uint32_t TASK_TmoMs = 80; 
 
-        const static uint32_t PIXEL_DISTANCE_MM = 16;  // distance between neo pixels in mm
-        const static uint32_t SUN_MAX_HEIGHT = 10000;
+        const static uint32_t STRIPE_PixelDistanceMM = 16;  // distance between neo pixels in mm
+        const static uint32_t SUN_MaxHeight = 10000;
 
-        const static uint8_t SUNRISE_BIRGHTNESS = LightScene_Night::BRIGHTNESS_Max;
-        const static uint8_t RED_MAX = 255;
-        const static uint8_t GREEN_MAX = 120;
-        const static uint8_t BLUE_MAX = 32;
+        const static uint8_t SUNRISE_StartBrightness = LightScene_Night::BRIGHTNESS_Max;
+        const static uint8_t RED_Max = 255;
+        const static uint8_t GREEN_Max = 120;
+        const static uint8_t BLUE_Max = 32;
 
         LightSceneHdl* m_scene_hdl_p;
         LightHdl* m_light_hdl_p;

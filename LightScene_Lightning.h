@@ -41,9 +41,9 @@ class LightScene_Lightning
 
     private:
         // lightning task
-        const static uint32_t MAX_FLASH_LENGHT_MS = 100;
-        const static uint32_t MAX_FLASH_WIDTH_PX = 40;
-        const static uint8_t MIN_NOF_FLASHES = 10;
+        const static uint32_t FLASH_MaxDurationMs = 100;
+        const static uint32_t FLASH_MaxWidthPx = 40;
+        const static uint8_t FLASH_MinNof = 10;
 
         LightSceneHdl* m_scene_hdl_p;
         LightHdl* m_light_hdl_p;
