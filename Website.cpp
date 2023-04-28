@@ -14,7 +14,7 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original
   source code
 
-  Created 27. April 2023 by MarkusNTrains
+  Created 28. April 2023 by MarkusNTrains
 ================================================================================
 $HeadURL:  $
 $Id:  $
@@ -793,7 +793,7 @@ void Website_SendToClient(EthernetClient* client)
     client->println(F("<br>"));
     client->println(F("<hr>"));
     client->println(F("<div id=\"footer_version\" style=\"float:left\"></div>"));
-    client->println(F("&nbsp;&nbsp;|&nbsp;&nbsp;27. April 2023 &nbsp; &copy; MarkusNTrains"));
+    client->println(F("&nbsp;&nbsp;|&nbsp;&nbsp;28. April 2023 &nbsp; &copy; MarkusNTrains"));
     client->println(F("<a href='mailto:markusntrains@gmx.ch'>E-Mail</a>"));
     client->println(F("</div>"));
     client->println(F("</footer>"));

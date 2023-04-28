@@ -64,7 +64,7 @@ void setup()
     s_lightSceneHdl_p = new LightSceneHdl();
     s_webServer_p = new WebServer(s_lightSceneHdl_p);
 
-    wdt_enable(WDTO_4S);
+    wdt_enable(WDTO_8S);
 
 #if (IS_DEBUG_MODE == ON)
     s_main_printFreeMemoryTimestampMs = millis();
