@@ -38,9 +38,8 @@ class LightScene_UserSetting : public LightScene
         LightScene_UserSetting(LightHdl* light_hdl, Datastore* datastore_p);
         ~LightScene_UserSetting();
 
-        void Enter(void);
-        void Exit(void);
-        void Task(void);
+        void Enter();
+        void Exit();
 
         void GetLedArea(LedArea* area);
         void SetLedArea(LedArea* area);
@@ -53,7 +52,7 @@ class LightScene_UserSetting : public LightScene
 
         LedArea* m_led_area_p;
 
-        void TaskHdl();
+        bool TaskHdl();
 };
 
 #endif // _LIGHT_SCENE_USER_SETTING_H

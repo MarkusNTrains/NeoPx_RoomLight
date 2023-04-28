@@ -40,11 +40,11 @@ class LightScene_Sun
 
         void Sunrise_Enter();
         void Sunrise_Exit();
-        void Sunrise_Task();
+        bool Sunrise_Task();
         void Sunset_Enter();
         void Sunset_Exit();
-        void Sunset_Task();
-        void CalculateAndShow_Sunlight();
+        bool Sunset_Task();
+        bool CalculateAndShow_Sunlight();
         void Update_DayParameter();
 
 

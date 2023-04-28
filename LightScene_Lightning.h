@@ -37,7 +37,7 @@ class LightScene_Lightning
         ~LightScene_Lightning();
         void Enter(void);
         void Exit(void);
-        void Task(void);
+        bool Task(void);
 
     private:
         // lightning task

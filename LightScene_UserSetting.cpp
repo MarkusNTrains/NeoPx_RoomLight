@@ -71,7 +71,7 @@ LightScene_UserSetting::~LightScene_UserSetting()
 // description:
 //   Enter
 //*****************************************************************************
-void LightScene_UserSetting::Enter(void)
+void LightScene_UserSetting::Enter()
 {
     this->m_light_hdl_p->Clear();
     this->m_light_hdl_p->SetBrightness_Fade((uint8_t)this->m_datastore_p->GetParameter(this->m_brightness_param_id));
@@ -87,7 +87,7 @@ void LightScene_UserSetting::Enter(void)
 // description:
 //   Exit
 //*****************************************************************************
-void LightScene_UserSetting::Exit(void)
+void LightScene_UserSetting::Exit()
 {
 }
 
@@ -95,11 +95,14 @@ void LightScene_UserSetting::Exit(void)
 //*****************************************************************************
 // description:
 //   Task
+// return:
+//   true if LightHdl::Show() needs to be called, else false
 //*****************************************************************************
-void LightScene_UserSetting::TaskHdl(void)
+bool LightScene_UserSetting::TaskHdl()
 {
     this->m_light_hdl_p->UpdateLedArea();
-    this->m_light_hdl_p->Show();
+    
+    return true;
 }
 
 

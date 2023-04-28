@@ -39,9 +39,9 @@ class LightScene
 
         virtual void Enter() = 0;
         virtual void Exit() = 0;
-        virtual void TaskHdl() = 0;
+        virtual bool TaskHdl() = 0;
 
-        void Task();
+        bool Task();
         void SetBrightness(uint8_t brightness);
         void SetColor(uint32_t color);
 

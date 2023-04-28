@@ -88,9 +88,13 @@ void LightScene_Sun::Sunrise_Exit(void)
 //*****************************************************************************
 // description:
 //   Task
+// return:
+//   true if LightHdl::Show() needs to be called, else false
 //*****************************************************************************
-void LightScene_Sun::Sunrise_Task(void)
+bool LightScene_Sun::Sunrise_Task(void)
 {
+    bool is_update_needed = false;
+
     if (millis() - this->m_task_timestamp_ms > TASK_Sun_TmoMs)
     {
         this->m_task_timestamp_ms = millis();
@@ -99,7 +103,7 @@ void LightScene_Sun::Sunrise_Task(void)
         {
             case Sunrise:
             {
-                this->CalculateAndShow_Sunlight();
+                is_update_needed = this->CalculateAndShow_Sunlight();
 
                 if (this->m_twilight_brightness < SUNRISE_BIRGHTNESS)
                 {
@@ -171,7 +175,7 @@ void LightScene_Sun::Sunrise_Task(void)
 
                     this->m_day_color = Adafruit_NeoPixel::Color(red, green, blue, white);
                     this->m_light_hdl_p->SetColor(this->m_day_color);
-                    this->m_light_hdl_p->Show();    
+                    is_update_needed = true; 
                 }
                 break;  
             } 
@@ -180,6 +184,8 @@ void LightScene_Sun::Sunrise_Task(void)
                 break;
         }
     }
+
+    return is_update_needed;
 }
 
 
@@ -219,9 +225,13 @@ void LightScene_Sun::Sunset_Exit(void)
 //*****************************************************************************
 // description:
 //   Task
+// return:
+//   true if LightHdl::Show() needs to be called, else false
 //*****************************************************************************
-void LightScene_Sun::Sunset_Task(void)
+bool LightScene_Sun::Sunset_Task()
 {
+    bool is_update_needed = false;
+
     if (millis() - this->m_task_timestamp_ms > TASK_Sun_TmoMs)
     {
         this->m_task_timestamp_ms = millis();
@@ -286,14 +296,14 @@ void LightScene_Sun::Sunset_Task(void)
 
                     this->m_day_color = Adafruit_NeoPixel::Color(red, green, blue, white);
                     this->m_light_hdl_p->SetColor(this->m_day_color);
-                    this->m_light_hdl_p->Show();    
+                    is_update_needed = true;
                 }
                 break;   
             }
 
             case Sunset:
             {
-                this->CalculateAndShow_Sunlight();
+                is_update_needed = this->CalculateAndShow_Sunlight();
 
                 if (this->m_sun_height > 0)
                 {
@@ -316,14 +326,18 @@ void LightScene_Sun::Sunset_Task(void)
                 break;
         }
     }
+
+    return is_update_needed;
 }
 
 
 //*****************************************************************************
 // description:
 //   CalculateAndShow_Sunlight
+// return:
+//   true if LightHdl::Show() needs to be called, else false
 //*****************************************************************************
-void LightScene_Sun::CalculateAndShow_Sunlight(void)
+bool LightScene_Sun::CalculateAndShow_Sunlight(void)
 {
     uint16_t pixel_idx;
     uint16_t cnt;
@@ -376,9 +390,8 @@ void LightScene_Sun::CalculateAndShow_Sunlight(void)
         }
     }
 
-    // Send the updated pixel colors to the hardware.  
-    this->m_light_hdl_p->Show();    
-
+    // pixel color changed --> update needed
+    return true;  
 }
 
 

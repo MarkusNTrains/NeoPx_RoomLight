@@ -40,7 +40,7 @@ class LightScene_Disco : public LightScene
     private:
         const static uint32_t TASK_TmoMs = 100;
 
-        void TaskHdl();
+        bool TaskHdl();
 };
 
 #endif // _LIGHT_SCENE_DISCO_H

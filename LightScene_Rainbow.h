@@ -42,7 +42,7 @@ class LightScene_Rainbow : public LightScene
         
         uint16_t m_firstPixelHue;
 
-        void TaskHdl();
+        bool TaskHdl();
 };
 
 #endif // _LIGHT_SCENE_MOBA_H

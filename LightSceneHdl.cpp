@@ -196,6 +196,8 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene)
 //*****************************************************************************
 void LightSceneHdl::Tasks()
 {
+    bool led_strip_updated_needed = false;
+
     //--- run datsatore task ----------------------
     this->m_datastore_p->Task();
 
@@ -203,44 +205,50 @@ void LightSceneHdl::Tasks()
     if (millis() - this->m_brightnessUpdate_timestamp_ms > BRIGHTNESS_UPDATE_TMO_MS)
     {
         this->m_brightnessUpdate_timestamp_ms += BRIGHTNESS_UPDATE_TMO_MS;
-        this->m_light_hdl_p->UpdateBrightness();
+        led_strip_updated_needed |= this->m_light_hdl_p->UpdateBrightness();
     }
 
     //--- run scene tasks -------------------------
     if (this->m_active_light_scene_p != nullptr)
     {
-        this->m_active_light_scene_p->Task();
+        led_strip_updated_needed |= this->m_active_light_scene_p->Task();
     }
     else
     {
         switch (this->m_scene)
         {
             case LightSceneID::Cloud:
-                this->m_scene_cloud_p->Task();
+                led_strip_updated_needed |= this->m_scene_cloud_p->Task();
                 break;
                 
             case LightSceneID::Idle:
                 break;
 
             case LightSceneID::Lightning:
-                this->m_scene_lightning_p->Task();
+                led_strip_updated_needed |= this->m_scene_lightning_p->Task();
                 break;
                 
             case LightSceneID::LightOff:
-                LightScene_LightOff_Task();
+                led_strip_updated_needed |= LightScene_LightOff_Task();
                 break;
 
             case LightSceneID::Sunrise:
-                this->m_scene_sun_p->Sunrise_Task();
+                led_strip_updated_needed |= this->m_scene_sun_p->Sunrise_Task();
                 break;
 
             case LightSceneID::Sunset:
-                this->m_scene_sun_p->Sunset_Task();
+                led_strip_updated_needed |= this->m_scene_sun_p->Sunset_Task();
                 break;
             
             default:
                 break;
         }
+    }
+
+    // update led strip only at the end of task --> save run time
+    if (led_strip_updated_needed == true)
+    {
+        this->m_light_hdl_p->Show();
     }
 }
 
@@ -249,7 +257,7 @@ void LightSceneHdl::Tasks()
 // description:
 //   Get Light Scene
 //*****************************************************************************
-LightSceneID LightSceneHdl::GetLightScene(void)
+LightSceneID LightSceneHdl::GetLightScene()
 {
     return this->m_scene;
 }
@@ -259,7 +267,7 @@ LightSceneID LightSceneHdl::GetLightScene(void)
 // description:
 //   Get Last Light Scene
 //*****************************************************************************
-LightSceneID LightSceneHdl::GetLastScene(void)
+LightSceneID LightSceneHdl::GetLastScene()
 {
     return this->m_last_scene;
 }
@@ -269,7 +277,7 @@ LightSceneID LightSceneHdl::GetLastScene(void)
 // description:
 //   GetLightHdl
 //*****************************************************************************
-LightHdl* LightSceneHdl::GetLightHdl(void)
+LightHdl* LightSceneHdl::GetLightHdl()
 {
     return this->m_light_hdl_p;
 }
@@ -278,15 +286,19 @@ LightHdl* LightSceneHdl::GetLightHdl(void)
 //*****************************************************************************
 // description:
 //   Power Off Task
+// return:
+//   true if LightHdl::Show() needs to be called, else false
 //*****************************************************************************
-void LightSceneHdl::LightScene_LightOff_Task(void)
+bool LightSceneHdl::LightScene_LightOff_Task()
 {
     if (millis() - this->m_task_timestamp_ms > TASK_SceneLightOff_TmoMs)
     {
         this->m_task_timestamp_ms = millis();
 
-        this->m_light_hdl_p->Show();
+        return true;
     }
+
+    return false;
 }
 
 

@@ -47,7 +47,7 @@ class LightHdl
         uint8_t GetBrightness(void);
         void SetBrightness_Fade(uint8_t brightness);
         void SetBrightness_Instantly(uint8_t brightness);
-        void UpdateBrightness(void);
+        bool UpdateBrightness();
         uint32_t GetColor(void);
         void SetColor(uint32_t color);
         void Clear(void);

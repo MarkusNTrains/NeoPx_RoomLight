@@ -68,18 +68,11 @@ void LightScene_Disco::Exit()
 //*****************************************************************************
 // description:
 //   Task
+// return:
+//   true if LightHdl::Show() needs to be called, else false
 //*****************************************************************************
-void LightScene_Disco::TaskHdl()
+bool LightScene_Disco::TaskHdl()
 {
-    /*m_pixel->clear();
-    m_pixel->setPixelColor(m_moving_dot_current_px, Adafruit_NeoPixel::Color(0, 0, 0, this->m_light_hdl_p->m_desired_brightness));
-    m_pixel->show();
-    m_moving_dot_current_px++;
-    if (m_moving_dot_current_px >= m_nof_px)
-    {
-        m_moving_dot_current_px = 0;
-    }*/
-
     srand(millis());
 
     uint16_t col_start = rand() % LedRow::LED_ROW_LENGTH;
@@ -160,7 +153,8 @@ void LightScene_Disco::TaskHdl()
     }
 
     this->m_light_hdl_p->SetLedArea(col_start, col_end, row_start, row_end, color);
-    this->m_light_hdl_p->Show();
+    
+    return true;
 }
 
 

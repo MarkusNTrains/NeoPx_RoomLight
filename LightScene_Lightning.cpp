@@ -84,8 +84,10 @@ void LightScene_Lightning::Exit(void)
 //*****************************************************************************
 // description:
 //   Task
+// return:
+//   true if LightHdl::Show() needs to be called, else false
 //*****************************************************************************
-void LightScene_Lightning::Task(void)
+bool LightScene_Lightning::Task()
 {
     if (millis() >= this->m_flash_timestamp_ms + this->m_flash_pause_ms)
     {
@@ -118,6 +120,8 @@ void LightScene_Lightning::Task(void)
             this->m_flash_counter++;
         }
     }
+
+    return false;
 }
 
 

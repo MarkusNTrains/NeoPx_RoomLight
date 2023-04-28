@@ -68,11 +68,14 @@ void LightScene_Day::Exit()
 //*****************************************************************************
 // description:
 //   Task
+// return:
+//   true if LightHdl::Show() needs to be called, else false
 //*****************************************************************************
-void LightScene_Day::TaskHdl()
+bool LightScene_Day::TaskHdl()
 {
     this->m_light_hdl_p->SetLedArea(0, (LedRow::LED_ROW_LENGTH - 1), 0, (LedRow::LED_ROW_NOF - 1));  
-    this->m_light_hdl_p->Show();
+    
+    return true;
 }
 
 

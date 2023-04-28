@@ -40,7 +40,7 @@ class LightScene_LightOn : public LightScene
     private:
         const static uint32_t TASK_TmoMs = 1000;
 
-        void TaskHdl();
+        bool TaskHdl();
 };
 
 #endif // _LIGHT_SCENE_LIGHT_ON_H

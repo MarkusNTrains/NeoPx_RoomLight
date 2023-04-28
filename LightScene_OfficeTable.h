@@ -40,7 +40,7 @@ class LightScene_OfficeTable : public LightScene
     private:
         const static uint32_t TASK_TmoMs = 1000;
 
-        void TaskHdl();
+        bool TaskHdl();
 };
 
 #endif // _LIGHT_SCENE_OFFICE_TABLE_H

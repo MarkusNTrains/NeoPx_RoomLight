@@ -103,9 +103,13 @@ void LightScene_Cloud::Exit(void)
 //*****************************************************************************
 // description:
 //   Task
+// return:
+//   true if LightHdl::Show() needs to be called, else false
 //*****************************************************************************
-void LightScene_Cloud::Task(void) 
+bool LightScene_Cloud::Task(void) 
 {
+    bool update_needed = false;
+
     //--- check if a new cloud has to be enabled -----------------------------
     if (this->m_start_next_cloud_idx < this->m_nof_clouds) 
     {
@@ -127,7 +131,6 @@ void LightScene_Cloud::Task(void)
         this->m_task_hdl_timestamp_ms = millis();
         this->m_task_cycle_cnt++;
 
-        bool do_update = false;
         uint16_t cnt = 0;
         uint16_t nof_active_clouds = 0;
         uint16_t start_pos;
@@ -187,6 +190,7 @@ void LightScene_Cloud::Task(void)
                 }
                 
                 
+                // show clouds in different colors --> use for debugging
                 /*switch (cnt % 6)
                 {
                     case 0:
@@ -233,8 +237,9 @@ void LightScene_Cloud::Task(void)
                         }
                     }
                 }*/
+                
                 this->m_light_hdl_p->SetLedArea(start_pos, end_pos, this->m_cloud_p[cnt]->row, this->m_cloud_p[cnt]->row + this->m_cloud_p[cnt]->width, color);
-                do_update = true;
+                update_needed = true;
 
                 //--- update position -----------------------------------------
                 if ((this->m_task_cycle_cnt % this->m_cloud_p[cnt]->speed) == 0) 
@@ -244,16 +249,13 @@ void LightScene_Cloud::Task(void)
             }
         }
 
-        //--- update LED strips -----------------------------------------------
-        if (do_update == true) 
-        {
-            this->m_light_hdl_p->Show();
-        }
-
         //--- check exit condition --------------------------------------------
         if ((nof_active_clouds == 0) && (this->m_start_next_cloud_idx >= this->m_nof_clouds)) 
         {
+            update_needed = false;
             this->Exit();
         }
     }
+
+    return update_needed;
 }

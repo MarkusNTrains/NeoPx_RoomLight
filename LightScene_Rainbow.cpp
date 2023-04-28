@@ -69,8 +69,10 @@ void LightScene_Rainbow::Exit()
 //*****************************************************************************
 // description:
 //   Task
+// return:
+//   true if LightHdl::Show() needs to be called, else false
 //*****************************************************************************
-void LightScene_Rainbow::TaskHdl()
+bool LightScene_Rainbow::TaskHdl()
 {
     uint32_t color = 0;
     uint16_t pixelHue = 0;
@@ -83,8 +85,9 @@ void LightScene_Rainbow::TaskHdl()
     }
 
     // Update strip with new contents
-    this->m_light_hdl_p->Show();
     this->m_firstPixelHue += 542; // Advance just a little along the color wheel
+
+    return true;
 }
 
 

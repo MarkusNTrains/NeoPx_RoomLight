@@ -170,8 +170,10 @@ void LightHdl::SetBrightness_Instantly(uint8_t brightness)
 //*****************************************************************************
 // description:
 //   Update Brightness
+// return:
+//   true if LightHdl::Show() needs to be called, else false
 //*****************************************************************************
-void LightHdl::UpdateBrightness(void)
+bool LightHdl::UpdateBrightness()
 {
     uint8_t factor = 10;
 
@@ -187,7 +189,8 @@ void LightHdl::UpdateBrightness(void)
         }
 
         this->m_led_matrix->SetBrightness(this->m_current_brightness); // Set brigthness for all neo pixels
-        this->Show();
+        
+        return true;
     }
     else if (this->m_current_brightness > this->m_desired_brightness)
     {
@@ -201,12 +204,15 @@ void LightHdl::UpdateBrightness(void)
         }
 
         this->m_led_matrix->SetBrightness(this->m_current_brightness); // Set brigthness for all neo pixels
-        this->Show();
+        
+        return true;
     }
     else
     {
         // IDLE;
     }    
+
+    return false;
 }
 
 

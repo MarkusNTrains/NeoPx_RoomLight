@@ -52,7 +52,7 @@ class LightScene_Cloud
         ~LightScene_Cloud();
         void Enter(void);
         void Exit(void);
-        void Task(void);
+        bool Task(void);
 
     private:
         // lightning task

@@ -111,7 +111,7 @@ class LightSceneHdl
 
 
         // light scene
-        void LightScene_LightOff_Task(void);
+        bool LightScene_LightOff_Task();
 };
 
 #endif // _LIGHT_SCENE_HDL_H

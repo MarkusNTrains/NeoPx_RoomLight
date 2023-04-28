@@ -52,15 +52,19 @@ LightScene::~LightScene()
 //*****************************************************************************
 // description:
 //   Task
+// return:
+//   true if LightHdl::Show() needs to be called, else false
 //*****************************************************************************
-void LightScene::Task()
+bool LightScene::Task()
 {
     if (millis() - this->m_task_timestamp_ms > this->m_task_tmo_ms)
     {
         this->m_task_timestamp_ms = millis();
 
-        this->TaskHdl();
+        return this->TaskHdl();
     }
+
+    return false;
 }
 
 
@@ -85,4 +89,5 @@ void LightScene::SetColor(uint32_t color)
     this->m_datastore_p->SetParameter(this->m_color_param_id, color);
     this->m_light_hdl_p->SetColor(this->m_datastore_p->GetParameter(this->m_color_param_id));
     this->TaskHdl();
+    this->m_light_hdl_p->Show();
 }
