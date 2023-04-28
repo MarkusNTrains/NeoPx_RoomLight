@@ -56,23 +56,23 @@ class LightScene_Cloud
 
     private:
         // lightning task
-        const static uint32_t TASK_HDL_TMO_MS = 50;
-        const static uint32_t MIN_ADD_NEXT_CLOUD_TMO_MS = 200;
-        const static uint32_t MAX_ADD_NEW_CLOUD_LENGTH_MS = 60000;
-        const static uint32_t MIN_CLOUD_SPEED = 1;
-        const static uint32_t MAX_CLOUD_SPEED = 6;
-        const static uint32_t MIN_CLOUD_LENGTH_PX = 20;
-        const static uint32_t MAX_CLOUD_LENGTH_PX = 100;
-        const static uint32_t MIN_CLOUD_WIDTH = 1;
-        const static uint32_t MAX_CLOUD_WIDTH = LedRow::LED_ROW_NOF;
-        const static uint32_t MIN_CLOUD_DARKNESS = 180;
-        const static uint32_t MAX_CLOUD_DARKNESS = 255;
-        const static uint8_t MIN_NOF_CLOUDS = 5;
-        const static uint8_t MAX_NOF_CLOUDS = 30;
+        const static uint32_t TASK_TmoMs = 50;
+        const static uint32_t CLOUD_AddNext_MinTmoMs = 200;
+        const static uint32_t CLOUD_AddNext_MaxTmohMs = 60000;
+        const static uint32_t CLOUD_MinSpeed = 1;
+        const static uint32_t CLOUD_MaxSpeed = 6;
+        const static uint32_t CLOUD_MinLengthPx = 20;
+        const static uint32_t CLOUD_MaxLengthPx = 100;
+        const static uint32_t CLOUD_MinWidth = 1;
+        const static uint32_t CLOUD_MaxWidth = LedRow::LED_ROW_NOF;
+        const static uint32_t CLOUD_MinDarkness = 180;
+        const static uint32_t CLOUD_MaxDarkness = 255;
+        const static uint8_t CLOUD_MinNof = 5;
+        const static uint8_t CLOUD_MaxNof = 30;
 
         LightSceneHdl* m_scene_hdl_p;
         LightHdl* m_light_hdl_p;
-        SkyCloud* m_cloud_p[MAX_NOF_CLOUDS];
+        SkyCloud* m_cloud_p[CLOUD_MaxNof];
         uint8_t m_nof_clouds;
         uint32_t m_scene_color;
         uint32_t m_task_hdl_timestamp_ms;

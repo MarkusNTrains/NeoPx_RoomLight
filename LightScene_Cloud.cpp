@@ -64,22 +64,22 @@ void LightScene_Cloud::Enter()
     this->m_scene_color = this->m_light_hdl_p->GetColor();
     this->m_start_next_cloud_idx = 0;
     this->m_start_cloud_timestamp_ms = 0;
-    this->m_start_next_cloud_tmo_ms = TASK_HDL_TMO_MS;
+    this->m_start_next_cloud_tmo_ms = TASK_TmoMs;
     this->m_task_hdl_timestamp_ms = 0;
     this->m_task_cycle_cnt = 0;
 
     srand(millis());
-    this->m_nof_clouds = (rand() % ((MAX_NOF_CLOUDS + 1) - MIN_NOF_CLOUDS)) + MIN_NOF_CLOUDS;
+    this->m_nof_clouds = (rand() % ((CLOUD_MaxNof + 1) - CLOUD_MinNof)) + CLOUD_MinNof;
     for (cnt = 0; cnt < this->m_nof_clouds; cnt++) 
     {
         this->m_cloud_p[cnt] = new SkyCloud();
         this->m_cloud_p[cnt]->is_enable = false;
         this->m_cloud_p[cnt]->position_px = 0;
         this->m_cloud_p[cnt]->row = rand() % LedRow::LED_ROW_NOF;
-        this->m_cloud_p[cnt]->width = (rand() % ((MAX_CLOUD_WIDTH + 1) - MIN_CLOUD_WIDTH)) + MIN_CLOUD_WIDTH;;
-        this->m_cloud_p[cnt]->length_px = (rand() % ((MAX_CLOUD_LENGTH_PX + 1) - MIN_CLOUD_LENGTH_PX)) + MIN_CLOUD_LENGTH_PX;
-        this->m_cloud_p[cnt]->speed = (rand() % ((MAX_CLOUD_SPEED + 1) - MIN_CLOUD_SPEED)) + MIN_CLOUD_SPEED;
-        this->m_cloud_p[cnt]->darkness = (rand() % ((MAX_CLOUD_DARKNESS + 1) - MIN_CLOUD_DARKNESS)) + MIN_CLOUD_DARKNESS;
+        this->m_cloud_p[cnt]->width = (rand() % ((CLOUD_MaxWidth + 1) - CLOUD_MinWidth)) + CLOUD_MinWidth;;
+        this->m_cloud_p[cnt]->length_px = (rand() % ((CLOUD_MaxLengthPx + 1) - CLOUD_MinLengthPx)) + CLOUD_MinLengthPx;
+        this->m_cloud_p[cnt]->speed = (rand() % ((CLOUD_MaxSpeed + 1) - CLOUD_MinSpeed)) + CLOUD_MinSpeed;
+        this->m_cloud_p[cnt]->darkness = (rand() % ((CLOUD_MaxDarkness + 1) - CLOUD_MinDarkness)) + CLOUD_MinDarkness;
     }
 }
 
@@ -121,12 +121,12 @@ bool LightScene_Cloud::Task()
             this->m_start_next_cloud_idx++;
 
             srand(millis());
-            this->m_start_next_cloud_tmo_ms = (rand() % ((MAX_ADD_NEW_CLOUD_LENGTH_MS + 1) / this->m_nof_clouds))  + MIN_ADD_NEXT_CLOUD_TMO_MS;
+            this->m_start_next_cloud_tmo_ms = (rand() % ((CLOUD_AddNext_MaxTmohMs + 1) / this->m_nof_clouds))  + CLOUD_AddNext_MinTmoMs;
         }
     }
 
     //--- move clouds ---------------------------------------------------------
-    if (millis() >= this->m_task_hdl_timestamp_ms + TASK_HDL_TMO_MS) 
+    if (millis() >= this->m_task_hdl_timestamp_ms + TASK_TmoMs) 
     {
         this->m_task_hdl_timestamp_ms = millis();
         this->m_task_cycle_cnt++;
