@@ -39,19 +39,19 @@ class LightHdl
 
         uint32_t GetLedColor(uint16_t row, uint16_t column);
         void SetLed(uint16_t row, uint16_t column, uint32_t color);
-        LedArea* GetLedArea(void);
+        LedArea* GetLedArea();
         void LightHdl::SetLedArea(LedArea* area);
         void SetLedArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye);
         void SetLedArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color);
-        void UpdateLedArea(void);
-        uint8_t GetBrightness(void);
+        void UpdateLedArea();
+        uint8_t GetBrightness();
         void SetBrightness_Fade(uint8_t brightness);
         void SetBrightness_Instantly(uint8_t brightness);
         bool UpdateBrightness();
-        uint32_t GetColor(void);
+        uint32_t GetColor();
         void SetColor(uint32_t color);
-        void Clear(void);
-        void Show(void);
+        void Clear();
+        void Show();
 
     protected:
         LedMatrix* m_led_matrix;

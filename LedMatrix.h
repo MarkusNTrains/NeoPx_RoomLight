@@ -35,8 +35,8 @@ class LedMatrix
         uint32_t GetPixelColor(uint16_t row, uint16_t column);
         void SetPixel(uint16_t row, uint16_t column, uint32_t color);
         void SetPixelArray(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color);
-        void Clear(void);
-        void Show(void);
+        void Clear();
+        void Show();
         void SetBrightness(uint8_t brightness);
         void SetColor(uint32_t color);
     

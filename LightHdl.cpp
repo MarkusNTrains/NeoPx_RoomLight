@@ -86,7 +86,7 @@ void LightHdl::SetLed(uint16_t row, uint16_t column, uint32_t color)
 // description:
 //   Get Led Area
 //*****************************************************************************
-LedArea* LightHdl::GetLedArea(void)
+LedArea* LightHdl::GetLedArea()
 {
     return this->m_led_area;  
 }
@@ -129,7 +129,7 @@ void LightHdl::SetLedArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, ui
 //   Update LED area --> new color and new brightness are automatically used 
 //   for all LEDs in this area
 //*****************************************************************************
-void LightHdl::UpdateLedArea(void)
+void LightHdl::UpdateLedArea()
 {
     this->SetLedArea(this->m_led_area->GetColumnStart(), this->m_led_area->GetColumnEnd(), this->m_led_area->GetRowStart(), this->m_led_area->GetRowEnd());
 }
@@ -139,7 +139,7 @@ void LightHdl::UpdateLedArea(void)
 // description:
 //   Get Brightness
 //*****************************************************************************
-uint8_t LightHdl::GetBrightness(void)
+uint8_t LightHdl::GetBrightness()
 {
     return this->m_desired_brightness;
 }
@@ -220,7 +220,7 @@ bool LightHdl::UpdateBrightness()
 // description:
 //   Get Color
 //*****************************************************************************
-uint32_t LightHdl::GetColor(void)
+uint32_t LightHdl::GetColor()
 {
     return this->m_color;
 }
@@ -243,7 +243,7 @@ void LightHdl::SetColor(uint32_t color)
 // description:
 //   Clear all LED
 //*****************************************************************************
-void LightHdl::Clear(void)
+void LightHdl::Clear()
 {
     this->m_led_matrix->Clear();
 }
@@ -253,7 +253,7 @@ void LightHdl::Clear(void)
 // description:
 //   Show
 //*****************************************************************************
-void LightHdl::Show(void)
+void LightHdl::Show()
 {
     this->m_led_matrix->Show();
 }

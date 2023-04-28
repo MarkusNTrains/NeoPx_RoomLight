@@ -42,7 +42,7 @@ static uint32_t s_main_printFreeMemoryTimestampMs = 0;
 
 //-----------------------------------------------------------------------------
 // function prototype
-uint16_t GetAvailableMemory(void);
+uint16_t GetAvailableMemory();
 
 
 
@@ -95,7 +95,7 @@ void loop()
 // description:
 //   GetAvailableMemory
 //*****************************************************************************
-uint16_t GetAvailableMemory(void) 
+uint16_t GetAvailableMemory() 
 {
     // Use 1024 with ATmega168
     uint16_t size = 8192; // SRAM size of target

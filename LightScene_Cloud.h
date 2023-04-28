@@ -50,9 +50,9 @@ class LightScene_Cloud
     public:
         LightScene_Cloud(LightSceneHdl* parent, LightHdl* light_hdl);
         ~LightScene_Cloud();
-        void Enter(void);
-        void Exit(void);
-        bool Task(void);
+        void Enter();
+        void Exit();
+        bool Task();
 
     private:
         // lightning task

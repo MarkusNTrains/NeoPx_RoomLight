@@ -91,7 +91,7 @@ uint16_t LedRow::GetLedIdxOfLut(uint16_t idx)
 // description:
 //   Send the updated pixel colors to the hardware.
 //*****************************************************************************
-void LedRow::Show(void)
+void LedRow::Show()
 {
     this->m_led_strip_p->show();    
 }

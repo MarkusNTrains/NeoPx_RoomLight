@@ -57,7 +57,7 @@ LightScene_Sun::~LightScene_Sun()
 // description:
 //   Enter
 //*****************************************************************************
-void LightScene_Sun::Sunrise_Enter(void)
+void LightScene_Sun::Sunrise_Enter()
 {
     this->m_sun_height = 0;
     this->m_sun_pos = 0;
@@ -77,7 +77,7 @@ void LightScene_Sun::Sunrise_Enter(void)
 // description:
 //   Exit
 //*****************************************************************************
-void LightScene_Sun::Sunrise_Exit(void)
+void LightScene_Sun::Sunrise_Exit()
 {
     this->m_light_hdl_p->SetBrightness_Instantly(this->m_day_brightness_white);
     this->m_light_hdl_p->SetColor(LightScene_Day::COLOR);
@@ -91,7 +91,7 @@ void LightScene_Sun::Sunrise_Exit(void)
 // return:
 //   true if LightHdl::Show() needs to be called, else false
 //*****************************************************************************
-bool LightScene_Sun::Sunrise_Task(void)
+bool LightScene_Sun::Sunrise_Task()
 {
     bool is_update_needed = false;
 
@@ -193,7 +193,7 @@ bool LightScene_Sun::Sunrise_Task(void)
 // description:
 //   Enter
 //*****************************************************************************
-void LightScene_Sun::Sunset_Enter(void)
+void LightScene_Sun::Sunset_Enter()
 {
     this->Update_DayParameter();
     this->m_sun_height = SUN_MAX_HEIGHT;
@@ -214,7 +214,7 @@ void LightScene_Sun::Sunset_Enter(void)
 // description:
 //   Exit
 //*****************************************************************************
-void LightScene_Sun::Sunset_Exit(void)
+void LightScene_Sun::Sunset_Exit()
 {
     this->m_light_hdl_p->SetBrightness_Instantly(this->m_night_brightness);
     this->m_light_hdl_p->SetColor(LightScene_Night::COLOR);
@@ -337,7 +337,7 @@ bool LightScene_Sun::Sunset_Task()
 // return:
 //   true if LightHdl::Show() needs to be called, else false
 //*****************************************************************************
-bool LightScene_Sun::CalculateAndShow_Sunlight(void)
+bool LightScene_Sun::CalculateAndShow_Sunlight()
 {
     uint16_t pixel_idx;
     uint16_t cnt;

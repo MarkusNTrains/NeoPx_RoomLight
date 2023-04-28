@@ -73,11 +73,11 @@ class LightSceneHdl
     public:
         LightSceneHdl();
         ~LightSceneHdl();
-        void Tasks(void);
+        void Tasks();
         void ChangeLightScene(LightSceneID scene);
-        LightSceneID GetLightScene(void);
-        LightSceneID GetLastScene(void);
-        LightHdl* GetLightHdl(void);
+        LightSceneID GetLightScene();
+        LightSceneID GetLastScene();
+        LightHdl* GetLightHdl();
         void GetUserSettingArea(LedArea* area);
         void SetUserSettingArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye);
         void SetBrightness(uint8_t brightness);

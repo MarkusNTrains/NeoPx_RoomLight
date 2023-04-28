@@ -62,7 +62,7 @@ class WebServer
     public:
         WebServer(LightSceneHdl* led_scene);
         ~WebServer();
-        void Tasks(void);		
+        void Tasks();		
         
     private:
         enum Action

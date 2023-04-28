@@ -45,7 +45,7 @@ LedArea::~LedArea()
 // description:
 //   GetColumnStart
 //*****************************************************************************
-uint16_t LedArea::GetColumnStart(void)
+uint16_t LedArea::GetColumnStart()
 {
     return this->m_xs;
 }
@@ -55,7 +55,7 @@ uint16_t LedArea::GetColumnStart(void)
 // description:
 //   GetColumnEnd
 //*****************************************************************************
-uint16_t LedArea::GetColumnEnd(void)
+uint16_t LedArea::GetColumnEnd()
 {
     return this->m_xe;
 }
@@ -65,7 +65,7 @@ uint16_t LedArea::GetColumnEnd(void)
 // description:
 //   GetRowStart
 //*****************************************************************************
-uint16_t LedArea::GetRowStart(void)
+uint16_t LedArea::GetRowStart()
 {
     return this->m_ys;
 }
@@ -75,7 +75,7 @@ uint16_t LedArea::GetRowStart(void)
 // description:
 //   GetRowEnd
 //*****************************************************************************
-uint16_t LedArea::GetRowEnd(void)
+uint16_t LedArea::GetRowEnd()
 {
     return this->m_ye;
 }

@@ -162,7 +162,7 @@ void LedMatrix::SetPixelArray(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye
 // description:
 //   Clear
 //*****************************************************************************
-void LedMatrix::Clear(void)
+void LedMatrix::Clear()
 {
     uint8_t idx = 0;
     
@@ -177,7 +177,7 @@ void LedMatrix::Clear(void)
 // description:
 //   Show
 //*****************************************************************************
-void LedMatrix::Show(void)
+void LedMatrix::Show()
 {
     uint8_t idx = 0;
 

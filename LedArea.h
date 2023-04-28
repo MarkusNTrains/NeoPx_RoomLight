@@ -34,11 +34,11 @@ class LedArea
       LedArea();
       ~LedArea();
 		
-        uint16_t GetColumnStart(void);
-        uint16_t GetColumnEnd(void);
-        uint16_t GetRowStart(void);
-        uint16_t GetRowEnd(void);
-        uint32_t GetColor(void);
+        uint16_t GetColumnStart();
+        uint16_t GetColumnEnd();
+        uint16_t GetRowStart();
+        uint16_t GetRowEnd();
+        uint32_t GetColor();
         void Get(LedArea* area);
         void Set(LedArea* area);
         void Set(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye);

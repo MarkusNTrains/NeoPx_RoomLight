@@ -38,7 +38,7 @@ class LedRow
 	    LedRow(Adafruit_NeoPixel* led_strip_p, uint8_t row_idx);
 	    ~LedRow();
         
-        void Show(void);
+        void Show();
         uint32_t GetPixelColor(uint16_t idx);
         void SetPixel(uint16_t idx, uint32_t color);
         void SetPixel(uint16_t start_idx, uint16_t width, uint16_t space, uint16_t nof_repeat, uint32_t color);

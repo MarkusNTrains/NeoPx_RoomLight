@@ -54,7 +54,7 @@ LightScene_Lightning::~LightScene_Lightning()
 // description:
 //   Enter
 //*****************************************************************************
-void LightScene_Lightning::Enter(void)
+void LightScene_Lightning::Enter()
 {
     this->m_last_brightness = this->m_light_hdl_p->GetBrightness();
     // set overall brightness to maximum and the background color to current brightness, so that flashes will bi visible
@@ -74,7 +74,7 @@ void LightScene_Lightning::Enter(void)
 // description:
 //   Exit
 //*****************************************************************************
-void LightScene_Lightning::Exit(void)
+void LightScene_Lightning::Exit()
 {
     this->m_light_hdl_p->SetBrightness_Instantly(this->m_last_brightness);
     this->m_scene_hdl_p->ChangeLightScene(this->m_scene_hdl_p->GetLastScene());

@@ -35,9 +35,9 @@ class LightScene_Lightning
     public:
         LightScene_Lightning(LightSceneHdl* parent, LightHdl* light_hdl, Datastore* datastore_p);
         ~LightScene_Lightning();
-        void Enter(void);
-        void Exit(void);
-        bool Task(void);
+        void Enter();
+        void Exit();
+        bool Task();
 
     private:
         // lightning task

@@ -57,7 +57,7 @@ LightScene_Cloud::~LightScene_Cloud()
 // description:
 //   Enter
 //*****************************************************************************
-void LightScene_Cloud::Enter(void) 
+void LightScene_Cloud::Enter() 
 {
     uint8_t cnt = 0;
 
@@ -88,7 +88,7 @@ void LightScene_Cloud::Enter(void)
 // description:
 //   Exit
 //*****************************************************************************
-void LightScene_Cloud::Exit(void) 
+void LightScene_Cloud::Exit() 
 {
     uint8_t cnt = 0;
     for (cnt = 0; cnt < this->m_nof_clouds; cnt++) 
@@ -106,7 +106,7 @@ void LightScene_Cloud::Exit(void)
 // return:
 //   true if LightHdl::Show() needs to be called, else false
 //*****************************************************************************
-bool LightScene_Cloud::Task(void) 
+bool LightScene_Cloud::Task() 
 {
     bool update_needed = false;
 
