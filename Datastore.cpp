@@ -55,6 +55,7 @@ Datastore::Datastore()
     bool valid_page_found = false;
     uint16_t page_start_addr = 0;
 
+#if (DATASTORE_SaveDataOnEEPROM == ON)    
     for (uint16_t page = 0; page < this->m_eeprom_nofPages; page++)
     {
         page_start_addr = page * this->m_eeprom_pageSize;
@@ -64,10 +65,10 @@ Datastore::Datastore()
             // valid page found
             this->m_eeprom_active_page = page;
             valid_page_found = true; 
-#if (IS_DEBUG_MODE == ON)
+    #if (IS_DEBUG_MODE == ON)
             Serial.print(F("Valid Page: "));
             Serial.println(this->m_eeprom_active_page);
-#endif
+    #endif
 
             // so read data from EEPROM
             for (uint8_t id = 0; id < Parameter::Id::Nof; id++)
@@ -78,6 +79,7 @@ Datastore::Datastore()
             break;  // skip for loop
         }
     }
+#endif
     
     //--- check if factory reset is needed
     if (valid_page_found == false)
@@ -130,21 +132,23 @@ void Datastore::Task()
                     }
                 }
 
+    #if (DATASTORE_SaveDataOnEEPROM == ON)
                 if (is_eeprom_write_needed == true)
                 {
                     this->m_eeprom_last_update_timestamp_ms = millis();
                     this->EEPROM_WriteToNextPage();
-    #if (IS_DEBUG_MODE == ON)
+        #if (IS_DEBUG_MODE == ON)
                     Serial.print(F("Write to next page: "));
                     Serial.println(this->m_eeprom_active_page);
-    #endif
+        #endif
                 }
                 else
                 {
-    #if (IS_DEBUG_MODE == ON)
+        #if (IS_DEBUG_MODE == ON)
                     Serial.println(F("EEPROM write not needed"));
-    #endif
+        #endif
                 }
+    #endif
             }
         }
     }
@@ -171,7 +175,9 @@ void Datastore::FactoryReset()
     this->m_parameter_p->ResetAll();
     this->m_parameter_p->SetValue(Parameter::Id::ParameterSet_Validity, Parameter::PARAMETERSET_Valid);
     this->m_eeprom_active_page = 0;
+#if (DATASTORE_SaveDataOnEEPROM == ON)
     EEPROM_WritePage();
+#endif
 }
 
 

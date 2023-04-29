@@ -35,6 +35,8 @@ typedef struct
 //-----------------------------------------------------------------------------
 // defines
 
+//############################################################################
+// DO NOT CHANGE
 //--- version -------------------------------------------------------------
 #define SW_VERSION_Major 1
 #define SW_VERSION_Minor 3
@@ -43,10 +45,16 @@ typedef struct
 //--- switch --------------------------------------------------------------
 #define ON  1
 #define OFF 0
+// End of DO NOT CHANGE
+//############################################################################
 
 
 //--- debug setting -------------------------------------------------------
 #define IS_DEBUG_MODE ON  // can be ON or OFF
+
+
+//--- save data permanent -------------------------------------------------
+#define DATASTORE_SaveDataOnEEPROM ON   // if ON then lightscene, color, brightness and area are saved permanent on EEPROM
 
 
 //--- hardware setting ----------------------------------------------------

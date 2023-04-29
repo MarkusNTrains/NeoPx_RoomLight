@@ -48,9 +48,9 @@ class LightScene_Lightning
         };
 
         // lightning task
-        const static uint32_t TASK_TmoMs = 100;
+        const static uint32_t TASK_TmoMs = 50;
 
-        const static uint8_t FADING_Factor = 10;
+        const static uint8_t FADING_Factor = 20;
 
         const static uint32_t FLASH_MaxWaitTimeMs = 5000;
         const static uint32_t FLASH_MaxDurationMs = 100;
