@@ -1,6 +1,6 @@
 /*##############################################################################
 
-  THIS IS GENERATED CODE (use C:\_my\Arduino\NeoPx_RoomLight\Script\htmlToC_saveFlash_compact.py.ods)
+  THIS IS GENERATED CODE (use C:\_my\Arduino\NeoPx_RoomLight\Script\htmlToC_saveFlash.py.ods)
     ==> DO NOT EDIT MANUALLY !!!
 
 ##############################################################################*/
@@ -14,7 +14,7 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original
   source code
 
-  Created 28. April 2023 by MarkusNTrains
+  Created 29. April 2023 by MarkusNTrains
 ================================================================================
 $HeadURL:  $
 $Id:  $
