@@ -43,7 +43,7 @@ class LightScene
 
         bool Task();
         void SetBrightness(uint8_t brightness);
-        void SetColor(uint32_t color);
+        bool SetColor(uint32_t color);
 
     protected:
         Datastore* m_datastore_p = nullptr;

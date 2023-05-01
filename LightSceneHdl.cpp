@@ -51,7 +51,7 @@ $Id:  $
 LightSceneHdl::LightSceneHdl()
 {
     this->m_datastore_p = new Datastore();
-    this->m_light_hdl_p = new LightHdl(this->m_datastore_p);
+    this->m_light_hdl_p = new LightHdl();
 
     this->m_active_light_scene_p = nullptr;
     this->m_scene_cloud_p = new LightScene_Cloud(this, this->m_light_hdl_p);
@@ -70,10 +70,18 @@ LightSceneHdl::LightSceneHdl()
     this->m_scene = LightSceneID::LightOff;
     this->m_last_scene = LightSceneID::LightOff;
     this->m_task_timestamp_ms = 0;
+    this->m_led_strip_updated_needed = false;
 
-    // get last lightscene from datastore
+
+    // show last lightscene
     this->ChangeLightScene((LightSceneID)(this->m_datastore_p->GetParameter(Parameter::Id::LightSceneID)));
     //this->ChangeLightScene(LightSceneID::OfficeTable);
+    this->m_light_hdl_p->SetBrightness_Instantly(this->m_light_hdl_p->GetBrightness());
+    if (this->m_active_light_scene_p != nullptr)
+    {
+        this->m_active_light_scene_p->TaskHdl();
+    }
+    this->m_light_hdl_p->Show();
 }
 
 
@@ -196,48 +204,56 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene)
 //*****************************************************************************
 void LightSceneHdl::Tasks()
 {
-    bool led_strip_updated_needed = false;
-
     //--- run datsatore task ----------------------
     this->m_datastore_p->Task();
+
 
     //--- update brightness -----------------------
     if (millis() - this->m_brightnessUpdate_timestamp_ms > BRIGHTNESS_UPDATE_TMO_MS)
     {
         this->m_brightnessUpdate_timestamp_ms += BRIGHTNESS_UPDATE_TMO_MS;
-        led_strip_updated_needed |= this->m_light_hdl_p->UpdateBrightness();
+        if (this->m_light_hdl_p->UpdateBrightness() == true)
+        {
+            this->m_led_strip_updated_needed |= true;
+            if (this->m_active_light_scene_p != nullptr)
+            {
+                // update strips while brightness did change, otherwise led color won't be correct
+                this->m_active_light_scene_p->TaskHdl();
+            }
+        }
     }
+
 
     //--- run scene tasks -------------------------
     if (this->m_active_light_scene_p != nullptr)
     {
-        led_strip_updated_needed |= this->m_active_light_scene_p->Task();
+        this->m_led_strip_updated_needed |= this->m_active_light_scene_p->Task();
     }
     else
     {
         switch (this->m_scene)
         {
             case LightSceneID::Cloud:
-                led_strip_updated_needed |= this->m_scene_cloud_p->Task();
+                this->m_led_strip_updated_needed |= this->m_scene_cloud_p->Task();
                 break;
                 
             case LightSceneID::Idle:
                 break;
 
             case LightSceneID::Lightning:
-                led_strip_updated_needed |= this->m_scene_lightning_p->Task();
+                this->m_led_strip_updated_needed |= this->m_scene_lightning_p->Task();
                 break;
                 
             case LightSceneID::LightOff:
-                led_strip_updated_needed |= LightScene_LightOff_Task();
+                this->m_led_strip_updated_needed |= LightScene_LightOff_Task();
                 break;
 
             case LightSceneID::Sunrise:
-                led_strip_updated_needed |= this->m_scene_sun_p->Sunrise_Task();
+                this->m_led_strip_updated_needed |= this->m_scene_sun_p->Sunrise_Task();
                 break;
 
             case LightSceneID::Sunset:
-                led_strip_updated_needed |= this->m_scene_sun_p->Sunset_Task();
+                this->m_led_strip_updated_needed |= this->m_scene_sun_p->Sunset_Task();
                 break;
             
             default:
@@ -245,9 +261,11 @@ void LightSceneHdl::Tasks()
         }
     }
 
+
     // update led strip only at the end of task --> save run time
-    if (led_strip_updated_needed == true)
+    if (this->m_led_strip_updated_needed == true)
     {
+        this->m_led_strip_updated_needed = false;
         this->m_light_hdl_p->Show();
     }
 }
@@ -360,7 +378,7 @@ void LightSceneHdl::SetColor(uint32_t color)
 {
     if (this->m_active_light_scene_p != nullptr)
     {
-        this->m_active_light_scene_p->SetColor(color);
+        this->m_led_strip_updated_needed |= this->m_active_light_scene_p->SetColor(color);
     }
     else
     {

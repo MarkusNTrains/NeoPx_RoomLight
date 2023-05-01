@@ -35,10 +35,8 @@ $Id:  $
 // description:
 //   constructor
 //*****************************************************************************
-LightHdl::LightHdl(Datastore* datastore_p)
+LightHdl::LightHdl()
 {
-    this->m_datastore_p = datastore_p;
-
     this->m_current_brightness = 0;
     this->m_desired_brightness = 0;
     this->m_color = 0;
@@ -220,7 +218,7 @@ uint32_t LightHdl::GetColor()
 // description:
 //   Set Color
 // parameter:
-//   color: RGBW --> 8888
+//   color: WRGB --> 8888
 //*****************************************************************************
 void LightHdl::SetColor(uint32_t color)
 {

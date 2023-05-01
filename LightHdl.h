@@ -19,7 +19,6 @@ $Id:  $
 //----------------------------------------------------------------------------
 // include
 #include "common.h"
-#include "Datastore.h"
 #include "LedMatrix.h"
 #include "LedArea.h"
 
@@ -50,7 +49,7 @@ class LightHdl
         const static uint32_t COLOR_WHITE = 0xFF000000;
         const static uint32_t COLOR_BLACK = 0;
 
-        LightHdl(Datastore* datastore_p);
+        LightHdl();
         ~LightHdl();
 
         uint32_t GetLedColor(uint16_t row, uint16_t column);
@@ -77,7 +76,6 @@ class LightHdl
         uint8_t m_desired_brightness;
         uint32_t m_color;
         uint32_t m_update_time_ms;
-        Datastore* m_datastore_p;
 
         uint8_t UpdateValueTo(uint8_t current_value, uint8_t desired_value, uint8_t factor);
 };
