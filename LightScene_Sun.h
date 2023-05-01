@@ -65,7 +65,7 @@ class LightScene_Sun
         const static uint8_t FADING_Factor = 10;
         const static uint8_t SUNRISE_StartBrightness = LightScene_Night::BRIGHTNESS_Max;
         const static uint8_t RED_Max = 255;
-        const static uint8_t GREEN_Max = 120;
+        const static uint8_t GREEN_Max = 140;
         const static uint8_t BLUE_Max = 32;
 
         LightSceneHdl* m_scene_hdl_p;

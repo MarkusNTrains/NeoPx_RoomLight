@@ -127,7 +127,7 @@ void LedMatrix::SetPixel(uint16_t row, uint16_t column, uint32_t color)
 //   ys: 0 - (LED_MATRIX_NOF_ROW-1) y_start
 //   ye: 0 - (LED_MATRIX_NOF_ROW-1) y_end
 //*****************************************************************************
-void LedMatrix::SetPixelArray(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color)
+void LedMatrix::SetPixelArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color)
 {
     uint16_t row = 0;
 

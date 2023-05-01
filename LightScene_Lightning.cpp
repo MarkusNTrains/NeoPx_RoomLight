@@ -64,6 +64,7 @@ void LightScene_Lightning::Enter()
     this->m_background_color.blue = (((uint16_t)this->m_last_scene_color.blue * this->m_last_scene_brightness) / 255);
     this->m_background_color.white = (((uint16_t)this->m_last_scene_color.white * this->m_last_scene_brightness) / 255);
 
+    // set overall brightness to maximum and the background color to current brightness, so that flashes will bi visible
     this->m_light_hdl_p->SetBrightness_Instantly(255);
     this->m_light_hdl_p->SetColor(this->m_background_color.color);
 
@@ -119,11 +120,6 @@ bool LightScene_Lightning::Task()
                     this->m_state = State::Lightning;
                     this->m_nof_flashes = (rand() % (FLASH_MaxNof - FLASH_MinNof)) + FLASH_MinNof;
                     this->m_flash_counter = 0;
-                    this->m_task_tmo_ms = 1000;
-
-                    // set overall brightness to maximum and the background color to current brightness, so that flashes will bi visible
-                    //this->m_light_hdl_p->Clear();
-                    //this->m_light_hdl_p->SetLedArea(0, (LedRow::LED_ROW_LENGTH - 1), 0, (LedRow::LED_ROW_NOF - 1), this->m_current_color.color);
                 }
                 break;
             }
@@ -136,10 +132,10 @@ bool LightScene_Lightning::Task()
                 }
                 else 
                 {
-                    // show next flash
                     srand(millis());
                     this->m_task_tmo_ms = rand() % FLASH_MaxWaitTimeMs;
 
+                    uint8_t px; 
                     uint8_t nof_flashes_followed = rand() % FLASH_MaxNofAfterEachOther;
                     uint16_t flash_start_pos = 0;
                     uint16_t flash_length_px = 0;
@@ -149,13 +145,19 @@ bool LightScene_Lightning::Task()
 
                     for (uint8_t cnt = 0; cnt < nof_flashes_followed; cnt++)
                     {
-                        flash_start_pos = rand() % (LedRow::LED_ROW_LENGTH - FLASH_MaxLengthPx);
+                        // generate next flash
+                        flash_start_pos = rand() % (LedRow::LED_ROW_LENGTH);
                         flash_length_px = rand() % (FLASH_MaxLengthPx + 1);
                         flash_duration_ms = rand() % (FLASH_MaxDurationMs + 1);
                         flash_row = rand() % LedRow::LED_ROW_NOF;
 
+                        if (flash_length_px + flash_start_pos > LedRow::LED_ROW_LENGTH)
+                        {
+                            flash_length_px = LedRow::LED_ROW_LENGTH - flash_start_pos;
+                        }
+
                         // find dark leds
-                        for (uint8_t px = 0; px <= flash_length_px; px++)
+                        for (px = 0; px < flash_length_px; px++)
                         {
                             if (this->m_light_hdl_p->GetLedColor(flash_row, flash_start_pos + px) == LightHdl::COLOR_BLACK)
                             {
@@ -168,14 +170,14 @@ bool LightScene_Lightning::Task()
                         }
 
                         // show flash
-                        this->m_light_hdl_p->SetLedArea(flash_start_pos, flash_start_pos + flash_length_px, flash_row, flash_row, LightHdl::COLOR_WHITE);
+                        this->m_light_hdl_p->SetLedArea(flash_start_pos, ((flash_start_pos + flash_length_px) - 1), flash_row, flash_row, LightHdl::COLOR_WHITE);
                         this->m_light_hdl_p->Show();
 
                         // wait 
                         delay(flash_duration_ms);
 
                         // hide flash
-                        for (uint8_t px = 0; px <= flash_length_px; px++)
+                        for (px = 0; px < flash_length_px; px++)
                         {
                             if (is_led_dark[px] == true)
                             {
@@ -191,6 +193,9 @@ bool LightScene_Lightning::Task()
 
                     this->m_flash_counter++;
                 }
+
+                this->m_light_hdl_p->SetColor(this->m_background_color.color);
+                is_update_needed = true;
                 break;
             }
             case BrightenUp:

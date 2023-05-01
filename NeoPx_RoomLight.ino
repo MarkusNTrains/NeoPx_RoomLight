@@ -58,9 +58,9 @@ void setup()
     Serial.println(F("Start Room Light"));
     Serial.print(F("Free Memory: "));
     Serial.println(GetAvailableMemory());
+    delay(50);
  #endif
     
-    delay(50);
     s_lightSceneHdl_p = new LightSceneHdl();
     s_webServer_p = new WebServer(s_lightSceneHdl_p);
 
@@ -83,6 +83,9 @@ void loop()
     s_lightSceneHdl_p->Tasks();
     s_webServer_p->Tasks();
 
+    wdt_reset();
+
+
 #if (IS_DEBUG_MODE == ON)
     if (millis() - s_main_printFreeMemoryTimestampMs > 10000)
     {
@@ -91,8 +94,6 @@ void loop()
         Serial.println(GetAvailableMemory());
     }
 #endif
-    
-    wdt_reset();
 }
 
 

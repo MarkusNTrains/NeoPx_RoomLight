@@ -39,7 +39,7 @@ typedef struct
 // DO NOT CHANGE
 //--- version -------------------------------------------------------------
 #define SW_VERSION_Major 1
-#define SW_VERSION_Minor 3
+#define SW_VERSION_Minor 4
 
 
 //--- switch --------------------------------------------------------------
