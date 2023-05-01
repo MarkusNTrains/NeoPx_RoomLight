@@ -55,6 +55,7 @@ typedef struct
 
 //--- save data permanent -------------------------------------------------
 #define DATASTORE_SaveDataOnEEPROM ON   // if ON then lightscene, color, brightness and area are saved permanent on EEPROM
+#define DATASTORE_SaveLightScene ON
 
 
 //--- hardware setting ----------------------------------------------------
@@ -66,7 +67,7 @@ typedef struct
 #define ROOM_LIGHT_MarkusNTrains    0
 #define ROOM_LIGHT_Altenglienicke   1
 #define ROOM_LIGHT_TestBoard        2
-#define ROOM_LIGHT ROOM_LIGHT_MarkusNTrains
+#define ROOM_LIGHT ROOM_LIGHT_TestBoard
 
 #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
     // LED Matrix defines -----------------------------

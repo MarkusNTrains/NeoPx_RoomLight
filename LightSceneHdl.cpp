@@ -74,8 +74,15 @@ LightSceneHdl::LightSceneHdl()
 
 
     // show last lightscene
+#if ((DATASTORE_SaveLightScene == ON) && (DATASTORE_SaveDataOnEEPROM == ON))
     this->ChangeLightScene((LightSceneID)(this->m_datastore_p->GetParameter(Parameter::Id::LightSceneID)));
-    //this->ChangeLightScene(LightSceneID::OfficeTable);
+#else
+  #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
+    this->ChangeLightScene(LightSceneID::OfficeTable);
+  #else
+    this->ChangeLightScene(LightSceneID::LightOn);
+  #endif
+#endif
     this->m_light_hdl_p->SetBrightness_Instantly(this->m_light_hdl_p->GetBrightness());
     if (this->m_active_light_scene_p != nullptr)
     {
@@ -236,10 +243,12 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene)
     }
 
     // save light scene if needed
+#if (DATASTORE_SaveLightScene == ON)
     if (save_light_scene == true)
     {
         this->m_datastore_p->SetParameter(Parameter::Id::LightSceneID, (uint8_t)scene);
     }
+#endif
 }
 
 
