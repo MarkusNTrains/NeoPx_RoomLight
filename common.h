@@ -50,7 +50,7 @@ typedef struct
 
 
 //--- debug setting -------------------------------------------------------
-#define IS_DEBUG_MODE ON  // can be ON or OFF
+#define IS_DEBUG_MODE OFF  // can be ON or OFF
 
 
 //--- save data permanent -------------------------------------------------
@@ -67,7 +67,7 @@ typedef struct
 #define ROOM_LIGHT_MarkusNTrains    0
 #define ROOM_LIGHT_Altenglienicke   1
 #define ROOM_LIGHT_TestBoard        2
-#define ROOM_LIGHT ROOM_LIGHT_TestBoard
+#define ROOM_LIGHT ROOM_LIGHT_MarkusNTrains
 
 #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
     // LED Matrix defines -----------------------------

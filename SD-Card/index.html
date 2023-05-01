@@ -164,6 +164,9 @@
             width: 100%;
             background: linear-gradient(0deg, var(--sliderBackgroundColor) 2em, transparent 0);
             font-family: ubuntu mono, consolas, monaco, monospace;
+            border: 1px solid;
+            border-color: var(--sliderBackgroundColor);
+            border-radius: 10px;
         }
         .wrap::before, .wrap::after {
             grid-column: 1/span 2;
@@ -199,7 +202,7 @@
             margin: 0;
             background: none;
             /* get rid of white Chrome background */
-            color: #000000;
+            color: var(--backgroundColor);
             pointer-events: none;
         }
         input.twoThumbSlider[type=range]::-webkit-slider-runnable-track, input[type=range]::-webkit-slider-thumb, input[type=range] {
@@ -217,11 +220,12 @@
         }
         input.twoThumbSlider[type=range]::-webkit-slider-thumb {
             border: none;
-            /* get rid of Firefox thumb border */
+            border-radius: 1em;
+            /* get rid of Chrom thumb border */
             width: 2em;
             height: 100%;
             border-radius: 0;
-            /* get rid of Firefox corner rounding */
+            /* get rid of Chrome corner rounding */
             background: currentcolor;
             pointer-events: auto;
         }
@@ -229,7 +233,7 @@
             border: none;
             /* get rid of Firefox thumb border */
             width: 2em;
-            height: 2em;
+            height: 100%;
             border-radius: 0;
             /* get rid of Firefox corner rounding */
             background: currentcolor;

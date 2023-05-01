@@ -194,7 +194,6 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene)
         
         case LightSceneID::Disco:
             this->m_active_light_scene_p = this->m_scene_disco_p;
-            save_light_scene = true;
             break;
 
         case LightSceneID::MoBa:
@@ -213,7 +212,6 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene)
         
         case LightSceneID::Rainbow:
             this->m_active_light_scene_p = this->m_scene_rainbow_p;
-            save_light_scene = true;
             break;
             
         case LightSceneID::Sbh:
