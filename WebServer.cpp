@@ -127,7 +127,7 @@ WebServer::WebServer(LightSceneHdl* led_scene)
 //*****************************************************************************
 WebServer::~WebServer()
 {
-
+    delete this->m_server;
 }
 
 

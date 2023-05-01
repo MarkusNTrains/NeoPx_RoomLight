@@ -57,8 +57,8 @@ LightSceneHdl::LightSceneHdl()
     this->m_scene_cloud_p = new LightScene_Cloud(this, this->m_light_hdl_p);
     this->m_scene_day_p = new LightScene_Day(this->m_light_hdl_p, this->m_datastore_p);
     this->m_scene_disco_p = new LightScene_Disco(this->m_light_hdl_p, this->m_datastore_p);
-    this->m_scene_lightning_p = new LightScene_Lightning(this, this->m_light_hdl_p, this->m_datastore_p);
     this->m_scene_light_on_p = new LightScene_LightOn(this->m_light_hdl_p, this->m_datastore_p);
+    this->m_scene_lightning_p = new LightScene_Lightning(this, this->m_light_hdl_p, this->m_datastore_p);
     this->m_scene_moba_p = new LightScene_MoBa(this->m_light_hdl_p, this->m_datastore_p);
     this->m_scene_night_p = new LightScene_Night(this->m_light_hdl_p, this->m_datastore_p);
     this->m_scene_office_table_p = new LightScene_OfficeTable(this->m_light_hdl_p, this->m_datastore_p);
@@ -91,10 +91,19 @@ LightSceneHdl::LightSceneHdl()
 //*****************************************************************************
 LightSceneHdl::~LightSceneHdl()
 {
+    delete this->m_datastore_p;
     delete this->m_light_hdl_p;
     delete this->m_scene_cloud_p;
+    delete this->m_scene_day_p;
+    delete this->m_scene_disco_p;
+    delete this->m_scene_light_on_p;
     delete this->m_scene_lightning_p;
+    delete this->m_scene_moba_p;
+    delete this->m_scene_night_p;
+    delete this->m_scene_office_table_p;
+    delete this->m_scene_rainbow_p;    
     delete this->m_scene_sun_p;
+    delete this->m_scene_userSetting_p;
 }
 
 

@@ -64,6 +64,7 @@ LightScene_UserSetting::LightScene_UserSetting(LightHdl* light_hdl, Datastore* d
 //*****************************************************************************
 LightScene_UserSetting::~LightScene_UserSetting()
 {
+    delete this->m_led_area_p;
 }
 
 
