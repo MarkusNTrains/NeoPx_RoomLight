@@ -77,7 +77,7 @@ void LightScene_Sun::Sunrise_Enter()
 // description:
 //   Exit
 //*****************************************************************************
-void LightScene_Sun::Sunrise_Exit()
+void LightScene_Sun::Sunrise_Leave()
 {
     this->m_light_hdl_p->SetBrightness_Instantly(this->m_day_brightness_white);
     this->m_light_hdl_p->SetColor(LightScene_Day::COLOR);
@@ -126,7 +126,7 @@ bool LightScene_Sun::Sunrise_Task()
             {
                 if (this->m_day_color == Adafruit_NeoPixel::Color(0, 0, 0, this->m_day_brightness_white))
                 {
-                    this->Sunrise_Exit();
+                    this->Sunrise_Leave();
                 }
                 else
                 {
@@ -214,7 +214,7 @@ void LightScene_Sun::Sunset_Enter()
 // description:
 //   Exit
 //*****************************************************************************
-void LightScene_Sun::Sunset_Exit()
+void LightScene_Sun::Sunset_Leave()
 {
     this->m_light_hdl_p->SetBrightness_Instantly(this->m_night_brightness);
     this->m_light_hdl_p->SetColor(LightScene_Night::COLOR);
@@ -316,7 +316,7 @@ bool LightScene_Sun::Sunset_Task()
                 }
                 else
                 {
-                    this->Sunset_Exit();
+                    this->Sunset_Leave();
                 }
 
                 break;

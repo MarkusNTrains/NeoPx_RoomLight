@@ -37,10 +37,10 @@ $Id:  $
 //*****************************************************************************
 LightScene_Cloud::LightScene_Cloud(LightSceneHdl* parent, LightHdl* light_hdl) 
 {
-    uint8_t cnt = 0;
-
     this->m_scene_hdl_p = parent;
     this->m_light_hdl_p = light_hdl;
+
+    this->m_nof_clouds = 0;
 }
 
 
@@ -68,6 +68,11 @@ void LightScene_Cloud::Enter()
     this->m_task_hdl_timestamp_ms = 0;
     this->m_task_cycle_cnt = 0;
 
+    if (this->m_nof_clouds != 0)
+    {
+        this->DeleteAllClouds();
+    }
+
     srand(millis());
     this->m_nof_clouds = (rand() % ((CLOUD_MaxNof + 1) - CLOUD_MinNof)) + CLOUD_MinNof;
     for (cnt = 0; cnt < this->m_nof_clouds; cnt++) 
@@ -90,13 +95,22 @@ void LightScene_Cloud::Enter()
 //*****************************************************************************
 void LightScene_Cloud::Exit() 
 {
-    uint8_t cnt = 0;
-    for (cnt = 0; cnt < this->m_nof_clouds; cnt++) 
+    this->DeleteAllClouds();
+}
+
+
+//*****************************************************************************
+// description:
+//   Delete all clouds
+//*****************************************************************************
+void LightScene_Cloud::DeleteAllClouds()
+{
+    for (uint16_t cnt = 0; cnt < this->m_nof_clouds; cnt++) 
     {
         delete this->m_cloud_p[cnt];
     }
 
-    this->m_scene_hdl_p->ChangeLightScene(this->m_scene_hdl_p->GetLastScene());
+    this->m_nof_clouds = 0;
 }
 
 
@@ -253,9 +267,19 @@ bool LightScene_Cloud::Task()
         if ((nof_active_clouds == 0) && (this->m_start_next_cloud_idx >= this->m_nof_clouds)) 
         {
             is_update_needed = false;
-            this->Exit();
+            this->Leave();
         }
     }
 
     return is_update_needed;
+}
+
+
+//*****************************************************************************
+// description:
+//   Leave light scene --> used for internal porpuse
+//*****************************************************************************
+void LightScene_Cloud::Leave()
+{
+    this->m_scene_hdl_p->ChangeLightScene(this->m_scene_hdl_p->GetLastScene());
 }

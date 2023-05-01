@@ -37,7 +37,10 @@ $Id:  $
 static LightSceneHdl* s_lightSceneHdl_p;
 static WebServer* s_webServer_p;
 
+#if (IS_DEBUG_MODE == ON)
+const static uint32_t MAIN_PrintFreeMemoryTmoMs = 2000;
 static uint32_t s_main_printFreeMemoryTimestampMs = 0;
+#endif
 
 
 //-----------------------------------------------------------------------------
@@ -87,7 +90,7 @@ void loop()
 
 
 #if (IS_DEBUG_MODE == ON)
-    if (millis() - s_main_printFreeMemoryTimestampMs > 10000)
+    if (millis() - s_main_printFreeMemoryTimestampMs > MAIN_PrintFreeMemoryTmoMs)
     {
         s_main_printFreeMemoryTimestampMs = millis();
         Serial.print(F("Free Memory: "));

@@ -106,9 +106,45 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene)
 {
     if (this->m_scene != scene)
     {
+        //--- call Exit function of light scene ---
+        if (this->m_active_light_scene_p != nullptr)
+        {
+            this->m_active_light_scene_p->Exit();
+        }
+        else
+        {
+            switch (this->m_scene)
+            {
+                case LightSceneID::Cloud:
+    Serial.println(F("Task: Cloud Exit"));
+                    this->m_scene_cloud_p->Exit();
+                    break;
+                    
+                case LightSceneID::Idle:
+                    break;
+
+                case LightSceneID::Lightning:
+                    break;
+                    
+                case LightSceneID::LightOff:
+                    break;
+
+                case LightSceneID::Sunrise:
+                    break;
+
+                case LightSceneID::Sunset:
+                    break;
+                
+                default:
+                    break;
+            }
+        }
+
+        //--- change to requested scene ---
         this->m_active_light_scene_p = nullptr;
         this->m_last_scene = this->m_scene;
         this->m_scene = scene;
+
 #if (IS_DEBUG_MODE == ON)
         Serial.print(F("Change to Scene: "));
         Serial.println((int)scene);

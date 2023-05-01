@@ -79,9 +79,6 @@ void LightScene_Lightning::Enter()
 //*****************************************************************************
 void LightScene_Lightning::Exit()
 {
-    this->m_light_hdl_p->SetBrightness_Instantly(this->m_last_scene_brightness);
-    this->m_light_hdl_p->SetColor(this->m_last_scene_color.color);
-    this->m_scene_hdl_p->ChangeLightScene(this->m_scene_hdl_p->GetLastScene());
 }
 
 
@@ -217,14 +214,14 @@ bool LightScene_Lightning::Task()
 
                 if (is_fading_finished == true)
                 {
-                    this->Exit();
+                    this->Leave();
                 }
                     
                 break;
             }
             default:
             {
-                this->Exit();
+                this->Leave();
                 break;
             }
         }
@@ -285,3 +282,17 @@ static bool LightScene_Lightning::FadeColor(uint8_t target_color, uint8_t* curre
 
     return is_target_reached;
 }
+
+
+//*****************************************************************************
+// description:
+//   Leave light scene --> used for internal porpuse
+//*****************************************************************************
+void LightScene_Lightning::Leave()
+{
+    this->m_light_hdl_p->SetBrightness_Instantly(this->m_last_scene_brightness);
+    this->m_light_hdl_p->SetColor(this->m_last_scene_color.color);
+    this->m_scene_hdl_p->ChangeLightScene(this->m_scene_hdl_p->GetLastScene());
+}
+
+

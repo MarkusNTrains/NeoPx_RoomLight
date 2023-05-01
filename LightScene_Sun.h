@@ -39,10 +39,8 @@ class LightScene_Sun
         ~LightScene_Sun();
 
         void Sunrise_Enter();
-        void Sunrise_Exit();
         bool Sunrise_Task();
         void Sunset_Enter();
-        void Sunset_Exit();
         bool Sunset_Task();
         bool CalculateAndShow_Sunlight();
         void Update_DayParameter();
@@ -85,6 +83,9 @@ class LightScene_Sun
         uint8_t m_blue_max;
         uint8_t m_twilight_brightness;
         uint8_t m_night_brightness;
+
+        void Sunrise_Leave();
+        void Sunset_Leave();
 };
 
 #endif // _LIGHT_SCENE_SUN_H

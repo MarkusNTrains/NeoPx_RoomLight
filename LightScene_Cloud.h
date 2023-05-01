@@ -73,13 +73,16 @@ class LightScene_Cloud
         LightSceneHdl* m_scene_hdl_p;
         LightHdl* m_light_hdl_p;
         SkyCloud* m_cloud_p[CLOUD_MaxNof];
-        uint8_t m_nof_clouds;
         uint32_t m_scene_color;
         uint32_t m_task_hdl_timestamp_ms;
         uint32_t m_task_cycle_cnt;
         uint32_t m_start_cloud_timestamp_ms;
         uint32_t m_start_next_cloud_tmo_ms;
-        uint8_t m_start_next_cloud_idx;
+        uint16_t m_nof_clouds;
+        uint16_t m_start_next_cloud_idx;
+
+        void DeleteAllClouds();
+        void Leave();
 };
 
 #endif // _LIGHT_SCENE_CLOUD_H
