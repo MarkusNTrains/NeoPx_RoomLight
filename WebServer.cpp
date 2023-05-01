@@ -50,12 +50,9 @@ WebServer::WebServer(LightSceneHdl* led_scene)
 
 #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
     // IP config MarkusNTrains
-//    IPAddress ip(192, 168, 0, 4);    // IP address, may need to change depending on network
-  //  IPAddress myDns(192, 168, 0, 254);
-    //IPAddress gateway(192, 168, 0, 254);  // how to find gateway: open cmd --> type ipconfig
-    IPAddress ip(192, 168, 1, 88);    // IP address, may need to change depending on network
-    IPAddress myDns(192, 168, 1, 2);
-    IPAddress gateway(192, 168, 1, 2);  // how to find gateway: open cmd --> type ipconfig
+    IPAddress ip(192, 168, 0, 4);    // IP address, may need to change depending on network
+    IPAddress myDns(192, 168, 0, 254);
+    IPAddress gateway(192, 168, 0, 254);  // how to find gateway: open cmd --> type ipconfig
     IPAddress subnet(255, 255, 255, 0);
 #elif (ROOM_LIGHT == ROOM_LIGHT_Altenglienicke)
     // IP config Altenglienicke
