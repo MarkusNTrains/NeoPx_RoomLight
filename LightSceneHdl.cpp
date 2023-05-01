@@ -295,7 +295,7 @@ LightSceneID LightSceneHdl::GetLastScene()
 // description:
 //   GetLightHdl
 //*****************************************************************************
-LightHdl* LightSceneHdl::GetLightHdl()
+const LightHdl* LightSceneHdl::GetLightHdl()
 {
     return this->m_light_hdl_p;
 }
