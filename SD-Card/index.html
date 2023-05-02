@@ -164,7 +164,7 @@
             width: 100%;
             background: linear-gradient(0deg, var(--sliderBackgroundColor) 2em, transparent 0);
             font-family: ubuntu mono, consolas, monaco, monospace;
-            border: 1px solid;
+            /*border: 1px solid;*/
             border-color: var(--sliderBackgroundColor);
             border-radius: 10px;
         }
@@ -202,7 +202,7 @@
             margin: 0;
             background: none;
             /* get rid of white Chrome background */
-            color: var(--backgroundColor);
+            color: var(--SliderThumbColor);
             pointer-events: none;
         }
         input.twoThumbSlider[type=range]::-webkit-slider-runnable-track, input[type=range]::-webkit-slider-thumb, input[type=range] {
@@ -219,8 +219,7 @@
             background: none;
         }
         input.twoThumbSlider[type=range]::-webkit-slider-thumb {
-            border: none;
-            border-radius: 1em;
+            border: 1px solid var(--backgroundColor);
             /* get rid of Chrom thumb border */
             width: 2em;
             height: 100%;
@@ -230,7 +229,7 @@
             pointer-events: auto;
         }
         input.twoThumbSlider[type=range]::-moz-range-thumb {
-            border: none;
+            border: 1px solid var(--backgroundColor);
             /* get rid of Firefox thumb border */
             width: 2em;
             height: 100%;
@@ -822,6 +821,7 @@
                 <label for="led_row">Reihen</label>
                 <label type="text" id="led_row" class="user_value"> loading...</label>      
             </td>
+            <br>
             <td>
                 <label for="led_column">L&auml;nge</label>
                 <label type="text" id="led_column" class="user_value"> loading...</label>
