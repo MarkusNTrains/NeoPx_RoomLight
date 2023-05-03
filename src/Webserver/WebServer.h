@@ -22,8 +22,8 @@ $Id:  $
 #include <SPI.h>
 #include <Ethernet.h>
 #include <SD.h>
-#include "common.h"
-#include "LightSceneHdl.h"
+#include "../common.h"
+#include "../LightScene/LightSceneHdl.h"
 
 
 

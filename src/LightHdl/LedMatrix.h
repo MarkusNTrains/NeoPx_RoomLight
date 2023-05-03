@@ -19,7 +19,7 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // include
-#include "common.h"
+#include "../common.h"
 #include "LedRow.h"
 
 

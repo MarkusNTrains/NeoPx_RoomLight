@@ -4,7 +4,7 @@ from datetime import date
 html_file_path = "../SD-Card/index.html"
 
 # generate h file
-h_file = open("../Website.h", "w+")
+h_file = open("../src/Webserver/Website.h", "w+")
 h_file.write("/*##############################################################################\n")
 h_file.write("\n")
 h_file.write("  THIS IS GENERATED CODE (use " + __file__ + ".ods)\n")
@@ -47,7 +47,7 @@ h_file.write("#endif  // _WEBSITE_H\n")
 
 
 # generate cpp file
-cpp_file = open("../Website.cpp", "w+")
+cpp_file = open("../src/Webserver/Website.cpp", "w+")
 
 cpp_file.write("/*##############################################################################\n")
 cpp_file.write("\n")

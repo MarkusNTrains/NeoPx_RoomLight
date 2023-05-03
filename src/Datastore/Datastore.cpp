@@ -16,7 +16,6 @@ $Id:  $
 //-----------------------------------------------------------------------------
 // includes
 #include "Datastore.h"
-#include "LightSceneHdl.h"
 #include <EEPROM.h>
 
 

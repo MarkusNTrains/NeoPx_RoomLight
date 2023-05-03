@@ -18,9 +18,9 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // include
-#include "common.h"
-#include "Datastore.h"
-#include "LightHdl.h"
+#include "../common.h"
+#include "../Datastore/Datastore.h"
+#include "../LightHdl/LightHdl.h"
 
 
 

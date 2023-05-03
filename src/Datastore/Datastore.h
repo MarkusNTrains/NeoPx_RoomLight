@@ -20,7 +20,7 @@ $Id:  $
 //----------------------------------------------------------------------------
 // include
 #include "Parameter.h"
-#include "common.h"
+#include "../common.h"
 
 
 

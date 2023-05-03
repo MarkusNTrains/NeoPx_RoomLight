@@ -1,6 +1,6 @@
 /*##############################################################################
 
-  THIS IS GENERATED CODE (use C:\_my\Arduino\NeoPx_RoomLight\Script\htmlToC_saveFlash.py.ods)
+  THIS IS GENERATED CODE (use C:\SwProjects\_Intern\Arduino\RoomLight_DaylightSimulation\Script\htmlToC_saveFlash.py.ods)
     ==> DO NOT EDIT MANUALLY !!!
 
 ##############################################################################*/
@@ -14,7 +14,7 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original
   source code
 
-  Created 02. May 2023 by MarkusNTrains
+  Created 03. May 2023 by MarkusNTrains
 ================================================================================
 $HeadURL:  $
 $Id:  $
@@ -884,7 +884,7 @@ const char line842[] PROGMEM = "<br>";
 const char line843[] PROGMEM = "<br>";
 const char line844[] PROGMEM = "<hr>";
 const char line845[] PROGMEM = "<div id=\"footer_version\" style=\"float:left\">vX.Y</div>";
-const char line846[] PROGMEM = "&nbsp;&nbsp;|&nbsp;&nbsp;02. May 2023 &nbsp; &copy; MarkusNTrains";
+const char line846[] PROGMEM = "&nbsp;&nbsp;|&nbsp;&nbsp;03. May 2023 &nbsp; &copy; MarkusNTrains";
 const char line847[] PROGMEM = "<a href='mailto:markusntrains@gmx.ch'>E-Mail</a>";
 const char line848[] PROGMEM = "</div>";
 const char line849[] PROGMEM = "</footer>";

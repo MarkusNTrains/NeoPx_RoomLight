@@ -16,9 +16,9 @@ $Id:  $
 
 //-----------------------------------------------------------------------------
 // includes
-#include "common.h"
-#include "LightSceneHdl.h"
-#include "WebServer.h"
+#include "src/common.h"
+#include "src/LightScene/LightSceneHdl.h"
+#include "src/Webserver/WebServer.h"
 
 #include <avr/wdt.h>
 

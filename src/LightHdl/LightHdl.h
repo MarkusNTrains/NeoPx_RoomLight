@@ -18,7 +18,7 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // include
-#include "common.h"
+#include "../common.h"
 #include "LedMatrix.h"
 #include "LedArea.h"
 

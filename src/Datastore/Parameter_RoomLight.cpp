@@ -14,10 +14,10 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original
   source code
 
-  Created 27.04.2023 20:36:09 by MarkusNTrains
+  Created 03.05.2023 08:32:05 by MarkusNTrains
 ================================================================================
-$HeadURL: file:///C:/_my/Arduino/NeoPx_RoomLight/Parameter_RoomLight.cpp $
-$Id: 27.04.2023 20:36:09 automatic gen. $
+$HeadURL: file:///C:/SwProjects/_Intern/Arduino/RoomLight_DaylightSimulation/src/Datastore/Parameter_RoomLight.cpp $
+$Id: 03.05.2023 08:32:05 automatic gen. $
 *******************************************************************************/
 
 /*
@@ -29,9 +29,9 @@ Defines the Parameter of RoomLight device and their properties.
 //------------------------------------------------------------------------------
 // include
 #include "Parameter.h"
-#include "LightSceneHdl.h"
-#include "LightScene_Day.h"
-#include "LightScene_Night.h"
+#include "../LightScene/LightSceneHdl.h"
+#include "../LightScene/LightScene_Day.h"
+#include "../LightScene/LightScene_Night.h"
 
 
 

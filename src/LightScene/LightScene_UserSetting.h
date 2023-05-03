@@ -6,48 +6,49 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original 
   source code
   
-  Created 24. August 2020 by MarkusNTrains
+  Created 21. April 2023 by MarkusNTrains
 ================================================================================
 $HeadURL:  $
 $Id:  $
 *******************************************************************************/
 
-
-#ifndef _LED_ROW_H
-#define _LED_ROW_H
+#ifndef _LIGHT_SCENE_USER_SETTING_H
+#define _LIGHT_SCENE_USER_SETTING_H
 
 
 //----------------------------------------------------------------------------
 // include
-#include "common.h"
-#include <Adafruit_NeoPixel.h>
+#include "LightScene.h"
+
 
 
 //----------------------------------------------------------------------------
-// define
+// extern
 
 
 //----------------------------------------------------------------------------
 // class
-class LedRow
+class LightScene_UserSetting : public LightScene
 {
     public:
-        const static uint16_t LED_ROW_NOF = ROOM_LIGHT_NofRows;
-        const static uint16_t LED_ROW_LENGTH = ROOM_LIGHT_RowNofPx;
-    
-	    LedRow(Adafruit_NeoPixel* led_strip_p, uint8_t row_idx);
-	    ~LedRow();
-        
-        void Show();
-        uint32_t GetPixelColor(uint16_t idx);
-        void SetPixel(uint16_t idx, uint32_t color);
-        void SetPixel(uint16_t start_idx, uint16_t width, uint16_t space, uint16_t nof_repeat, uint32_t color);
-		
-    private:	
-        Adafruit_NeoPixel* m_led_strip_p;
-        uint8_t m_row_idx;
+        LightScene_UserSetting(LightHdl* light_hdl, Datastore* datastore_p);
+        ~LightScene_UserSetting();
 
-        uint16_t GetLedIdxOfLut(uint16_t idx);
+        void Enter();
+        void Exit();
+
+        void GetLedArea(LedArea* area);
+        void SetLedArea(LedArea* area);
+
+    private:
+        const static uint32_t TASK_TmoMs = 1000;
+
+        Datastore* m_datastore_p;
+        LightHdl* m_light_hdl_p;
+
+        LedArea* m_led_area_p;
+
+        bool TaskHdl();
 };
 
-#endif  // _LED_ROW_H
+#endif // _LIGHT_SCENE_USER_SETTING_H
