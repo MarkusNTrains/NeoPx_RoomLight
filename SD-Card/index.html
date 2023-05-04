@@ -313,42 +313,6 @@
 
 
         //--- function ----------------------------------------------------
-        function RequestCurrentDataFromServer()
-        {
-            SendDataToServer("&" + XML_RREQUEST.GetCurrentData);
-        }
-		
-        function FindServer()
-        {
-            s_is_server_connected = false;
-            clearInterval(s_findServer_intervalTimer);
-            s_findServer_intervalTimer = setInterval(RequestInfoFromServer, FIND_SERVER_TIMEOUT_MS)
-        }
-
-		function RequestInfoFromServer()
-		{
-            SendDataToServer("&" + XML_RREQUEST.GetInfo);
-		}
-
-        function Reset_RequestCurrentDataFromServer_IntervallTimer()
-        {
-            clearInterval(s_requestDataFromServer_intervalTimer);
-            s_requestDataFromServer_intervalTimer = setInterval(RequestCurrentDataFromServer, REQUEST_CURRENT_DATA_FROM_SERVER_TIMEOUT_MS);
-        }
-        
-		function ReleaseLock()
-		{
-			s_lock_send_data = false;
-			s_sendToServer_timeoutTimer = null;
-
-			if (s_is_send_data_pending == true)
-			{
-				SendDataToServer(s_pending_xml_request);
-                s_is_send_data_pending = false;
-                s_pending_xml_request = "";
-			}
-		}
-		
 		function SendDataToServer(xml_request)
 		{
 			if (s_lock_send_data == false)
@@ -584,10 +548,54 @@
 			}
 		}
 		
+        function SendDataToServerWhenConnected(xml_request)
+        {
+            if (s_is_server_connected == true)
+            {
+                SendDataToServer(xml_request);
+            }
+        }
+
+        function RequestCurrentDataFromServer()
+        {
+            SendDataToServerWhenConnected("&" + XML_RREQUEST.GetCurrentData);
+        }
+		
+        function FindServer()
+        {
+            s_is_server_connected = false;
+            clearInterval(s_findServer_intervalTimer);
+            s_findServer_intervalTimer = setInterval(RequestFindServer, FIND_SERVER_TIMEOUT_MS)
+        }
+
+		function RequestFindServer()
+		{
+            SendDataToServer("&" + XML_RREQUEST.GetInfo);
+		}
+
+        function Reset_RequestCurrentDataFromServer_IntervallTimer()
+        {
+            clearInterval(s_requestDataFromServer_intervalTimer);
+            s_requestDataFromServer_intervalTimer = setInterval(RequestCurrentDataFromServer, REQUEST_CURRENT_DATA_FROM_SERVER_TIMEOUT_MS);
+        }
+        
+		function ReleaseLock()
+		{
+			s_lock_send_data = false;
+			s_sendToServer_timeoutTimer = null;
+
+			if (s_is_send_data_pending == true)
+			{
+				SendDataToServer(s_pending_xml_request);
+                s_is_send_data_pending = false;
+                s_pending_xml_request = "";
+			}
+		}
+		
 		function LightSceneButtonPushed(scene, bt)
 		{
 			LightScene_ShowAsActive(scene)
-			SendDataToServer("&" + XML_RREQUEST.SetLightScene + "=" + scene);
+			SendDataToServerWhenConnected("&" + XML_RREQUEST.SetLightScene + "=" + scene);
 		}
 
         function LightScene_SetAllAsInactive()
@@ -615,7 +623,7 @@
 			var output = document.getElementById("brightness_value");
 			output.innerHTML = slider.value;
 
-			SendDataToServer("&" + XML_RREQUEST.SetBrightness + "=" + slider.value);
+			SendDataToServerWhenConnected("&" + XML_RREQUEST.SetBrightness + "=" + slider.value);
 		}
 
 		function ColorRGBSliderChanged()
@@ -652,7 +660,7 @@
 			var colorStr = ('000000' + color.toString(16)).slice(-6);
 			output.innerHTML = '0x' + colorStr;
 			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
-			SendDataToServer("&" + XML_RREQUEST.SetColor + "=" + color);
+			SendDataToServerWhenConnected("&" + XML_RREQUEST.SetColor + "=" + color);
             
             
             var red = (color >> 16) & 0xFF;
@@ -684,7 +692,7 @@
 			var colorStr = ('000000' + color.toString(16)).slice(-6);
 			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
 			document.getElementById("color_rgb_value").innerHTML = colorStr;
-			SendDataToServer("&" + XML_RREQUEST.SetColor + "=" + color);			
+			SendDataToServerWhenConnected("&" + XML_RREQUEST.SetColor + "=" + color);			
         }
 
 		function ColorWhiteSliderChanged()
@@ -696,7 +704,7 @@
 			output.innerHTML = color;
 			colorStr = ('000000' + ((color << 16) | (color << 8) | color).toString(16)).slice(-6);
 			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
-			SendDataToServer("&" + XML_RREQUEST.SetColor + "=" + (slider.value << 24));			
+			SendDataToServerWhenConnected("&" + XML_RREQUEST.SetColor + "=" + (slider.value << 24));			
 		}
 
 		// 2 thumb slider
@@ -732,7 +740,7 @@
                 ye = tmp;
             }
 
-			SendDataToServer("&" + XML_RREQUEST.SetArea + "=X" + xs + "-" + xe + "Y" + ys + "-" + ye);
+			SendDataToServerWhenConnected("&" + XML_RREQUEST.SetArea + "=X" + xs + "-" + xe + "Y" + ys + "-" + ye);
             xs += USER_SETTING_OFFSET;
             xe += USER_SETTING_OFFSET;
             ys += USER_SETTING_OFFSET;
@@ -769,7 +777,7 @@
 </head>
 
 <body>
-    <h1>MoBa Licht Steuerung</h1>
+    <h1>Raumlicht Steuerung</h1>
     <br>
     <div id="LightScene"></div>
     <br>
@@ -814,7 +822,7 @@
     <br>
     <br>
     
-    <h2>Leuchtposition</h2>
+    <h2>User Set: Beleuchtungsbereich</h2>
     <table style="width: 100%">
         <tr>
             <td>
