@@ -374,8 +374,8 @@
                                 {
                                     var version_major = this.responseXML.getElementsByTagName('major')[0].childNodes[0].nodeValue;
                                     var version_minor = this.responseXML.getElementsByTagName('minor')[0].childNodes[0].nodeValue;
-                                    var led_nof_row = parseInt(this.responseXML.getElementsByTagName('nof_row')[0].childNodes[0].nodeValue) - USER_SETTING_OFFSET;
-                                    var led_nof_px = parseInt(this.responseXML.getElementsByTagName('nof_leds')[0].childNodes[0].nodeValue) - USER_SETTING_OFFSET;
+                                    var led_nof_row = parseInt(this.responseXML.getElementsByTagName('nof_row')[0].childNodes[0].nodeValue);
+                                    var led_nof_px = parseInt(this.responseXML.getElementsByTagName('nof_leds')[0].childNodes[0].nodeValue);
                                     var xs = parseInt(this.responseXML.getElementsByTagName('xs')[0].childNodes[0].nodeValue);
                                     var xe = parseInt(this.responseXML.getElementsByTagName('xe')[0].childNodes[0].nodeValue);
                                     var ys = parseInt(this.responseXML.getElementsByTagName('ys')[0].childNodes[0].nodeValue);
@@ -391,11 +391,11 @@
                                     //    <input id="b" class="twoThumbSlider" type="range" min="0" value="5" max="5" />
                                     //    <!--<output for="b" style="--c: var(--b)"></output>-->
                                     //</div>
-                                    document.getElementById("led_row").innerHTML = (ys + " - " + ye);
+                                    var slider_row_max = led_nof_row - USER_SETTING_OFFSET;
                                     document.getElementById("led_slider_row").innerHTML = (
-                                        '<div id="slider_row" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: ' + ys + '; --b: ' + ye + '; --min: 0; --max: ' + led_nof_row + ';">'
-                                        +   '<input id="a" class="twoThumbSlider" type="range" min="0" value="' + ys + '" max="' + led_nof_row + '" />'
-                                        +   '<input id="b" class="twoThumbSlider" type="range" min="0" value="' + ye + '" max="' + led_nof_row + '" />'
+                                        '<div id="slider_row" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: ' + ys + '; --b: ' + ye + '; --min: 0; --max: ' + slider_row_max + ';">'
+                                        +   '<input name="ledSliderRow_a" id="a" class="twoThumbSlider" type="range" min="0" value="' + ys + '" max="' + slider_row_max + '" />'
+                                        +   '<input name="ledSliderRow_b" id="b" class="twoThumbSlider" type="range" min="0" value="' + ye + '" max="' + slider_row_max + '" />'
                                         + '</div>'
                                     );
                                     if (led_nof_row > 1)
@@ -414,11 +414,11 @@
                                     //    <input id="b" class="twoThumbSlider" type="range" min="0" value="120" max="239" />
                                     //    <!--<output for="b" style="--c: var(--b)"></output>-->
                                     //</div>
-                                    document.getElementById("led_column").innerHTML = (xs + " - " + xe);
+                                    var slider_column_max = led_nof_px - USER_SETTING_OFFSET;
                                     document.getElementById("led_slider_column").innerHTML = (
-                                        '<div id="slider_columen" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: ' + xs + '; --b: ' + xe + '; --min: 0; --max: ' + led_nof_px + '">'
-                                        +   '<input id="a" class="twoThumbSlider" type="range" min="0" value="' + xs + '" max="' + led_nof_px + '" />'
-                                        +   '<input id="b" class="twoThumbSlider" type="range" min="0" value="' + xe + '" max="' + led_nof_px + '" />'
+                                        '<div id="slider_columen" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: ' + xs + '; --b: ' + xe + '; --min: 0; --max: ' + slider_column_max + '">'
+                                        +   '<input name="ledSliderColumn_a" id="a" class="twoThumbSlider" type="range" min="0" value="' + xs + '" max="' + slider_column_max + '" />'
+                                        +   '<input name="ledSliderColumn_b" id="b" class="twoThumbSlider" type="range" min="0" value="' + xe + '" max="' + slider_column_max + '" />'
                                         + '</div>'
                                     );
 
@@ -501,18 +501,22 @@
 								re = this.responseXML.getElementsByTagName('led_area');
 								if ((re != undefined) && (re != null) && (re.length > 0))
                                 {
-                                    var xs = parseInt(this.responseXML.getElementsByTagName('xs')[0].childNodes[0].nodeValue) + USER_SETTING_OFFSET;
-                                    var xe = parseInt(this.responseXML.getElementsByTagName('xe')[0].childNodes[0].nodeValue) + USER_SETTING_OFFSET;
-                                    var ys = parseInt(this.responseXML.getElementsByTagName('ys')[0].childNodes[0].nodeValue) + USER_SETTING_OFFSET;
-                                    var ye = parseInt(this.responseXML.getElementsByTagName('ye')[0].childNodes[0].nodeValue) + USER_SETTING_OFFSET;
+                                    var xs = parseInt(this.responseXML.getElementsByTagName('xs')[0].childNodes[0].nodeValue);
+                                    var xe = parseInt(this.responseXML.getElementsByTagName('xe')[0].childNodes[0].nodeValue);
+                                    var ys = parseInt(this.responseXML.getElementsByTagName('ys')[0].childNodes[0].nodeValue);
+                                    var ye = parseInt(this.responseXML.getElementsByTagName('ye')[0].childNodes[0].nodeValue);
 
-                                    document.getElementById("led_column").innerHTML = (xs + " - " + xe);
-                                    document.getElementById("led_row").innerHTML = (ys + " - " + ye);
+                                    document.getElementById("led_row").innerHTML = ((ys + USER_SETTING_OFFSET) + " - " + (ye + USER_SETTING_OFFSET));
+                                    document.getElementById("slider_row").style.setProperty("--a", ys);
+                                    document.getElementById("slider_row").style.setProperty("--b", ye);
+                                    document.getElementsByName("ledSliderRow_a")[0].value = ys;
+                                    document.getElementsByName("ledSliderRow_b")[0].value = ye;
 
-                                    //document.getElementById("slider_columen").style.setProperty("--a", xs);
-                                    //document.getElementById("slider_columen").style.setProperty("--b", xe);
-                                    //document.getElementById("slider_row").style.setProperty("--a", ys);
-                                    //document.getElementById("slider_row").style.setProperty("--b", ye);
+                                    document.getElementById("led_column").innerHTML = ((xs + USER_SETTING_OFFSET) + " - " + (xe + USER_SETTING_OFFSET));
+                                    document.getElementById("slider_columen").style.setProperty("--a", xs);
+                                    document.getElementById("slider_columen").style.setProperty("--b", xe);
+                                    document.getElementsByName("ledSliderColumn_a")[0].value = xs;
+                                    document.getElementsByName("ledSliderColumn_b")[0].value = xe;
                                 }
 
 
