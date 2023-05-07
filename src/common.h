@@ -39,7 +39,7 @@ typedef struct
 // DO NOT CHANGE
 //--- version -------------------------------------------------------------
 #define SW_VERSION_Major 1
-#define SW_VERSION_Minor 4
+#define SW_VERSION_Minor 5
 
 
 //--- switch --------------------------------------------------------------
@@ -67,7 +67,7 @@ typedef struct
 #define ROOM_LIGHT_MarkusNTrains    0
 #define ROOM_LIGHT_Altenglienicke   1
 #define ROOM_LIGHT_TestBoard        2
-#define ROOM_LIGHT ROOM_LIGHT_TestBoard
+#define ROOM_LIGHT ROOM_LIGHT_Altenglienicke
 
 #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
     // LED Matrix defines -----------------------------
@@ -106,8 +106,8 @@ typedef struct
     #define ROOM_LIGHT_LedStrip2_Pin 24
     #define ROOM_LIGHT_LedStrip3_Pin 26
     #define ROOM_LIGHT_LedStrip4_Pin 28
-    #define ROOM_LIGHT_LedStrip4_Pin 30
-    #define ROOM_LIGHT_LedStrip4_Pin 32
+    #define ROOM_LIGHT_LedStrip5_Pin 30
+    #define ROOM_LIGHT_LedStrip6_Pin 32
 
     #define ROOM_LIGHT_LedStrip1_NofLed 66
     #define ROOM_LIGHT_LedStrip2_NofLed 240
