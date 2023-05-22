@@ -12,8 +12,9 @@
             --backgroundColor: #222222;
             --headerBackgroundColor: #444444;
             --BackgroundColorActive: #ffbf00;
-            --BackgroundColorHover: #009fff;
+            --BackgroundColorHover: #ff8000;
             --sliderBackgroundColor: #4b4b4b;
+            --ButtonBackgroundColor: #38a2a7;
 		    --SliderThumbColor: var(--sliderBackgroundColor);
             --textColorDark: #000000;
             --textColorLight: #ffffff;
@@ -21,6 +22,8 @@
 
             background-color: var(--backgroundColor);
             color: var(--textColorLight);
+
+			font-family: Arial, Helvetica, sans-serif;
 		}
 		.out_box {
 			float: left;
@@ -34,16 +37,6 @@
 		}
 		input {
 			vertical-align: -3px;
-		}
-		h1 {
-			font-size: 150%;
-			color: var(--textColorLight);
-            background-color: var(--headerBackgroundColor);
-			margin: 0 0 10px 0;
-			width: calc(100% - 32px);
-			border-radius: 4px;
-			padding: 8px 16px 8px 16px;
-			border: 2px solid var(--boarderColor);
 		}
 		h2 {
 			font-size: 120%;
@@ -65,15 +58,36 @@
         }
 
         /*----------------------------------------------------------------------*/
+		/* box */
+		.box {
+			background-color: var(--backgroundColor);
+			width: 100%;
+			border-radius: 4px;
+			/*border: 2px solid var(--boarderColor);			*/
+		}		
+		.box_header {
+			font-size: 125%;
+			font-weight: bold;
+			color: var(--textColorLight);
+            background-color: var(--headerBackgroundColor);
+			margin: 0 0 10px 0;
+			width: calc(100% - 32px);
+			padding: 8px 16px 8px 16px;
+		}
+		.box_content {
+			padding: 8px 8px 8px 8px;
+		}
+		
+        /*----------------------------------------------------------------------*/
 		/* button */
 		.button {
-            color: var(--textColorLight);
-			background-color: var(--backgroundColor);
-			border: 2px solid var(--headerBackgroundColor);
+            color: var(--textColorDark);
+			background-color: var(--ButtonBackgroundColor);
+			/*border: 2px solid var(--headerBackgroundColor);*/
 			border-radius: 4px;
 			padding: 16px 12px;
 			text-align: center;
-			text-decoration: none;
+			/*text-decoration: none;*/
 			display: inline-block;
 			font-size: 16px;
 			margin: 4px 2px;
@@ -262,6 +276,11 @@
 
 	<script type="text/javascript" charset="utf-8">
         //--- const ------------------------------------------------------
+        //--- Firmware version
+        const GLOBAL_WebserverVersion_Major = 1;
+        const GLOBAL_WebserverVersion_Minor = 6;
+
+
 		const LIGHT_SCENE = 
 		{
 			OfficeTable: 0,
@@ -348,7 +367,7 @@
                     document.getElementById("led_row").innerHTML = ("loading...");
                     document.querySelector(':root').style.setProperty('--SliderThumbColor', '#3F3F3F');
 
-                    document.getElementById("footer_version").innerHTML = ("vX.Y");
+                    document.getElementById("footer_version").innerHTML = ("v" + GLOBAL_WebserverVersion_Major + "." + GLOBAL_WebserverVersion_Minor);
 
                     FindServer();
                 }
@@ -424,6 +443,10 @@
 
                                     //--- display Arduino room light firmware version in footer ---------------------
                                     document.getElementById("footer_version").innerHTML = ("v" + version_major + "." + version_minor);
+                                    if ((version_major != GLOBAL_WebserverVersion_Major) || (version_minor != GLOBAL_WebserverVersion_Minor))
+                                    {
+                                        location.reload();
+                                    }
                                 }
 								
 								re = this.responseXML.getElementsByTagName('scene');
@@ -757,22 +780,23 @@
         //--- onload event handler ----------------------------------------
         window.addEventListener('load', (event) => 
         {
-            var button = '<button class="button" id="LightScene' + LIGHT_SCENE.PowerOff + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.PowerOff, this)">Off</button>'
-             + '<button class="button" id="LightScene' + LIGHT_SCENE.OfficeTable + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.OfficeTable, this)">B&uuml;rotisch</button>'
-             + '<button class="button" id="LightScene' + LIGHT_SCENE.Moba + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Moba, this)">MoBa</button>'
-             + '<button class="button" id="LightScene' + LIGHT_SCENE.LightOn + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.LightOn, this)">All On</button>'
-             + '<button class="button" id="LightScene' + LIGHT_SCENE.Rainbow + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Rainbow, this)">Rainbow</button>'
-             + '<button class="button" id="LightScene' + LIGHT_SCENE.Disco + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Disco, this)">Disco</button>'
-             + '<button class="button" id="LightScene' + LIGHT_SCENE.UserSetting + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.UserSetting, this)">User Set</button>'
+            var button = '<div class="button" id="LightScene' + LIGHT_SCENE.PowerOff + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.PowerOff, this)">Off</div>'
+             + '<div class="button" id="LightScene' + LIGHT_SCENE.OfficeTable + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.OfficeTable, this)">B&uuml;rotisch</div>'
+             + '<div class="button" id="LightScene' + LIGHT_SCENE.Moba + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Moba, this)">MoBa</div>'
+             + '<div class="button" id="LightScene' + LIGHT_SCENE.LightOn + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.LightOn, this)">All On</div>'
+             + '<div class="button" id="LightScene' + LIGHT_SCENE.Rainbow + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Rainbow, this)">Rainbow</div>'
+             + '<div class="button" id="LightScene' + LIGHT_SCENE.Disco + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Disco, this)">Disco</div>'
+             + '<div class="button" id="LightScene' + LIGHT_SCENE.UserSetting + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.UserSetting, this)">User Set</div>'
              + '<br>'
-             + '<button class="button" id="LightScene' + LIGHT_SCENE.Sunrise + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Sunrise, this)">Sunrise</button>'
-             + '<button class="button" id="LightScene' + LIGHT_SCENE.Day + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Day, this)">Day</button>'
-             + '<button class="button" id="LightScene' + LIGHT_SCENE.Sunset + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Sunset, this)">Sunset</button>'
-             + '<button class="button" id="LightScene' + LIGHT_SCENE.Night + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Night, this)">Night</button>'
-             + '<button class="button" id="LightScene' + LIGHT_SCENE.Cloud + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Cloud, this)">Clouds</button>'
-             + '<button class="button" id="LightScene' + LIGHT_SCENE.Lightning + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Lightning, this)">Lightning</button>';
+             + '<div class="button" id="LightScene' + LIGHT_SCENE.Sunrise + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Sunrise, this)">Sunrise</div>'
+             + '<div class="button" id="LightScene' + LIGHT_SCENE.Day + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Day, this)">Day</div>'
+             + '<div class="button" id="LightScene' + LIGHT_SCENE.Sunset + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Sunset, this)">Sunset</div>'
+             + '<div class="button" id="LightScene' + LIGHT_SCENE.Night + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Night, this)">Night</div>'
+             + '<div class="button" id="LightScene' + LIGHT_SCENE.Cloud + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Cloud, this)">Clouds</div>'
+             + '<div class="button" id="LightScene' + LIGHT_SCENE.Lightning + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Lightning, this)">Lightning</div>';
 
             document.getElementById("LightScene").innerHTML = button;
+            document.getElementById("footer_version").innerHTML = ("v" + GLOBAL_WebserverVersion_Major + "." + GLOBAL_WebserverVersion_Minor);
 
 			FindServer();
         });
@@ -781,70 +805,73 @@
 </head>
 
 <body>
-    <h1>Raumlicht Steuerung</h1>
-    <br>
-    <div id="LightScene"></div>
-    <br>
-    <br>
+	<div class="box">
+		<div class="box_header">Licht Szene</div>
+		<div id="LightScene" class="box_content"></div>
+	</div>
     <br>
 
-    <h2>Helligkeit</h2>
-    <br>
-    <div class="slidecontainer">
-        <label for="brightness_value">Helligkeit</label>
-        <label id="brightness_value" class="user_value"></label>
-        <input type="range" min="0" max="255" value="50" class="slider" id="brightness_slider" oninput="BrighntessSliderChanged()">
-    </div>
-    <br>
-    <br>
-    
-    <h2>Farbe</h2>
-    <br>
-    <div class="slidecontainer">
-        <label for="color_rgb_value">RGB</label>
-        <label id="color_rgb_value" class="user_value"></label>
-        <input type="range" min="0" max="1535" value="50" class="slider" id="color_rgb_slider" oninput="ColorRGBSliderChanged()" style="background-image: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);">
-    </div>
-    <br>
-    <div class="slidecontainer">
-        <label for="color_red_value">Rot</label>
-        <label id="color_red_value" class="user_value"></label>
-        <input type="range" min="0" max="255" value="50" class="slider" id="color_red_slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, red)">
-
-        <label for="color_green_value">Gr&uuml;n</label>
-        <label id="color_green_value" class="user_value"></label>
-        <input type="range" min="0" max="255" value="50" class="slider" id="color_green_slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, rgb(0, 255, 0))">
-
-        <label for="color_blue_value">Blau</label>
-        <label id="color_blue_value" class="user_value"></label>
-        <input type="range" min="0" max="255" value="50" class="slider" id="color_blue_slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, blue)">
-
-        <label for="color_white_value">Weiss</label>
-        <label id="color_white_value" class="user_value"></label>
-        <input type="range" min="0" max="255" value="50" class="slider" id="color_white_slider" oninput="ColorWhiteSliderChanged()" style="background-image: linear-gradient(90deg, black, white)">
-    </div>
-    <br>
-    <br>
-    
-    <h2>User Set: Beleuchtungsbereich</h2>
-    <table style="width: 100%">
-        <tr>
-            <td>
-                <label for="led_row">Reihen</label>
-                <label type="text" id="led_row" class="user_value"> loading...</label>      
-            </td>
+    <div class="box">
+        <div class="box_header">Helligkeit / Farbe</div>
+        <div class="box_content">
+            <div class="slidecontainer">
+                <label for="brightness_value">Helligkeit</label>
+                <label id="brightness_value" class="user_value"></label>
+                <input type="range" min="0" max="255" value="50" class="slider" id="brightness_slider" oninput="BrighntessSliderChanged()">
+            </div>
             <br>
-            <td>
-                <label for="led_column">L&auml;nge</label>
-                <label type="text" id="led_column" class="user_value"> loading...</label>
-            </td>
-        </tr>
-        <tr>
-            <td id="led_slider_row">
-            </td>
-            <td id=led_slider_column>
-            </td>
-        </tr>
-    </table>
+            
+            <div class="slidecontainer">
+                <label for="color_rgb_value">RGB</label>
+                <label id="color_rgb_value" class="user_value"></label>
+                <input type="range" min="0" max="1535" value="50" class="slider" id="color_rgb_slider" oninput="ColorRGBSliderChanged()" style="background-image: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);">
+            </div>
+            <div class="slidecontainer">
+                <label for="color_red_value">Rot</label>
+                <label id="color_red_value" class="user_value"></label>
+                <input type="range" min="0" max="255" value="50" class="slider" id="color_red_slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, red)">
+            </div>
+            <div class="slidecontainer">
+                <label for="color_green_value">Gr&uuml;n</label>
+                <label id="color_green_value" class="user_value"></label>
+                <input type="range" min="0" max="255" value="50" class="slider" id="color_green_slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, rgb(0, 255, 0))">
+            </div>
+            <div class="slidecontainer">
+                <label for="color_blue_value">Blau</label>
+                <label id="color_blue_value" class="user_value"></label>
+                <input type="range" min="0" max="255" value="50" class="slider" id="color_blue_slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, blue)">
+            </div>
+            <div class="slidecontainer">
+                <label for="color_white_value">Weiss</label>
+                <label id="color_white_value" class="user_value"></label>
+                <input type="range" min="0" max="255" value="50" class="slider" id="color_white_slider" oninput="ColorWhiteSliderChanged()" style="background-image: linear-gradient(90deg, black, white)">
+            </div>
+        </div>
+    </div>
+    <br>
+    
+    <div class="box">
+        <div class="box_header">User Set: Beleuchtungsbereich</div>
+        <div class="box_content">
+            <table style="width: 100%;">
+                <tr>
+                    <td>
+                        <label for="led_row">Reihen</label>
+                        <label type="text" id="led_row" class="user_value"> loading...</label>      
+                    </td>
+                    <td>
+                        <label for="led_column">L&auml;nge</label>
+                        <label type="text" id="led_column" class="user_value"> loading...</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="led_slider_row">
+                    </td>
+                    <td id=led_slider_column>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
 </body>
 </html>
