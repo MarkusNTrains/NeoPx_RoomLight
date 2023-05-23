@@ -83,14 +83,14 @@
 		.button {
             color: var(--textColorDark);
 			background-color: var(--ButtonBackgroundColor);
-			/*border: 2px solid var(--headerBackgroundColor);*/
+			/*border: 2px solid var(--ButtonBackgroundColor);*/
 			border-radius: 4px;
 			padding: 16px 12px;
 			text-align: center;
 			/*text-decoration: none;*/
 			display: inline-block;
 			font-size: 16px;
-			margin: 4px 2px;
+			margin: 4px 4px;
 			-webkit-transition-duration: 0.4s; /* Safari */
 			transition-duration: 0.4s;
 			cursor: pointer;
@@ -105,10 +105,14 @@
 			color: var(--textColorDark);
 			transform: translateY(2px);
 		}		
-		.active-class {
+		.button_active {
 			background-color: var(--BackgroundColorActive);
 			color: var(--textColorDark);
 		}
+        .disabled {
+            color: var(--textColorDark);
+			background-color: var(--headerBackgroundColor);
+        }
 		
         /*----------------------------------------------------------------------*/
         /* user values */
@@ -350,26 +354,7 @@
                 s_xhttp.timeout = SERVER_RESPONSE_TIMEOUT_MS;
                 s_xhttp.ontimeout = function()
                 {
-                    s_is_server_connected = false;
-                    clearInterval(s_requestDataFromServer_intervalTimer);
-
-                    document.body.style.cursor = "progress";
-
-                    LightScene_SetAllAsInactive();
-
-                    document.getElementById("brightness_value").innerHTML = ("loading...");
-                    document.getElementById("color_rgb_value").innerHTML = ("loading...");
-                    document.getElementById("color_red_value").innerHTML = ("loading...");
-                    document.getElementById("color_green_value").innerHTML = ("loading...");
-                    document.getElementById("color_blue_value").innerHTML = ("loading...");
-                    document.getElementById("color_white_value").innerHTML = ("loading...");
-                    document.getElementById("led_column").innerHTML = ("loading...");
-                    document.getElementById("led_row").innerHTML = ("loading...");
-                    document.querySelector(':root').style.setProperty('--SliderThumbColor', '#3F3F3F');
-
-                    document.getElementById("footer_version").innerHTML = ("v" + GLOBAL_WebserverVersion_Major + "." + GLOBAL_WebserverVersion_Minor);
-
-                    FindServer();
+                    ConnectionToServerLost();
                 }
 				s_xhttp.onreadystatechange = function()
 				{
@@ -386,6 +371,7 @@
                                     document.body.style.cursor = "default";
                                     clearInterval(s_findServer_intervalTimer);
                                     RequestCurrentDataFromServer();
+                                    Button_EnableAll();
                                 }
 
 								var re = this.responseXML.getElementsByTagName('info');
@@ -556,7 +542,7 @@
 						}
 						else
 						{
-							//alert("Keine Verbindung zum Webserver\nStatus: " + this.status);
+							ConnectionToServerLost();
 						}
 					}
 				}
@@ -574,6 +560,26 @@
                 s_pending_xml_request = xml_request;
 			}
 		}
+
+        function ConnectionToServerLost()
+        {
+            s_is_server_connected = false;
+            clearInterval(s_requestDataFromServer_intervalTimer);
+            document.body.style.cursor = "progress";
+            Button_DisableAll();
+            document.getElementById("brightness_value").innerHTML = ("loading...");
+            document.getElementById("color_rgb_value").innerHTML = ("loading...");
+            document.getElementById("color_red_value").innerHTML = ("loading...");
+            document.getElementById("color_green_value").innerHTML = ("loading...");
+            document.getElementById("color_blue_value").innerHTML = ("loading...");
+            document.getElementById("color_white_value").innerHTML = ("loading...");
+            document.getElementById("led_column").innerHTML = ("loading...");
+            document.getElementById("led_row").innerHTML = ("loading...");
+            document.querySelector(':root').style.setProperty('--SliderThumbColor', '#3F3F3F');
+            document.getElementById("footer_version").innerHTML = ("v" + GLOBAL_WebserverVersion_Major + "." + GLOBAL_WebserverVersion_Minor);
+
+            FindServer();
+        }
 		
         function SendDataToServerWhenConnected(xml_request)
         {
@@ -625,12 +631,30 @@
 			SendDataToServerWhenConnected("&" + XML_RREQUEST.SetLightScene + "=" + scene);
 		}
 
-        function LightScene_SetAllAsInactive()
+        function Button_DisableAll()
         {
-			var matches = document.getElementsByClassName('active-class');
+			var matches = document.getElementsByClassName('button');
 			for (var cnt = 0; cnt < matches.length; cnt++) 
 			{
-				matches[cnt].classList.remove('active-class');
+				matches[cnt].classList.add('disabled');
+			}
+        }
+
+        function Button_EnableAll()
+        {
+			var matches = document.getElementsByClassName('button');
+			for (var cnt = 0; cnt < matches.length; cnt++) 
+			{
+				matches[cnt].classList.remove('disabled');
+			}
+        }
+
+        function LightScene_SetAllAsInactive()
+        {
+			var matches = document.getElementsByClassName('button');
+			for (var cnt = 0; cnt < matches.length; cnt++) 
+			{
+				matches[cnt].classList.remove('button_active');
 			}
         }
 		
@@ -640,7 +664,7 @@
             
             if (scene < LIGHT_SCENE.NOF)
             {
-			    document.getElementById("LightScene" + scene).classList.add("active-class");
+			    document.getElementById("LightScene" + scene).classList.add("button_active");
             }
         }
 
@@ -780,20 +804,20 @@
         //--- onload event handler ----------------------------------------
         window.addEventListener('load', (event) => 
         {
-            var button = '<div class="button" id="LightScene' + LIGHT_SCENE.PowerOff + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.PowerOff, this)">Off</div>'
-             + '<div class="button" id="LightScene' + LIGHT_SCENE.OfficeTable + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.OfficeTable, this)">B&uuml;rotisch</div>'
-             + '<div class="button" id="LightScene' + LIGHT_SCENE.Moba + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Moba, this)">MoBa</div>'
-             + '<div class="button" id="LightScene' + LIGHT_SCENE.LightOn + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.LightOn, this)">All On</div>'
-             + '<div class="button" id="LightScene' + LIGHT_SCENE.Rainbow + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Rainbow, this)">Rainbow</div>'
-             + '<div class="button" id="LightScene' + LIGHT_SCENE.Disco + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Disco, this)">Disco</div>'
-             + '<div class="button" id="LightScene' + LIGHT_SCENE.UserSetting + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.UserSetting, this)">User Set</div>'
+            var button = '<div class="button disabled" id="LightScene' + LIGHT_SCENE.PowerOff + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.PowerOff, this)">Off</div>'
+             + '<div class="button disabled" id="LightScene' + LIGHT_SCENE.OfficeTable + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.OfficeTable, this)">B&uuml;rotisch</div>'
+             + '<div class="button disabled" id="LightScene' + LIGHT_SCENE.Moba + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Moba, this)">MoBa</div>'
+             + '<div class="button disabled" id="LightScene' + LIGHT_SCENE.LightOn + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.LightOn, this)">All On</div>'
+             + '<div class="button disabled" id="LightScene' + LIGHT_SCENE.Rainbow + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Rainbow, this)">Rainbow</div>'
+             + '<div class="button disabled" id="LightScene' + LIGHT_SCENE.Disco + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Disco, this)">Disco</div>'
+             + '<div class="button disabled" id="LightScene' + LIGHT_SCENE.UserSetting + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.UserSetting, this)">User Set</div>'
              + '<br>'
-             + '<div class="button" id="LightScene' + LIGHT_SCENE.Sunrise + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Sunrise, this)">Sunrise</div>'
-             + '<div class="button" id="LightScene' + LIGHT_SCENE.Day + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Day, this)">Day</div>'
-             + '<div class="button" id="LightScene' + LIGHT_SCENE.Sunset + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Sunset, this)">Sunset</div>'
-             + '<div class="button" id="LightScene' + LIGHT_SCENE.Night + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Night, this)">Night</div>'
-             + '<div class="button" id="LightScene' + LIGHT_SCENE.Cloud + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Cloud, this)">Clouds</div>'
-             + '<div class="button" id="LightScene' + LIGHT_SCENE.Lightning + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Lightning, this)">Lightning</div>';
+             + '<div class="button disabled" id="LightScene' + LIGHT_SCENE.Sunrise + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Sunrise, this)">Sunrise</div>'
+             + '<div class="button disabled" id="LightScene' + LIGHT_SCENE.Day + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Day, this)">Day</div>'
+             + '<div class="button disabled" id="LightScene' + LIGHT_SCENE.Sunset + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Sunset, this)">Sunset</div>'
+             + '<div class="button disabled" id="LightScene' + LIGHT_SCENE.Night + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Night, this)">Night</div>'
+             + '<div class="button disabled" id="LightScene' + LIGHT_SCENE.Cloud + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Cloud, this)">Clouds</div>'
+             + '<div class="button disabled" id="LightScene' + LIGHT_SCENE.Lightning + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Lightning, this)">Lightning</div>';
 
             document.getElementById("LightScene").innerHTML = button;
             document.getElementById("footer_version").innerHTML = ("v" + GLOBAL_WebserverVersion_Major + "." + GLOBAL_WebserverVersion_Minor);

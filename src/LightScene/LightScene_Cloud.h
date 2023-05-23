@@ -80,6 +80,7 @@ class LightScene_Cloud
 
         void DeleteAllClouds();
         void Leave();
+        uint8_t SubtractDarkness(uint8_t color, uint8_t darkness);
 };
 
 #endif // _LIGHT_SCENE_CLOUD_H

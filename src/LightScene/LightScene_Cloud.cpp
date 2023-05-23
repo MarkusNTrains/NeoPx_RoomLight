@@ -50,6 +50,7 @@ LightScene_Cloud::LightScene_Cloud(LightSceneHdl* parent, LightHdl* light_hdl)
 //*****************************************************************************
 LightScene_Cloud::~LightScene_Cloud() 
 {
+    this->DeleteAllClouds();
 }
 
 
@@ -68,10 +69,7 @@ void LightScene_Cloud::Enter()
     this->m_task_hdl_timestamp_ms = 0;
     this->m_task_cycle_cnt = 0;
 
-    if (this->m_nof_clouds != 0)
-    {
-        this->DeleteAllClouds();
-    }
+    this->DeleteAllClouds();
 
     srand(millis());
     this->m_nof_clouds = (rand() % ((CLOUD_MaxNof + 1) - CLOUD_MinNof)) + CLOUD_MinNof;
@@ -151,10 +149,10 @@ bool LightScene_Cloud::Task()
         uint16_t end_pos;
         uint16_t column;
         uint8_t row;
-        uint32_t color = 0;
+        wrgb_color_t color;
         uint32_t darkness = 0;
 
-        this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF, this->m_scene_color);
+        this->m_light_hdl_p->SetLedArea_DoNotChangeBlackLEDs(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF, this->m_scene_color);
         for (cnt = 0; cnt < this->m_nof_clouds; cnt++) 
         {
             if (this->m_cloud_p[cnt]->is_enable == true) 
@@ -180,28 +178,12 @@ bool LightScene_Cloud::Task()
                 }
 
                 //--- calculate color -----------------------------------------
-                color = 0;
+                color.color = this->m_scene_color;
                 darkness = this->m_cloud_p[cnt]->darkness;
-                // white color
-                if (darkness < ((this->m_scene_color >> 24) & 0xFF)) 
-                {
-                    color |= (this->m_scene_color & 0xFF000000) - (darkness << 24);
-                }
-                // red color
-                if (darkness < ((this->m_scene_color >> 16) & 0xFF)) 
-                {
-                    color |= (this->m_scene_color & 0xFF0000) - (darkness << 16);
-                }
-                // green color
-                if (darkness < ((this->m_scene_color >> 8) & 0xFF)) 
-                {
-                    color |= (this->m_scene_color & 0xFF00) - (darkness << 8);
-                }
-                // blue color
-                if (darkness < (this->m_scene_color & 0xFF)) 
-                {
-                    color |= (this->m_scene_color & 0xFF) - darkness;
-                }
+                color.red = this->SubtractDarkness(color.red, darkness);
+                color.green = this->SubtractDarkness(color.green, darkness);
+                color.blue = this->SubtractDarkness(color.blue, darkness);
+                color.white = this->SubtractDarkness(color.white, darkness);
                 
                 
                 // show clouds in different colors --> use for debugging
@@ -252,7 +234,7 @@ bool LightScene_Cloud::Task()
                     }
                 }*/
                 
-                this->m_light_hdl_p->SetLedArea(start_pos, end_pos, this->m_cloud_p[cnt]->row, this->m_cloud_p[cnt]->row + this->m_cloud_p[cnt]->width, color);
+                this->m_light_hdl_p->SetLedArea_DoNotChangeBlackLEDs(start_pos, end_pos, this->m_cloud_p[cnt]->row, this->m_cloud_p[cnt]->row + this->m_cloud_p[cnt]->width, color.color);
                 is_update_needed = true;
 
                 //--- update position -----------------------------------------
@@ -282,4 +264,26 @@ bool LightScene_Cloud::Task()
 void LightScene_Cloud::Leave()
 {
     this->m_scene_hdl_p->ChangeLightScene(this->m_scene_hdl_p->GetLastScene());
+}
+
+
+//*****************************************************************************
+// description:
+//   subtract darkness from a single (red, green, blue or white) color value
+//*****************************************************************************
+uint8_t LightScene_Cloud::SubtractDarkness(uint8_t color, uint8_t darkness)
+{
+    if (darkness < color) 
+    {
+        color = color - darkness;
+    }
+    else 
+    {
+        if (color > 0)
+        {
+            color = 1 + (255 / this->m_light_hdl_p->GetBrightness());
+        }
+    }
+
+    return color;
 }

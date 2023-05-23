@@ -132,7 +132,6 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene)
             switch (this->m_scene)
             {
                 case LightSceneID::Cloud:
-    Serial.println(F("Task: Cloud Exit"));
                     this->m_scene_cloud_p->Exit();
                     break;
                     
@@ -140,6 +139,7 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene)
                     break;
 
                 case LightSceneID::Lightning:
+                    this->m_scene_lightning_p->Exit();
                     break;
                     
                 case LightSceneID::LightOff:

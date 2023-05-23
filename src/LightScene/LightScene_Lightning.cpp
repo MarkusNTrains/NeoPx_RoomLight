@@ -78,6 +78,8 @@ void LightScene_Lightning::Enter()
 //*****************************************************************************
 void LightScene_Lightning::Exit()
 {
+    this->m_light_hdl_p->SetBrightness_Instantly(this->m_last_scene_brightness);
+    this->m_light_hdl_p->SetColor(this->m_last_scene_color.color);
 }
 
 
@@ -289,8 +291,6 @@ static bool LightScene_Lightning::FadeColor(uint8_t target_color, uint8_t* curre
 //*****************************************************************************
 void LightScene_Lightning::Leave()
 {
-    this->m_light_hdl_p->SetBrightness_Instantly(this->m_last_scene_brightness);
-    this->m_light_hdl_p->SetColor(this->m_last_scene_color.color);
     this->m_scene_hdl_p->ChangeLightScene(this->m_scene_hdl_p->GetLastScene());
 }
 

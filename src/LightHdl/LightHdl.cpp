@@ -115,6 +115,29 @@ void LightHdl::SetLedArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, ui
 //*****************************************************************************
 // description:
 //   Update LED area --> new color and new brightness are automatically used 
+//   for all LEDs in this area except the LEDs which are already black
+//*****************************************************************************
+void LightHdl::SetLedArea_DoNotChangeBlackLEDs(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color)
+{
+    uint16_t row = 0;
+    uint16_t column = 0; 
+
+    for (row = ys; row <= ye; row++)
+    {
+        for (column = xs; column <= xe; column++)
+        {
+            if (this->GetLedColor(row, column) != LightHdl::COLOR_BLACK)
+            {
+                this->SetLedColor(row, column, color);
+            }
+        }
+    }
+}
+
+
+//*****************************************************************************
+// description:
+//   Update LED area --> new color and new brightness are automatically used 
 //   for all LEDs in this area
 //*****************************************************************************
 void LightHdl::UpdateLedArea()
