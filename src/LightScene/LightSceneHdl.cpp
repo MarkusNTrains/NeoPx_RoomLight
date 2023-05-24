@@ -161,7 +161,7 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene_id)
         }
 
         //--- change to requested scene ---
-        switch (scene_id)
+        switch (this->m_scene_id)
         {
             case LightSceneID::Cloud:
             case LightSceneID::Lightning:

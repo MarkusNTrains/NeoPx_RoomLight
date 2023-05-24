@@ -20,8 +20,9 @@ $Id:  $
 #include "src/LightScene/LightSceneHdl.h"
 #include "src/Webserver/WebServer.h"
 
-#include <avr/wdt.h>
-
+#ifdef __AVR__
+  #include <avr/wdt.h>
+#endif
 
 
 //-----------------------------------------------------------------------------
