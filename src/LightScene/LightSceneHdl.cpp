@@ -84,6 +84,9 @@ LightSceneHdl::LightSceneHdl()
     this->ChangeLightScene(LightSceneID::LightOn);
   #endif
 #endif
+
+    this->m_last_scene_id = this->m_scene_id;
+
     this->m_light_hdl_p->SetBrightness_Instantly(this->m_light_hdl_p->GetBrightness());
     if (this->m_active_light_scene_p != nullptr)
     {
