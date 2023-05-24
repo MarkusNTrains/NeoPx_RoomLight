@@ -117,7 +117,7 @@ void LightHdl::SetLedArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, ui
 //   Update LED area --> new color and new brightness are automatically used 
 //   for all LEDs in this area except the LEDs which are already black
 //*****************************************************************************
-void LightHdl::SetLedArea_DoNotChangeBlackLEDs(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color)
+void LightHdl::SetLedArea_DoNotChangeBlackLED(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye)
 {
     uint16_t row = 0;
     uint16_t column = 0; 
@@ -128,10 +128,22 @@ void LightHdl::SetLedArea_DoNotChangeBlackLEDs(uint16_t xs, uint16_t xe, uint16_
         {
             if (this->GetLedColor(row, column) != LightHdl::COLOR_BLACK)
             {
-                this->SetLedColor(row, column, color);
+                this->SetLedColor(row, column, this->m_color);
             }
         }
     }
+}
+
+
+//*****************************************************************************
+// description:
+//   Update LED area --> new color and new brightness are automatically used 
+//   for all LEDs in this area except the LEDs which are already black
+//*****************************************************************************
+void LightHdl::SetLedArea_DoNotChangeBlackLED(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color)
+{
+    this->m_color = color;
+    this->SetLedArea_DoNotChangeBlackLED(xs, xe, ys, ye);
 }
 
 

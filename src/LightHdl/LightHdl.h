@@ -57,7 +57,8 @@ class LightHdl
         void SetLedArea(LedArea* area);
         void SetLedArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye);
         void SetLedArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color);
-        void SetLedArea_DoNotChangeBlackLEDs(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color);
+        void SetLedArea_DoNotChangeBlackLED(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye);
+        void SetLedArea_DoNotChangeBlackLED(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye, uint32_t color);
         void UpdateLedArea();
         uint8_t GetBrightness();
         void SetBrightness_Fade(uint8_t brightness);

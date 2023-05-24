@@ -62,7 +62,7 @@ class LightScene_Cloud
         const static uint32_t CLOUD_MaxLengthPx = 100;
         const static uint32_t CLOUD_MinWidth = 1;
         const static uint32_t CLOUD_MaxWidth = LedRow::LED_ROW_NOF;
-        const static uint32_t CLOUD_MinDarkness = 180;
+        const static uint32_t CLOUD_MinDarkness = 100;
         const static uint32_t CLOUD_MaxDarkness = 255;
         const static uint8_t CLOUD_MinNof = 5;
         const static uint8_t CLOUD_MaxNof = 30;

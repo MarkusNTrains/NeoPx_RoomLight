@@ -152,7 +152,7 @@ bool LightScene_Cloud::Task()
         wrgb_color_t color;
         uint32_t darkness = 0;
 
-        this->m_light_hdl_p->SetLedArea_DoNotChangeBlackLEDs(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF, this->m_scene_color);
+        this->m_light_hdl_p->SetLedArea_DoNotChangeBlackLED(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF, this->m_scene_color);
         for (cnt = 0; cnt < this->m_nof_clouds; cnt++) 
         {
             if (this->m_cloud_p[cnt]->is_enable == true) 
@@ -184,7 +184,16 @@ bool LightScene_Cloud::Task()
                 color.green = this->SubtractDarkness(color.green, darkness);
                 color.blue = this->SubtractDarkness(color.blue, darkness);
                 color.white = this->SubtractDarkness(color.white, darkness);
-                
+                Serial.print("Brightness: ");
+                Serial.print(this->m_light_hdl_p->GetBrightness());
+                Serial.print(", Darkness: ");
+                Serial.print(darkness);
+                Serial.print(", Scene Color Red: ");
+                Serial.print(this->m_scene_color);
+                Serial.print(", Color: ");
+                Serial.print(color.color);
+                Serial.print(", Blue: ");
+                Serial.println(color.blue);
                 
                 // show clouds in different colors --> use for debugging
                 /*switch (cnt % 6)
@@ -234,7 +243,7 @@ bool LightScene_Cloud::Task()
                     }
                 }*/
                 
-                this->m_light_hdl_p->SetLedArea_DoNotChangeBlackLEDs(start_pos, end_pos, this->m_cloud_p[cnt]->row, this->m_cloud_p[cnt]->row + this->m_cloud_p[cnt]->width, color.color);
+                this->m_light_hdl_p->SetLedArea_DoNotChangeBlackLED(start_pos, end_pos, this->m_cloud_p[cnt]->row, this->m_cloud_p[cnt]->row + this->m_cloud_p[cnt]->width, color.color);
                 is_update_needed = true;
 
                 //--- update position -----------------------------------------
@@ -273,15 +282,17 @@ void LightScene_Cloud::Leave()
 //*****************************************************************************
 uint8_t LightScene_Cloud::SubtractDarkness(uint8_t color, uint8_t darkness)
 {
-    if (darkness < color) 
+    uint8_t min_color = 255 / this->m_light_hdl_p->GetBrightness();
+
+    if (color > 0)
     {
-        color = color - darkness;
-    }
-    else 
-    {
-        if (color > 0)
+        if (color - darkness > min_color)
         {
-            color = 1 + (255 / this->m_light_hdl_p->GetBrightness());
+            color -= darkness;
+        }
+        else
+        {
+            color = min_color;
         }
     }
 

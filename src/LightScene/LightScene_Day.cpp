@@ -49,7 +49,6 @@ LightScene_Day::~LightScene_Day()
 //*****************************************************************************
 void LightScene_Day::Enter()
 {
-    this->m_light_hdl_p->Clear();
     this->m_light_hdl_p->SetBrightness_Fade((uint8_t)this->m_datastore_p->GetParameter(this->m_brightness_param_id));
     this->m_light_hdl_p->SetColor(COLOR);
     this->TaskHdl();
@@ -73,7 +72,7 @@ void LightScene_Day::Exit()
 //*****************************************************************************
 bool LightScene_Day::TaskHdl()
 {
-    this->m_light_hdl_p->SetLedArea(0, (LedRow::LED_ROW_LENGTH - 1), 0, (LedRow::LED_ROW_NOF - 1));  
+    this->m_light_hdl_p->SetLedArea_DoNotChangeBlackLED(0, (LedRow::LED_ROW_LENGTH - 1), 0, (LedRow::LED_ROW_NOF - 1));  
     
     return true;
 }

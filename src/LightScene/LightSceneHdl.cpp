@@ -240,6 +240,8 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene)
         this->m_active_light_scene_p->Enter();
     }
 
+    this->m_led_strip_updated_needed = true;
+
     // save light scene if needed
 #if (DATASTORE_SaveLightScene == ON)
     if (save_light_scene == true)
