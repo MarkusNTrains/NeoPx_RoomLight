@@ -78,8 +78,8 @@ void LightScene_Lightning::Enter()
 //*****************************************************************************
 void LightScene_Lightning::Exit()
 {
-    this->m_light_hdl_p->SetBrightness_Instantly(this->m_last_scene_brightness);
     this->m_light_hdl_p->SetColor(this->m_last_scene_color.color);
+    this->m_light_hdl_p->SetBrightness_Instantly(this->m_last_scene_brightness);
 }
 
 

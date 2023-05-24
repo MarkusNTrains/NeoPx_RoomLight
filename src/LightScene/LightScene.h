@@ -54,7 +54,6 @@ class LightScene
     private:
         uint32_t m_task_tmo_ms;
         uint32_t m_task_timestamp_ms;
-
 };
 
 #endif // _LIGHT_SCENE_H

@@ -570,8 +570,12 @@ void WebServer::SendXML(EthernetClient* client)
     {
         // this is standard return
         client->print(F("<scene>"));
-        client->print((int)m_lightSceneHdl_p->GetLightScene());
+        client->print((int)m_lightSceneHdl_p->GetActiveLightScene());
         client->print(F("</scene>"));
+
+        client->print(F("<animation>"));
+        client->print((int)m_lightSceneHdl_p->GetActiveLightAnimation());
+        client->print(F("</animation>"));
 
         if (this->m_action != ACTION_SetBrightness)
         {

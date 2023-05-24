@@ -75,7 +75,8 @@ class LightSceneHdl
         ~LightSceneHdl();
         void Tasks();
         void ChangeLightScene(LightSceneID scene);
-        LightSceneID GetLightScene();
+        LightSceneID GetActiveLightScene();
+        LightSceneID GetActiveLightAnimation();
         LightSceneID GetLastScene();
         const LightHdl* GetLightHdl();
         void GetUserSettingArea(LedArea* area);
@@ -95,8 +96,9 @@ class LightSceneHdl
         LightHdl* m_light_hdl_p;
         bool m_led_strip_updated_needed;
 
-        LightSceneID m_scene;
-        LightSceneID m_last_scene;
+        LightSceneID m_scene_id;
+        LightSceneID m_active_scene_id;
+        LightSceneID m_last_scene_id;
         LightScene* m_active_light_scene_p;
         LightScene_Cloud* m_scene_cloud_p;
         LightScene_Day* m_scene_day_p;

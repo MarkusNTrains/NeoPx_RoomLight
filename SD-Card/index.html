@@ -330,6 +330,8 @@
         var s_findServer_intervalTimer = null;
         var s_is_server_connected = true;
 		var s_xhttp = null;
+        var s_active_lightScene_elementId = "";
+        var s_active_lightAnimation_elementId = "";
 
 
 		//--- function prototypes -----------------------------------------
@@ -439,6 +441,12 @@
 								if ((re != undefined) && (re != null) && (re.length > 0))
 								{
                                     LightScene_ShowAsActive(re[0].childNodes[0].nodeValue);
+                                }	
+
+								re = this.responseXML.getElementsByTagName('animation');
+								if ((re != undefined) && (re != null) && (re.length > 0))
+								{
+                                    LightAnimation_ShowAsActive(re[0].childNodes[0].nodeValue);
                                 }	
 
 								re = this.responseXML.getElementsByTagName('brightness');
@@ -649,22 +657,45 @@
 			}
         }
 
-        function LightScene_SetAllAsInactive()
-        {
-			var matches = document.getElementsByClassName('button');
-			for (var cnt = 0; cnt < matches.length; cnt++) 
-			{
-				matches[cnt].classList.remove('button_active');
-			}
-        }
-		
         function LightScene_ShowAsActive(scene)
         {
-            LightScene_SetAllAsInactive();
+            if (document.getElementById(s_active_lightScene_elementId) != null)
+            {
+                document.getElementById(s_active_lightScene_elementId).classList.remove("button_active");
+            }
             
             if (scene < LIGHT_SCENE.NOF)
             {
-			    document.getElementById("LightScene" + scene).classList.add("button_active");
+                s_active_lightScene_elementId = "LightScene" + scene;
+                if (document.getElementById(s_active_lightScene_elementId) != null)
+                {
+    			    document.getElementById(s_active_lightScene_elementId).classList.add("button_active");
+                }
+            }
+            else
+            {
+                s_active_lightScene_elementId = "";
+            }
+        }
+
+        function LightAnimation_ShowAsActive(animation)
+        {
+            if (document.getElementById(s_active_lightAnimation_elementId) != null)
+            {
+                document.getElementById(s_active_lightAnimation_elementId).classList.remove("button_active");
+            }
+            
+            if (animation < LIGHT_SCENE.NOF)
+            {
+                s_active_lightAnimation_elementId = "LightAnimation" + animation;
+                if (document.getElementById(s_active_lightAnimation_elementId) != null)
+                {
+			        document.getElementById(s_active_lightAnimation_elementId).classList.add("button_active");
+                }
+            }
+            else
+            {
+                s_active_lightAnimation_elementId = "";
             }
         }
 
@@ -812,12 +843,12 @@
              + '<div class="button disabled" id="LightScene' + LIGHT_SCENE.Disco + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Disco, this)">Disco</div>'
              + '<div class="button disabled" id="LightScene' + LIGHT_SCENE.Rainbow + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Rainbow, this)">Rainbow</div>'
             
-             var animation = '<div class="button disabled" id="LightScene' + LIGHT_SCENE.Sunrise + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Sunrise, this)">Sunrise</div>'
-             + '<div class="button disabled" id="LightScene' + LIGHT_SCENE.Day + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Day, this)">Day</div>'
-             + '<div class="button disabled" id="LightScene' + LIGHT_SCENE.Sunset + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Sunset, this)">Sunset</div>'
-             + '<div class="button disabled" id="LightScene' + LIGHT_SCENE.Night + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Night, this)">Night</div>'
-             + '<div class="button disabled" id="LightScene' + LIGHT_SCENE.Cloud + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Cloud, this)">Clouds</div>'
-             + '<div class="button disabled" id="LightScene' + LIGHT_SCENE.Lightning + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Lightning, this)">Lightning</div>';
+             var animation = '<div class="button disabled" id="LightAnimation' + LIGHT_SCENE.Sunrise + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Sunrise, this)">Sunrise</div>'
+             + '<div class="button disabled" id="LightAnimation' + LIGHT_SCENE.Day + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Day, this)">Day</div>'
+             + '<div class="button disabled" id="LightAnimation' + LIGHT_SCENE.Sunset + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Sunset, this)">Sunset</div>'
+             + '<div class="button disabled" id="LightAnimation' + LIGHT_SCENE.Night + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Night, this)">Night</div>'
+             + '<div class="button disabled" id="LightAnimation' + LIGHT_SCENE.Cloud + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Cloud, this)">Clouds</div>'
+             + '<div class="button disabled" id="LightAnimation' + LIGHT_SCENE.Lightning + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Lightning, this)">Lightning</div>';
 
             document.getElementById("LightScene").innerHTML = light_scene;
             document.getElementById("Animation").innerHTML = animation;
