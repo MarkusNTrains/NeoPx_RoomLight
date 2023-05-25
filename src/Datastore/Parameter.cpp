@@ -1,11 +1,3 @@
-/*##############################################################################
-
-  THIS IS GENERATED CODE (use RoomLight_Parameter.ods)
-    ==> DO NOT EDIT MANUALLY !!!
-
-##############################################################################*/
-
-
 /*******************************************************************************
 Project   RoomLight
 
@@ -17,7 +9,7 @@ Project   RoomLight
   Created 27.04.2023 00:00:15 by MarkusNTrains
 ================================================================================
 $HeadURL: parameter.h $
-$Id: Parameter 27.04.2023 00:00:15 automatic gen. $
+$Id: Parameter 27.04.2023 00:00:15  $
 *******************************************************************************/
 
 /*
@@ -94,7 +86,7 @@ void Parameter::ResetAll()
 {
     for (uint8_t id = 0; id < Parameter::Id::Nof; id++)
     {
-        this->Reset(id);
+        this->Reset((Id)id);
     }
 }
 
@@ -108,7 +100,7 @@ void Parameter::ResetAll()
 uint32_t Parameter::GetValue(Id id)
 {
     if (id >= Id::Nof) {
-        return;  // invalid parameter id
+        return 0;  // invalid parameter id
     }
 
     parameter_t param;
@@ -146,7 +138,7 @@ uint32_t Parameter::GetValue(Id id)
 bool Parameter::SetValue(Id id, uint32_t value) 
 {
     if (id >= Id::Nof) {
-        return;  // invalid parameter id
+        return false;  // invalid parameter id
     }
 
     parameter_t param;
@@ -188,10 +180,10 @@ bool Parameter::SetValue(Id id, uint32_t value)
 // description:
 //   GetAddr
 //*****************************************************************************
-static uint16_t Parameter::GetAddr(Id id)
+uint16_t Parameter::GetAddr(Id id)
 {
     if (id >= Id::Nof) {
-        return;  // invalid parameter id
+        return -1;  // invalid parameter id
     }
 
     parameter_t param;
@@ -205,10 +197,10 @@ static uint16_t Parameter::GetAddr(Id id)
 // description:
 //   GetWidth
 //*****************************************************************************
-static uint8_t Parameter::GetWidth(Id id)
+uint8_t Parameter::GetWidth(Id id)
 {
     if (id >= Id::Nof) {
-        return;  // invalid parameter id
+        return 0;  // invalid parameter id
     }
 
     parameter_t param;

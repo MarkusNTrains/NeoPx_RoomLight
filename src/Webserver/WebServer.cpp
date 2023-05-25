@@ -46,7 +46,7 @@ $Id:  $
 WebServer::WebServer(LightSceneHdl* led_scene)
 {
     //int pin;
-    byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x43 }; // MAC address from Ethernet shield sticker under board    
+    byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x49 }; // MAC address from Ethernet shield sticker under board    
 
 #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
     // IP config MarkusNTrains
@@ -580,14 +580,14 @@ void WebServer::SendXML(EthernetClient* client)
         if (this->m_action != ACTION_SetBrightness)
         {
             client->print(F("<brightness>"));
-            client->print(m_lightSceneHdl_p->GetLightHdl()->GetBrightness());
+            client->print(m_lightSceneHdl_p->GetBrightness());
             client->print(F("</brightness>"));
         }
 
         if (this->m_action != ACTION_SetColor)
         {
             client->print(F("<color>"));
-            client->print(m_lightSceneHdl_p->GetLightHdl()->GetColor());
+            client->print(m_lightSceneHdl_p->GetColor());
             client->print(F("</color>"));
         }
 

@@ -78,10 +78,11 @@ class LightSceneHdl
         LightSceneID GetActiveLightScene();
         LightSceneID GetActiveLightAnimation();
         LightSceneID GetLastScene();
-        const LightHdl* GetLightHdl();
         void GetUserSettingArea(LedArea* area);
         void SetUserSettingArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye);
+        uint8_t GetBrightness();
         void SetBrightness(uint8_t brightness);
+        uint32_t GetColor();
         void SetColor(uint32_t color);
 
     protected:
