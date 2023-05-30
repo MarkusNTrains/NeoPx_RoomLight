@@ -51,7 +51,6 @@ void LightScene_Rainbow::Enter()
 {
     this->m_firstPixelHue = 0;
 
-    this->m_light_hdl_p->Clear();
     this->m_light_hdl_p->SetBrightness_Fade((uint8_t)this->m_datastore_p->GetParameter(this->m_brightness_param_id));
     this->TaskHdl();
 }
@@ -81,7 +80,7 @@ bool LightScene_Rainbow::TaskHdl()
     {
         pixelHue = this->m_firstPixelHue + (idx * 65536L / LedRow::LED_ROW_LENGTH);
         color = Adafruit_NeoPixel::gamma32(Adafruit_NeoPixel::ColorHSV(pixelHue));
-        this->m_light_hdl_p->SetLedArea(idx, idx, 0, (LedRow::LED_ROW_NOF - 1), color);  
+        this->m_light_hdl_p->SetLedArea_DoNotChangeBlackLED(idx, idx, 0, (LedRow::LED_ROW_NOF - 1), color);  
     }
 
     // Update strip with new contents

@@ -49,7 +49,7 @@ LightScene_Disco::~LightScene_Disco()
 //*****************************************************************************
 void LightScene_Disco::Enter()
 {
-    this->m_light_hdl_p->Clear();
+    this->m_light_hdl_p->SetLedArea_DoNotChangeBlackLED(0, LedRow::LED_ROW_NOF, 0, LedRow::LED_ROW_LENGTH, Adafruit_NeoPixel::Color(0, 0, 1, 0));
     this->m_light_hdl_p->SetBrightness_Fade((uint8_t)this->m_datastore_p->GetParameter(this->m_brightness_param_id));
     //this->m_light_hdl_p->SetColor(this->m_datastore_p->GetParameter(this->m_color_param_id));
     this->TaskHdl();
@@ -152,7 +152,7 @@ bool LightScene_Disco::TaskHdl()
             break;
     }
 
-    this->m_light_hdl_p->SetLedArea(col_start, col_end, row_start, row_end, color);
+    this->m_light_hdl_p->SetLedArea_DoNotChangeBlackLED(col_start, col_end, row_start, row_end, color);
     
     return true;
 }

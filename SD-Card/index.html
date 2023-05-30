@@ -840,15 +840,15 @@
              + '<div class="button disabled" id="LightScene' + LIGHT_SCENE.Moba + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Moba, this)">MoBa</div>'
              + '<div class="button disabled" id="LightScene' + LIGHT_SCENE.LightOn + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.LightOn, this)">All On</div>'
              + '<div class="button disabled" id="LightScene' + LIGHT_SCENE.UserSetting + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.UserSetting, this)">User Set</div>'
-             + '<div class="button disabled" id="LightScene' + LIGHT_SCENE.Disco + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Disco, this)">Disco</div>'
-             + '<div class="button disabled" id="LightScene' + LIGHT_SCENE.Rainbow + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Rainbow, this)">Rainbow</div>'
             
              var animation = '<div class="button disabled" id="LightAnimation' + LIGHT_SCENE.Sunrise + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Sunrise, this)">Sunrise</div>'
              + '<div class="button disabled" id="LightAnimation' + LIGHT_SCENE.Day + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Day, this)">Day</div>'
              + '<div class="button disabled" id="LightAnimation' + LIGHT_SCENE.Sunset + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Sunset, this)">Sunset</div>'
              + '<div class="button disabled" id="LightAnimation' + LIGHT_SCENE.Night + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Night, this)">Night</div>'
              + '<div class="button disabled" id="LightAnimation' + LIGHT_SCENE.Cloud + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Cloud, this)">Clouds</div>'
-             + '<div class="button disabled" id="LightAnimation' + LIGHT_SCENE.Lightning + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Lightning, this)">Lightning</div>';
+             + '<div class="button disabled" id="LightAnimation' + LIGHT_SCENE.Lightning + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Lightning, this)">Lightning</div>'
+             + '<div class="button disabled" id="LightAnimation' + LIGHT_SCENE.Disco + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Disco, this)">Disco</div>'
+             + '<div class="button disabled" id="LightAnimation' + LIGHT_SCENE.Rainbow + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Rainbow, this)">Rainbow</div>';
 
             document.getElementById("LightScene").innerHTML = light_scene;
             document.getElementById("Animation").innerHTML = animation;
@@ -865,7 +865,7 @@
 		<div class="box_header">Licht Szene</div>
 		<div id="LightScene" class="box_content" style="padding: 0px;"></div>
 	</div>
-	<div class="box" style="margin-left: 5px; width: calc(50% - 5px); float: left;">
+	<div class="box" style="margin-left: 5px; margin-bottom: 15px; width: calc(50% - 5px); float: left;">
 		<div class="box_header">Animation</div>
 		<div id="Animation" class="box_content" style="padding: 0px;"></div>
 	</div>

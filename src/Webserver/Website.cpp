@@ -14,7 +14,7 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original
   source code
 
-  Created 24. May 2023 by MarkusNTrains
+  Created 30. May 2023 by MarkusNTrains
 ================================================================================
 $HeadURL:  $
 $Id:  $
@@ -881,15 +881,15 @@ const char line839[] PROGMEM = "+ '<div class=\"button disabled\" id=\"LightScen
 const char line840[] PROGMEM = "+ '<div class=\"button disabled\" id=\"LightScene' + LIGHT_SCENE.Moba + '\" onclick=\"LightSceneButtonPushed(LIGHT_SCENE.Moba, this)\">MoBa</div>'";
 const char line841[] PROGMEM = "+ '<div class=\"button disabled\" id=\"LightScene' + LIGHT_SCENE.LightOn + '\" onclick=\"LightSceneButtonPushed(LIGHT_SCENE.LightOn, this)\">All On</div>'";
 const char line842[] PROGMEM = "+ '<div class=\"button disabled\" id=\"LightScene' + LIGHT_SCENE.UserSetting + '\" onclick=\"LightSceneButtonPushed(LIGHT_SCENE.UserSetting, this)\">User Set</div>'";
-const char line843[] PROGMEM = "+ '<div class=\"button disabled\" id=\"LightScene' + LIGHT_SCENE.Disco + '\" onclick=\"LightSceneButtonPushed(LIGHT_SCENE.Disco, this)\">Disco</div>'";
-const char line844[] PROGMEM = "+ '<div class=\"button disabled\" id=\"LightScene' + LIGHT_SCENE.Rainbow + '\" onclick=\"LightSceneButtonPushed(LIGHT_SCENE.Rainbow, this)\">Rainbow</div>'";
-const char line845[] PROGMEM = "";
-const char line846[] PROGMEM = "var animation = '<div class=\"button disabled\" id=\"LightAnimation' + LIGHT_SCENE.Sunrise + '\" onclick=\"LightSceneButtonPushed(LIGHT_SCENE.Sunrise, this)\">Sunrise</div>'";
-const char line847[] PROGMEM = "+ '<div class=\"button disabled\" id=\"LightAnimation' + LIGHT_SCENE.Day + '\" onclick=\"LightSceneButtonPushed(LIGHT_SCENE.Day, this)\">Day</div>'";
-const char line848[] PROGMEM = "+ '<div class=\"button disabled\" id=\"LightAnimation' + LIGHT_SCENE.Sunset + '\" onclick=\"LightSceneButtonPushed(LIGHT_SCENE.Sunset, this)\">Sunset</div>'";
-const char line849[] PROGMEM = "+ '<div class=\"button disabled\" id=\"LightAnimation' + LIGHT_SCENE.Night + '\" onclick=\"LightSceneButtonPushed(LIGHT_SCENE.Night, this)\">Night</div>'";
-const char line850[] PROGMEM = "+ '<div class=\"button disabled\" id=\"LightAnimation' + LIGHT_SCENE.Cloud + '\" onclick=\"LightSceneButtonPushed(LIGHT_SCENE.Cloud, this)\">Clouds</div>'";
-const char line851[] PROGMEM = "+ '<div class=\"button disabled\" id=\"LightAnimation' + LIGHT_SCENE.Lightning + '\" onclick=\"LightSceneButtonPushed(LIGHT_SCENE.Lightning, this)\">Lightning</div>';";
+const char line843[] PROGMEM = "";
+const char line844[] PROGMEM = "var animation = '<div class=\"button disabled\" id=\"LightAnimation' + LIGHT_SCENE.Sunrise + '\" onclick=\"LightSceneButtonPushed(LIGHT_SCENE.Sunrise, this)\">Sunrise</div>'";
+const char line845[] PROGMEM = "+ '<div class=\"button disabled\" id=\"LightAnimation' + LIGHT_SCENE.Day + '\" onclick=\"LightSceneButtonPushed(LIGHT_SCENE.Day, this)\">Day</div>'";
+const char line846[] PROGMEM = "+ '<div class=\"button disabled\" id=\"LightAnimation' + LIGHT_SCENE.Sunset + '\" onclick=\"LightSceneButtonPushed(LIGHT_SCENE.Sunset, this)\">Sunset</div>'";
+const char line847[] PROGMEM = "+ '<div class=\"button disabled\" id=\"LightAnimation' + LIGHT_SCENE.Night + '\" onclick=\"LightSceneButtonPushed(LIGHT_SCENE.Night, this)\">Night</div>'";
+const char line848[] PROGMEM = "+ '<div class=\"button disabled\" id=\"LightAnimation' + LIGHT_SCENE.Cloud + '\" onclick=\"LightSceneButtonPushed(LIGHT_SCENE.Cloud, this)\">Clouds</div>'";
+const char line849[] PROGMEM = "+ '<div class=\"button disabled\" id=\"LightAnimation' + LIGHT_SCENE.Lightning + '\" onclick=\"LightSceneButtonPushed(LIGHT_SCENE.Lightning, this)\">Lightning</div>'";
+const char line850[] PROGMEM = "+ '<div class=\"button disabled\" id=\"LightAnimation' + LIGHT_SCENE.Disco + '\" onclick=\"LightSceneButtonPushed(LIGHT_SCENE.Disco, this)\">Disco</div>'";
+const char line851[] PROGMEM = "+ '<div class=\"button disabled\" id=\"LightAnimation' + LIGHT_SCENE.Rainbow + '\" onclick=\"LightSceneButtonPushed(LIGHT_SCENE.Rainbow, this)\">Rainbow</div>';";
 const char line852[] PROGMEM = "";
 const char line853[] PROGMEM = "document.getElementById(\"LightScene\").innerHTML = light_scene;";
 const char line854[] PROGMEM = "document.getElementById(\"Animation\").innerHTML = animation;";
@@ -906,7 +906,7 @@ const char line864[] PROGMEM = "<div class=\"box\" style=\"margin-right: 5px; ma
 const char line865[] PROGMEM = "<div class=\"box_header\">Licht Szene</div>";
 const char line866[] PROGMEM = "<div id=\"LightScene\" class=\"box_content\" style=\"padding: 0px;\"></div>";
 const char line867[] PROGMEM = "</div>";
-const char line868[] PROGMEM = "<div class=\"box\" style=\"margin-left: 5px; width: calc(50% - 5px); float: left;\">";
+const char line868[] PROGMEM = "<div class=\"box\" style=\"margin-left: 5px; margin-bottom: 15px; width: calc(50% - 5px); float: left;\">";
 const char line869[] PROGMEM = "<div class=\"box_header\">Animation</div>";
 const char line870[] PROGMEM = "<div id=\"Animation\" class=\"box_content\" style=\"padding: 0px;\"></div>";
 const char line871[] PROGMEM = "</div>";
@@ -981,7 +981,7 @@ const char line939[] PROGMEM = "<div>";
 const char line940[] PROGMEM = "<br>";
 const char line941[] PROGMEM = "<hr>";
 const char line942[] PROGMEM = "<div id=\"footer_version\" style=\"float:left\">vX.Y</div>";
-const char line943[] PROGMEM = "&nbsp;&nbsp;|&nbsp;&nbsp;24. May 2023 &nbsp; &copy; MarkusNTrains";
+const char line943[] PROGMEM = "&nbsp;&nbsp;|&nbsp;&nbsp;30. May 2023 &nbsp; &copy; MarkusNTrains";
 const char line944[] PROGMEM = "<a href='mailto:markusntrains@gmx.ch'>E-Mail</a>";
 const char line945[] PROGMEM = "</div>";
 const char line946[] PROGMEM = "</footer>";
