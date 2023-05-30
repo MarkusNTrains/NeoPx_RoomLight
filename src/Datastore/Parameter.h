@@ -14,10 +14,10 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original
   source code
 
-  Created 03.05.2023 08:32:05 by MarkusNTrains
+  Created 25.05.2023 17:17:11 by MarkusNTrains
 ================================================================================
-$HeadURL: file:///C:/SwProjects/_Intern/Arduino/RoomLight_DaylightSimulation/src/Datastore/Parameter.h $
-$Id: 03.05.2023 08:32:05 automatic gen. $
+$HeadURL: file:///C:/SwProjects/Arduino/RoomLight_DaylightSimulation/src/Datastore/Parameter.h $
+$Id: 25.05.2023 17:17:11 automatic gen. $
 *******************************************************************************/
 
 /*
@@ -45,21 +45,21 @@ class Parameter
             ParameterSet_Validity = 0,
             LightSceneID,
             SceneDay_Brightness,
-            SceneDisco_Brightness ,
-            SceneMoBa_Brightness ,
-            SceneMoBa_Color ,
-            SceneLightOn_Brightness ,
-            SceneLightOn_Color ,
+            SceneDisco_Brightness,
+            SceneMoBa_Brightness,
+            SceneMoBa_Color,
+            SceneLightOn_Brightness,
+            SceneLightOn_Color,
             SceneNight_Brightness,
-            SceneOfficeTable_Brightness ,
-            SceneOfficeTable_Color ,
-            SceneRainbow_Brightness ,
-            SceneUserSetting_Brightness ,
-            SceneUserSetting_Color ,
-            SceneUserSetting_Xs ,
-            SceneUserSetting_Xe ,
-            SceneUserSetting_Ys ,
-            SceneUserSetting_Ye ,
+            SceneOfficeTable_Brightness,
+            SceneOfficeTable_Color,
+            SceneRainbow_Brightness,
+            SceneUserSetting_Brightness,
+            SceneUserSetting_Color,
+            SceneUserSetting_Xs,
+            SceneUserSetting_Xe,
+            SceneUserSetting_Ys,
+            SceneUserSetting_Ye,
             Nof,
             Unknown
         };
@@ -85,9 +85,8 @@ class Parameter
         void ResetAll();
         uint32_t GetValue(Id id);
         bool SetValue(Id id, uint32_t value);
-
-        static uint16_t GetAddr(Id id);
-        static uint8_t GetWidth(Id id);
+        uint16_t GetAddr(Id id);
+        uint8_t GetWidth(Id id);
 
     private:
         uint8_t m_buffer[BUFFER_Size];

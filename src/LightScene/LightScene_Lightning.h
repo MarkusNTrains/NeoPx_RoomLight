@@ -71,7 +71,7 @@ class LightScene_Lightning
         uint8_t m_last_scene_brightness;
         wrgb_color_t m_last_scene_color;
 
-        static bool FadeColor(uint8_t target_color, uint8_t* current_color);
+        bool FadeColor(uint8_t target_color, uint8_t* current_color);
         void Leave();
 };
 

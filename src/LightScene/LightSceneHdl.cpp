@@ -161,7 +161,7 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene_id)
         }
 
         //--- change to requested scene ---
-        switch (scene_id)
+        switch (this->m_scene_id)
         {
             case LightSceneID::Cloud:
             case LightSceneID::Lightning:
@@ -380,16 +380,6 @@ LightSceneID LightSceneHdl::GetLastScene()
 
 //*****************************************************************************
 // description:
-//   GetLightHdl
-//*****************************************************************************
-const LightHdl* LightSceneHdl::GetLightHdl()
-{
-    return this->m_light_hdl_p;
-}
-
-
-//*****************************************************************************
-// description:
 //   Power Off Task
 // return:
 //   true if LightHdl::Show() needs to be called, else false
@@ -436,6 +426,18 @@ void LightSceneHdl::SetUserSettingArea(uint16_t xs, uint16_t xe, uint16_t ys, ui
 
 //*****************************************************************************
 // description:
+//   Get Brightness
+// return:
+//   brightness as 0 - 255
+//*****************************************************************************
+uint8_t LightSceneHdl::GetBrightness()
+{
+    return this->m_light_hdl_p->GetBrightness();
+}
+
+
+//*****************************************************************************
+// description:
 //   Set Brightness
 //*****************************************************************************
 void LightSceneHdl::SetBrightness(uint8_t brightness)
@@ -459,7 +461,19 @@ void LightSceneHdl::SetBrightness(uint8_t brightness)
 
 //*****************************************************************************
 // description:
-//   Set Brightness
+//   Get Color
+// return:
+//   Color as format WRGB
+//*****************************************************************************
+uint32_t LightSceneHdl::GetColor()
+{
+    return this->m_light_hdl_p->GetColor();
+}
+
+
+//*****************************************************************************
+// description:
+//   Set Color
 //*****************************************************************************
 void LightSceneHdl::SetColor(uint32_t color)
 {

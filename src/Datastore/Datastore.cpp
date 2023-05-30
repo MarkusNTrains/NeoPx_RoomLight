@@ -16,7 +16,11 @@ $Id:  $
 //-----------------------------------------------------------------------------
 // includes
 #include "Datastore.h"
-#include <EEPROM.h>
+#ifdef __AVR__
+    #include <EEPROM.h>
+#else
+    #include <FlashAsEEPROM.h>
+#endif
 
 
 
@@ -72,7 +76,7 @@ Datastore::Datastore()
             // so read data from EEPROM
             for (uint8_t id = 0; id < Parameter::Id::Nof; id++)
             {
-                this->m_parameter_p->SetValue(id, this->EEPROM_ReadParameter(id, page_start_addr));
+                this->m_parameter_p->SetValue((Parameter::Id)id, this->EEPROM_ReadParameter((Parameter::Id)id, page_start_addr));
             }
 
             break;  // skip for loop
@@ -121,7 +125,7 @@ void Datastore::Task()
 
                 for (uint8_t id = 0; id < Parameter::Id::Nof; id++)
                 {
-                    if (this->m_parameter_p->GetValue(id) != this->EEPROM_ReadParameter(id, page_start_addr))
+                    if (this->m_parameter_p->GetValue((Parameter::Id)id) != this->EEPROM_ReadParameter((Parameter::Id)id, page_start_addr))
                     {
     #if (IS_DEBUG_MODE == ON)
                         Serial.print(F("Parameter changed: "));
@@ -259,7 +263,7 @@ void Datastore::EEPROM_WritePage()
     {
         if (id != Parameter::Id::ParameterSet_Validity)
         {
-            EEPROM_WriteParameter(id, page_start_addr);
+            EEPROM_WriteParameter((Parameter::Id)id, page_start_addr);
         }
     }
 
@@ -275,9 +279,9 @@ void Datastore::EEPROM_WritePage()
 uint32_t Datastore::EEPROM_ReadParameter(Parameter::Id id, uint16_t page_start_addr)
 {
     uint32_t value = 0;
-    uint16_t addr = page_start_addr + Parameter::GetAddr(id);
+    uint16_t addr = page_start_addr + this->m_parameter_p->GetAddr(id);
     
-    switch (Parameter::GetWidth(id))
+    switch (this->m_parameter_p->GetWidth(id))
     {
         case 4:
             value |= (((uint32_t)EEPROM.read(addr++)) << 24);
@@ -303,9 +307,9 @@ uint32_t Datastore::EEPROM_ReadParameter(Parameter::Id id, uint16_t page_start_a
 //*****************************************************************************
 void Datastore::EEPROM_WriteParameter(Parameter::Id id, uint16_t page_start_addr, uint32_t value)
 {
-    uint16_t addr = page_start_addr + Parameter::GetAddr(id);
+    uint16_t addr = page_start_addr + this->m_parameter_p->GetAddr(id);
 
-    switch (Parameter::GetWidth(id))
+    switch (this->m_parameter_p->GetWidth(id))
     {
         case 4:
             EEPROM.update(addr++, (uint8_t)(value >> 24));

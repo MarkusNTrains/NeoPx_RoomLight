@@ -238,7 +238,7 @@ bool LightScene_Lightning::Task()
 // return:
 //   true if current_color did reach target_color
 //*****************************************************************************
-static bool LightScene_Lightning::FadeColor(uint8_t target_color, uint8_t* current_color)
+bool LightScene_Lightning::FadeColor(uint8_t target_color, uint8_t* current_color)
 {
     bool is_target_reached = false;
     uint8_t change_value = (*current_color / FADING_Factor);

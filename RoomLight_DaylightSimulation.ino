@@ -20,8 +20,9 @@ $Id:  $
 #include "src/LightScene/LightSceneHdl.h"
 #include "src/Webserver/WebServer.h"
 
-#include <avr/wdt.h>
-
+#ifdef __AVR__
+  #include <avr/wdt.h>
+#endif
 
 
 //-----------------------------------------------------------------------------
@@ -67,7 +68,9 @@ void setup()
     s_lightSceneHdl_p = new LightSceneHdl();
     s_webServer_p = new WebServer(s_lightSceneHdl_p);
 
+#ifdef __AVR__
     wdt_enable(WDTO_8S);
+#endif
 
 #if (IS_DEBUG_MODE == ON)
     s_main_printFreeMemoryTimestampMs = millis();
@@ -86,7 +89,9 @@ void loop()
     s_lightSceneHdl_p->Tasks();
     s_webServer_p->Tasks();
 
+#ifdef __AVR__
     wdt_reset();
+#endif
 
 
 #if (IS_DEBUG_MODE == ON)
