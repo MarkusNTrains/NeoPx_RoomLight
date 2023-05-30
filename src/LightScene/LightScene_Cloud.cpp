@@ -184,16 +184,6 @@ bool LightScene_Cloud::Task()
                 color.green = this->SubtractDarkness(color.green, darkness);
                 color.blue = this->SubtractDarkness(color.blue, darkness);
                 color.white = this->SubtractDarkness(color.white, darkness);
-                Serial.print("Brightness: ");
-                Serial.print(this->m_light_hdl_p->GetBrightness());
-                Serial.print(", Darkness: ");
-                Serial.print(darkness);
-                Serial.print(", Scene Color Red: ");
-                Serial.print(this->m_scene_color);
-                Serial.print(", Color: ");
-                Serial.print(color.color);
-                Serial.print(", Blue: ");
-                Serial.println(color.blue);
                 
                 // show clouds in different colors --> use for debugging
                 /*switch (cnt % 6)
