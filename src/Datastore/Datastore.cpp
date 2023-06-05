@@ -19,6 +19,7 @@ $Id:  $
 #ifdef __AVR__
     #include <EEPROM.h>
 #else
+    // install library FlashStorage v1.0.0 or higher
     #include <FlashAsEEPROM.h>
 #endif
 
