@@ -31,7 +31,7 @@ $Id:  $
 //-----------------------------------------------------------------------------
 // Info
 // PROGMEM -> store data in flash
-//   to read out the sored data from PROGMEM use one macro of <avr/pgmspace.h>
+//   to read out the stored data from PROGMEM use one macro of <avr/pgmspace.h>
 //   - e.g. (char*)pgm_read_word(&(PARAM_IN_PROGMEM))
 //   - or use memcpy_P
 //      data_type_t param_SRAM

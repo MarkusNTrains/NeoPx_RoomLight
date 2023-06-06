@@ -14,7 +14,7 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original
   source code
 
-  Created 30. May 2023 by MarkusNTrains
+  Created 06. June 2023 by MarkusNTrains
 ================================================================================
 $HeadURL:  $
 $Id:  $
@@ -29,7 +29,7 @@ $Id:  $
 //-----------------------------------------------------------------------------
 // This variant needs more heap but less flash
 // PROGMEM -> store data in flash
-//   to read out the sored data from PROGMEM use one macro of <avr/pgmspace.h>
+//   to read out the stored data from PROGMEM use one macro of <avr/pgmspace.h>
 //   - e.g. (char*)pgm_read_word(&(PARAM_IN_PROGMEM))
 //   - or use memcpy_P
 //      data_type_t param_SRAM
@@ -981,7 +981,7 @@ const char line939[] PROGMEM = "<div>";
 const char line940[] PROGMEM = "<br>";
 const char line941[] PROGMEM = "<hr>";
 const char line942[] PROGMEM = "<div id=\"footer_version\" style=\"float:left\">vX.Y</div>";
-const char line943[] PROGMEM = "&nbsp;&nbsp;|&nbsp;&nbsp;30. May 2023 &nbsp; &copy; MarkusNTrains";
+const char line943[] PROGMEM = "&nbsp;&nbsp;|&nbsp;&nbsp;06. June 2023 &nbsp; &copy; MarkusNTrains";
 const char line944[] PROGMEM = "<a href='mailto:markusntrains@gmx.ch'>E-Mail</a>";
 const char line945[] PROGMEM = "</div>";
 const char line946[] PROGMEM = "</footer>";

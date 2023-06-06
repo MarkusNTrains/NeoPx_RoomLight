@@ -266,7 +266,7 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene_id)
     this->m_led_strip_updated_needed = true;
 
     // save light scene if needed
-#if (DATASTORE_SaveLightScene == ON)
+#if ((DATASTORE_SaveLightScene == ON) && (DATASTORE_SaveDataOnEEPROM == ON))
     if (save_light_scene == true)
     {
         this->m_datastore_p->SetParameter(Parameter::Id::LightSceneID, (uint8_t)scene_id);

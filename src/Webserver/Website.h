@@ -14,7 +14,7 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original
   source code
 
-  Created 30. May 2023 by MarkusNTrains
+  Created 06. June 2023 by MarkusNTrains
 ================================================================================
 $HeadURL:  $
 $Id:  $
