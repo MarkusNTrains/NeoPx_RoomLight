@@ -83,7 +83,11 @@ LedRow::~LedRow()
 //*****************************************************************************
 uint16_t LedRow::GetLedIdxOfLut(uint16_t idx)
 {
+#ifdef __AVR__
     return pgm_read_word(&LED_MATRIX_LUT[this->m_row_idx][idx]);
+#else
+    return LED_MATRIX_LUT[this->m_row_idx][idx];
+#endif
 }
 
 

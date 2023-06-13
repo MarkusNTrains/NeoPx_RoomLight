@@ -47,8 +47,10 @@ Datastore::Datastore()
     this->m_eeprom_active_page = 0;
     this->m_is_eeprom_update_needed = false;
     this->m_parameter_p = new Parameter();
+    bool valid_page_found = false;
 
 
+#if (DATASTORE_SaveDataOnEEPROM == ON)    
     //--- calculate page size and nof pages -------------------------------
     this->m_eeprom_pageSize = Parameter::BUFFER_Size;
     this->m_eeprom_nofPages = EEPROM.length() / this->m_eeprom_pageSize;
@@ -56,10 +58,8 @@ Datastore::Datastore()
 
     //--- find valid page in EEPROM ---------------------------------------
     uint16_t valid_pattern = 0;
-    bool valid_page_found = false;
     uint16_t page_start_addr = 0;
 
-#if (DATASTORE_SaveDataOnEEPROM == ON)    
     for (uint16_t page = 0; page < this->m_eeprom_nofPages; page++)
     {
         page_start_addr = page * this->m_eeprom_pageSize;
@@ -113,6 +113,7 @@ Datastore::~Datastore()
 //*****************************************************************************
 void Datastore::Task()
 {
+#if (DATASTORE_SaveDataOnEEPROM == ON)
     if (this->m_is_eeprom_update_needed == true)
     {
         if (millis() - this->m_eeprom_last_update_timestamp_ms > EEPROM_WriteLockAfterEepromWriteTmoMs)
@@ -136,7 +137,6 @@ void Datastore::Task()
                     }
                 }
 
-    #if (DATASTORE_SaveDataOnEEPROM == ON)
                 if (is_eeprom_write_needed == true)
                 {
                     this->m_eeprom_last_update_timestamp_ms = millis();
@@ -152,10 +152,10 @@ void Datastore::Task()
                     Serial.println(F("EEPROM write not needed"));
         #endif
                 }
-    #endif
             }
         }
     }
+#endif
 }
 
 
@@ -166,21 +166,23 @@ void Datastore::Task()
 void Datastore::FactoryReset()
 {
 #if (IS_DEBUG_MODE == ON)
-    Serial.println(F("factory Reset"));
+    Serial.println(F("Do Factory Reset"));
 #endif
 
+#if (DATASTORE_SaveDataOnEEPROM == ON)    
     // clear EEPROM
     for (uint16_t addr = 0; addr < EEPROM.length(); addr++)
     {
         EEPROM.write(addr, 0xFF);
     }
+#endif
 
     // reset all parameter
     this->m_parameter_p->ResetAll();
     this->m_parameter_p->SetValue(Parameter::Id::ParameterSet_Validity, Parameter::PARAMETERSET_Valid);
     this->m_eeprom_active_page = 0;
 #if (DATASTORE_SaveDataOnEEPROM == ON)
-    EEPROM_WritePage();
+    this->EEPROM_WritePage();
 #endif
 }
 

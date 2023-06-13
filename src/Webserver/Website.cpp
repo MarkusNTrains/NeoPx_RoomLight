@@ -14,7 +14,7 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original
   source code
 
-  Created 06. June 2023 by MarkusNTrains
+  Created 13. June 2023 by MarkusNTrains
 ================================================================================
 $HeadURL:  $
 $Id:  $
@@ -981,7 +981,7 @@ const char line939[] PROGMEM = "<div>";
 const char line940[] PROGMEM = "<br>";
 const char line941[] PROGMEM = "<hr>";
 const char line942[] PROGMEM = "<div id=\"footer_version\" style=\"float:left\">vX.Y</div>";
-const char line943[] PROGMEM = "&nbsp;&nbsp;|&nbsp;&nbsp;06. June 2023 &nbsp; &copy; MarkusNTrains";
+const char line943[] PROGMEM = "&nbsp;&nbsp;|&nbsp;&nbsp;13. June 2023 &nbsp; &copy; MarkusNTrains";
 const char line944[] PROGMEM = "<a href='mailto:markusntrains@gmx.ch'>E-Mail</a>";
 const char line945[] PROGMEM = "</div>";
 const char line946[] PROGMEM = "</footer>";
@@ -1011,7 +1011,11 @@ void Website_SendToClient(EthernetClient* client)
 
 	for (line = 0; line < WEBSITE_NOF_LINES; line++)
 	{
+#ifdef __AVR__
         strcpy_P(line_str, (char*)pgm_read_word(&(website_a[line])));
 		client->println(line_str);
+#else
+        client->println(website_a[line]);
+#endif
 	}
 }

@@ -67,7 +67,9 @@ typedef struct
 #define ROOM_LIGHT_MarkusNTrains    0
 #define ROOM_LIGHT_Altenglienicke   1
 #define ROOM_LIGHT_TestBoard        2
-#define ROOM_LIGHT ROOM_LIGHT_MarkusNTrains
+#define ROOM_LIGHT ROOM_LIGHT_TestBoard
+
+
 
 #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
     // LED Matrix defines -----------------------------
@@ -77,10 +79,17 @@ typedef struct
     // LED Strips define ------------------------------
     #define ROOM_LIGHT_NofLedStrips 4
 
+#ifdef __AVR__
     #define ROOM_LIGHT_LedStrip1_Pin 26
     #define ROOM_LIGHT_LedStrip2_Pin 28 
     #define ROOM_LIGHT_LedStrip3_Pin 24
     #define ROOM_LIGHT_LedStrip4_Pin 22
+#else
+    #define ROOM_LIGHT_LedStrip1_Pin 0
+    #define ROOM_LIGHT_LedStrip2_Pin 1 
+    #define ROOM_LIGHT_LedStrip3_Pin 2
+    #define ROOM_LIGHT_LedStrip4_Pin 3
+#endif
 
     #define ROOM_LIGHT_LedStrip1_NofLed 300
     #define ROOM_LIGHT_LedStrip2_NofLed 285
@@ -133,7 +142,11 @@ typedef struct
     // LED Strips define ------------------------------
     #define ROOM_LIGHT_NofLedStrips 1
 
+#ifdef __AVR__
+    #define ROOM_LIGHT_LedStrip1_Pin 22
+#else
     #define ROOM_LIGHT_LedStrip1_Pin 2
+#endif
 
     #define ROOM_LIGHT_LedStrip1_NofLed ROOM_LIGHT_RowNofPx
 

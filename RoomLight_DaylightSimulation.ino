@@ -58,6 +58,9 @@ void setup()
 {
 #if (IS_DEBUG_MODE == ON)
     Serial.begin(115200);       // for debugging
+    while (!Serial) {
+        ; // wait for serial port to connect. Needed for native USB port only
+    }
     Serial.println(F("\n\n************************************"));
     Serial.println(F("Start Room Light"));
     Serial.print(F("Free Memory: "));

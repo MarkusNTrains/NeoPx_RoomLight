@@ -46,7 +46,11 @@ $Id:  $
 WebServer::WebServer(LightSceneHdl* led_scene)
 {
     //int pin;
+#ifdef __AVR__
     byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x49 }; // MAC address from Ethernet shield sticker under board    
+#else
+    byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; // MAC address from Ethernet shield sticker under board    
+#endif
 
 #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
     // IP config MarkusNTrains
@@ -71,9 +75,14 @@ WebServer::WebServer(LightSceneHdl* led_scene)
     m_lightSceneHdl_p = led_scene;
 
 
+#ifdef __AVR__
     // disable Ethernet chip slave select
     pinMode(10, OUTPUT);
     digitalWrite(10, HIGH);
+#else
+    // set chip select pin
+    Ethernet.init(5);
+#endif
     
     // initialize SD card
 #ifdef USE_SD_CARD
@@ -104,14 +113,13 @@ WebServer::WebServer(LightSceneHdl* led_scene)
   #endif
 #endif
     
-    
     Ethernet.begin(mac, ip, myDns, gateway, subnet); // initialize Ethernet device
 
     // start the server
     m_server->begin();           // start to listen for clients
 
 #if (IS_DEBUG_MODE == ON)
-    PrintHardwareInfo();
+    this->PrintHardwareInfo();
     Serial.print(F("server is at "));
     Serial.println(Ethernet.localIP());     
 #endif
@@ -173,7 +181,7 @@ void WebServer::Tasks()
                 if ((c == '\n') && (is_uri_complete == false))
                 {
                     //get uri
-                    request_param_p = strtok(lineBuffer, " ");  // strtok willdestroy the newRequest
+                    request_param_p = strtok(lineBuffer, " ");  // strtok will destroy the newRequest
                     strlcpy(method, request_param_p, TASK_SmallBufferSize);
                     request_param_p = strtok(NULL, " ");
                     strlcpy(uri, request_param_p, TASK_SmallBufferSize);   // enthält noch evtl. parameter
@@ -484,6 +492,7 @@ char WebServer::StrContains(char *str, char *sfind)
 void WebServer::PrintHardwareInfo()
 {
 #if (IS_DEBUG_MODE == ON)
+  #ifdef __AVR__
     if (Ethernet.hardwareStatus() == EthernetNoHardware) {
         Serial.println(F("Ethernet shield was not found"));
     }
@@ -508,6 +517,27 @@ void WebServer::PrintHardwareInfo()
             Serial.println(F("Link status: Off"));
         }
     }
+
+  #else
+    // Check for Ethernet hardware present
+    if (Ethernet.hardwareStatus() == EthernetNoHardware) 
+    {
+        Serial.println(F("Ethernet shield was not found.  Sorry, can't run without hardware. :("));
+        while (true) 
+        {
+            delay(1); // do nothing, no point running without Ethernet hardware
+        }
+    }
+    else if (Ethernet.linkStatus() == LinkOFF) 
+    {
+        Serial.println(F("Ethernet cable is not connected."));
+    }
+    else 
+    {
+        Serial.println(F("Ethernet is running"));
+    }
+  #endif
+
 #endif
 }
 
@@ -1290,8 +1320,12 @@ void WebServer::SendFavicon(EthernetClient* client)
     //--- send favicon --------------------------------------------------
     for (uint16_t idx = 0; idx < sizeof(favicon); idx++)
     {
+#ifdef __AVR__
         byte p = pgm_read_byte(favicon + idx);
         message.write(p);
+#else
+        message.write(favicon[idx]);
+#endif
     }
     message.flush();
 }
