@@ -34,7 +34,7 @@ class LightSceneHdl;
 class LightScene
 {
     public:
-        LightScene(LightHdl* light_hdl, Datastore* datastore_p, uint32_t task_tmo_m, Parameter::Id brightness_param_id, Parameter::Id color_param_id);
+        LightScene(LightHdl* light_hdl, Datastore* datastore_p, uint32_t task_tmo_ms, Parameter::Id brightness_param_id, Parameter::Id color_param_id);
         ~LightScene();
 
         virtual void Enter() = 0;

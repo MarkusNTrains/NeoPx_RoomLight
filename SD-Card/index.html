@@ -90,7 +90,7 @@
 			/*text-decoration: none;*/
 			display: inline-block;
 			font-size: 16px;
-			margin: 4px 1px;
+			margin: 4px 2px;
 			-webkit-transition-duration: 0.4s; /* Safari */
 			transition-duration: 0.4s;
 			cursor: pointer;
@@ -164,11 +164,11 @@
 		
         /*---------------------------------------------------------------------*/
         /* 2 thumb slider */
-        #led_slider_row {
+        .area_row_slider {
             width: 150px;	
         }
 
-        #led_slider_column {
+        .area_column_slider {
             width: calc(100% - 150px);
         }
 
@@ -318,10 +318,21 @@
         //--- const ------------------------------------------------------
         //--- Firmware version
         const GLOBAL_WebserverVersion_Major = 1;
-        const GLOBAL_WebserverVersion_Minor = 6;
+        const GLOBAL_WebserverVersion_Minor = 7;
 
 
-		const LIGHT_SCENE = 
+        const MAINPAGE_TAB =
+        {
+            RoomLight: 0,
+            ShadowStation: 1,
+            Nof: 2
+        };
+
+        const MAINPAGE_TAB_Prefix = [];
+        MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] = "RoomLight";
+        MAINPAGE_TAB_Prefix[MAINPAGE_TAB.ShadowStation] = "ShadowStation";
+        
+		const ROOMLIGHT_Scene = 
 		{
 			OfficeTable: 0,
 			LightOn: 1,
@@ -338,15 +349,20 @@
             Day: 12,
             Night: 13,
             Cloud: 14,
-            SBF_Off: 15,
-            SBF_Red: 16,
-            SBF_Green: 17,
-            SBF_Blue: 18,
-            SBF_WarmWhite: 19,
-            SBF_White: 20,
-            SBF_ColdWhite: 21,
-            NOF: 12
+            NOF: 15
 		};
+
+        const SIMPLELEDSTRIP_Scene = 
+        {
+            Off: 0,
+            Red: 1,
+            Green: 2,
+            Blue: 3,
+            WarmWhite: 4,
+            White: 5,
+            ColdWhite: 6,
+            Nof: 7
+        }
 
         const XML_RREQUEST = 
         {
@@ -375,6 +391,7 @@
 		var s_xhttp = null;
         var s_active_lightScene_elementId = "";
         var s_active_lightAnimation_elementId = "";
+        var s_active_tab = MAINPAGE_TAB.RoomLight;
 
 
 		//--- function prototypes -----------------------------------------
@@ -442,19 +459,19 @@
                                     //    <!--<output for="b" style="--c: var(--b)"></output>-->
                                     //</div>
                                     var slider_row_max = led_nof_row - USER_SETTING_OFFSET;
-                                    document.getElementById("led_slider_row").innerHTML = (
-                                        '<div id="slider_row" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: ' + ys + '; --b: ' + ye + '; --min: 0; --max: ' + slider_row_max + ';">'
-                                        +   '<input name="ledSliderRow_a" id="a" class="twoThumbSlider" type="range" min="0" value="' + ys + '" max="' + slider_row_max + '" />'
-                                        +   '<input name="ledSliderRow_b" id="b" class="twoThumbSlider" type="range" min="0" value="' + ye + '" max="' + slider_row_max + '" />'
+                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaRow_SliderBox").innerHTML = (
+                                        '<div id="' + MAINPAGE_TAB_Prefix[s_active_tab] + '_AreaRow_Slider" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: ' + ys + '; --b: ' + ye + '; --min: 0; --max: ' + slider_row_max + ';">'
+                                        +   '<input name="' + MAINPAGE_TAB_Prefix[s_active_tab] + '_LedRowSlider_a" id="a" class="twoThumbSlider" type="range" min="0" value="' + ys + '" max="' + slider_row_max + '" />'
+                                        +   '<input name="' + MAINPAGE_TAB_Prefix[s_active_tab] + '_LedRowSlider_b" id="b" class="twoThumbSlider" type="range" min="0" value="' + ye + '" max="' + slider_row_max + '" />'
                                         + '</div>'
                                     );
                                     if (led_nof_row > 1)
                                     {
-                                        document.getElementById("led_slider_row").style.visibility = 'visible';
+                                        document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaRow_SliderBox").style.visibility = 'visible';
                                     }
                                     else
                                     {
-                                        document.getElementById("led_slider_row").style.visibility = 'hidden';
+                                        document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaRow_SliderBox").style.visibility = 'hidden';
                                     }
 
                                     //<div id="slider_columen" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: 20; --b: 120; --min: 0; --max: 239">
@@ -465,10 +482,10 @@
                                     //    <!--<output for="b" style="--c: var(--b)"></output>-->
                                     //</div>
                                     var slider_column_max = led_nof_px - USER_SETTING_OFFSET;
-                                    document.getElementById("led_slider_column").innerHTML = (
-                                        '<div id="slider_columen" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: ' + xs + '; --b: ' + xe + '; --min: 0; --max: ' + slider_column_max + '">'
-                                        +   '<input name="ledSliderColumn_a" id="a" class="twoThumbSlider" type="range" min="0" value="' + xs + '" max="' + slider_column_max + '" />'
-                                        +   '<input name="ledSliderColumn_b" id="b" class="twoThumbSlider" type="range" min="0" value="' + xe + '" max="' + slider_column_max + '" />'
+                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaColumn_SliderBox").innerHTML = (
+                                        '<div id="' + MAINPAGE_TAB_Prefix[s_active_tab] + '_AreaColumn_Slider" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: ' + xs + '; --b: ' + xe + '; --min: 0; --max: ' + slider_column_max + '">'
+                                        +   '<input name="' + MAINPAGE_TAB_Prefix[s_active_tab] + '_LedColumnSlider_a" id="a" class="twoThumbSlider" type="range" min="0" value="' + xs + '" max="' + slider_column_max + '" />'
+                                        +   '<input name="' + MAINPAGE_TAB_Prefix[s_active_tab] + '_LedColumnSlider_b" id="b" class="twoThumbSlider" type="range" min="0" value="' + xe + '" max="' + slider_column_max + '" />'
                                         + '</div>'
                                     );
 
@@ -495,8 +512,8 @@
 								re = this.responseXML.getElementsByTagName('brightness');
 								if ((re != undefined) && (re != null) && (re.length > 0))
 								{
-									document.getElementById("brightness_slider").value = re[0].childNodes[0].nodeValue;
-									document.getElementById("brightness_value").innerHTML = re[0].childNodes[0].nodeValue;
+									document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_Brightness_Slider").value = re[0].childNodes[0].nodeValue;
+									document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_Brightness_Value").innerHTML = re[0].childNodes[0].nodeValue;
 								}
 
 								re = this.responseXML.getElementsByTagName('color');
@@ -506,8 +523,8 @@
                                     if (color > 0xFFFFFF)
                                     {
                                         var white = (color >> 24) & 0xFF;
-                                        document.getElementById("color_white_slider").value = white;
-                                        document.getElementById("color_white_value").innerHTML = white;
+                                        document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_WarmWhite_Slider").value = white;
+                                        document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_WarmWhite_Value").innerHTML = white;
                                         colorStr = ('000000' + ((white << 16) | (white << 8) | white).toString(16)).slice(-6);
                             			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
                                     }
@@ -541,8 +558,8 @@
 
                                         // set rgb combined slider
                                         var colorStr = ('000000' + color.toString(16)).slice(-6);
-                                        document.getElementById("color_rgb_slider").value = slider_value;
-                                        document.getElementById("color_rgb_value").innerHTML = '0x' + colorStr;
+                                        document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRgb_Slider").value = slider_value;
+                                        document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRgb_Value").innerHTML = '0x' + colorStr;
                                         document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
                                     }
 
@@ -550,12 +567,12 @@
                                     var red = (color >> 16) & 0xFF;
                                     var green = (color >> 8) & 0xFF;
                                     var blue = color & 0xFF;
-                                    document.getElementById("color_red_value").innerHTML = red;
-                                    document.getElementById("color_green_value").innerHTML = green;
-                                    document.getElementById("color_blue_value").innerHTML = blue;
-                                    document.getElementById("color_red_slider").value = red;
-                                    document.getElementById("color_green_slider").value = green;
-                                    document.getElementById("color_blue_slider").value = blue;
+                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRed_Value").innerHTML = red;
+                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorGreen_Value").innerHTML = green;
+                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorBlue_Value").innerHTML = blue;
+                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRed_Slider").value = red;
+                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorGreen_Slider").value = green;
+                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorBlue_Slider").value = blue;
 								}
 
 								re = this.responseXML.getElementsByTagName('led_area');
@@ -566,17 +583,17 @@
                                     var ys = parseInt(this.responseXML.getElementsByTagName('ys')[0].childNodes[0].nodeValue);
                                     var ye = parseInt(this.responseXML.getElementsByTagName('ye')[0].childNodes[0].nodeValue);
 
-                                    document.getElementById("led_row").innerHTML = ((ys + USER_SETTING_OFFSET) + " - " + (ye + USER_SETTING_OFFSET));
-                                    document.getElementById("slider_row").style.setProperty("--a", ys);
-                                    document.getElementById("slider_row").style.setProperty("--b", ye);
-                                    document.getElementsByName("ledSliderRow_a")[0].value = ys;
-                                    document.getElementsByName("ledSliderRow_b")[0].value = ye;
+                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaRow_Value").innerHTML = ((ys + USER_SETTING_OFFSET) + " - " + (ye + USER_SETTING_OFFSET));
+                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaRow_Slider").style.setProperty("--a", ys);
+                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaRow_Slider").style.setProperty("--b", ye);
+                                    document.getElementsByName(MAINPAGE_TAB_Prefix[s_active_tab] + "_LedRowSlider_a")[0].value = ys;
+                                    document.getElementsByName(MAINPAGE_TAB_Prefix[s_active_tab] + "_LedRowSlider_b")[0].value = ye;
 
-                                    document.getElementById("led_column").innerHTML = ((xs + USER_SETTING_OFFSET) + " - " + (xe + USER_SETTING_OFFSET));
-                                    document.getElementById("slider_columen").style.setProperty("--a", xs);
-                                    document.getElementById("slider_columen").style.setProperty("--b", xe);
-                                    document.getElementsByName("ledSliderColumn_a")[0].value = xs;
-                                    document.getElementsByName("ledSliderColumn_b")[0].value = xe;
+                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaColumn_Value").innerHTML = ((xs + USER_SETTING_OFFSET) + " - " + (xe + USER_SETTING_OFFSET));
+                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaColumn_Slider").style.setProperty("--a", xs);
+                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaColumn_Slider").style.setProperty("--b", xe);
+                                    document.getElementsByName(MAINPAGE_TAB_Prefix[s_active_tab] + "_LedColumnSlider_a")[0].value = xs;
+                                    document.getElementsByName(MAINPAGE_TAB_Prefix[s_active_tab] + "_LedColumnSlider_b")[0].value = xe;
                                 }
 
 
@@ -618,14 +635,14 @@
             clearInterval(s_requestDataFromServer_intervalTimer);
             document.body.style.cursor = "progress";
             Button_DisableAll();
-            document.getElementById("brightness_value").innerHTML = ("loading...");
-            document.getElementById("color_rgb_value").innerHTML = ("loading...");
-            document.getElementById("color_red_value").innerHTML = ("loading...");
-            document.getElementById("color_green_value").innerHTML = ("loading...");
-            document.getElementById("color_blue_value").innerHTML = ("loading...");
-            document.getElementById("color_white_value").innerHTML = ("loading...");
-            document.getElementById("led_column").innerHTML = ("loading...");
-            document.getElementById("led_row").innerHTML = ("loading...");
+            document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_Brightness_Value").innerHTML = ("loading...");
+            document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRgb_Value").innerHTML = ("loading...");
+            document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRed_Value").innerHTML = ("loading...");
+            document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorGreen_Value").innerHTML = ("loading...");
+            document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorBlue_Value").innerHTML = ("loading...");
+            document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_WarmWhite_Value").innerHTML = ("loading...");
+            document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaColumn_Value").innerHTML = ("loading...");
+            document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaRowValue").innerHTML = ("loading...");
             document.querySelector(':root').style.setProperty('--SliderThumbColor', '#3F3F3F');
             document.getElementById("footer_version").innerHTML = ("v" + GLOBAL_WebserverVersion_Major + "." + GLOBAL_WebserverVersion_Minor);
 
@@ -650,6 +667,7 @@
             s_is_server_connected = false;
             clearInterval(s_findServer_intervalTimer);
             s_findServer_intervalTimer = setInterval(RequestFindServer, FIND_SERVER_TIMEOUT_MS)
+            RequestFindServer();
         }
 
 		function RequestFindServer()
@@ -670,9 +688,10 @@
 
 			if (s_is_send_data_pending == true)
 			{
-				SendDataToServer(s_pending_xml_request);
                 s_is_send_data_pending = false;
+                var xml_request = s_pending_xml_request;
                 s_pending_xml_request = "";
+				SendDataToServer(xml_request);
 			}
 		}
 		
@@ -707,9 +726,9 @@
                 document.getElementById(s_active_lightScene_elementId).classList.remove("button_active");
             }
             
-            if (scene < LIGHT_SCENE.NOF)
+            if (scene < ROOMLIGHT_Scene.NOF)
             {
-                s_active_lightScene_elementId = "LightScene" + scene;
+                s_active_lightScene_elementId = MAINPAGE_TAB_Prefix[s_active_tab] + "_Scene" + scene;
                 if (document.getElementById(s_active_lightScene_elementId) != null)
                 {
     			    document.getElementById(s_active_lightScene_elementId).classList.add("button_active");
@@ -728,7 +747,7 @@
                 document.getElementById(s_active_lightAnimation_elementId).classList.remove("button_active");
             }
             
-            if (animation < LIGHT_SCENE.NOF)
+            if (animation < ROOMLIGHT_Scene.NOF)
             {
                 s_active_lightAnimation_elementId = "LightAnimation" + animation;
                 if (document.getElementById(s_active_lightAnimation_elementId) != null)
@@ -744,8 +763,8 @@
 
 		function BrighntessSliderChanged()
 		{
-			var slider = document.getElementById("brightness_slider");
-			var output = document.getElementById("brightness_value");
+			var slider = document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_Brightness_Slider");
+			var output = document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_Brightness_Value");
 			output.innerHTML = slider.value;
 
 			SendDataToServerWhenConnected("&" + XML_RREQUEST.SetBrightness + "=" + slider.value);
@@ -753,8 +772,8 @@
 
 		function ColorRGBSliderChanged()
 		{
-			var slider = document.getElementById("color_rgb_slider");
-			var output = document.getElementById("color_rgb_value");
+			var slider = document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRgb_Slider");
+			var output = document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRgb_Value");
 
 			var color = 0;
 			if (slider.value > 1279)
@@ -791,23 +810,23 @@
             var red = (color >> 16) & 0xFF;
             var green = (color >> 8) & 0xFF;
             var blue = color & 0xFF;
-			document.getElementById("color_red_value").innerHTML = red;
-			document.getElementById("color_green_value").innerHTML = green;
-			document.getElementById("color_blue_value").innerHTML = blue;
-            document.getElementById("color_red_slider").value = red;
-            document.getElementById("color_green_slider").value = green;
-            document.getElementById("color_blue_slider").value = blue;
+			document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRed_Value").innerHTML = red;
+			document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorGreen_Value").innerHTML = green;
+			document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorBlue_Value").innerHTML = blue;
+            document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRed_Slider").value = red;
+            document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorGreen_Slider").value = green;
+            document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorBlue_Slider").value = blue;
 		}
 
         function ColorRGBSingleSliderChanged()
         {
-			var red_slider = document.getElementById("color_red_slider");
-			var green_slider = document.getElementById("color_green_slider");
-			var blue_slider = document.getElementById("color_blue_slider");
+			var red_slider = document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRed_Slider");
+			var green_slider = document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorGreen_Slider");
+			var blue_slider = document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorBlue_Slider");
 
-			document.getElementById("color_red_value").innerHTML = red_slider.value;
-			document.getElementById("color_green_value").innerHTML = green_slider.value;
-			document.getElementById("color_blue_value").innerHTML = blue_slider.value;
+			document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRed_Value").innerHTML = red_slider.value;
+			document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorGreen_Value").innerHTML = green_slider.value;
+			document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorBlue_Value").innerHTML = blue_slider.value;
 
             var color = 0;
             color = (red_slider.value << 16);
@@ -816,14 +835,14 @@
 
 			var colorStr = ('000000' + color.toString(16)).slice(-6);
 			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
-			document.getElementById("color_rgb_value").innerHTML = colorStr;
+			document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRgb_Value").innerHTML = colorStr;
 			SendDataToServerWhenConnected("&" + XML_RREQUEST.SetColor + "=" + color);			
         }
 
 		function ColorWhiteSliderChanged()
 		{
-			var slider = document.getElementById("color_white_slider");
-			var output = document.getElementById("color_white_value");
+			var slider = document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_WarmWhite_Slider");
+			var output = document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_WarmWhite_Value");
 			
 			var color = slider.value;
 			output.innerHTML = color;
@@ -847,10 +866,10 @@
 
 		function SliderTwoThumb_Update()
 		{
-            var xs = parseInt(getComputedStyle(document.getElementById("slider_columen")).getPropertyValue('--a'), 10);
-            var xe = parseInt(getComputedStyle(document.getElementById("slider_columen")).getPropertyValue('--b'), 10);
-            var ys = parseInt(getComputedStyle(document.getElementById("slider_row")).getPropertyValue('--a'), 10);
-            var ye = parseInt(getComputedStyle(document.getElementById("slider_row")).getPropertyValue('--b'), 10);
+            var xs = parseInt(getComputedStyle(document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaColumn_Slider")).getPropertyValue('--a'), 10);
+            var xe = parseInt(getComputedStyle(document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaColumn_Slider")).getPropertyValue('--b'), 10);
+            var ys = parseInt(getComputedStyle(document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaRow_Slider")).getPropertyValue('--a'), 10);
+            var ye = parseInt(getComputedStyle(document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaRow_Slider")).getPropertyValue('--b'), 10);
 
             if (xs > xe)
             {
@@ -870,8 +889,8 @@
             xe += USER_SETTING_OFFSET;
             ys += USER_SETTING_OFFSET;
             ye += USER_SETTING_OFFSET;
-			document.getElementById("led_column").innerHTML = (xs + " - " + xe);
-			document.getElementById("led_row").innerHTML = (ys + " - " + ye);
+			document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaColumn_Value").innerHTML = (xs + " - " + xe);
+			document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaRow_Value").innerHTML = (ys + " - " + ye);
 		}
 
 
@@ -891,13 +910,49 @@
             }
             document.getElementById(tab_id).style.display = "block";
             evt.currentTarget.className += " active";
+
+            if (tab_id == (MAINPAGE_TAB_Prefix[MAINPAGE_TAB.ShadowStation] + "_Tab"))
+            {
+                s_active_tab = MAINPAGE_TAB.ShadowStation;
+            }
+            else
+            {
+                s_active_tab = MAINPAGE_TAB.RoomLight;
+            }
         }
 
 
         //--- onload event handler ----------------------------------------
         window.addEventListener('load', (event) => 
         {
-            document.getElementById("DefaultTab").click();
+            var light_scene = '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Scene' + ROOMLIGHT_Scene.PowerOff + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.PowerOff, this)">Off</div>'
+             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Scene' + ROOMLIGHT_Scene.OfficeTable + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.OfficeTable, this)">B&uuml;rotisch</div>'
+             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Scene' + ROOMLIGHT_Scene.Moba + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Moba, this)">MoBa</div>'
+             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Scene' + ROOMLIGHT_Scene.LightOn + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.LightOn, this)">All On</div>'
+             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Scene' + ROOMLIGHT_Scene.UserSetting + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.UserSetting, this)">User Set</div>'
+            
+             var animation = '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Animation' + ROOMLIGHT_Scene.Sunrise + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Sunrise, this)">Sunrise</div>'
+             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Animation' + ROOMLIGHT_Scene.Day + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Day, this)">Day</div>'
+             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Animation' + ROOMLIGHT_Scene.Sunset + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Sunset, this)">Sunset</div>'
+             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Animation' + ROOMLIGHT_Scene.Night + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Night, this)">Night</div>'
+             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Animation' + ROOMLIGHT_Scene.Cloud + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Cloud, this)">Clouds</div>'
+             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Animation' + ROOMLIGHT_Scene.Lightning + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Lightning, this)">Lightning</div>'
+             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Animation' + ROOMLIGHT_Scene.Disco + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Disco, this)">Disco</div>'
+             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Animation' + ROOMLIGHT_Scene.Rainbow + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Rainbow, this)">Rainbow</div>';
+
+            var sbf_lightScene = '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.ShadowStation] + '_Scene' + SIMPLELEDSTRIP_Scene.Off + '" onclick="LightSceneButtonPushed(SIMPLELEDSTRIP_Scene.Off, this)">Off</div>'
+             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.ShadowStation] + '_Scene' + SIMPLELEDSTRIP_Scene.Red + '" onclick="LightSceneButtonPushed(SIMPLELEDSTRIP_Scene.Red, this)">Rot</div>'
+             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.ShadowStation] + '_Scene' + SIMPLELEDSTRIP_Scene.Green + '" onclick="LightSceneButtonPushed(SIMPLELEDSTRIP_Scene.Green, this)">Gr&uuml;n</div>'
+             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.ShadowStation] + '_Scene' + SIMPLELEDSTRIP_Scene.Blue + '" onclick="LightSceneButtonPushed(SIMPLELEDSTRIP_Scene.Blue, this)">Blau</div>'
+             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.ShadowStation] + '_Scene' + SIMPLELEDSTRIP_Scene.WarmWhite + '" onclick="LightSceneButtonPushed(SIMPLELEDSTRIP_Scene.WarmWhite, this)">Warm Weiss</div>'
+             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.ShadowStation] + '_Scene' + SIMPLELEDSTRIP_Scene.White + '" onclick="LightSceneButtonPushed(SIMPLELEDSTRIP_Scene.White, this)">Weiss</div>'
+             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.ShadowStation] + '_Scene' + SIMPLELEDSTRIP_Scene.ColdWhite + '" onclick="LightSceneButtonPushed(SIMPLELEDSTRIP_Scene.ColdWhite, this)">Kalt Weiss</div>'
+
+
+            document.getElementById("RoomLight_Scene").innerHTML = light_scene;
+            document.getElementById("RoomLight_Animation").innerHTML = animation;
+            document.getElementById("ShadowStation_Scene").innerHTML = animation;
+            document.getElementById(MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + "_TabButton").click();
             document.getElementById("footer_version").innerHTML = ("v" + GLOBAL_WebserverVersion_Major + "." + GLOBAL_WebserverVersion_Minor);
 
 			FindServer();
@@ -907,70 +962,55 @@
 </head>
 
 <body>
-    <div class="tab">
-        <button id="DefaultTab" class="tablinks" onclick="OpenLightSceneTab(event, 'RoomLight_Tab')">Raum Licht</button>
-        <button class="tablinks" onclick="OpenLightSceneTab(event, 'ShadowStation_Tab')">Schattenbahnhof</button>
+    <div id="MainPage" class="tab">
+        <button id="RoomLight_TabButton" class="tablinks" onclick="OpenLightSceneTab(event, 'RoomLight_Tab')">Raum Licht</button>
+        <button id="ShadowStation_TabButton" class="tablinks" onclick="OpenLightSceneTab(event, 'ShadowStation_Tab')">Schattenbahnhof</button>
     </div>
 
     <div id="RoomLight_Tab" class="tabcontent">
         <div class="box" style="margin-right: 5px; margin-bottom: 15px; width: calc(50% - 5px); float: left;">
             <div class="box_header">Licht Szene</div>
-            <div id="LightScene" class="box_content" style="padding: 0px;">
-                <div class="button disabled" id="LightScene' + LIGHT_SCENE.PowerOff + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.PowerOff, this)">Off</div>
-                <div class="button disabled" id="LightScene' + LIGHT_SCENE.OfficeTable + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.OfficeTable, this)">B&uuml;rotisch</div>
-                <div class="button disabled" id="LightScene' + LIGHT_SCENE.Moba + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Moba, this)">MoBa</div>
-                <div class="button disabled" id="LightScene' + LIGHT_SCENE.LightOn + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.LightOn, this)">All On</div>
-                <div class="button disabled" id="LightScene' + LIGHT_SCENE.UserSetting + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.UserSetting, this)">User Set</div>
-            </div>
+            <div id="RoomLight_Scene" class="box_content" style="padding: 0px;"></div>
         </div>
         <div class="box" style="margin-left: 5px; margin-bottom: 15px; width: calc(50% - 5px); float: left;">
             <div class="box_header">Animation</div>
-            <div id="Animation" class="box_content" style="padding: 0px;">
-                <div class="button disabled" id="LightAnimation' + LIGHT_SCENE.Sunrise + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Sunrise, this)">Sunrise</div>
-                <div class="button disabled" id="LightAnimation' + LIGHT_SCENE.Day + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Day, this)">Day</div>
-                <div class="button disabled" id="LightAnimation' + LIGHT_SCENE.Sunset + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Sunset, this)">Sunset</div>
-                <div class="button disabled" id="LightAnimation' + LIGHT_SCENE.Night + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Night, this)">Night</div>
-                <div class="button disabled" id="LightAnimation' + LIGHT_SCENE.Cloud + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Cloud, this)">Clouds</div>
-                <div class="button disabled" id="LightAnimation' + LIGHT_SCENE.Lightning + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Lightning, this)">Lightning</div>
-                <div class="button disabled" id="LightAnimation' + LIGHT_SCENE.Disco + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Disco, this)">Disco</div>
-                <div class="button disabled" id="LightAnimation' + LIGHT_SCENE.Rainbow + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.Rainbow, this)">Rainbow</div>
-            </div>
+            <div id="RoomLight_Animation" class="box_content" style="padding: 0px;"></div>
         </div>
 
         <div class="box" style="clear: left;">
             <div class="box_header">Helligkeit / Farbe</div>
             <div class="box_content">
                 <div class="slidecontainer">
-                    <label for="brightness_value">Helligkeit</label>
-                    <label id="brightness_value" class="user_value"></label>
-                    <input type="range" min="0" max="255" value="50" class="slider" id="brightness_slider" oninput="BrighntessSliderChanged()">
+                    <label for="RoomLight_Brightness_Value">Helligkeit</label>
+                    <label id="RoomLight_Brightness_Value" class="user_value"></label>
+                    <input type="range" min="0" max="255" value="50" class="slider" id="RoomLight_Brightness_Slider" oninput="BrighntessSliderChanged()">
                 </div>
                 <br>
                 
                 <div class="slidecontainer">
-                    <label for="color_rgb_value">RGB</label>
-                    <label id="color_rgb_value" class="user_value"></label>
-                    <input type="range" min="0" max="1535" value="50" class="slider" id="color_rgb_slider" oninput="ColorRGBSliderChanged()" style="background-image: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);">
+                    <label for="RoomLight_ColorRgb_Value">RGB</label>
+                    <label id="RoomLight_ColorRgb_Value" class="user_value"></label>
+                    <input type="range" min="0" max="1535" value="50" class="slider" id="RoomLight_ColorRgb_Slider" oninput="ColorRGBSliderChanged()" style="background-image: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);">
                 </div>
                 <div class="slidecontainer">
-                    <label for="color_red_value">Rot</label>
-                    <label id="color_red_value" class="user_value"></label>
-                    <input type="range" min="0" max="255" value="50" class="slider" id="color_red_slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, red)">
+                    <label for="RoomLight_ColorRed_Value">Rot</label>
+                    <label id="RoomLight_ColorRed_Value" class="user_value"></label>
+                    <input type="range" min="0" max="255" value="50" class="slider" id="RoomLight_ColorRed_Slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, red)">
                 </div>
                 <div class="slidecontainer">
-                    <label for="color_green_value">Gr&uuml;n</label>
-                    <label id="color_green_value" class="user_value"></label>
-                    <input type="range" min="0" max="255" value="50" class="slider" id="color_green_slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, rgb(0, 255, 0))">
+                    <label for="RoomLight_ColorGreen_Value">Gr&uuml;n</label>
+                    <label id="RoomLight_ColorGreen_Value" class="user_value"></label>
+                    <input type="range" min="0" max="255" value="50" class="slider" id="RoomLight_ColorGreen_Slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, rgb(0, 255, 0))">
                 </div>
                 <div class="slidecontainer">
-                    <label for="color_blue_value">Blau</label>
-                    <label id="color_blue_value" class="user_value"></label>
-                    <input type="range" min="0" max="255" value="50" class="slider" id="color_blue_slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, blue)">
+                    <label for="RoomLight_ColorBlue_Value">Blau</label>
+                    <label id="RoomLight_ColorBlue_Value" class="user_value"></label>
+                    <input type="range" min="0" max="255" value="50" class="slider" id="RoomLight_ColorBlue_Slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, blue)">
                 </div>
                 <div class="slidecontainer">
-                    <label for="color_white_value">Weiss</label>
-                    <label id="color_white_value" class="user_value"></label>
-                    <input type="range" min="0" max="255" value="50" class="slider" id="color_white_slider" oninput="ColorWhiteSliderChanged()" style="background-image: linear-gradient(90deg, black, white)">
+                    <label for="RoomLight_WarmWhite_Value">Weiss</label>
+                    <label id="RoomLight_WarmWhite_Value" class="user_value"></label>
+                    <input type="range" min="0" max="255" value="50" class="slider" id="RoomLight_WarmWhite_Slider" oninput="ColorWhiteSliderChanged()" style="background-image: linear-gradient(90deg, black, white)">
                 </div>
             </div>
         </div>
@@ -982,18 +1022,18 @@
                 <table style="width: 100%;">
                     <tr>
                         <td>
-                            <label for="led_row">Reihen</label>
-                            <label type="text" id="led_row" class="user_value"> loading...</label>      
+                            <label for="RoomLight_AreaRow_Value">Reihen</label>
+                            <label type="text" id="RoomLight_AreaRow_Value" class="user_value"> loading...</label>      
                         </td>
                         <td>
-                            <label for="led_column">L&auml;nge</label>
-                            <label type="text" id="led_column" class="user_value"> loading...</label>
+                            <label for="RoomLight_AreaColumn_Value">L&auml;nge</label>
+                            <label type="text" id="RoomLight_AreaColumn_Value" class="user_value"> loading...</label>
                         </td>
                     </tr>
                     <tr>
-                        <td id="led_slider_row">
+                        <td id="RoomLight_AreaRow_SliderBox" class="area_row_slider">
                         </td>
-                        <td id=led_slider_column>
+                        <td id="RoomLight_AreaColumn_SliderBox" class="led_column_slider">
                         </td>
                     </tr>
                 </table>
@@ -1004,56 +1044,48 @@
     <div id="ShadowStation_Tab" class="tabcontent">
         <div class="box" style="margin-right: 5px; margin-bottom: 15px;">
             <div class="box_header">Licht Szene</div>
-            <div id="SBf_LightScene" class="box_content" style="padding: 0px;">
-                <div class="button disabled" id="LightScene' + LIGHT_SCENE.SBF_Off + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.SBF_Off, this)">Off</div>
-                <div class="button disabled" id="LightScene' + LIGHT_SCENE.SBF_Red + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.SBF_Red, this)">Rot</div>
-                <div class="button disabled" id="LightScene' + LIGHT_SCENE.SBF_Green + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.SBF_Green, this)">Gr&uuml;n</div>
-                <div class="button disabled" id="LightScene' + LIGHT_SCENE.SBF_Blue + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.SBF_Blue, this)">Blau</div>
-                <div class="button disabled" id="LightScene' + LIGHT_SCENE.SBF_WarmWhite + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.SBF_WarmWhite, this)">Warm Weiss</div>
-                <div class="button disabled" id="LightScene' + LIGHT_SCENE.SBF_White + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.SBF_White, this)">Weiss</div>
-                <div class="button disabled" id="LightScene' + LIGHT_SCENE.SBF_ColdWhite + '" onclick="LightSceneButtonPushed(LIGHT_SCENE.SBF_ColdWhite, this)">Kalt Weiss</div>
-            </div>
+            <div id="ShadowStation_Scene" class="box_content" style="padding: 0px;"></div>
         </div>
 
         <div class="box" style="clear: left;">
             <div class="box_header">Helligkeit / Farbe</div>
             <div class="box_content">
                 <div class="slidecontainer">
-                    <label for="brightness_value">Helligkeit</label>
-                    <label id="SBf_brightness_value" class="user_value"></label>
-                    <input type="range" min="0" max="255" value="50" class="slider" id="SBf_brightness_slider" oninput="BrighntessSliderChanged()">
+                    <label for="ShadowStation_Brightness_Value">Helligkeit</label>
+                    <label id="ShadowStation_Brightness_Value" class="user_value"></label>
+                    <input type="range" min="0" max="255" value="50" class="slider" id="ShadowStation_Brightness_Slider" oninput="BrighntessSliderChanged()">
                 </div>
                 <br>
                 
                 <div class="slidecontainer">
-                    <label for="SBf_color_rgb_value">RGB</label>
-                    <label id="SBf_color_rgb_value" class="user_value"></label>
-                    <input type="range" min="0" max="1535" value="50" class="slider" id="SBf_color_rgb_slider" oninput="ColorRGBSliderChanged()" style="background-image: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);">
+                    <label for="ShadowStation_ColorRgb_Value">RGB</label>
+                    <label id="ShadowStation_ColorRgb_Value" class="user_value"></label>
+                    <input type="range" min="0" max="1535" value="50" class="slider" id="ShadowStation_ColorRgb_Slider" oninput="ColorRGBSliderChanged()" style="background-image: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);">
                 </div>
                 <div class="slidecontainer">
-                    <label for="SBf_color_red_value">Rot</label>
-                    <label id="SBf_color_red_value" class="user_value"></label>
-                    <input type="range" min="0" max="255" value="50" class="slider" id="SBf_color_red_slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, red)">
+                    <label for="ShadowStation_ColorRed_Value">Rot</label>
+                    <label id="ShadowStation_ColorRed_Value" class="user_value"></label>
+                    <input type="range" min="0" max="255" value="50" class="slider" id="ShadowStation_ColorRed_Slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, red)">
                 </div>
                 <div class="slidecontainer">
-                    <label for="SBf_color_green_value">Gr&uuml;n</label>
-                    <label id="SBf_color_green_value" class="user_value"></label>
-                    <input type="range" min="0" max="255" value="50" class="slider" id="SBf_color_green_slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, rgb(0, 255, 0))">
+                    <label for="ShadowStation_ColorGreen_Value">Gr&uuml;n</label>
+                    <label id="ShadowStation_ColorGreen_Value" class="user_value"></label>
+                    <input type="range" min="0" max="255" value="50" class="slider" id="ShadowStation_ColorGreen_Slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, rgb(0, 255, 0))">
                 </div>
                 <div class="slidecontainer">
-                    <label for="SBf_color_blue_value">Blau</label>
-                    <label id="SBf_color_blue_value" class="user_value"></label>
-                    <input type="range" min="0" max="255" value="50" class="slider" id="SBf_color_blue_slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, blue)">
+                    <label for="ShadowStation_ColorBlue_Value">Blau</label>
+                    <label id="ShadowStation_ColorBlue_Value" class="user_value"></label>
+                    <input type="range" min="0" max="255" value="50" class="slider" id="ShadowStation_ColorBlue_Slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, blue)">
                 </div>
                 <div class="slidecontainer">
-                    <label for="SBf_color_white_value">Warm Weiss</label>
-                    <label id="SBf_color_white_value" class="user_value"></label>
-                    <input type="range" min="0" max="255" value="50" class="slider" id="SBf_color_white_slider" oninput="ColorWhiteSliderChanged()" style="background-image: linear-gradient(90deg, black, white)">
+                    <label for="ShadowStation_WarmWhite_Value">Warm Weiss</label>
+                    <label id="ShadowStation_WarmWhite_Value" class="user_value"></label>
+                    <input type="range" min="0" max="255" value="50" class="slider" id="ShadowStation_WarmWhite_Slider" oninput="ColorWhiteSliderChanged()" style="background-image: linear-gradient(90deg, black, rgb(255, 233, 68))">
                 </div>
                 <div class="slidecontainer">
-                    <label for="SBf_color_white_value">Kalt Weiss</label>
-                    <label id="SBf_color_white_value" class="user_value"></label>
-                    <input type="range" min="0" max="255" value="50" class="slider" id="SBf_color_white_slider" oninput="ColorWhiteSliderChanged()" style="background-image: linear-gradient(90deg, black, rgb(255, 233, 68))">
+                    <label for="ShadowStation_ColdWhite_Value">Kalt Weiss</label>
+                    <label id="ShadowStation_ColdWhite_Value" class="user_value"></label>
+                    <input type="range" min="0" max="255" value="50" class="slider" id="ShadowStation_ColdWhite_Slider" oninput="ColorWhiteSliderChanged()" style="background-image: linear-gradient(90deg, black, white)">
                 </div>
             </div>
         </div>

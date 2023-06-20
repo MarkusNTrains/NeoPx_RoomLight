@@ -390,6 +390,7 @@ void WebServer::HandleRequest(char* http_request)
     memcpy_P(&needle_str, &WEBSERVER_Request_Needle_GetInfo, sizeof(WEBSERVER_Request_Needle_GetInfo));
     if (StrContains(http_request, needle_str))
     {
+        Serial.println(F("Request Info: "));
         this->m_action = ACTION_GetInfo;
     }
 }

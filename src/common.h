@@ -20,6 +20,7 @@ $Id:  $
 //-----------------------------------------------------------------------------
 // includes
 #include "Arduino.h"
+#include "typedef.h"
 
 
 
@@ -39,7 +40,7 @@ typedef struct
 // DO NOT CHANGE
 //--- version -------------------------------------------------------------
 #define SW_VERSION_Major 1
-#define SW_VERSION_Minor 6
+#define SW_VERSION_Minor 7
 
 
 //--- switch --------------------------------------------------------------
@@ -50,7 +51,7 @@ typedef struct
 
 
 //--- debug setting -------------------------------------------------------
-#define IS_DEBUG_MODE OFF  // can be ON or OFF
+#define IS_DEBUG_MODE ON  // can be ON or OFF
 
 
 //--- save data permanent -------------------------------------------------

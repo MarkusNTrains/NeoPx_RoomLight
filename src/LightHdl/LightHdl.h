@@ -24,21 +24,6 @@ $Id:  $
 
 
 //----------------------------------------------------------------------------
-// struct
-typedef union 
-{
-    struct 
-    {
-        uint8_t blue;
-        uint8_t green;
-        uint8_t red;
-        uint8_t white;
-    };
-    uint32_t color;
-} wrgb_color_t;
-
-
-//----------------------------------------------------------------------------
 // class
 class LightHdl
 {
