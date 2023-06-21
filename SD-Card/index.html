@@ -621,15 +621,6 @@
                                         document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_WarmWhite_Slider").value = warm_white;
                                         document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColdWhite_Value").innerHTML = cold_white;
                                         document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColdWhite_Slider").value = cold_white;
-
-                                        if ((color & 0xFFFFFF) == 0)
-                                        {
-                                            // no color is active
-                                            var color = warm_white + cold_white;
-                                            if (color > 255) { color = 255; }
-                                            colorStr = ('000000' + ((color << 16) | (color << 8) | color).toString(16)).slice(-6);
-                                            document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
-                                        }
                                     }
                                 }   
 
