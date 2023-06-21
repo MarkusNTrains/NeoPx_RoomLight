@@ -14,10 +14,10 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original
   source code
 
-  Created 25.05.2023 17:17:11 by MarkusNTrains
+  Created 21.06.2023 15:38:42 by MarkusNTrains
 ================================================================================
-$HeadURL: file:///C:/SwProjects/Arduino/RoomLight_DaylightSimulation/src/Datastore/Parameter_RoomLight.cpp $
-$Id: 25.05.2023 17:17:11 automatic gen. $
+$HeadURL: file:///C:/SwProjects/_Intern/Arduino/RoomLight_DaylightSimulation/src/Datastore/Parameter_RoomLight.cpp $
+$Id: 21.06.2023 15:38:42 automatic gen. $
 *******************************************************************************/
 
 /*
@@ -29,16 +29,17 @@ Defines the Parameter of RoomLight device and their properties.
 //------------------------------------------------------------------------------
 // include
 #include "Parameter.h"
-#include "../LightScene/LightSceneHdl.h"
-#include "../LightScene/LightScene_Day.h"
-#include "../LightScene/LightScene_Night.h"
+#include "../RoomLight/RoomLightHdl.h"
+#include "../RoomLight/LightScene/LightScene_Day.h"
+#include "../RoomLight/LightScene/LightScene_Night.h"
+#include "../SimpleLedStrip/SimpleLedStripHdl.h"
 
 
 
 //-----------------------------------------------------------------------------
 // Info
 // PROGMEM -> store data in flash
-//   to read out the stored data from PROGMEM use one macro of <avr/pgmspace.h>
+//   to read out the sored data from PROGMEM use one macro of <avr/pgmspace.h>
 //   - e.g. (char*)pgm_read_word(&(PARAM_IN_PROGMEM))
 //   - or use memcpy_P
 //      data_type_t param_SRAM
@@ -56,10 +57,10 @@ const parameter_t PARAM_TABLE[Parameter::Id::Nof] PROGMEM = {
         .addr = 0,
         .width = 2,
     },
-    [Parameter::Id::LightSceneID] = {
-        .default_value = (uint32_t)LightSceneID::OfficeTable,
+    [Parameter::Id::SceneID] = {
+        .default_value = (uint32_t)RoomLightHdl::SceneID::OfficeTable,
         .min = 0,
-        .max = ((uint32_t)LightSceneID::Nof - 1) ,
+        .max = ((uint32_t)RoomLightHdl::SceneID::Nof - 1) ,
         .addr = 2,
         .width = 1,
     },
@@ -174,6 +175,34 @@ const parameter_t PARAM_TABLE[Parameter::Id::Nof] PROGMEM = {
         .max = (ROOM_LIGHT_NofRows - 1) ,
         .addr = 32,
         .width = 1,
+    },
+    [Parameter::Id::Sbf_SceneID] = {
+        .default_value = (uint32_t)SimpleLedStripHdl::SceneID::Off,
+        .min = 0,
+        .max = ((uint32_t)SimpleLedStripHdl::SceneID::Nof - 1) ,
+        .addr = 33,
+        .width = 1,
+    },
+    [Parameter::Id::Sbf_Brightness] = {
+        .default_value = 100,
+        .min = 0,
+        .max = 255,
+        .addr = 34,
+        .width = 1,
+    },
+    [Parameter::Id::Sbf_Color] = {
+        .default_value = 0,
+        .min = 0,
+        .max = 0xFFFFFF,
+        .addr = 35,
+        .width = 3,
+    },
+    [Parameter::Id::Sbf_White] = {
+        .default_value = 0,
+        .min = 0,
+        .max = 0xFFFF,
+        .addr = 38,
+        .width = 2,
     },
 };
 

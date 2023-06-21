@@ -6,49 +6,40 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original 
   source code
   
-  Created 4. November 2021 by MarkusNTrains
+  Created 25. April 2023 by MarkusNTrains
 ================================================================================
 $HeadURL:  $
 $Id:  $
 *******************************************************************************/
 
-
-#ifndef _LED_AREA_H
-#define _LED_AREA_H
+#ifndef _LIGHT_SCENE_OFFICE_TABLE_H
+#define _LIGHT_SCENE_OFFICE_TABLE_H
 
 
 //----------------------------------------------------------------------------
 // include
-#include "../common.h"
+#include "LightScene.h"
 
 
 //----------------------------------------------------------------------------
-// define
+// extern
 
 
 //----------------------------------------------------------------------------
 // class
-class LedArea
+class LightScene_OfficeTable : public LightScene
 {
-	  public:
-      LedArea();
-      ~LedArea();
-		
-        uint16_t GetColumnStart();
-        uint16_t GetColumnEnd();
-        uint16_t GetRowStart();
-        uint16_t GetRowEnd();
-        uint32_t GetColor();
-        void Get(LedArea* area);
-        void Set(LedArea* area);
-        void Set(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye);
+    public:
+        LightScene_OfficeTable(LightHdl* light_hdl, Datastore* datastore_p);
+        ~LightScene_OfficeTable();
         
-    private:    
-        //--- Memeber Variable ---
-        uint16_t m_xs;
-        uint16_t m_xe;
-        uint16_t m_ys;
-        uint16_t m_ye;
+        void Enter();
+        void Exit();
+
+    private:
+        const static uint32_t TASK_TmoMs = 1000;
+
+        bool TaskHdl();
 };
 
-#endif  // _LED_ROW_H
+#endif // _LIGHT_SCENE_OFFICE_TABLE_H

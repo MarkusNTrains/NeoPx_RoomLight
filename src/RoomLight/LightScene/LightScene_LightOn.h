@@ -12,48 +12,34 @@ $HeadURL:  $
 $Id:  $
 *******************************************************************************/
 
-#ifndef _LIGHT_SCENE_H
-#define _LIGHT_SCENE_H
+#ifndef _LIGHT_SCENE_LIGHT_ON_H
+#define _LIGHT_SCENE_LIGHT_ON_H
 
 
 //----------------------------------------------------------------------------
 // include
-#include "../common.h"
-#include "../Datastore/Datastore.h"
-#include "../LightHdl/LightHdl.h"
-
+#include "LightScene.h"
 
 
 //----------------------------------------------------------------------------
 // extern
-class LightSceneHdl;
 
 
 //----------------------------------------------------------------------------
 // class
-class LightScene
+class LightScene_LightOn : public LightScene
 {
     public:
-        LightScene(LightHdl* light_hdl, Datastore* datastore_p, uint32_t task_tmo_ms, Parameter::Id brightness_param_id, Parameter::Id color_param_id);
-        ~LightScene();
-
-        virtual void Enter() = 0;
-        virtual void Exit() = 0;
-        virtual bool TaskHdl() = 0;
-
-        bool Task();
-        void SetBrightness(uint8_t brightness);
-        bool SetColor(uint32_t color);
-
-    protected:
-        Datastore* m_datastore_p = nullptr;
-        LightHdl* m_light_hdl_p;
-        Parameter::Id m_brightness_param_id;
-        Parameter::Id m_color_param_id;
+        LightScene_LightOn(LightHdl* light_hdl, Datastore* datastore_p);
+        ~LightScene_LightOn();
+        
+        void Enter();
+        void Exit();
 
     private:
-        uint32_t m_task_tmo_ms;
-        uint32_t m_task_timestamp_ms;
+        const static uint32_t TASK_TmoMs = 1000;
+
+        bool TaskHdl();
 };
 
-#endif // _LIGHT_SCENE_H
+#endif // _LIGHT_SCENE_LIGHT_ON_H

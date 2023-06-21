@@ -12,24 +12,16 @@ $HeadURL:  $
 $Id:  $
 *******************************************************************************/
 
-#ifndef _LED_STRIP_H
-#define _LED_STRIP_H
+#ifndef _SIMPLE_LED_STRIP_H
+#define _SIMPLE_LED_STRIP_H
 
 
 //----------------------------------------------------------------------------
 // include
 #include "../common.h"
 #include "../Datastore/Datastore.h"
+#include "../LightSource.h"
 
-
-
-//----------------------------------------------------------------------------
-// define
-#define SIMPLELEDSTRIP_Red_Pin
-#define SIMPLELEDSTRIP_Green_Pin
-#define SIMPLELEDSTRIP_Blue_Pin
-#define SIMPLELEDSTRIP_WarmWhite_Pin
-#define SIMPLELEDSTRIP_ColdWhite_Pin
 
 
 //----------------------------------------------------------------------------
@@ -38,36 +30,44 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // class
-class SimpleLedStrip
+class SimpleLedStripHdl : public LightSource
 {
     public:
-        enum Scene
+        enum SceneID
         {
             Off = 0,
             Red,
-            Gree,
+            Green,
             Blue,
             WarmWhite,
+            White,
             ColdWhite,
             Nof,
             Unknown
         };
 
-        SimpleLedStrip(Datastore* datastore_p, uint32_t task_tmo_m, 
+        SimpleLedStripHdl(Datastore* datastore_p, 
             Parameter::Id lightscene_param_id, Parameter::Id brightness_param_id, Parameter::Id color_param_id, Parameter::Id white_param_id,
             uint8_t red_pin, uint8_t green_pin, uint8_t blue_pin, uint8_t warmwhite_pin, uint8_t coldwhite_pin);
-        ~SimpleLedStrip();
+        ~SimpleLedStripHdl();
 
         void Task();
-        void SetScene(Scene scene);
+        uint8_t GetActiveScene();
+        void ChangeScene(uint8_t scene);
+        uint8_t GetBrightness();
         void SetBrightness(uint8_t brightness);
-        void SetRGBColor(rgb_color_t color);
-        void SetWhite(white_t white);
+        uint32_t GetColor();
+        void SetColor(uint32_t color);
+        uint16_t GetWhite();
+        void SetWhite(uint16_t white);
 
     protected:
 
     private:
-        Datastore* m_datastore_p = nullptr;
+        const static uint32_t TASK_TmoMs = 2000;
+
+        SceneID m_scene_id;
+
         Parameter::Id m_scene_param_id;
         Parameter::Id m_brightness_param_id;
         Parameter::Id m_color_param_id;
@@ -79,10 +79,10 @@ class SimpleLedStrip
         uint8_t m_warmwhite_pin;
         uint8_t m_coldwhite_pin;
 
-        uint32_t m_task_tmo_ms;
         uint32_t m_task_timestamp_ms;
 
         void Update();
+        void SetPWM(uint8_t pin, uint8_t pwm);
 };
 
-#endif // _LED_STRIP_H
+#endif // _SIMPLE_LED_STRIP_H

@@ -18,12 +18,11 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // include
-#include "LightSceneHdl.h"
+#include "../RoomLightHdl.h"
 
 
 //----------------------------------------------------------------------------
 // extern
-class LightSceneHdl;
 
 
 //----------------------------------------------------------------------------
@@ -31,7 +30,7 @@ class LightSceneHdl;
 class LightScene_Lightning
 {
     public:
-        LightScene_Lightning(LightSceneHdl* parent, LightHdl* light_hdl, Datastore* datastore_p);
+        LightScene_Lightning(RoomLightHdl* parent, LightHdl* light_hdl, Datastore* datastore_p);
         ~LightScene_Lightning();
         void Enter();
         void Exit();
@@ -57,7 +56,7 @@ class LightScene_Lightning
         const static uint8_t FLASH_MaxNof = 20;
         const static uint8_t FLASH_MaxNofAfterEachOther = 5;
 
-        LightSceneHdl* m_scene_hdl_p;
+        RoomLightHdl* m_scene_hdl_p;
         LightHdl* m_light_hdl_p;
         Datastore* m_datastore_p;
 

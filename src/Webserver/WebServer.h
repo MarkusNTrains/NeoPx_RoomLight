@@ -23,7 +23,7 @@ $Id:  $
 #include <Ethernet.h>
 #include <SD.h>
 #include "../common.h"
-#include "../LightScene/LightSceneHdl.h"
+#include "../LightSourceHdl.h"
 
 
 
@@ -46,9 +46,11 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // const
-const static char WEBSERVER_Request_Needle_Scene[] PROGMEM = "LightScene";
+const static char WEBSERVER_Request_Needle_Source[] PROGMEM = "SetSource";
+const static char WEBSERVER_Request_Needle_Scene[] PROGMEM = "SetScene";
 const static char WEBSERVER_Request_Needle_brightness[] PROGMEM = "SetBrightness";
 const static char WEBSERVER_Request_Needle_Color[] PROGMEM = "SetColor";
+const static char WEBSERVER_Request_Needle_White[] PROGMEM = "SetWhite";
 const static char WEBSERVER_Request_Needle_SetLedArea[] PROGMEM = "SetArea";
 const static char WEBSERVER_Request_Needle_GetCurrentData[] PROGMEM = "GetCurrentData";
 const static char WEBSERVER_Request_Needle_GetInfo[] PROGMEM = "GetInfo";
@@ -60,16 +62,18 @@ const static uint8_t WEBSERVER_Request_Needle_MaxLength = 16;  // musst longer t
 class WebServer
 {
     public:
-        WebServer(LightSceneHdl* led_scene);
+        WebServer(LightSourceHdl* light_source_hdl);
         ~WebServer();
         void Tasks();		
         
     private:
         enum Action
         {
-            ACTION_SetLightSecene = 0,
+            ACTION_SetLightSource = 0,
+            ACTION_SetLightScene,
             ACTION_SetBrightness,
             ACTION_SetColor,
+            ACTION_SetWhite,
             ACTION_SetLedArea,
             ACTION_GetInfo,
             ACTION_Unknown
@@ -81,7 +85,7 @@ class WebServer
 
         EthernetServer* m_server;
         File webFile;                                // the web page file on the SD card
-        LightSceneHdl* m_lightSceneHdl_p;
+        LightSourceHdl* m_lightSourceHdl_p;
         Action m_action;
 
         void HandleRequest(char* http_request);

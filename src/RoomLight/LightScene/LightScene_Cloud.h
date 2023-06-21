@@ -18,7 +18,7 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // include
-#include "LightSceneHdl.h"
+#include "../RoomLightHdl.h"
 
 
 //----------------------------------------------------------------------------
@@ -37,7 +37,6 @@ struct SkyCloud
 
 //----------------------------------------------------------------------------
 // extern
-class LightSceneHdl;
 
 
 //----------------------------------------------------------------------------
@@ -45,7 +44,7 @@ class LightSceneHdl;
 class LightScene_Cloud
 {
     public:
-        LightScene_Cloud(LightSceneHdl* parent, LightHdl* light_hdl);
+        LightScene_Cloud(RoomLightHdl* parent, LightHdl* light_hdl);
         ~LightScene_Cloud();
         void Enter();
         void Exit();
@@ -67,7 +66,7 @@ class LightScene_Cloud
         const static uint8_t CLOUD_MinNof = 5;
         const static uint8_t CLOUD_MaxNof = 30;
 
-        LightSceneHdl* m_scene_hdl_p;
+        RoomLightHdl* m_scene_hdl_p;
         LightHdl* m_light_hdl_p;
         SkyCloud* m_cloud_p[CLOUD_MaxNof];
         uint32_t m_scene_color;

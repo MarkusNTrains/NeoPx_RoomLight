@@ -55,7 +55,7 @@ typedef struct
 
 
 //--- save data permanent -------------------------------------------------
-#define DATASTORE_SaveDataOnEEPROM OFF   // if ON then lightscene, color, brightness and led area are saved permanent on EEPROM
+#define DATASTORE_SaveDataOnEEPROM ON   // if ON then lightscene, color, brightness and led area are saved permanent on EEPROM
 #define DATASTORE_SaveLightScene   ON   // if ON then lightscene is saved permanent on EEPROM
 
 
@@ -154,6 +154,13 @@ typedef struct
     const ledStrip_t ROOM_LIGHT_LedStripList[ROOM_LIGHT_NofLedStrips] = {
         { ROOM_LIGHT_LedStrip1_Pin, ROOM_LIGHT_LedStrip1_NofLed},
     };
+
+    // LED Strips define ------------------------------
+    #define SBF_LEDRed_Pin       5
+    #define SBF_LEDGreen_Pin     4
+    #define SBF_LEDBlue_Pin      6
+    #define SBF_LEDWarmWhite_Pin 3
+    #define SBF_LEDColdWhite_Pin 2
 #endif
 
 

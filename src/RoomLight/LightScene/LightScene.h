@@ -12,35 +12,47 @@ $HeadURL:  $
 $Id:  $
 *******************************************************************************/
 
-#ifndef _LIGHT_SCENE_OFFICE_TABLE_H
-#define _LIGHT_SCENE_OFFICE_TABLE_H
+#ifndef _LIGHT_SCENE_H
+#define _LIGHT_SCENE_H
 
 
 //----------------------------------------------------------------------------
 // include
-#include "LightScene.h"
+#include "../../common.h"
+#include "../../Datastore/Datastore.h"
+#include "../LightHdl/LightHdl.h"
+
 
 
 //----------------------------------------------------------------------------
 // extern
-class LightSceneHdl;
 
 
 //----------------------------------------------------------------------------
 // class
-class LightScene_OfficeTable : public LightScene
+class LightScene
 {
     public:
-        LightScene_OfficeTable(LightHdl* light_hdl, Datastore* datastore_p);
-        ~LightScene_OfficeTable();
-        
-        void Enter();
-        void Exit();
+        LightScene(LightHdl* light_hdl, Datastore* datastore_p, uint32_t task_tmo_ms, Parameter::Id brightness_param_id, Parameter::Id color_param_id);
+        ~LightScene();
+
+        virtual void Enter() = 0;
+        virtual void Exit() = 0;
+        virtual bool TaskHdl() = 0;
+
+        bool Task();
+        void SetBrightness(uint8_t brightness);
+        bool SetColor(uint32_t color);
+
+    protected:
+        Datastore* m_datastore_p = nullptr;
+        LightHdl* m_light_hdl_p;
+        Parameter::Id m_brightness_param_id;
+        Parameter::Id m_color_param_id;
 
     private:
-        const static uint32_t TASK_TmoMs = 1000;
-
-        bool TaskHdl();
+        uint32_t m_task_tmo_ms;
+        uint32_t m_task_timestamp_ms;
 };
 
-#endif // _LIGHT_SCENE_OFFICE_TABLE_H
+#endif // _LIGHT_SCENE_H

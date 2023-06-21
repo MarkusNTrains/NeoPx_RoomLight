@@ -12,8 +12,8 @@ $HeadURL:  $
 $Id:  $
 *******************************************************************************/
 
-#ifndef _LIGHT_SCENE_DISCO_H
-#define _LIGHT_SCENE_DISCO_H
+#ifndef _LIGHT_SCENE_RAINBOW_H
+#define _LIGHT_SCENE_RAINBOW_H
 
 
 //----------------------------------------------------------------------------
@@ -23,24 +23,25 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // extern
-class LightSceneHdl;
 
 
 //----------------------------------------------------------------------------
 // class
-class LightScene_Disco : public LightScene
+class LightScene_Rainbow : public LightScene
 {
     public:
-        LightScene_Disco(LightHdl* light_hdl, Datastore* datastore_p);
-        ~LightScene_Disco();
+        LightScene_Rainbow(LightHdl* light_hdl, Datastore* datastore_p);
+        ~LightScene_Rainbow();
         
         void Enter();
         void Exit();
 
     private:
-        const static uint32_t TASK_TmoMs = 100;
+        const static uint32_t TASK_TmoMs = 200;
+        
+        uint16_t m_firstPixelHue;
 
         bool TaskHdl();
 };
 
-#endif // _LIGHT_SCENE_DISCO_H
+#endif // _LIGHT_SCENE_MOBA_H

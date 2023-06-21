@@ -36,7 +36,7 @@ $Id:  $
 // description:
 //   constructor
 //*****************************************************************************
-LightScene_Sun::LightScene_Sun(LightSceneHdl* parent, LightHdl* light_hdl, Datastore* datastore_p)
+LightScene_Sun::LightScene_Sun(RoomLightHdl* parent, LightHdl* light_hdl, Datastore* datastore_p)
 {
     this->m_scene_hdl_p = parent;
     this->m_light_hdl_p = light_hdl;
@@ -80,7 +80,7 @@ void LightScene_Sun::Sunrise_Leave()
 {
     this->m_light_hdl_p->SetBrightness_Instantly(this->m_day_brightness_white);
     this->m_light_hdl_p->SetColor(LightScene_Day::COLOR);
-    this->m_scene_hdl_p->ChangeLightScene(LightSceneID::Day);   
+    this->m_scene_hdl_p->ChangeScene((uint8_t)RoomLightHdl::SceneID::Day);   
 }
 
 
@@ -216,7 +216,7 @@ void LightScene_Sun::Sunset_Leave()
 {
     this->m_light_hdl_p->SetColor(LightScene_Night::COLOR);
     this->m_light_hdl_p->SetBrightness_Instantly(this->m_night_brightness);
-    this->m_scene_hdl_p->ChangeLightScene(LightSceneID::Night);   
+    this->m_scene_hdl_p->ChangeScene((uint8_t)RoomLightHdl::SceneID::Night);   
 }
 
 

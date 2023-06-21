@@ -31,6 +31,7 @@ typedef union
         uint8_t blue;
         uint8_t green;
         uint8_t red;
+        uint8_t res;
     };
     uint32_t color;
 } rgb_color_t;
@@ -51,8 +52,8 @@ typedef union
 {
     struct
     {
-        uint8_t warmwhite;
-        uint8_t coldwhite;
+        uint8_t warm;
+        uint8_t cold;
     };
     uint16_t white;
 } white_t;

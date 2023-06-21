@@ -35,7 +35,7 @@ $Id:  $
 // description:
 //   constructor
 //*****************************************************************************
-LightScene_Cloud::LightScene_Cloud(LightSceneHdl* parent, LightHdl* light_hdl) 
+LightScene_Cloud::LightScene_Cloud(RoomLightHdl* parent, LightHdl* light_hdl) 
 {
     this->m_scene_hdl_p = parent;
     this->m_light_hdl_p = light_hdl;
@@ -262,7 +262,7 @@ bool LightScene_Cloud::Task()
 //*****************************************************************************
 void LightScene_Cloud::Leave()
 {
-    this->m_scene_hdl_p->ChangeLightScene(this->m_scene_hdl_p->GetLastScene());
+    this->m_scene_hdl_p->ChangeScene((uint8_t)this->m_scene_hdl_p->GetLastScene());
 }
 
 

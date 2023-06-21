@@ -6,43 +6,48 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original 
   source code
   
-  Created 25. April 2023 by MarkusNTrains
+  Created 24. August 2020 by MarkusNTrains
 ================================================================================
 $HeadURL:  $
 $Id:  $
 *******************************************************************************/
 
-#ifndef _LIGHT_SCENE_RAINBOW_H
-#define _LIGHT_SCENE_RAINBOW_H
+
+#ifndef _LED_ROW_H
+#define _LED_ROW_H
 
 
 //----------------------------------------------------------------------------
 // include
-#include "LightScene.h"
+#include "../../common.h"
+#include <Adafruit_NeoPixel.h>
 
 
 //----------------------------------------------------------------------------
-// extern
-class LightSceneHdl;
+// define
 
 
 //----------------------------------------------------------------------------
 // class
-class LightScene_Rainbow : public LightScene
+class LedRow
 {
     public:
-        LightScene_Rainbow(LightHdl* light_hdl, Datastore* datastore_p);
-        ~LightScene_Rainbow();
+        const static uint16_t LED_ROW_NOF = ROOM_LIGHT_NofRows;
+        const static uint16_t LED_ROW_LENGTH = ROOM_LIGHT_RowNofPx;
+    
+	    LedRow(Adafruit_NeoPixel* led_strip_p, uint8_t row_idx);
+	    ~LedRow();
         
-        void Enter();
-        void Exit();
+        void Show();
+        uint32_t GetPixelColor(uint16_t idx);
+        void SetPixel(uint16_t idx, uint32_t color);
+        void SetPixel(uint16_t start_idx, uint16_t width, uint16_t space, uint16_t nof_repeat, uint32_t color);
+		
+    private:	
+        Adafruit_NeoPixel* m_led_strip_p;
+        uint8_t m_row_idx;
 
-    private:
-        const static uint32_t TASK_TmoMs = 200;
-        
-        uint16_t m_firstPixelHue;
-
-        bool TaskHdl();
+        uint16_t GetLedIdxOfLut(uint16_t idx);
 };
 
-#endif // _LIGHT_SCENE_MOBA_H
+#endif  // _LED_ROW_H

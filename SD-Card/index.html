@@ -90,7 +90,7 @@
 			/*text-decoration: none;*/
 			display: inline-block;
 			font-size: 16px;
-			margin: 4px 2px;
+			margin: 4px 4px;
 			-webkit-transition-duration: 0.4s; /* Safari */
 			transition-duration: 0.4s;
 			cursor: pointer;
@@ -321,16 +321,16 @@
         const GLOBAL_WebserverVersion_Minor = 7;
 
 
-        const MAINPAGE_TAB =
+        const LIGHT_SOURCE =
         {
             RoomLight: 0,
             ShadowStation: 1,
             Nof: 2
         };
 
-        const MAINPAGE_TAB_Prefix = [];
-        MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] = "RoomLight";
-        MAINPAGE_TAB_Prefix[MAINPAGE_TAB.ShadowStation] = "ShadowStation";
+        const LIGHTSOURCE_Prefix = [];
+        LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] = "RoomLight";
+        LIGHTSOURCE_Prefix[LIGHT_SOURCE.ShadowStation] = "ShadowStation";
         
 		const ROOMLIGHT_Scene = 
 		{
@@ -366,12 +366,14 @@
 
         const XML_RREQUEST = 
         {
-            GetCurrentData: "GetCurrentData",
-			GetInfo: "GetInfo",
             SetArea: "SetArea",
             SetBrightness: "SetBrightness",
             SetColor: "SetColor",
-            SetLightScene: "LightScene",
+            GetCurrentData: "GetCurrentData",
+			GetInfo: "GetInfo",
+            SetLightScene: "SetScene",
+            SetLightSource: "SetSource",
+            SetWhite: "SetWhite",
         };
 
         const FIND_SERVER_TIMEOUT_MS = 2000;
@@ -391,7 +393,7 @@
 		var s_xhttp = null;
         var s_active_lightScene_elementId = "";
         var s_active_lightAnimation_elementId = "";
-        var s_active_tab = MAINPAGE_TAB.RoomLight;
+        var s_active_light_source = LIGHT_SOURCE.RoomLight;
 
 
 		//--- function prototypes -----------------------------------------
@@ -443,10 +445,10 @@
                                     var version_minor = this.responseXML.getElementsByTagName('minor')[0].childNodes[0].nodeValue;
                                     var led_nof_row = parseInt(this.responseXML.getElementsByTagName('nof_row')[0].childNodes[0].nodeValue);
                                     var led_nof_px = parseInt(this.responseXML.getElementsByTagName('nof_leds')[0].childNodes[0].nodeValue);
-                                    var xs = parseInt(this.responseXML.getElementsByTagName('xs')[0].childNodes[0].nodeValue);
-                                    var xe = parseInt(this.responseXML.getElementsByTagName('xe')[0].childNodes[0].nodeValue);
-                                    var ys = parseInt(this.responseXML.getElementsByTagName('ys')[0].childNodes[0].nodeValue);
-                                    var ye = parseInt(this.responseXML.getElementsByTagName('ye')[0].childNodes[0].nodeValue);
+                                    //var xs = parseInt(this.responseXML.getElementsByTagName('xs')[0].childNodes[0].nodeValue);
+                                    //var xe = parseInt(this.responseXML.getElementsByTagName('xe')[0].childNodes[0].nodeValue);
+                                    //var ys = parseInt(this.responseXML.getElementsByTagName('ys')[0].childNodes[0].nodeValue);
+                                    //var ye = parseInt(this.responseXML.getElementsByTagName('ye')[0].childNodes[0].nodeValue);
 
 
                                     //--- update user setting columen and row slider --------------------------------
@@ -459,19 +461,19 @@
                                     //    <!--<output for="b" style="--c: var(--b)"></output>-->
                                     //</div>
                                     var slider_row_max = led_nof_row - USER_SETTING_OFFSET;
-                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaRow_SliderBox").innerHTML = (
-                                        '<div id="' + MAINPAGE_TAB_Prefix[s_active_tab] + '_AreaRow_Slider" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: ' + ys + '; --b: ' + ye + '; --min: 0; --max: ' + slider_row_max + ';">'
-                                        +   '<input name="' + MAINPAGE_TAB_Prefix[s_active_tab] + '_LedRowSlider_a" id="a" class="twoThumbSlider" type="range" min="0" value="' + ys + '" max="' + slider_row_max + '" />'
-                                        +   '<input name="' + MAINPAGE_TAB_Prefix[s_active_tab] + '_LedRowSlider_b" id="b" class="twoThumbSlider" type="range" min="0" value="' + ye + '" max="' + slider_row_max + '" />'
+                                    document.getElementById(LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + "_AreaRow_SliderBox").innerHTML = (
+                                        '<div id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_AreaRow_Slider" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: ' + 0 + '; --b: ' + slider_row_max + '; --min: 0; --max: ' + slider_row_max + ';">'
+                                        +   '<input name="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_LedRowSlider_a" id="a" class="twoThumbSlider" type="range" min="0" value="' + 0 + '" max="' + slider_row_max + '" />'
+                                        +   '<input name="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_LedRowSlider_b" id="b" class="twoThumbSlider" type="range" min="0" value="' + slider_row_max + '" max="' + slider_row_max + '" />'
                                         + '</div>'
                                     );
                                     if (led_nof_row > 1)
                                     {
-                                        document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaRow_SliderBox").style.visibility = 'visible';
+                                        document.getElementById(LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + "_AreaRow_Slider").style.visibility = 'visible';
                                     }
                                     else
                                     {
-                                        document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaRow_SliderBox").style.visibility = 'hidden';
+                                        document.getElementById(LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + "_AreaRow_Slider").style.visibility = 'hidden';
                                     }
 
                                     //<div id="slider_columen" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: 20; --b: 120; --min: 0; --max: 239">
@@ -482,10 +484,10 @@
                                     //    <!--<output for="b" style="--c: var(--b)"></output>-->
                                     //</div>
                                     var slider_column_max = led_nof_px - USER_SETTING_OFFSET;
-                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaColumn_SliderBox").innerHTML = (
-                                        '<div id="' + MAINPAGE_TAB_Prefix[s_active_tab] + '_AreaColumn_Slider" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: ' + xs + '; --b: ' + xe + '; --min: 0; --max: ' + slider_column_max + '">'
-                                        +   '<input name="' + MAINPAGE_TAB_Prefix[s_active_tab] + '_LedColumnSlider_a" id="a" class="twoThumbSlider" type="range" min="0" value="' + xs + '" max="' + slider_column_max + '" />'
-                                        +   '<input name="' + MAINPAGE_TAB_Prefix[s_active_tab] + '_LedColumnSlider_b" id="b" class="twoThumbSlider" type="range" min="0" value="' + xe + '" max="' + slider_column_max + '" />'
+                                    document.getElementById(LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + "_AreaColumn_SliderBox").innerHTML = (
+                                        '<div id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_AreaColumn_Slider" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: ' + 0 + '; --b: ' + slider_column_max + '; --min: 0; --max: ' + slider_column_max + '">'
+                                        +   '<input name="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_LedColumnSlider_a" id="a" class="twoThumbSlider" type="range" min="0" value="' + 0 + '" max="' + slider_column_max + '" />'
+                                        +   '<input name="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_LedColumnSlider_b" id="b" class="twoThumbSlider" type="range" min="0" value="' + slider_column_max + '" max="' + slider_column_max + '" />'
                                         + '</div>'
                                     );
 
@@ -497,6 +499,12 @@
                                     }
                                 }
 								
+								re = this.responseXML.getElementsByTagName('source');
+								if ((re != undefined) && (re != null) && (re.length > 0))
+								{
+                                    LightSource_Activate(re[0].childNodes[0].nodeValue);
+                                }	
+
 								re = this.responseXML.getElementsByTagName('scene');
 								if ((re != undefined) && (re != null) && (re.length > 0))
 								{
@@ -512,19 +520,20 @@
 								re = this.responseXML.getElementsByTagName('brightness');
 								if ((re != undefined) && (re != null) && (re.length > 0))
 								{
-									document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_Brightness_Slider").value = re[0].childNodes[0].nodeValue;
-									document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_Brightness_Value").innerHTML = re[0].childNodes[0].nodeValue;
+									document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_Brightness_Slider").value = re[0].childNodes[0].nodeValue;
+									document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_Brightness_Value").innerHTML = re[0].childNodes[0].nodeValue;
 								}
 
+                                var color = 0;
 								re = this.responseXML.getElementsByTagName('color');
 								if ((re != undefined) && (re != null) && (re.length > 0))
 								{
-									var color = parseInt(re[0].childNodes[0].nodeValue);
+									color = parseInt(re[0].childNodes[0].nodeValue);
                                     if (color > 0xFFFFFF)
                                     {
                                         var white = (color >> 24) & 0xFF;
-                                        document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_WarmWhite_Slider").value = white;
-                                        document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_WarmWhite_Value").innerHTML = white;
+                                        document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_WarmWhite_Slider").value = white;
+                                        document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_WarmWhite_Value").innerHTML = white;
                                         colorStr = ('000000' + ((white << 16) | (white << 8) | white).toString(16)).slice(-6);
                             			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
                                     }
@@ -558,8 +567,8 @@
 
                                         // set rgb combined slider
                                         var colorStr = ('000000' + color.toString(16)).slice(-6);
-                                        document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRgb_Slider").value = slider_value;
-                                        document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRgb_Value").innerHTML = '0x' + colorStr;
+                                        document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorRgb_Slider").value = slider_value;
+                                        document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorRgb_Value").innerHTML = '0x' + colorStr;
                                         document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
                                     }
 
@@ -567,34 +576,62 @@
                                     var red = (color >> 16) & 0xFF;
                                     var green = (color >> 8) & 0xFF;
                                     var blue = color & 0xFF;
-                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRed_Value").innerHTML = red;
-                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorGreen_Value").innerHTML = green;
-                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorBlue_Value").innerHTML = blue;
-                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRed_Slider").value = red;
-                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorGreen_Slider").value = green;
-                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorBlue_Slider").value = blue;
+                                    document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorRed_Value").innerHTML = red;
+                                    document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorGreen_Value").innerHTML = green;
+                                    document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorBlue_Value").innerHTML = blue;
+                                    document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorRed_Slider").value = red;
+                                    document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorGreen_Slider").value = green;
+                                    document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorBlue_Slider").value = blue;
 								}
 
-								re = this.responseXML.getElementsByTagName('led_area');
-								if ((re != undefined) && (re != null) && (re.length > 0))
+                                if (s_active_light_source == LIGHT_SOURCE.RoomLight)
                                 {
-                                    var xs = parseInt(this.responseXML.getElementsByTagName('xs')[0].childNodes[0].nodeValue);
-                                    var xe = parseInt(this.responseXML.getElementsByTagName('xe')[0].childNodes[0].nodeValue);
-                                    var ys = parseInt(this.responseXML.getElementsByTagName('ys')[0].childNodes[0].nodeValue);
-                                    var ye = parseInt(this.responseXML.getElementsByTagName('ye')[0].childNodes[0].nodeValue);
+                                    re = this.responseXML.getElementsByTagName('led_area');
+                                    if ((re != undefined) && (re != null) && (re.length > 0))
+                                    {
+                                        var xs = parseInt(this.responseXML.getElementsByTagName('xs')[0].childNodes[0].nodeValue);
+                                        var xe = parseInt(this.responseXML.getElementsByTagName('xe')[0].childNodes[0].nodeValue);
+                                        var ys = parseInt(this.responseXML.getElementsByTagName('ys')[0].childNodes[0].nodeValue);
+                                        var ye = parseInt(this.responseXML.getElementsByTagName('ye')[0].childNodes[0].nodeValue);
 
-                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaRow_Value").innerHTML = ((ys + USER_SETTING_OFFSET) + " - " + (ye + USER_SETTING_OFFSET));
-                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaRow_Slider").style.setProperty("--a", ys);
-                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaRow_Slider").style.setProperty("--b", ye);
-                                    document.getElementsByName(MAINPAGE_TAB_Prefix[s_active_tab] + "_LedRowSlider_a")[0].value = ys;
-                                    document.getElementsByName(MAINPAGE_TAB_Prefix[s_active_tab] + "_LedRowSlider_b")[0].value = ye;
+                                        document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_AreaRow_Value").innerHTML = ((ys + USER_SETTING_OFFSET) + " - " + (ye + USER_SETTING_OFFSET));
+                                        document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_AreaRow_Slider").style.setProperty("--a", ys);
+                                        document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_AreaRow_Slider").style.setProperty("--b", ye);
+                                        document.getElementsByName(LIGHTSOURCE_Prefix[s_active_light_source] + "_LedRowSlider_a")[0].value = ys;
+                                        document.getElementsByName(LIGHTSOURCE_Prefix[s_active_light_source] + "_LedRowSlider_b")[0].value = ye;
 
-                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaColumn_Value").innerHTML = ((xs + USER_SETTING_OFFSET) + " - " + (xe + USER_SETTING_OFFSET));
-                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaColumn_Slider").style.setProperty("--a", xs);
-                                    document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaColumn_Slider").style.setProperty("--b", xe);
-                                    document.getElementsByName(MAINPAGE_TAB_Prefix[s_active_tab] + "_LedColumnSlider_a")[0].value = xs;
-                                    document.getElementsByName(MAINPAGE_TAB_Prefix[s_active_tab] + "_LedColumnSlider_b")[0].value = xe;
+                                        document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_AreaColumn_Value").innerHTML = ((xs + USER_SETTING_OFFSET) + " - " + (xe + USER_SETTING_OFFSET));
+                                        document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_AreaColumn_Slider").style.setProperty("--a", xs);
+                                        document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_AreaColumn_Slider").style.setProperty("--b", xe);
+                                        document.getElementsByName(LIGHTSOURCE_Prefix[s_active_light_source] + "_LedColumnSlider_a")[0].value = xs;
+                                        document.getElementsByName(LIGHTSOURCE_Prefix[s_active_light_source] + "_LedColumnSlider_b")[0].value = xe;
+                                    }
                                 }
+
+                                if (s_active_light_source == LIGHT_SOURCE.ShadowStation)
+                                {
+                                    re = this.responseXML.getElementsByTagName('white');
+                                    if ((re != undefined) && (re != null) && (re.length > 0))
+                                    {
+                                        var white = parseInt(re[0].childNodes[0].nodeValue);
+                                        var warm_white = white & 0xFF;
+                                        var cold_white = (white >> 8) & 0xFF;
+
+                                        document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_WarmWhite_Value").innerHTML = warm_white;
+                                        document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_WarmWhite_Slider").value = warm_white;
+                                        document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColdWhite_Value").innerHTML = cold_white;
+                                        document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColdWhite_Slider").value = cold_white;
+
+                                        if ((color & 0xFFFFFF) == 0)
+                                        {
+                                            // no color is active
+                                            var color = warm_white + cold_white;
+                                            if (color > 255) { color = 255; }
+                                            colorStr = ('000000' + ((color << 16) | (color << 8) | color).toString(16)).slice(-6);
+                                            document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
+                                        }
+                                    }
+                                }   
 
 
 								if (s_sendToServer_timeoutTimer != null)
@@ -635,14 +672,21 @@
             clearInterval(s_requestDataFromServer_intervalTimer);
             document.body.style.cursor = "progress";
             Button_DisableAll();
-            document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_Brightness_Value").innerHTML = ("loading...");
-            document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRgb_Value").innerHTML = ("loading...");
-            document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRed_Value").innerHTML = ("loading...");
-            document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorGreen_Value").innerHTML = ("loading...");
-            document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorBlue_Value").innerHTML = ("loading...");
-            document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_WarmWhite_Value").innerHTML = ("loading...");
-            document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaColumn_Value").innerHTML = ("loading...");
-            document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaRowValue").innerHTML = ("loading...");
+            document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_Brightness_Value").innerHTML = ("loading...");
+            document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorRgb_Value").innerHTML = ("loading...");
+            document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorRed_Value").innerHTML = ("loading...");
+            document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorGreen_Value").innerHTML = ("loading...");
+            document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorBlue_Value").innerHTML = ("loading...");
+            document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_WarmWhite_Value").innerHTML = ("loading...");
+            if (s_active_light_source == LIGHT_SOURCE.RoomLight) 
+            {
+                document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_AreaColumn_Value").innerHTML = ("loading...");
+                document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_AreaRowValue").innerHTML = ("loading...");
+            }
+            else if (s_active_light_source == LIGHT_SOURCE.ShadowStation)
+            {
+                document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColdWhite_Value").innerHTML = ("loading...");
+            }
             document.querySelector(':root').style.setProperty('--SliderThumbColor', '#3F3F3F');
             document.getElementById("footer_version").innerHTML = ("v" + GLOBAL_WebserverVersion_Major + "." + GLOBAL_WebserverVersion_Minor);
 
@@ -719,16 +763,30 @@
 			}
         }
 
+        function LightSource_Activate(source)
+        {
+            s_active_light_source = source;
+            document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_TabButton").click();
+        }
+
         function LightScene_ShowAsActive(scene)
         {
+            var nof_scene = 0;
+            if (s_active_light_source == LIGHT_SOURCE.RoomLight) {
+                nof_scene = ROOMLIGHT_Scene.NOF;
+            }
+            else if (s_active_light_source == LIGHT_SOURCE.ShadowStation) {
+                nof_scene = SIMPLELEDSTRIP_Scene.Nof;
+            }
+
             if (document.getElementById(s_active_lightScene_elementId) != null)
             {
                 document.getElementById(s_active_lightScene_elementId).classList.remove("button_active");
             }
             
-            if (scene < ROOMLIGHT_Scene.NOF)
+            if (scene < nof_scene)
             {
-                s_active_lightScene_elementId = MAINPAGE_TAB_Prefix[s_active_tab] + "_Scene" + scene;
+                s_active_lightScene_elementId = LIGHTSOURCE_Prefix[s_active_light_source] + "_Scene" + scene;
                 if (document.getElementById(s_active_lightScene_elementId) != null)
                 {
     			    document.getElementById(s_active_lightScene_elementId).classList.add("button_active");
@@ -742,29 +800,32 @@
 
         function LightAnimation_ShowAsActive(animation)
         {
-            if (document.getElementById(s_active_lightAnimation_elementId) != null)
+            if (s_active_light_source == LIGHT_SOURCE.RoomLight)
             {
-                document.getElementById(s_active_lightAnimation_elementId).classList.remove("button_active");
-            }
-            
-            if (animation < ROOMLIGHT_Scene.NOF)
-            {
-                s_active_lightAnimation_elementId = "LightAnimation" + animation;
                 if (document.getElementById(s_active_lightAnimation_elementId) != null)
                 {
-			        document.getElementById(s_active_lightAnimation_elementId).classList.add("button_active");
+                    document.getElementById(s_active_lightAnimation_elementId).classList.remove("button_active");
                 }
-            }
-            else
-            {
-                s_active_lightAnimation_elementId = "";
+                
+                if (animation < ROOMLIGHT_Scene.NOF)
+                {
+                    s_active_lightAnimation_elementId = LIGHTSOURCE_Prefix[s_active_light_source] + "_Animation" + animation;
+                    if (document.getElementById(s_active_lightAnimation_elementId) != null)
+                    {
+                        document.getElementById(s_active_lightAnimation_elementId).classList.add("button_active");
+                    }
+                }
+                else
+                {
+                    s_active_lightAnimation_elementId = "";
+                }
             }
         }
 
 		function BrighntessSliderChanged()
 		{
-			var slider = document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_Brightness_Slider");
-			var output = document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_Brightness_Value");
+			var slider = document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_Brightness_Slider");
+			var output = document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_Brightness_Value");
 			output.innerHTML = slider.value;
 
 			SendDataToServerWhenConnected("&" + XML_RREQUEST.SetBrightness + "=" + slider.value);
@@ -772,8 +833,8 @@
 
 		function ColorRGBSliderChanged()
 		{
-			var slider = document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRgb_Slider");
-			var output = document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRgb_Value");
+			var slider = document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorRgb_Slider");
+			var output = document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorRgb_Value");
 
 			var color = 0;
 			if (slider.value > 1279)
@@ -810,23 +871,23 @@
             var red = (color >> 16) & 0xFF;
             var green = (color >> 8) & 0xFF;
             var blue = color & 0xFF;
-			document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRed_Value").innerHTML = red;
-			document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorGreen_Value").innerHTML = green;
-			document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorBlue_Value").innerHTML = blue;
-            document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRed_Slider").value = red;
-            document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorGreen_Slider").value = green;
-            document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorBlue_Slider").value = blue;
+			document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorRed_Value").innerHTML = red;
+			document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorGreen_Value").innerHTML = green;
+			document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorBlue_Value").innerHTML = blue;
+            document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorRed_Slider").value = red;
+            document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorGreen_Slider").value = green;
+            document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorBlue_Slider").value = blue;
 		}
 
         function ColorRGBSingleSliderChanged()
         {
-			var red_slider = document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRed_Slider");
-			var green_slider = document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorGreen_Slider");
-			var blue_slider = document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorBlue_Slider");
+			var red_slider = document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorRed_Slider");
+			var green_slider = document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorGreen_Slider");
+			var blue_slider = document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorBlue_Slider");
 
-			document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRed_Value").innerHTML = red_slider.value;
-			document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorGreen_Value").innerHTML = green_slider.value;
-			document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorBlue_Value").innerHTML = blue_slider.value;
+			document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorRed_Value").innerHTML = red_slider.value;
+			document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorGreen_Value").innerHTML = green_slider.value;
+			document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorBlue_Value").innerHTML = blue_slider.value;
 
             var color = 0;
             color = (red_slider.value << 16);
@@ -835,20 +896,37 @@
 
 			var colorStr = ('000000' + color.toString(16)).slice(-6);
 			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
-			document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_ColorRgb_Value").innerHTML = colorStr;
+			document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorRgb_Value").innerHTML = colorStr;
 			SendDataToServerWhenConnected("&" + XML_RREQUEST.SetColor + "=" + color);			
         }
 
 		function ColorWhiteSliderChanged()
 		{
-			var slider = document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_WarmWhite_Slider");
-			var output = document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_WarmWhite_Value");
-			
-			var color = slider.value;
-			output.innerHTML = color;
-			colorStr = ('000000' + ((color << 16) | (color << 8) | color).toString(16)).slice(-6);
-			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
-			SendDataToServerWhenConnected("&" + XML_RREQUEST.SetColor + "=" + (slider.value << 24));			
+            var warmwhite_slider = document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_WarmWhite_Slider");
+            var color = parseInt(warmwhite_slider.value);
+
+            document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_WarmWhite_Value").innerHTML = color;
+            colorStr = ('000000' + ((color << 16) | (color << 8) | color).toString(16)).slice(-6);
+            document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
+
+            if (s_active_light_source == LIGHT_SOURCE.RoomLight)
+            {
+                SendDataToServerWhenConnected("&" + XML_RREQUEST.SetColor + "=" + (warmwhite_slider.value << 24));			
+            }
+            else
+            {
+                var coldwhite_slider = document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColdWhite_Slider");                
+                document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColdWhite_Value").innerHTML = coldwhite_slider.value;
+
+                color += parseInt(coldwhite_slider.value);
+                if (color > 255) { color = 255; }
+                colorStr = ('000000' + ((color << 16) | (color << 8) | color).toString(16)).slice(-6);
+                document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
+                
+                var white = warmwhite_slider.value
+                white |= (coldwhite_slider.value << 8);
+                SendDataToServerWhenConnected("&" + XML_RREQUEST.SetWhite + "=" + white);			
+            }
 		}
 
 		// 2 thumb slider
@@ -866,10 +944,10 @@
 
 		function SliderTwoThumb_Update()
 		{
-            var xs = parseInt(getComputedStyle(document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaColumn_Slider")).getPropertyValue('--a'), 10);
-            var xe = parseInt(getComputedStyle(document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaColumn_Slider")).getPropertyValue('--b'), 10);
-            var ys = parseInt(getComputedStyle(document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaRow_Slider")).getPropertyValue('--a'), 10);
-            var ye = parseInt(getComputedStyle(document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaRow_Slider")).getPropertyValue('--b'), 10);
+            var xs = parseInt(getComputedStyle(document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_AreaColumn_Slider")).getPropertyValue('--a'), 10);
+            var xe = parseInt(getComputedStyle(document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_AreaColumn_Slider")).getPropertyValue('--b'), 10);
+            var ys = parseInt(getComputedStyle(document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_AreaRow_Slider")).getPropertyValue('--a'), 10);
+            var ye = parseInt(getComputedStyle(document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_AreaRow_Slider")).getPropertyValue('--b'), 10);
 
             if (xs > xe)
             {
@@ -889,12 +967,12 @@
             xe += USER_SETTING_OFFSET;
             ys += USER_SETTING_OFFSET;
             ye += USER_SETTING_OFFSET;
-			document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaColumn_Value").innerHTML = (xs + " - " + xe);
-			document.getElementById(MAINPAGE_TAB_Prefix[s_active_tab] + "_AreaRow_Value").innerHTML = (ys + " - " + ye);
+			document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_AreaColumn_Value").innerHTML = (xs + " - " + xe);
+			document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_AreaRow_Value").innerHTML = (ys + " - " + ye);
 		}
 
 
-        function OpenLightSceneTab(evt, tab_id) 
+        function OpenLightSourceTab(evt, tab_id) 
         {
             var cnt;
             var tabcontent;
@@ -911,13 +989,20 @@
             document.getElementById(tab_id).style.display = "block";
             evt.currentTarget.className += " active";
 
-            if (tab_id == (MAINPAGE_TAB_Prefix[MAINPAGE_TAB.ShadowStation] + "_Tab"))
+            var active_tab = 0;
+            if (tab_id == (LIGHTSOURCE_Prefix[LIGHT_SOURCE.ShadowStation] + "_Tab"))
             {
-                s_active_tab = MAINPAGE_TAB.ShadowStation;
+                active_tab = LIGHT_SOURCE.ShadowStation;
             }
             else
             {
-                s_active_tab = MAINPAGE_TAB.RoomLight;
+                active_tab = LIGHT_SOURCE.RoomLight;
+            }
+
+            if (s_active_light_source != active_tab)
+            {
+                s_active_light_source = active_tab;
+                SendDataToServerWhenConnected("&" + XML_RREQUEST.SetLightSource + "=" + s_active_light_source);
             }
         }
 
@@ -925,34 +1010,34 @@
         //--- onload event handler ----------------------------------------
         window.addEventListener('load', (event) => 
         {
-            var light_scene = '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Scene' + ROOMLIGHT_Scene.PowerOff + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.PowerOff, this)">Off</div>'
-             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Scene' + ROOMLIGHT_Scene.OfficeTable + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.OfficeTable, this)">B&uuml;rotisch</div>'
-             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Scene' + ROOMLIGHT_Scene.Moba + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Moba, this)">MoBa</div>'
-             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Scene' + ROOMLIGHT_Scene.LightOn + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.LightOn, this)">All On</div>'
-             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Scene' + ROOMLIGHT_Scene.UserSetting + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.UserSetting, this)">User Set</div>'
+            var light_scene = '<div class="button disabled" id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_Scene' + ROOMLIGHT_Scene.PowerOff + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.PowerOff, this)">Off</div>'
+             + '<div class="button disabled" id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_Scene' + ROOMLIGHT_Scene.OfficeTable + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.OfficeTable, this)">B&uuml;rotisch</div>'
+             + '<div class="button disabled" id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_Scene' + ROOMLIGHT_Scene.Moba + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Moba, this)">MoBa</div>'
+             + '<div class="button disabled" id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_Scene' + ROOMLIGHT_Scene.LightOn + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.LightOn, this)">All On</div>'
+             + '<div class="button disabled" id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_Scene' + ROOMLIGHT_Scene.UserSetting + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.UserSetting, this)">User Set</div>'
             
-             var animation = '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Animation' + ROOMLIGHT_Scene.Sunrise + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Sunrise, this)">Sunrise</div>'
-             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Animation' + ROOMLIGHT_Scene.Day + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Day, this)">Day</div>'
-             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Animation' + ROOMLIGHT_Scene.Sunset + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Sunset, this)">Sunset</div>'
-             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Animation' + ROOMLIGHT_Scene.Night + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Night, this)">Night</div>'
-             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Animation' + ROOMLIGHT_Scene.Cloud + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Cloud, this)">Clouds</div>'
-             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Animation' + ROOMLIGHT_Scene.Lightning + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Lightning, this)">Lightning</div>'
-             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Animation' + ROOMLIGHT_Scene.Disco + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Disco, this)">Disco</div>'
-             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + '_Animation' + ROOMLIGHT_Scene.Rainbow + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Rainbow, this)">Rainbow</div>';
+             var animation = '<div class="button disabled" id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_Animation' + ROOMLIGHT_Scene.Sunrise + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Sunrise, this)">Sunrise</div>'
+             + '<div class="button disabled" id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_Animation' + ROOMLIGHT_Scene.Day + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Day, this)">Day</div>'
+             + '<div class="button disabled" id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_Animation' + ROOMLIGHT_Scene.Sunset + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Sunset, this)">Sunset</div>'
+             + '<div class="button disabled" id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_Animation' + ROOMLIGHT_Scene.Night + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Night, this)">Night</div>'
+             + '<div class="button disabled" id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_Animation' + ROOMLIGHT_Scene.Cloud + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Cloud, this)">Clouds</div>'
+             + '<div class="button disabled" id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_Animation' + ROOMLIGHT_Scene.Lightning + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Lightning, this)">Lightning</div>'
+             + '<div class="button disabled" id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_Animation' + ROOMLIGHT_Scene.Disco + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Disco, this)">Disco</div>'
+             + '<div class="button disabled" id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_Animation' + ROOMLIGHT_Scene.Rainbow + '" onclick="LightSceneButtonPushed(ROOMLIGHT_Scene.Rainbow, this)">Rainbow</div>';
 
-            var sbf_lightScene = '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.ShadowStation] + '_Scene' + SIMPLELEDSTRIP_Scene.Off + '" onclick="LightSceneButtonPushed(SIMPLELEDSTRIP_Scene.Off, this)">Off</div>'
-             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.ShadowStation] + '_Scene' + SIMPLELEDSTRIP_Scene.Red + '" onclick="LightSceneButtonPushed(SIMPLELEDSTRIP_Scene.Red, this)">Rot</div>'
-             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.ShadowStation] + '_Scene' + SIMPLELEDSTRIP_Scene.Green + '" onclick="LightSceneButtonPushed(SIMPLELEDSTRIP_Scene.Green, this)">Gr&uuml;n</div>'
-             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.ShadowStation] + '_Scene' + SIMPLELEDSTRIP_Scene.Blue + '" onclick="LightSceneButtonPushed(SIMPLELEDSTRIP_Scene.Blue, this)">Blau</div>'
-             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.ShadowStation] + '_Scene' + SIMPLELEDSTRIP_Scene.WarmWhite + '" onclick="LightSceneButtonPushed(SIMPLELEDSTRIP_Scene.WarmWhite, this)">Warm Weiss</div>'
-             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.ShadowStation] + '_Scene' + SIMPLELEDSTRIP_Scene.White + '" onclick="LightSceneButtonPushed(SIMPLELEDSTRIP_Scene.White, this)">Weiss</div>'
-             + '<div class="button disabled" id="' + MAINPAGE_TAB_Prefix[MAINPAGE_TAB.ShadowStation] + '_Scene' + SIMPLELEDSTRIP_Scene.ColdWhite + '" onclick="LightSceneButtonPushed(SIMPLELEDSTRIP_Scene.ColdWhite, this)">Kalt Weiss</div>'
+            var sbf_lightScene = '<div class="button disabled" id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.ShadowStation] + '_Scene' + SIMPLELEDSTRIP_Scene.Off + '" onclick="LightSceneButtonPushed(SIMPLELEDSTRIP_Scene.Off, this)">Off</div>'
+             + '<div class="button disabled" id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.ShadowStation] + '_Scene' + SIMPLELEDSTRIP_Scene.Red + '" onclick="LightSceneButtonPushed(SIMPLELEDSTRIP_Scene.Red, this)">Rot</div>'
+             + '<div class="button disabled" id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.ShadowStation] + '_Scene' + SIMPLELEDSTRIP_Scene.Green + '" onclick="LightSceneButtonPushed(SIMPLELEDSTRIP_Scene.Green, this)">Gr&uuml;n</div>'
+             + '<div class="button disabled" id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.ShadowStation] + '_Scene' + SIMPLELEDSTRIP_Scene.Blue + '" onclick="LightSceneButtonPushed(SIMPLELEDSTRIP_Scene.Blue, this)">Blau</div>'
+             + '<div class="button disabled" id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.ShadowStation] + '_Scene' + SIMPLELEDSTRIP_Scene.WarmWhite + '" onclick="LightSceneButtonPushed(SIMPLELEDSTRIP_Scene.WarmWhite, this)">Warm Weiss</div>'
+             + '<div class="button disabled" id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.ShadowStation] + '_Scene' + SIMPLELEDSTRIP_Scene.White + '" onclick="LightSceneButtonPushed(SIMPLELEDSTRIP_Scene.White, this)">Weiss</div>'
+             + '<div class="button disabled" id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.ShadowStation] + '_Scene' + SIMPLELEDSTRIP_Scene.ColdWhite + '" onclick="LightSceneButtonPushed(SIMPLELEDSTRIP_Scene.ColdWhite, this)">Kalt Weiss</div>'
 
 
             document.getElementById("RoomLight_Scene").innerHTML = light_scene;
             document.getElementById("RoomLight_Animation").innerHTML = animation;
-            document.getElementById("ShadowStation_Scene").innerHTML = animation;
-            document.getElementById(MAINPAGE_TAB_Prefix[MAINPAGE_TAB.RoomLight] + "_TabButton").click();
+            document.getElementById("ShadowStation_Scene").innerHTML = sbf_lightScene;
+            document.getElementById(LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + "_TabButton").click();
             document.getElementById("footer_version").innerHTML = ("v" + GLOBAL_WebserverVersion_Major + "." + GLOBAL_WebserverVersion_Minor);
 
 			FindServer();
@@ -963,8 +1048,8 @@
 
 <body>
     <div id="MainPage" class="tab">
-        <button id="RoomLight_TabButton" class="tablinks" onclick="OpenLightSceneTab(event, 'RoomLight_Tab')">Raum Licht</button>
-        <button id="ShadowStation_TabButton" class="tablinks" onclick="OpenLightSceneTab(event, 'ShadowStation_Tab')">Schattenbahnhof</button>
+        <button id="RoomLight_TabButton" class="tablinks" onclick="OpenLightSourceTab(event, 'RoomLight_Tab')">Raum Licht</button>
+        <button id="ShadowStation_TabButton" class="tablinks" onclick="OpenLightSourceTab(event, 'ShadowStation_Tab')">Schattenbahnhof</button>
     </div>
 
     <div id="RoomLight_Tab" class="tabcontent">
@@ -983,34 +1068,34 @@
                 <div class="slidecontainer">
                     <label for="RoomLight_Brightness_Value">Helligkeit</label>
                     <label id="RoomLight_Brightness_Value" class="user_value"></label>
-                    <input type="range" min="0" max="255" value="50" class="slider" id="RoomLight_Brightness_Slider" oninput="BrighntessSliderChanged()">
+                    <input type="range" min="0" max="255" value="0" class="slider" id="RoomLight_Brightness_Slider" oninput="BrighntessSliderChanged()">
                 </div>
                 <br>
                 
                 <div class="slidecontainer">
                     <label for="RoomLight_ColorRgb_Value">RGB</label>
                     <label id="RoomLight_ColorRgb_Value" class="user_value"></label>
-                    <input type="range" min="0" max="1535" value="50" class="slider" id="RoomLight_ColorRgb_Slider" oninput="ColorRGBSliderChanged()" style="background-image: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);">
+                    <input type="range" min="0" max="1535" value="0" class="slider" id="RoomLight_ColorRgb_Slider" oninput="ColorRGBSliderChanged()" style="background-image: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);">
                 </div>
                 <div class="slidecontainer">
                     <label for="RoomLight_ColorRed_Value">Rot</label>
                     <label id="RoomLight_ColorRed_Value" class="user_value"></label>
-                    <input type="range" min="0" max="255" value="50" class="slider" id="RoomLight_ColorRed_Slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, red)">
+                    <input type="range" min="0" max="255" value="0" class="slider" id="RoomLight_ColorRed_Slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, red)">
                 </div>
                 <div class="slidecontainer">
                     <label for="RoomLight_ColorGreen_Value">Gr&uuml;n</label>
                     <label id="RoomLight_ColorGreen_Value" class="user_value"></label>
-                    <input type="range" min="0" max="255" value="50" class="slider" id="RoomLight_ColorGreen_Slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, rgb(0, 255, 0))">
+                    <input type="range" min="0" max="255" value="0" class="slider" id="RoomLight_ColorGreen_Slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, rgb(0, 255, 0))">
                 </div>
                 <div class="slidecontainer">
                     <label for="RoomLight_ColorBlue_Value">Blau</label>
                     <label id="RoomLight_ColorBlue_Value" class="user_value"></label>
-                    <input type="range" min="0" max="255" value="50" class="slider" id="RoomLight_ColorBlue_Slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, blue)">
+                    <input type="range" min="0" max="255" value="0" class="slider" id="RoomLight_ColorBlue_Slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, blue)">
                 </div>
                 <div class="slidecontainer">
                     <label for="RoomLight_WarmWhite_Value">Weiss</label>
                     <label id="RoomLight_WarmWhite_Value" class="user_value"></label>
-                    <input type="range" min="0" max="255" value="50" class="slider" id="RoomLight_WarmWhite_Slider" oninput="ColorWhiteSliderChanged()" style="background-image: linear-gradient(90deg, black, white)">
+                    <input type="range" min="0" max="255" value="0" class="slider" id="RoomLight_WarmWhite_Slider" oninput="ColorWhiteSliderChanged()" style="background-image: linear-gradient(90deg, black, white)">
                 </div>
             </div>
         </div>
@@ -1053,39 +1138,39 @@
                 <div class="slidecontainer">
                     <label for="ShadowStation_Brightness_Value">Helligkeit</label>
                     <label id="ShadowStation_Brightness_Value" class="user_value"></label>
-                    <input type="range" min="0" max="255" value="50" class="slider" id="ShadowStation_Brightness_Slider" oninput="BrighntessSliderChanged()">
+                    <input type="range" min="0" max="255" value="0" class="slider" id="ShadowStation_Brightness_Slider" oninput="BrighntessSliderChanged()">
                 </div>
                 <br>
                 
                 <div class="slidecontainer">
                     <label for="ShadowStation_ColorRgb_Value">RGB</label>
                     <label id="ShadowStation_ColorRgb_Value" class="user_value"></label>
-                    <input type="range" min="0" max="1535" value="50" class="slider" id="ShadowStation_ColorRgb_Slider" oninput="ColorRGBSliderChanged()" style="background-image: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);">
+                    <input type="range" min="0" max="1535" value="0" class="slider" id="ShadowStation_ColorRgb_Slider" oninput="ColorRGBSliderChanged()" style="background-image: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);">
                 </div>
                 <div class="slidecontainer">
                     <label for="ShadowStation_ColorRed_Value">Rot</label>
                     <label id="ShadowStation_ColorRed_Value" class="user_value"></label>
-                    <input type="range" min="0" max="255" value="50" class="slider" id="ShadowStation_ColorRed_Slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, red)">
+                    <input type="range" min="0" max="255" value="0" class="slider" id="ShadowStation_ColorRed_Slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, red)">
                 </div>
                 <div class="slidecontainer">
                     <label for="ShadowStation_ColorGreen_Value">Gr&uuml;n</label>
                     <label id="ShadowStation_ColorGreen_Value" class="user_value"></label>
-                    <input type="range" min="0" max="255" value="50" class="slider" id="ShadowStation_ColorGreen_Slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, rgb(0, 255, 0))">
+                    <input type="range" min="0" max="255" value="0" class="slider" id="ShadowStation_ColorGreen_Slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, rgb(0, 255, 0))">
                 </div>
                 <div class="slidecontainer">
                     <label for="ShadowStation_ColorBlue_Value">Blau</label>
                     <label id="ShadowStation_ColorBlue_Value" class="user_value"></label>
-                    <input type="range" min="0" max="255" value="50" class="slider" id="ShadowStation_ColorBlue_Slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, blue)">
+                    <input type="range" min="0" max="255" value="0" class="slider" id="ShadowStation_ColorBlue_Slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, blue)">
                 </div>
                 <div class="slidecontainer">
                     <label for="ShadowStation_WarmWhite_Value">Warm Weiss</label>
                     <label id="ShadowStation_WarmWhite_Value" class="user_value"></label>
-                    <input type="range" min="0" max="255" value="50" class="slider" id="ShadowStation_WarmWhite_Slider" oninput="ColorWhiteSliderChanged()" style="background-image: linear-gradient(90deg, black, rgb(255, 233, 68))">
+                    <input type="range" min="0" max="255" value="0" class="slider" id="ShadowStation_WarmWhite_Slider" oninput="ColorWhiteSliderChanged()" style="background-image: linear-gradient(90deg, black, rgb(255, 234, 76))">
                 </div>
                 <div class="slidecontainer">
                     <label for="ShadowStation_ColdWhite_Value">Kalt Weiss</label>
                     <label id="ShadowStation_ColdWhite_Value" class="user_value"></label>
-                    <input type="range" min="0" max="255" value="50" class="slider" id="ShadowStation_ColdWhite_Slider" oninput="ColorWhiteSliderChanged()" style="background-image: linear-gradient(90deg, black, white)">
+                    <input type="range" min="0" max="255" value="0" class="slider" id="ShadowStation_ColdWhite_Slider" oninput="ColorWhiteSliderChanged()" style="background-image: linear-gradient(90deg, black, white)">
                 </div>
             </div>
         </div>

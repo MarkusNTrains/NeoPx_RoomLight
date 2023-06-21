@@ -27,7 +27,7 @@ $Id:  $
 // description:
 //   constructor
 //*****************************************************************************
-LightScene_Lightning::LightScene_Lightning(LightSceneHdl* parent, LightHdl* light_hdl, Datastore* datastore_p)
+LightScene_Lightning::LightScene_Lightning(RoomLightHdl* parent, LightHdl* light_hdl, Datastore* datastore_p)
 {
     this->m_scene_hdl_p = parent;
     this->m_light_hdl_p = light_hdl;
@@ -291,7 +291,7 @@ bool LightScene_Lightning::FadeColor(uint8_t target_color, uint8_t* current_colo
 //*****************************************************************************
 void LightScene_Lightning::Leave()
 {
-    this->m_scene_hdl_p->ChangeLightScene(this->m_scene_hdl_p->GetLastScene());
+    this->m_scene_hdl_p->ChangeScene((uint8_t)this->m_scene_hdl_p->GetLastScene());
 }
 
 

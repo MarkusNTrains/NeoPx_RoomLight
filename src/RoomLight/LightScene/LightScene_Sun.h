@@ -18,17 +18,16 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // include
-#include "../common.h"
+#include "../../common.h"
+#include "../../Datastore/Datastore.h"
 #include "../LightHdl/LightHdl.h"
-#include "../Datastore/Datastore.h"
-#include "LightSceneHdl.h"
+#include "../RoomLightHdl.h"
 #include "LightScene_Night.h"
 
 
 
 //----------------------------------------------------------------------------
 // extern
-class LightSceneHdl;
 
 
 //----------------------------------------------------------------------------
@@ -36,7 +35,7 @@ class LightSceneHdl;
 class LightScene_Sun
 {
     public:
-        LightScene_Sun(LightSceneHdl* parent, LightHdl* light_hdl, Datastore* datastore_p);
+        LightScene_Sun(RoomLightHdl* parent, LightHdl* light_hdl, Datastore* datastore_p);
         ~LightScene_Sun();
 
         void Sunrise_Enter();
@@ -67,7 +66,7 @@ class LightScene_Sun
         const static uint8_t GREEN_Max = 140;
         const static uint8_t BLUE_Max = 32;
 
-        LightSceneHdl* m_scene_hdl_p;
+        RoomLightHdl* m_scene_hdl_p;
         LightHdl* m_light_hdl_p;
         Datastore* m_datastore_p;
 

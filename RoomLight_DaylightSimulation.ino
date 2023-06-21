@@ -17,7 +17,7 @@ $Id:  $
 //-----------------------------------------------------------------------------
 // includes
 #include "src/common.h"
-#include "src/LightScene/LightSceneHdl.h"
+#include "src/LightSourceHdl.h"
 #include "src/Webserver/WebServer.h"
 
 #ifdef __AVR__
@@ -35,7 +35,7 @@ $Id:  $
 
 //-----------------------------------------------------------------------------
 // static module variable
-static LightSceneHdl* s_lightSceneHdl_p;
+static LightSourceHdl* s_lightSourceHdl_p;
 static WebServer* s_webServer_p;
 
 #if (IS_DEBUG_MODE == ON)
@@ -68,8 +68,8 @@ void setup()
     delay(50);
  #endif
     
-    s_lightSceneHdl_p = new LightSceneHdl();
-    s_webServer_p = new WebServer(s_lightSceneHdl_p);
+    s_lightSourceHdl_p = new LightSourceHdl();
+    s_webServer_p = new WebServer(s_lightSourceHdl_p);
 
 #ifdef __AVR__
     wdt_enable(WDTO_8S);
@@ -89,7 +89,7 @@ void setup()
 //*****************************************************************************
 void loop()
 {
-    s_lightSceneHdl_p->Tasks();
+    s_lightSourceHdl_p->Tasks();
     s_webServer_p->Tasks();
 
 #ifdef __AVR__

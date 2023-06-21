@@ -12,35 +12,41 @@ $HeadURL:  $
 $Id:  $
 *******************************************************************************/
 
-#ifndef _LIGHT_SCENE_LIGHT_ON_H
-#define _LIGHT_SCENE_LIGHT_ON_H
+#ifndef _LIGHT_SOURCE_H
+#define _LIGHT_SOURCE_H
 
 
 //----------------------------------------------------------------------------
 // include
-#include "LightScene.h"
+#include "common.h"
+#include "Datastore/Datastore.h"
+
 
 
 //----------------------------------------------------------------------------
 // extern
-class LightSceneHdl;
 
 
 //----------------------------------------------------------------------------
 // class
-class LightScene_LightOn : public LightScene
+class LightSource
 {
     public:
-        LightScene_LightOn(LightHdl* light_hdl, Datastore* datastore_p);
-        ~LightScene_LightOn();
-        
-        void Enter();
-        void Exit();
+        LightSource(Datastore* datastore_p);
+        ~LightSource();
+
+        virtual void Task() = 0;
+        virtual uint8_t GetActiveScene() = 0;
+        virtual void ChangeScene(uint8_t scene_id) = 0;
+        virtual uint8_t GetBrightness() = 0;
+        virtual void SetBrightness(uint8_t brightness) = 0;
+        virtual uint32_t GetColor() = 0;
+        virtual void SetColor(uint32_t color) = 0;
+
+    protected:
+        Datastore* m_datastore_p = nullptr;
 
     private:
-        const static uint32_t TASK_TmoMs = 1000;
-
-        bool TaskHdl();
 };
 
-#endif // _LIGHT_SCENE_LIGHT_ON_H
+#endif // _LIGHT_SOURCE_H

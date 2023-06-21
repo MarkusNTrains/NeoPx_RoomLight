@@ -14,10 +14,10 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original
   source code
 
-  Created 25.05.2023 17:17:11 by MarkusNTrains
+  Created 21.06.2023 15:38:42 by MarkusNTrains
 ================================================================================
-$HeadURL: file:///C:/SwProjects/Arduino/RoomLight_DaylightSimulation/src/Datastore/Parameter.h $
-$Id: 25.05.2023 17:17:11 automatic gen. $
+$HeadURL: file:///C:/SwProjects/_Intern/Arduino/RoomLight_DaylightSimulation/src/Datastore/Parameter.h $
+$Id: 21.06.2023 15:38:42 automatic gen. $
 *******************************************************************************/
 
 /*
@@ -43,7 +43,7 @@ class Parameter
         enum Id
         {
             ParameterSet_Validity = 0,
-            LightSceneID,
+            SceneID,
             SceneDay_Brightness,
             SceneDisco_Brightness,
             SceneMoBa_Brightness,
@@ -60,6 +60,10 @@ class Parameter
             SceneUserSetting_Xe,
             SceneUserSetting_Ys,
             SceneUserSetting_Ye,
+            Sbf_SceneID,
+            Sbf_Brightness,
+            Sbf_Color,
+            Sbf_White,
             Nof,
             Unknown
         };
@@ -76,7 +80,7 @@ class Parameter
         const static uint32_t COLOR_Min = 0;
         const static uint32_t COLOR_Max = 0xFFFFFFFF;
 
-        const static uint16_t BUFFER_Size = 33;
+        const static uint16_t BUFFER_Size = 40;
 
         Parameter();
         ~Parameter();

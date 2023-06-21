@@ -16,18 +16,18 @@ $Id:  $
 
 //-----------------------------------------------------------------------------
 // includes
-#include "LightSceneHdl.h"
-#include "LightScene_Cloud.h"
-#include "LightScene_Day.h"
-#include "LightScene_Disco.h"
-#include "LightScene_Lightning.h"
-#include "LightScene_LightOn.h"
-#include "LightScene_MoBa.h"
-#include "LightScene_Night.h"
-#include "LightScene_OfficeTable.h"
-#include "LightScene_Rainbow.h"
-#include "LightScene_Sun.h"
-#include "LightScene_UserSetting.h"
+#include "RoomLightHdl.h"
+#include "LightScene/LightScene_Cloud.h"
+#include "LightScene/LightScene_Day.h"
+#include "LightScene/LightScene_Disco.h"
+#include "LightScene/LightScene_Lightning.h"
+#include "LightScene/LightScene_LightOn.h"
+#include "LightScene/LightScene_MoBa.h"
+#include "LightScene/LightScene_Night.h"
+#include "LightScene/LightScene_OfficeTable.h"
+#include "LightScene/LightScene_Rainbow.h"
+#include "LightScene/LightScene_Sun.h"
+#include "LightScene/LightScene_UserSetting.h"
 
 
 
@@ -48,9 +48,8 @@ $Id:  $
 // description:
 //   constructor
 //*****************************************************************************
-LightSceneHdl::LightSceneHdl()
+RoomLightHdl::RoomLightHdl(Datastore* datastore_p) : LightSource(datastore_p)
 {
-    this->m_datastore_p = new Datastore();
     this->m_light_hdl_p = new LightHdl();
 
     this->m_active_light_scene_p = nullptr;
@@ -67,8 +66,8 @@ LightSceneHdl::LightSceneHdl()
     this->m_scene_userSetting_p = new LightScene_UserSetting(this->m_light_hdl_p, this->m_datastore_p);
 
     this->m_brightnessUpdate_timestamp_ms = 0;
-    this->m_scene_id = LightSceneID::LightOff;
-    this->m_last_scene_id = LightSceneID::LightOff;
+    this->m_scene_id = SceneID::LightOff;
+    this->m_last_scene_id = SceneID::LightOff;
     this->m_active_scene_id = this->m_scene_id;
     this->m_task_timestamp_ms = 0;
     this->m_led_strip_updated_needed = false;
@@ -76,12 +75,12 @@ LightSceneHdl::LightSceneHdl()
 
     // show last lightscene
 #if ((DATASTORE_SaveLightScene == ON) && (DATASTORE_SaveDataOnEEPROM == ON))
-    this->ChangeLightScene((LightSceneID)(this->m_datastore_p->GetParameter(Parameter::Id::LightSceneID)));
+    this->ChangeScene((uint8_t)(this->m_datastore_p->GetParameter(Parameter::Id::SceneID)));
 #else
   #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
-    this->ChangeLightScene(LightSceneID::OfficeTable);
+    this->ChangeScene((uint8_t)SceneID::OfficeTable);
   #else
-    this->ChangeLightScene(LightSceneID::LightOn);
+    this->ChangeScene((uint8_t)SceneID::LightOn);
   #endif
 #endif
 
@@ -100,7 +99,7 @@ LightSceneHdl::LightSceneHdl()
 // description:
 //   destructor
 //*****************************************************************************
-LightSceneHdl::~LightSceneHdl()
+RoomLightHdl::~RoomLightHdl()
 {
     delete this->m_datastore_p;
     delete this->m_light_hdl_p;
@@ -120,11 +119,11 @@ LightSceneHdl::~LightSceneHdl()
 
 //*****************************************************************************
 // description:
-//   ChangeLightScene
+//   ChangeScene
 //*****************************************************************************
-void LightSceneHdl::ChangeLightScene(LightSceneID scene_id)
+void RoomLightHdl::ChangeScene(uint8_t scene_id)
 {
-    if (this->m_scene_id != scene_id)
+    if (this->m_scene_id != (SceneID)scene_id)
     {
         //--- call Exit function of light scene ---
         if (this->m_active_light_scene_p != nullptr)
@@ -135,24 +134,24 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene_id)
         {
             switch (this->m_scene_id)
             {
-                case LightSceneID::Cloud:
+                case SceneID::Cloud:
                     this->m_scene_cloud_p->Exit();
                     break;
                     
-                case LightSceneID::Idle:
+                case SceneID::Idle:
                     break;
 
-                case LightSceneID::Lightning:
+                case SceneID::Lightning:
                     this->m_scene_lightning_p->Exit();
                     break;
                     
-                case LightSceneID::LightOff:
+                case SceneID::LightOff:
                     break;
 
-                case LightSceneID::Sunrise:
+                case SceneID::Sunrise:
                     break;
 
-                case LightSceneID::Sunset:
+                case SceneID::Sunset:
                     break;
                 
                 default:
@@ -163,10 +162,10 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene_id)
         //--- change to requested scene ---
         switch (this->m_scene_id)
         {
-            case LightSceneID::Cloud:
-            case LightSceneID::Lightning:
-            case LightSceneID::Sunrise:
-            case LightSceneID::Sunset:
+            case SceneID::Cloud:
+            case SceneID::Lightning:
+            case SceneID::Sunrise:
+            case SceneID::Sunset:
                 // do not remember these scene as last scene
                 break;
 
@@ -175,7 +174,7 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene_id)
                 break;
         }
         this->m_active_light_scene_p = nullptr;
-        this->m_scene_id = scene_id;
+        this->m_scene_id = (SceneID)scene_id;
 
 #if (IS_DEBUG_MODE == ON)
         Serial.print(F("Change to Scene: "));
@@ -185,72 +184,72 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene_id)
     
     //--- enter light scene -----
     bool save_light_scene = false;
-    switch (scene_id)
+    switch ((SceneID)scene_id)
     {
-        case LightSceneID::Cloud:
+        case SceneID::Cloud:
             this->m_scene_cloud_p->Enter();
             break;
 
-        case LightSceneID::Day:
+        case SceneID::Day:
             this->m_active_light_scene_p = this->m_scene_day_p;
             break;
 
-        case LightSceneID::Lightning:
+        case SceneID::Lightning:
             this->m_scene_lightning_p->Enter();
             break;
 
-        case LightSceneID::LightOn:
+        case SceneID::LightOn:
             this->m_active_light_scene_p = this->m_scene_light_on_p;
-            this->m_active_scene_id = scene_id;
+            this->m_active_scene_id = (SceneID)scene_id;
             save_light_scene = true;
             break;
         
-        case LightSceneID::LightOff:
+        case SceneID::LightOff:
             this->m_light_hdl_p->SetBrightness_Fade(0);
-            this->m_active_scene_id = scene_id;
+            this->m_active_scene_id = (SceneID)scene_id;
             break;
         
-        case LightSceneID::Disco:
+        case SceneID::Disco:
             this->m_active_light_scene_p = this->m_scene_disco_p;
-            this->m_active_scene_id = scene_id;
+            this->m_active_scene_id = (SceneID)scene_id;
             break;
 
-        case LightSceneID::MoBa:
+        case SceneID::MoBa:
             this->m_active_light_scene_p = this->m_scene_moba_p;
-            this->m_active_scene_id = scene_id;
+            this->m_active_scene_id = (SceneID)scene_id;
             save_light_scene = true;
             break;
 
-        case LightSceneID::Night:
+        case SceneID::Night:
             this->m_active_light_scene_p = this->m_scene_night_p;
             break;
           
-        case LightSceneID::OfficeTable:
+        case SceneID::OfficeTable:
             this->m_active_light_scene_p = this->m_scene_office_table_p;
-            this->m_active_scene_id = scene_id;
+            this->m_active_scene_id = (SceneID)scene_id;
             save_light_scene = true;
             break;
         
-        case LightSceneID::Rainbow:
+        case SceneID::Rainbow:
             this->m_active_light_scene_p = this->m_scene_rainbow_p;
-            this->m_active_scene_id = scene_id;
+            this->m_active_scene_id = (SceneID)scene_id;
             break;
             
-        case LightSceneID::Sbh:
+        case SceneID::Sbh:
             //
             break;
 
-        case LightSceneID::Sunrise:
+        case SceneID::Sunrise:
             this->m_scene_sun_p->Sunrise_Enter();
             break;
             
-        case LightSceneID::Sunset:
+        case SceneID::Sunset:
             this->m_scene_sun_p->Sunset_Enter();
             break;
           
-        case LightSceneID::UserSetting:
+        case SceneID::UserSetting:
             this->m_active_light_scene_p = this->m_scene_userSetting_p;
-            this->m_active_scene_id = scene_id;
+            this->m_active_scene_id = (SceneID)scene_id;
             save_light_scene = true;
             break;
 
@@ -269,7 +268,7 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene_id)
 #if ((DATASTORE_SaveLightScene == ON) && (DATASTORE_SaveDataOnEEPROM == ON))
     if (save_light_scene == true)
     {
-        this->m_datastore_p->SetParameter(Parameter::Id::LightSceneID, (uint8_t)scene_id);
+        this->m_datastore_p->SetParameter(Parameter::Id::SceneID, (uint8_t)scene_id);
     }
 #endif
 }
@@ -279,16 +278,12 @@ void LightSceneHdl::ChangeLightScene(LightSceneID scene_id)
 // description:
 //   Statemachine
 //*****************************************************************************
-void LightSceneHdl::Tasks()
+void RoomLightHdl::Task()
 {
-    //--- run datsatore task ----------------------
-    this->m_datastore_p->Task();
-
-
     //--- update brightness -----------------------
-    if (millis() - this->m_brightnessUpdate_timestamp_ms > BRIGHTNESS_UPDATE_TMO_MS)
+    if (millis() - this->m_brightnessUpdate_timestamp_ms > BRIGHTNESS_UpdateTmoMs)
     {
-        this->m_brightnessUpdate_timestamp_ms += BRIGHTNESS_UPDATE_TMO_MS;
+        this->m_brightnessUpdate_timestamp_ms += BRIGHTNESS_UpdateTmoMs;
         if (this->m_light_hdl_p->UpdateBrightness() == true)
         {
             this->m_led_strip_updated_needed |= true;
@@ -310,26 +305,26 @@ void LightSceneHdl::Tasks()
     {
         switch (this->m_scene_id)
         {
-            case LightSceneID::Cloud:
+            case SceneID::Cloud:
                 this->m_led_strip_updated_needed |= this->m_scene_cloud_p->Task();
                 break;
                 
-            case LightSceneID::Idle:
+            case SceneID::Idle:
                 break;
 
-            case LightSceneID::Lightning:
+            case SceneID::Lightning:
                 this->m_led_strip_updated_needed |= this->m_scene_lightning_p->Task();
                 break;
                 
-            case LightSceneID::LightOff:
+            case SceneID::LightOff:
                 this->m_led_strip_updated_needed |= LightScene_LightOff_Task();
                 break;
 
-            case LightSceneID::Sunrise:
+            case SceneID::Sunrise:
                 this->m_led_strip_updated_needed |= this->m_scene_sun_p->Sunrise_Task();
                 break;
 
-            case LightSceneID::Sunset:
+            case SceneID::Sunset:
                 this->m_led_strip_updated_needed |= this->m_scene_sun_p->Sunset_Task();
                 break;
             
@@ -352,9 +347,9 @@ void LightSceneHdl::Tasks()
 // description:
 //   Get Light Scene
 //*****************************************************************************
-LightSceneID LightSceneHdl::GetActiveLightScene()
+uint8_t RoomLightHdl::GetActiveScene()
 {
-    return this->m_active_scene_id;
+    return (uint8_t)this->m_active_scene_id;
 }
 
 
@@ -362,9 +357,9 @@ LightSceneID LightSceneHdl::GetActiveLightScene()
 // description:
 //   Get Light Scene
 //*****************************************************************************
-LightSceneID LightSceneHdl::GetActiveLightAnimation()
+uint8_t RoomLightHdl::GetActiveAnimation()
 {
-    return this->m_scene_id;
+    return (uint8_t)this->m_scene_id;
 }
 
 
@@ -372,7 +367,7 @@ LightSceneID LightSceneHdl::GetActiveLightAnimation()
 // description:
 //   Get Last Light Scene
 //*****************************************************************************
-LightSceneID LightSceneHdl::GetLastScene()
+RoomLightHdl::SceneID RoomLightHdl::GetLastScene()
 {
     return this->m_last_scene_id;
 }
@@ -384,7 +379,7 @@ LightSceneID LightSceneHdl::GetLastScene()
 // return:
 //   true if LightHdl::Show() needs to be called, else false
 //*****************************************************************************
-bool LightSceneHdl::LightScene_LightOff_Task()
+bool RoomLightHdl::LightScene_LightOff_Task()
 {
     if (millis() - this->m_task_timestamp_ms > TASK_SceneLightOff_TmoMs)
     {
@@ -401,7 +396,7 @@ bool LightSceneHdl::LightScene_LightOff_Task()
 // description:
 //   GetUserSettingArea
 //*****************************************************************************
-void LightSceneHdl::GetUserSettingArea(LedArea* area_p)
+void RoomLightHdl::GetUserSettingArea(LedArea* area_p)
 {
     this->m_scene_userSetting_p->GetLedArea(area_p);
 }
@@ -411,11 +406,11 @@ void LightSceneHdl::GetUserSettingArea(LedArea* area_p)
 // description:
 //   SetUserSettingArea
 //*****************************************************************************
-void LightSceneHdl::SetUserSettingArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye)
+void RoomLightHdl::SetUserSettingArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye)
 {
-    if (this->m_scene_id != LightSceneID::UserSetting)
+    if (this->m_scene_id != SceneID::UserSetting)
     {
-        this->ChangeLightScene(LightSceneID::UserSetting);
+        this->ChangeScene((uint8_t)SceneID::UserSetting);
     }
 
     LedArea area;
@@ -430,7 +425,7 @@ void LightSceneHdl::SetUserSettingArea(uint16_t xs, uint16_t xe, uint16_t ys, ui
 // return:
 //   brightness as 0 - 255
 //*****************************************************************************
-uint8_t LightSceneHdl::GetBrightness()
+uint8_t RoomLightHdl::GetBrightness()
 {
     return this->m_light_hdl_p->GetBrightness();
 }
@@ -440,7 +435,7 @@ uint8_t LightSceneHdl::GetBrightness()
 // description:
 //   Set Brightness
 //*****************************************************************************
-void LightSceneHdl::SetBrightness(uint8_t brightness)
+void RoomLightHdl::SetBrightness(uint8_t brightness)
 {
     if (this->m_active_light_scene_p != nullptr)
     {
@@ -448,10 +443,10 @@ void LightSceneHdl::SetBrightness(uint8_t brightness)
     }
     else
     {
-        if (this->m_scene_id == LightSceneID::LightOff)
+        if (this->m_scene_id == SceneID::LightOff)
         {
             this->m_scene_id = this->m_last_scene_id;
-            this->ChangeLightScene(m_scene_id);
+            this->ChangeScene((uint8_t)this->m_scene_id);
         }
 
         this->m_light_hdl_p->SetBrightness_Fade(brightness);
@@ -465,7 +460,7 @@ void LightSceneHdl::SetBrightness(uint8_t brightness)
 // return:
 //   Color as format WRGB
 //*****************************************************************************
-uint32_t LightSceneHdl::GetColor()
+uint32_t RoomLightHdl::GetColor()
 {
     return this->m_light_hdl_p->GetColor();
 }
@@ -475,7 +470,7 @@ uint32_t LightSceneHdl::GetColor()
 // description:
 //   Set Color
 //*****************************************************************************
-void LightSceneHdl::SetColor(uint32_t color)
+void RoomLightHdl::SetColor(uint32_t color)
 {
     if (this->m_active_light_scene_p != nullptr)
     {

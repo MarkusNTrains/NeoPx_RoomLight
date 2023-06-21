@@ -12,15 +12,16 @@ $HeadURL:  $
 $Id:  $
 *******************************************************************************/
 
-#ifndef _LIGHT_SCENE_HDL_H
-#define _LIGHT_SCENE_HDL_H
+#ifndef _ROOM_LIGHT_HDL_H
+#define _ROOM_LIGHT_HDL_H
 
 
 //----------------------------------------------------------------------------
 // include
 #include "../common.h"
 #include "../Datastore/Datastore.h"
-#include "../LightHdl/LightHdl.h"
+#include "LightHdl/LightHdl.h"
+#include "../LightSource.h"
 
 
 //----------------------------------------------------------------------------
@@ -29,25 +30,6 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // enum
-enum class LightSceneID
-{
-    OfficeTable = 0,
-    LightOn,
-    Rainbow,
-    Sunset,
-    Sunrise,
-    LightOff,
-    Disco,
-    Sbh,
-    UserSetting,
-    Idle,
-    Lightning,
-    MoBa,
-    Day,
-    Night,
-    Cloud,
-    Nof
-};
 
 
 //----------------------------------------------------------------------------
@@ -68,16 +50,38 @@ class LightScene_UserSetting;
 
 //----------------------------------------------------------------------------
 // class
-class LightSceneHdl
+class RoomLightHdl : public LightSource
 {
     public:
-        LightSceneHdl();
-        ~LightSceneHdl();
-        void Tasks();
-        void ChangeLightScene(LightSceneID scene);
-        LightSceneID GetActiveLightScene();
-        LightSceneID GetActiveLightAnimation();
-        LightSceneID GetLastScene();
+        enum SceneID
+        {
+            OfficeTable = 0,
+            LightOn,
+            Rainbow,
+            Sunset,
+            Sunrise,
+            LightOff,
+            Disco,
+            Sbh,
+            UserSetting,
+            Idle,
+            Lightning,
+            MoBa,
+            Day,
+            Night,
+            Cloud,
+            Nof
+        };
+
+
+        RoomLightHdl(Datastore* datastore_p);
+        ~RoomLightHdl();
+        
+        void Task();
+        void ChangeScene(uint8_t scene);
+        uint8_t GetActiveScene();
+        uint8_t GetActiveAnimation();
+        SceneID GetLastScene();
         void GetUserSettingArea(LedArea* area);
         void SetUserSettingArea(uint16_t xs, uint16_t xe, uint16_t ys, uint16_t ye);
         uint8_t GetBrightness();
@@ -88,18 +92,17 @@ class LightSceneHdl
     protected:
 
     private:
-        const static uint32_t BRIGHTNESS_UPDATE_TMO_MS = 40;
+        const static uint32_t BRIGHTNESS_UpdateTmoMs = 40;
         const static uint32_t TASK_SceneLightOff_TmoMs = 40;
 
-        Datastore* m_datastore_p;
         uint32_t m_brightnessUpdate_timestamp_ms;
         uint32_t m_task_timestamp_ms;
         LightHdl* m_light_hdl_p;
         bool m_led_strip_updated_needed;
 
-        LightSceneID m_scene_id;
-        LightSceneID m_active_scene_id;
-        LightSceneID m_last_scene_id;
+        SceneID m_scene_id;
+        SceneID m_active_scene_id;
+        SceneID m_last_scene_id;
         LightScene* m_active_light_scene_p;
         LightScene_Cloud* m_scene_cloud_p;
         LightScene_Day* m_scene_day_p;
@@ -118,4 +121,4 @@ class LightSceneHdl
         bool LightScene_LightOff_Task();
 };
 
-#endif // _LIGHT_SCENE_HDL_H
+#endif // _ROOM_LIGHT_HDL_H

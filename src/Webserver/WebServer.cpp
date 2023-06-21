@@ -43,7 +43,7 @@ $Id:  $
 // description:
 //   constructor
 //*****************************************************************************
-WebServer::WebServer(LightSceneHdl* led_scene)
+WebServer::WebServer(LightSourceHdl* light_source_hdl)
 {
     //int pin;
 #ifdef __AVR__
@@ -71,8 +71,9 @@ WebServer::WebServer(LightSceneHdl* led_scene)
     IPAddress gateway(192, 168, 1, 2);  // how to find gateway: open cmd --> type ipconfig
     IPAddress subnet(255, 255, 255, 0);
 #endif    
+
     m_server = new EthernetServer(80);            // server
-    m_lightSceneHdl_p = led_scene;
+    m_lightSourceHdl_p = light_source_hdl;
 
 
 #ifdef __AVR__
@@ -118,8 +119,8 @@ WebServer::WebServer(LightSceneHdl* led_scene)
     // start the server
     m_server->begin();           // start to listen for clients
 
-#if (IS_DEBUG_MODE == ON)
     this->PrintHardwareInfo();
+#if (IS_DEBUG_MODE == ON)
     Serial.print(F("server is at "));
     Serial.println(Ethernet.localIP());     
 #endif
@@ -279,13 +280,27 @@ void WebServer::HandleRequest(char* http_request)
 //        Serial.println(http_request);
 #endif
 
+    // find LightSource ---------------------------------------------------------
+    memcpy_P(&needle_str, &WEBSERVER_Request_Needle_Source, sizeof(WEBSERVER_Request_Needle_Source));
+    if (StrContains(http_request, needle_str))
+    {
+        this->m_action = ACTION_SetLightSource;
+        param = this->HttpRequestExtractOneParameter(http_request, needle_str, sizeof(WEBSERVER_Request_Needle_Source));
+        this->m_lightSourceHdl_p->ActivateSource((uint8_t)param);
+
+#if (IS_DEBUG_MODE == ON)
+        Serial.print(F("Source: "));
+        Serial.println(param);
+#endif
+    }
+    
     // find LightScene ---------------------------------------------------------
     memcpy_P(&needle_str, &WEBSERVER_Request_Needle_Scene, sizeof(WEBSERVER_Request_Needle_Scene));
     if (StrContains(http_request, needle_str))
     {
-        this->m_action = ACTION_SetLightSecene;
+        this->m_action = ACTION_SetLightScene;
         param = this->HttpRequestExtractOneParameter(http_request, needle_str, sizeof(WEBSERVER_Request_Needle_Scene));
-        this->m_lightSceneHdl_p->ChangeLightScene((LightSceneID)param);
+        this->m_lightSourceHdl_p->ChangeScene((uint8_t)param);
 
 #if (IS_DEBUG_MODE == ON)
         Serial.print(F("Scene: "));
@@ -299,7 +314,7 @@ void WebServer::HandleRequest(char* http_request)
     {
         this->m_action = ACTION_SetBrightness;
         param = this->HttpRequestExtractOneParameter(http_request, needle_str, sizeof(WEBSERVER_Request_Needle_brightness));
-        this->m_lightSceneHdl_p->SetBrightness(param);
+        this->m_lightSourceHdl_p->SetBrightness(param);
         
 #if (IS_DEBUG_MODE == ON)
         Serial.print(F("Brightness: "));
@@ -313,10 +328,24 @@ void WebServer::HandleRequest(char* http_request)
     {
         this->m_action = ACTION_SetColor;
         param = this->HttpRequestExtractOneParameter(http_request, needle_str, sizeof(WEBSERVER_Request_Needle_Color));
-        this->m_lightSceneHdl_p->SetColor(param);
+        this->m_lightSourceHdl_p->SetColor(param);
         
 #if (IS_DEBUG_MODE == ON)
         Serial.print(F("Color: "));
+        Serial.println(param);
+#endif
+    }
+    
+    // find white ---------------------------------------------------------
+    memcpy_P(&needle_str, &WEBSERVER_Request_Needle_White, sizeof(WEBSERVER_Request_Needle_White));
+    if (StrContains(http_request, needle_str))
+    {
+        this->m_action = ACTION_SetWhite;
+        param = this->HttpRequestExtractOneParameter(http_request, needle_str, sizeof(WEBSERVER_Request_Needle_White));
+        this->m_lightSourceHdl_p->SetWhite(param);
+        
+#if (IS_DEBUG_MODE == ON)
+        Serial.print(F("White: "));
         Serial.println(param);
 #endif
     }
@@ -383,7 +412,7 @@ void WebServer::HandleRequest(char* http_request)
         Serial.println(param4);
 #endif
 
-        this->m_lightSceneHdl_p->SetUserSettingArea(param, param2, param3, param4);
+        this->m_lightSourceHdl_p->SetUserSettingArea(param, param2, param3, param4);
     }
 
     // find info ----------------------------------------------------------
@@ -581,51 +610,48 @@ void WebServer::SendXML(EthernetClient* client)
         client->print(F("</nof_leds>"));
         client->print(F("</led>"));    
 
-        LedArea area;
-        this->m_lightSceneHdl_p->GetUserSettingArea(&area);
-        client->print(F("<led_area>"));
-        client->print(F("<ys>"));
-        client->print(area.GetRowStart());
-        client->print(F("</ys><ye>"));
-        client->print(area.GetRowEnd());
-        client->print(F("</ye><xs>"));
-        client->print(area.GetColumnStart());
-        client->print(F("</xs><xe>"));
-        client->print(area.GetColumnEnd());
-        client->print(F("</xe>"));
-        client->print(F("</led_area>"));
-
         client->print(F("</info>"));
     }
     else
     {
         // this is standard return
+        client->print(F("<source>"));
+        client->print((int)m_lightSourceHdl_p->GetActiveSource());
+        client->print(F("</source>"));
+
         client->print(F("<scene>"));
-        client->print((int)m_lightSceneHdl_p->GetActiveLightScene());
+        client->print((int)m_lightSourceHdl_p->GetActiveScene());
         client->print(F("</scene>"));
 
         client->print(F("<animation>"));
-        client->print((int)m_lightSceneHdl_p->GetActiveLightAnimation());
+        client->print((int)m_lightSourceHdl_p->GetActiveAnimation());
         client->print(F("</animation>"));
 
         if (this->m_action != ACTION_SetBrightness)
         {
             client->print(F("<brightness>"));
-            client->print(m_lightSceneHdl_p->GetBrightness());
+            client->print(m_lightSourceHdl_p->GetBrightness());
             client->print(F("</brightness>"));
         }
 
         if (this->m_action != ACTION_SetColor)
         {
             client->print(F("<color>"));
-            client->print(m_lightSceneHdl_p->GetColor());
+            client->print(m_lightSourceHdl_p->GetColor());
             client->print(F("</color>"));
+        }
+
+        if (this->m_action != ACTION_SetWhite)
+        {
+            client->print(F("<white>"));
+            client->print(m_lightSourceHdl_p->GetWhite());
+            client->print(F("</white>"));
         }
 
         if (this->m_action != ACTION_SetLedArea)
         {
             LedArea area;
-            this->m_lightSceneHdl_p->GetUserSettingArea(&area);
+            this->m_lightSourceHdl_p->GetUserSettingArea(&area);
             client->print(F("<led_area>"));
             client->print(F("<ys>"));
             client->print(area.GetRowStart());
