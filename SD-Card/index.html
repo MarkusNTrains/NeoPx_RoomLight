@@ -376,7 +376,6 @@
             SetWhite: "SetWhite",
         };
 
-        const FIND_SERVER_TIMEOUT_MS = 2000;
         const REQUEST_CURRENT_DATA_FROM_SERVER_TIMEOUT_MS = 3000;
         const SERVER_RESPONSE_TIMEOUT_MS = 2500;  // must be shorter than REQUEST_CURRENT_DATA_FROM_ARDUINO_TIMEOUT_MS
         const USER_SETTING_OFFSET = 1;
@@ -388,7 +387,6 @@
         var s_pending_xml_request = "";
 		var s_sendToServer_timeoutTimer = null;
         var s_requestDataFromServer_intervalTimer = null;
-        var s_findServer_intervalTimer = null;
         var s_is_server_connected = true;
 		var s_xhttp = null;
         var s_active_lightScene_elementId = "";
@@ -433,7 +431,6 @@
                                 {
                                     s_is_server_connected = true;
                                     document.body.style.cursor = "default";
-                                    clearInterval(s_findServer_intervalTimer);
                                     RequestCurrentDataFromServer();
                                     Button_EnableAll();
                                 }
@@ -661,7 +658,6 @@
         {
             s_is_server_connected = false;
             clearInterval(s_requestDataFromServer_intervalTimer);
-            FindServer();
 
             document.body.style.cursor = "progress";
             Button_DisableAll();
@@ -683,6 +679,8 @@
             }
 
             document.getElementById("footer_version").innerHTML = ("v" + GLOBAL_WebserverVersion_Major + "." + GLOBAL_WebserverVersion_Minor);
+
+            FindServer();
         }
 		
         function SendDataToServerWhenConnected(xml_request)
@@ -701,16 +699,8 @@
         function FindServer()
         {
             s_is_server_connected = false;
-            clearInterval(s_findServer_intervalTimer);
-            clearInterval(s_requestDataFromServer_intervalTimer);
-            s_findServer_intervalTimer = setInterval(RequestFindServer, FIND_SERVER_TIMEOUT_MS)
-            RequestFindServer();
-        }
-
-		function RequestFindServer()
-		{
             SendDataToServer("&" + XML_RREQUEST.GetInfo);
-		}
+        }
 
         function Reset_RequestCurrentDataFromServer_IntervallTimer()
         {
