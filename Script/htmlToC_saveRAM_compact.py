@@ -115,7 +115,6 @@ footer_a = []
 footer_a.append("<html>")
 footer_a.append("<footer>")
 footer_a.append("    <div>")
-footer_a.append("        <br>")
 footer_a.append("        <hr>")
 footer_a.append("        <div id=\"footer_version\" style=\"float:left\">vX.Y</div>")
 footer_a.append("        &nbsp;&nbsp;|&nbsp;&nbsp;" + date.today().strftime("%d. %B %Y") + " &nbsp; &copy; MarkusNTrains")

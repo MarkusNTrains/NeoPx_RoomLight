@@ -97,7 +97,7 @@ uint8_t SimpleLedStripHdl::GetActiveScene()
 //*****************************************************************************
 void SimpleLedStripHdl::ChangeScene(uint8_t scene_id)
 {
-    this->m_scene_id = scene_id;
+    this->m_scene_id = (SceneID)scene_id;
     this->m_datastore_p->SetParameter(this->m_scene_param_id, (uint8_t)scene_id);
 
     rgb_color_t rgb;
@@ -238,11 +238,6 @@ void SimpleLedStripHdl::Update()
     this->SetPWM(this->m_blue_pin, rgb.blue);
     this->SetPWM(this->m_warmwhite_pin, white.warm);
     this->SetPWM(this->m_coldwhite_pin, white.cold);
-
-#if (IS_DEBUG_MODE == ON)
-    Serial.print(F("PWM White: "));
-    Serial.println(white.white);
-#endif
 }
 
 
@@ -253,11 +248,4 @@ void SimpleLedStripHdl::Update()
 void SimpleLedStripHdl::SetPWM(uint8_t pin, uint8_t pwm)
 {
     analogWrite(pin, pwm);
-
-#if (IS_DEBUG_MODE == ON)
-    Serial.print(F("Pin: "));
-    Serial.print(pin);
-    Serial.print(F(" / PWM: "));
-    Serial.println(pwm);
-#endif
 }

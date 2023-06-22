@@ -286,7 +286,7 @@ void WebServer::HandleRequest(char* http_request)
     {
         this->m_action = ACTION_SetLightSource;
         param = this->HttpRequestExtractOneParameter(http_request, needle_str, sizeof(WEBSERVER_Request_Needle_Source));
-        this->m_lightSourceHdl_p->ActivateSource((uint8_t)param);
+        this->m_lightSourceHdl_p->ActivateSource((LightSourceHdl::Source)param);
 
 #if (IS_DEBUG_MODE == ON)
         Serial.print(F("Source: "));

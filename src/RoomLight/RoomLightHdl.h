@@ -92,8 +92,8 @@ class RoomLightHdl : public LightSource
     protected:
 
     private:
-        const static uint32_t BRIGHTNESS_UpdateTmoMs = 40;
-        const static uint32_t TASK_SceneLightOff_TmoMs = 40;
+        const static uint32_t BRIGHTNESS_UpdateTmoMs = 30;
+        const static uint32_t TASK_SceneLightOff_TmoMs = 1000;
 
         uint32_t m_brightnessUpdate_timestamp_ms;
         uint32_t m_task_timestamp_ms;

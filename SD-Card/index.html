@@ -661,8 +661,11 @@
         {
             s_is_server_connected = false;
             clearInterval(s_requestDataFromServer_intervalTimer);
+            FindServer();
+
             document.body.style.cursor = "progress";
             Button_DisableAll();
+            document.querySelector(':root').style.setProperty('--SliderThumbColor', '#3F3F3F');
             document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_Brightness_Value").innerHTML = ("loading...");
             document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorRgb_Value").innerHTML = ("loading...");
             document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorRed_Value").innerHTML = ("loading...");
@@ -672,16 +675,14 @@
             if (s_active_light_source == LIGHT_SOURCE.RoomLight) 
             {
                 document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_AreaColumn_Value").innerHTML = ("loading...");
-                document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_AreaRowValue").innerHTML = ("loading...");
+                document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_AreaRow_Value").innerHTML = ("loading...");
             }
             else if (s_active_light_source == LIGHT_SOURCE.ShadowStation)
             {
                 document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColdWhite_Value").innerHTML = ("loading...");
             }
-            document.querySelector(':root').style.setProperty('--SliderThumbColor', '#3F3F3F');
-            document.getElementById("footer_version").innerHTML = ("v" + GLOBAL_WebserverVersion_Major + "." + GLOBAL_WebserverVersion_Minor);
 
-            FindServer();
+            document.getElementById("footer_version").innerHTML = ("v" + GLOBAL_WebserverVersion_Major + "." + GLOBAL_WebserverVersion_Minor);
         }
 		
         function SendDataToServerWhenConnected(xml_request)
@@ -701,6 +702,7 @@
         {
             s_is_server_connected = false;
             clearInterval(s_findServer_intervalTimer);
+            clearInterval(s_requestDataFromServer_intervalTimer);
             s_findServer_intervalTimer = setInterval(RequestFindServer, FIND_SERVER_TIMEOUT_MS)
             RequestFindServer();
         }
