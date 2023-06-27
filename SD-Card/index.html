@@ -748,8 +748,11 @@
 
         function LightSource_Activate(source)
         {
-            s_active_light_source = source;
-            document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_TabButton").click();
+            if ((source >= 0) && (source < LIGHT_SOURCE.Nof))
+            {
+                s_active_light_source = source;
+                document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_TabButton").click();
+            }
         }
 
         function LightScene_ShowAsActive(scene)

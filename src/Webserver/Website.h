@@ -1,6 +1,6 @@
 /*##############################################################################
 
-  THIS IS GENERATED CODE (use C:\SwProjects\Arduino\RoomLight_DaylightSimulation\Script\htmlToC_saveFlash.py.ods)
+  THIS IS GENERATED CODE (use C:\SwProjects\_Intern\Arduino\RoomLight_DaylightSimulation\Script\htmlToC_saveFlash.py.ods)
     ==> DO NOT EDIT MANUALLY !!!
 
 ##############################################################################*/
@@ -14,7 +14,7 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original
   source code
 
-  Created 22. June 2023 by MarkusNTrains
+  Created 27. June 2023 by MarkusNTrains
 ================================================================================
 $HeadURL:  $
 $Id:  $
