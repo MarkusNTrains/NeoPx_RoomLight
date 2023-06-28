@@ -45,6 +45,7 @@ LightSourceHdl::LightSourceHdl()
             Parameter::Id::Sbf_SceneID, Parameter::Id::Sbf_Brightness, Parameter::Id::Sbf_Color, Parameter::Id::Sbf_White,
             SBF_LEDRed_Pin, SBF_LEDGreen_Pin, SBF_LEDBlue_Pin, SBF_LEDWarmWhite_Pin, SBF_LEDColdWhite_Pin);
     this->m_active_light_source_p = this->m_room_light_hdl_p;
+    this->m_active_source = Source::RoomLight;
 }
 
 
