@@ -601,14 +601,18 @@ void WebServer::SendXML(EthernetClient* client)
         client->print(F("</minor>"));
         client->print(F("</version>")); 
 
-        client->print(F("<led>"));
+        client->print(F("<lightsource>"));
+        client->print(LIGHT_SOURCE_EnableMap)
+        client->print(F("</lightsource>"));
+
+        client->print(F("<roomlight>"));
         client->print(F("<nof_row>"));
         client->print(ROOM_LIGHT_NofRows);
         client->print(F("</nof_row>"));        
         client->print(F("<nof_leds>"));
         client->print(ROOM_LIGHT_RowNofPx);
         client->print(F("</nof_leds>"));
-        client->print(F("</led>"));    
+        client->print(F("</roomlight>"));    
 
         client->print(F("</info>"));
     }

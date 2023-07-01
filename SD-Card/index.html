@@ -438,55 +438,74 @@
 								var re = this.responseXML.getElementsByTagName('info');
 								if ((re != undefined) && (re != null) && (re.length > 0))
                                 {
-                                    var version_major = this.responseXML.getElementsByTagName('major')[0].childNodes[0].nodeValue;
-                                    var version_minor = this.responseXML.getElementsByTagName('minor')[0].childNodes[0].nodeValue;
-                                    var led_nof_row = parseInt(this.responseXML.getElementsByTagName('nof_row')[0].childNodes[0].nodeValue);
-                                    var led_nof_px = parseInt(this.responseXML.getElementsByTagName('nof_leds')[0].childNodes[0].nodeValue);
-                                    //var xs = parseInt(this.responseXML.getElementsByTagName('xs')[0].childNodes[0].nodeValue);
-                                    //var xe = parseInt(this.responseXML.getElementsByTagName('xe')[0].childNodes[0].nodeValue);
-                                    //var ys = parseInt(this.responseXML.getElementsByTagName('ys')[0].childNodes[0].nodeValue);
-                                    //var ye = parseInt(this.responseXML.getElementsByTagName('ye')[0].childNodes[0].nodeValue);
-
-
-                                    //--- update user setting columen and row slider --------------------------------
-                                    //<!--<div style="transform: rotate(270deg);">-->
-                                    //<div id="slider_row" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: 0; --b: 5; --min: 0; --max: 5;">
-                                    //    <!--<div id="multi-lbl">Multi thumb slider: 0 - 15</div>-->
-                                    //    <input id="a" class="twoThumbSlider" type="range" min="0" value="0" max="5" />
-                                    //    <!--<output for="a" style="--c: var(--a)"></output>-->
-                                    //    <input id="b" class="twoThumbSlider" type="range" min="0" value="5" max="5" />
-                                    //    <!--<output for="b" style="--c: var(--b)"></output>-->
-                                    //</div>
-                                    var slider_row_max = led_nof_row - USER_SETTING_OFFSET;
-                                    document.getElementById(LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + "_AreaRow_SliderBox").innerHTML = (
-                                        '<div id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_AreaRow_Slider" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: ' + 0 + '; --b: ' + slider_row_max + '; --min: 0; --max: ' + slider_row_max + ';">'
-                                        +   '<input name="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_LedRowSlider_a" id="a" class="twoThumbSlider" type="range" min="0" value="' + 0 + '" max="' + slider_row_max + '" />'
-                                        +   '<input name="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_LedRowSlider_b" id="b" class="twoThumbSlider" type="range" min="0" value="' + slider_row_max + '" max="' + slider_row_max + '" />'
-                                        + '</div>'
-                                    );
-                                    if (led_nof_row > 1)
+                                    var lightsource_map = this.responseXML.getElementByTagName('lightsource')[0].childNodes[0].nodeValue;
+                                    if (lightsource_map & (0x1 << LIGHTSOURCE.RoomLight))
                                     {
-                                        document.getElementById(LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + "_AreaRow_Slider").style.visibility = 'visible';
+                                        //--- LightSource RoomLight --------------------------------------------------
+                                        document.getElementById(LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + "_TabButton").style.visibility = 'visible';
+
+                                        var led_nof_row = parseInt(this.responseXML.getElementsByTagName('nof_row')[0].childNodes[0].nodeValue);
+                                        var led_nof_px = parseInt(this.responseXML.getElementsByTagName('nof_leds')[0].childNodes[0].nodeValue);
+
+
+                                        //--- update user setting columen and row slider --------------------------------
+                                        //<!--<div style="transform: rotate(270deg);">-->
+                                        //<div id="slider_row" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: 0; --b: 5; --min: 0; --max: 5;">
+                                        //    <!--<div id="multi-lbl">Multi thumb slider: 0 - 15</div>-->
+                                        //    <input id="a" class="twoThumbSlider" type="range" min="0" value="0" max="5" />
+                                        //    <!--<output for="a" style="--c: var(--a)"></output>-->
+                                        //    <input id="b" class="twoThumbSlider" type="range" min="0" value="5" max="5" />
+                                        //    <!--<output for="b" style="--c: var(--b)"></output>-->
+                                        //</div>
+                                        var slider_row_max = led_nof_row - USER_SETTING_OFFSET;
+                                        document.getElementById(LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + "_AreaRow_SliderBox").innerHTML = (
+                                            '<div id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_AreaRow_Slider" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: ' + 0 + '; --b: ' + slider_row_max + '; --min: 0; --max: ' + slider_row_max + ';">'
+                                            +   '<input name="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_LedRowSlider_a" id="a" class="twoThumbSlider" type="range" min="0" value="' + 0 + '" max="' + slider_row_max + '" />'
+                                            +   '<input name="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_LedRowSlider_b" id="b" class="twoThumbSlider" type="range" min="0" value="' + slider_row_max + '" max="' + slider_row_max + '" />'
+                                            + '</div>'
+                                        );
+                                        if (led_nof_row > 1)
+                                        {
+                                            document.getElementById(LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + "_AreaRow_Slider").style.visibility = 'visible';
+                                        }
+                                        else
+                                        {
+                                            document.getElementById(LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + "_AreaRow_Slider").style.visibility = 'hidden';
+                                        }
+
+                                        //<div id="slider_columen" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: 20; --b: 120; --min: 0; --max: 239">
+                                        //    <!--<div id="multi-lbl">Multi thumb slider: 0 - 15</div>-->
+                                        //    <input id="a" class="twoThumbSlider" type="range" min="0" value="20" max="239" />
+                                        //    <!--<output for="a" style="--c: var(--a)"></output>-->
+                                        //    <input id="b" class="twoThumbSlider" type="range" min="0" value="120" max="239" />
+                                        //    <!--<output for="b" style="--c: var(--b)"></output>-->
+                                        //</div>
+                                        var slider_column_max = led_nof_px - USER_SETTING_OFFSET;
+                                        document.getElementById(LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + "_AreaColumn_SliderBox").innerHTML = (
+                                            '<div id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_AreaColumn_Slider" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: ' + 0 + '; --b: ' + slider_column_max + '; --min: 0; --max: ' + slider_column_max + '">'
+                                            +   '<input name="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_LedColumnSlider_a" id="a" class="twoThumbSlider" type="range" min="0" value="' + 0 + '" max="' + slider_column_max + '" />'
+                                            +   '<input name="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_LedColumnSlider_b" id="b" class="twoThumbSlider" type="range" min="0" value="' + slider_column_max + '" max="' + slider_column_max + '" />'
+                                            + '</div>'
+                                        );
+
                                     }
                                     else
                                     {
-                                        document.getElementById(LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + "_AreaRow_Slider").style.visibility = 'hidden';
+                                        document.getElementById(LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + "_TabButton").style.visibility = 'hidden';
                                     }
 
-                                    //<div id="slider_columen" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: 20; --b: 120; --min: 0; --max: 239">
-                                    //    <!--<div id="multi-lbl">Multi thumb slider: 0 - 15</div>-->
-                                    //    <input id="a" class="twoThumbSlider" type="range" min="0" value="20" max="239" />
-                                    //    <!--<output for="a" style="--c: var(--a)"></output>-->
-                                    //    <input id="b" class="twoThumbSlider" type="range" min="0" value="120" max="239" />
-                                    //    <!--<output for="b" style="--c: var(--b)"></output>-->
-                                    //</div>
-                                    var slider_column_max = led_nof_px - USER_SETTING_OFFSET;
-                                    document.getElementById(LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + "_AreaColumn_SliderBox").innerHTML = (
-                                        '<div id="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_AreaColumn_Slider" class="wrap" role="group" aria-labelledby="multi-lbl" style="--a: ' + 0 + '; --b: ' + slider_column_max + '; --min: 0; --max: ' + slider_column_max + '">'
-                                        +   '<input name="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_LedColumnSlider_a" id="a" class="twoThumbSlider" type="range" min="0" value="' + 0 + '" max="' + slider_column_max + '" />'
-                                        +   '<input name="' + LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + '_LedColumnSlider_b" id="b" class="twoThumbSlider" type="range" min="0" value="' + slider_column_max + '" max="' + slider_column_max + '" />'
-                                        + '</div>'
-                                    );
+                                    if (lightsource_map & (0x1 << LIGHTSOURCE.ShadowStation))
+                                    {
+                                        document.getElementById(LIGHTSOURCE_Prefix[LIGHT_SOURCE.ShadowStation] + "_TabButton").style.visibility = 'visible';
+                                    }
+                                    else
+                                    {
+                                        document.getElementById(LIGHTSOURCE_Prefix[LIGHT_SOURCE.ShadowStation] + "_TabButton").style.visibility = 'hidden';
+                                    }
+
+                                    var version_major = this.responseXML.getElementsByTagName('major')[0].childNodes[0].nodeValue;
+                                    var version_minor = this.responseXML.getElementsByTagName('minor')[0].childNodes[0].nodeValue;
+
 
                                     //--- display Arduino room light firmware version in footer ---------------------
                                     document.getElementById("footer_version").innerHTML = ("v" + version_major + "." + version_minor);

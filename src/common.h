@@ -68,11 +68,15 @@ typedef struct
 #define ROOM_LIGHT_MarkusNTrains    0
 #define ROOM_LIGHT_Altenglienicke   1
 #define ROOM_LIGHT_TestBoard        2
-#define ROOM_LIGHT ROOM_LIGHT_TestBoard
+#define ROOM_LIGHT ROOM_LIGHT_MarkusNTrains
 
 
 
 #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
+//--- Enable LightSource ---------------------------------- 
+    #define LIGHT_SOURCE_EnableMap ((0x1 << LightSourceHdl::Source::RoomLight) | (0x1 << LightSourceHdl::Source::ShadowStation))
+
+
 //--- Room Light ------------------------------------------
     // LED Matrix defines -----------------------------
     #define ROOM_LIGHT_NofRows  4
@@ -115,6 +119,11 @@ typedef struct
 
 
 #elif (ROOM_LIGHT == ROOM_LIGHT_Altenglienicke)
+//--- Enable LightSource ---------------------------------- 
+    #define LIGHT_SOURCE_EnableMap ((0x1 << LightSourceHdl::Source::RoomLight))
+    
+
+//--- Room Light ------------------------------------------
     // LED Matrix defines -----------------------------
     #define ROOM_LIGHT_NofRows  6
     #define ROOM_LIGHT_RowNofPx 240
@@ -146,6 +155,11 @@ typedef struct
     };
 
 #else // ROOM_LIGHT_TestBoard
+//--- Enable LightSource ---------------------------------- 
+    #define LIGHT_SOURCE_EnableMap ((0x1 << LightSourceHdl::Source::RoomLight) | (0x1 << LightSourceHdl::Source::ShadowStation))
+    
+
+//--- Room Light ------------------------------------------
     // LED Matrix defines -----------------------------
     #define ROOM_LIGHT_NofRows  1
     #define ROOM_LIGHT_RowNofPx 14
@@ -165,6 +179,8 @@ typedef struct
         { ROOM_LIGHT_LedStrip1_Pin, ROOM_LIGHT_LedStrip1_NofLed},
     };
 
+
+//--- Shadow Station ---------------------------------------
     // LED Strips define ------------------------------
     #define SBF_LEDRed_Pin       5
     #define SBF_LEDGreen_Pin     4
