@@ -60,7 +60,8 @@ class LightScene_Sun
 
         const static uint32_t STRIPE_PixelDistanceMM = 16;  // distance between neo pixels in mm
         const static uint32_t SUN_MaxHeight = 10000;
-        const static uint8_t FADING_Factor = 10;
+        const static uint8_t FADING_Factor = 5;
+        const static uint8_t FADING_Max = Parameter::BRIGHTNESS_Max;
         const static uint8_t SUNRISE_StartBrightness = LightScene_Night::BRIGHTNESS_Max;
         const static uint8_t RED_Max = 255;
         const static uint8_t GREEN_Max = 140;
@@ -73,16 +74,17 @@ class LightScene_Sun
         SunState m_state;
         uint32_t m_sun_height;
         uint32_t m_sun_pos;
-        uint32_t m_day_color;
+        wrgb_color_t m_day_color;
         uint32_t m_task_timestamp_ms;
+        uint16_t m_fading_progress_rgb;
 
-        uint8_t m_day_brightness_white;
-        uint8_t m_day_brightness_rgb;
-        uint8_t m_red_max;
-        uint8_t m_green_max;
-        uint8_t m_blue_max;
-        uint8_t m_twilight_brightness;
-        uint8_t m_night_brightness;
+        uint16_t m_day_brightness_white;
+        uint16_t m_day_brightness_rgb;
+        uint16_t m_red_max;
+        uint16_t m_green_max;
+        uint16_t m_blue_max;
+        uint16_t m_twilight_brightness;
+        uint16_t m_night_brightness;
 
         void Sunrise_Leave();
         void Sunset_Leave();

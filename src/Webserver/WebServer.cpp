@@ -602,7 +602,7 @@ void WebServer::SendXML(EthernetClient* client)
         client->print(F("</version>")); 
 
         client->print(F("<lightsource>"));
-        client->print(LIGHT_SOURCE_EnableMap)
+        client->print(LIGHT_SOURCE_EnableMap);
         client->print(F("</lightsource>"));
 
         client->print(F("<roomlight>"));

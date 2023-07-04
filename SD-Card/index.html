@@ -289,6 +289,7 @@
             border: none;
             outline: none;
             cursor: pointer;
+            visibility: hidden;
             padding: 14px 16px;
             transition: 0.3s;
             font-size: 17px;
@@ -438,10 +439,12 @@
 								var re = this.responseXML.getElementsByTagName('info');
 								if ((re != undefined) && (re != null) && (re.length > 0))
                                 {
-                                    var lightsource_map = this.responseXML.getElementByTagName('lightsource')[0].childNodes[0].nodeValue;
-                                    if (lightsource_map & (0x1 << LIGHTSOURCE.RoomLight))
+                                    var lightsource_map = parseInt(this.responseXML.getElementsByTagName('lightsource')[0].childNodes[0].nodeValue);
+                                    var nof_light_sources = 0;
+                                    if (lightsource_map & (0x1 << LIGHT_SOURCE.RoomLight))
                                     {
                                         //--- LightSource RoomLight --------------------------------------------------
+                                        nof_light_sources++;
                                         document.getElementById(LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + "_TabButton").style.visibility = 'visible';
 
                                         var led_nof_row = parseInt(this.responseXML.getElementsByTagName('nof_row')[0].childNodes[0].nodeValue);
@@ -494,8 +497,9 @@
                                         document.getElementById(LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + "_TabButton").style.visibility = 'hidden';
                                     }
 
-                                    if (lightsource_map & (0x1 << LIGHTSOURCE.ShadowStation))
+                                    if (lightsource_map & (0x1 << LIGHT_SOURCE.ShadowStation))
                                     {
+                                        nof_light_sources++;
                                         document.getElementById(LIGHTSOURCE_Prefix[LIGHT_SOURCE.ShadowStation] + "_TabButton").style.visibility = 'visible';
                                     }
                                     else
@@ -503,11 +507,18 @@
                                         document.getElementById(LIGHTSOURCE_Prefix[LIGHT_SOURCE.ShadowStation] + "_TabButton").style.visibility = 'hidden';
                                     }
 
-                                    var version_major = this.responseXML.getElementsByTagName('major')[0].childNodes[0].nodeValue;
-                                    var version_minor = this.responseXML.getElementsByTagName('minor')[0].childNodes[0].nodeValue;
-
+                                    if (nof_light_sources == 1)
+                                    {
+                                        document.getElementById("MainPage").style.display = 'none';
+                                        for (var id = 0; id < LIGHT_SOURCE.Nof; id++)
+                                        {
+                                            document.getElementById(LIGHTSOURCE_Prefix[id] + "_TabButton").style.visibility = 'hidden';
+                                        }
+                                    }
 
                                     //--- display Arduino room light firmware version in footer ---------------------
+                                    var version_major = this.responseXML.getElementsByTagName('major')[0].childNodes[0].nodeValue;
+                                    var version_minor = this.responseXML.getElementsByTagName('minor')[0].childNodes[0].nodeValue;
                                     document.getElementById("footer_version").innerHTML = ("v" + version_major + "." + version_minor);
                                     if ((version_major != GLOBAL_WebserverVersion_Major) || (version_minor != GLOBAL_WebserverVersion_Minor))
                                     {
@@ -783,10 +794,13 @@
             else if (s_active_light_source == LIGHT_SOURCE.ShadowStation) {
                 nof_scene = SIMPLELEDSTRIP_Scene.Nof;
             }
-
-            if (document.getElementById(s_active_lightScene_elementId) != null)
+            
+            if (s_active_lightScene_elementId != "")
             {
-                document.getElementById(s_active_lightScene_elementId).classList.remove("button_active");
+                if (document.getElementById(s_active_lightScene_elementId) != null)
+                {
+                    document.getElementById(s_active_lightScene_elementId).classList.remove("button_active");
+                }
             }
             
             if (scene < nof_scene)
@@ -805,24 +819,30 @@
 
         function LightAnimation_ShowAsActive(animation)
         {
-            if (s_active_light_source == LIGHT_SOURCE.RoomLight)
+            if (s_active_light_source != "")
             {
-                if (document.getElementById(s_active_lightAnimation_elementId) != null)
+                if (s_active_light_source == LIGHT_SOURCE.RoomLight)
                 {
-                    document.getElementById(s_active_lightAnimation_elementId).classList.remove("button_active");
-                }
-                
-                if (animation < ROOMLIGHT_Scene.NOF)
-                {
-                    s_active_lightAnimation_elementId = LIGHTSOURCE_Prefix[s_active_light_source] + "_Animation" + animation;
-                    if (document.getElementById(s_active_lightAnimation_elementId) != null)
+                    if (s_active_lightAnimation_elementId != "")
                     {
-                        document.getElementById(s_active_lightAnimation_elementId).classList.add("button_active");
+                        if (document.getElementById(s_active_lightAnimation_elementId) != null)
+                        {
+                            document.getElementById(s_active_lightAnimation_elementId).classList.remove("button_active");
+                        }
                     }
-                }
-                else
-                {
-                    s_active_lightAnimation_elementId = "";
+                    
+                    if (animation < ROOMLIGHT_Scene.NOF)
+                    {
+                        s_active_lightAnimation_elementId = LIGHTSOURCE_Prefix[s_active_light_source] + "_Animation" + animation;
+                        if (document.getElementById(s_active_lightAnimation_elementId) != null)
+                        {
+                            document.getElementById(s_active_lightAnimation_elementId).classList.add("button_active");
+                        }
+                    }
+                    else
+                    {
+                        s_active_lightAnimation_elementId = "";
+                    }
                 }
             }
         }
@@ -1042,7 +1062,6 @@
             document.getElementById("RoomLight_Scene").innerHTML = light_scene;
             document.getElementById("RoomLight_Animation").innerHTML = animation;
             document.getElementById("ShadowStation_Scene").innerHTML = sbf_lightScene;
-            document.getElementById(LIGHTSOURCE_Prefix[LIGHT_SOURCE.RoomLight] + "_TabButton").click();
             document.getElementById("footer_version").innerHTML = ("v" + GLOBAL_WebserverVersion_Major + "." + GLOBAL_WebserverVersion_Minor);
 
 			FindServer();

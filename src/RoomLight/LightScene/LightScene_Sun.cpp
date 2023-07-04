@@ -66,7 +66,7 @@ void LightScene_Sun::Sunrise_Enter()
     this->m_task_timestamp_ms = millis();
     this->Update_DayParameter();
 
-    this->m_light_hdl_p->SetBrightness_Instantly(255);
+    this->m_light_hdl_p->SetBrightness_Instantly(Parameter::BRIGHTNESS_Max);
     this->m_light_hdl_p->SetLedArea_DoNotChangeBlackLED(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF, Adafruit_NeoPixel::Color(0, 0, this->m_twilight_brightness, 0));
     this->m_light_hdl_p->Show();
 }
@@ -115,65 +115,53 @@ bool LightScene_Sun::Sunrise_Task()
                 }
                 else
                 {
-                    this->m_day_color = Adafruit_NeoPixel::Color(this->m_red_max, this->m_green_max, this->m_blue_max, 0);
-                    this->m_state = Fading;   
+                    this->m_day_color.color = Adafruit_NeoPixel::Color(this->m_red_max, this->m_green_max, this->m_blue_max, 0);
+                    this->m_state = Fading; 
+                    this->m_fading_progress_rgb = FADING_Max;  
                 }
 
                 break;
             }
             case Fading:
             {
-                if (this->m_day_color == Adafruit_NeoPixel::Color(0, 0, 0, this->m_day_brightness_white))
+                if (this->m_day_color.color == Adafruit_NeoPixel::Color(0, 0, 0, this->m_day_brightness_white))
                 {
                     this->Sunrise_Leave();
                 }
                 else
                 {
-                    uint16_t tmp = 0;
-                    uint8_t red = (uint8_t)(this->m_day_color >> 16);
-                    uint8_t green = (uint8_t)(this->m_day_color >>  8);
-                    uint8_t blue = (uint8_t)this->m_day_color;
-                    uint8_t white = (uint8_t)(this->m_day_color >> 24);
-
-                    tmp = (white / FADING_Factor) + 1;
-                    if ((white + tmp) < this->m_day_brightness_white) 
+                    // fade white
+                    uint16_t tmp = (this->m_day_color.white / FADING_Factor) + 1;
+                    if ((this->m_day_color.white + tmp) < this->m_day_brightness_white) 
                     {
-                        white += tmp;
+                        this->m_day_color.white += tmp;
                     }
                     else 
                     {
-                        white = this->m_day_brightness_white;
+                        this->m_day_color.white = this->m_day_brightness_white;
                     }
 
-                    if (white > ((this->m_day_brightness_white * 2) / 5))
+                    // fade rgb
+                    if (this->m_day_color.white > ((this->m_day_brightness_white * 3) / 5))
                     {
-                        tmp = (red / FADING_Factor) + 1;
-                        if (tmp < red) {
-                            red -= tmp;
+                        tmp = (this->m_fading_progress_rgb / FADING_Factor) + 1;
+                        if (this->m_fading_progress_rgb > tmp)
+                        {
+                            this->m_fading_progress_rgb -= tmp;
+                            this->m_day_color.red = (this->m_day_color.red * this->m_fading_progress_rgb) / FADING_Max;
+                            this->m_day_color.green = (this->m_day_color.green * this->m_fading_progress_rgb) / FADING_Max;
+                            this->m_day_color.blue = (this->m_day_color.blue * this->m_fading_progress_rgb) / FADING_Max;
                         }
-                        else {
-                            red = 0;
+                        else
+                        {
+                            this->m_fading_progress_rgb = 0;
+                            this->m_day_color.red = 0;
+                            this->m_day_color.green = 0;
+                            this->m_day_color.blue = 0;
                         }
-
-                        tmp = (green / FADING_Factor) + 1;
-                        if (tmp < green) {
-                            green -= tmp;
-                        }
-                        else {
-                            green = 0;
-                        }
-
-                        tmp = (blue / FADING_Factor) + 1;
-                        if (tmp < blue) {
-                            blue -= tmp;
-                        }
-                        else {
-                            blue = 0;
-                        }                
                     }
 
-                    this->m_day_color = Adafruit_NeoPixel::Color(red, green, blue, white);
-                    this->m_light_hdl_p->SetColor(this->m_day_color);
+                    this->m_light_hdl_p->SetColor(this->m_day_color.color);
                     is_update_needed = true; 
                 }
                 break;  
@@ -198,12 +186,13 @@ void LightScene_Sun::Sunset_Enter()
     this->m_sun_height = SUN_MaxHeight;
     this->m_sun_pos = LedRow::LED_ROW_LENGTH - 1;
     this->m_twilight_brightness = SUNRISE_StartBrightness;
-    this->m_state = Fading;
-    this->m_day_color = Adafruit_NeoPixel::Color(0, 0, 0, this->m_day_brightness_white);
+    this->m_fading_progress_rgb = 0;
+    this->m_day_color.color = Adafruit_NeoPixel::Color(0, 0, 0, this->m_day_brightness_white);
     this->m_task_timestamp_ms = millis();
+    this->m_state = Fading;
     
-    this->m_light_hdl_p->SetBrightness_Instantly(255);
-    this->m_light_hdl_p->SetLedArea_DoNotChangeBlackLED(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF, this->m_day_color);  
+    this->m_light_hdl_p->SetBrightness_Instantly(Parameter::BRIGHTNESS_Max);
+    this->m_light_hdl_p->SetLedArea_DoNotChangeBlackLED(0, LedRow::LED_ROW_LENGTH, 0, LedRow::LED_ROW_NOF, this->m_day_color.color);  
     this->m_light_hdl_p->Show();
 }
 
@@ -238,62 +227,43 @@ bool LightScene_Sun::Sunset_Task()
         {
             case Fading:
             {
-                if (this->m_day_color == Adafruit_NeoPixel::Color(this->m_red_max, this->m_green_max, this->m_blue_max, 0))
+                if (this->m_day_color.color == Adafruit_NeoPixel::Color(this->m_red_max, this->m_green_max, this->m_blue_max, 0))
                 {
                     this->m_state = Sunset;   
                 }
                 else
                 {
-                    uint16_t tmp = 0;
-                    uint8_t red = (uint8_t)(this->m_day_color >> 16);
-                    uint8_t green = (uint8_t)(this->m_day_color >>  8);
-                    uint8_t blue = (uint8_t)this->m_day_color;
-                    uint8_t white = (uint8_t)(this->m_day_color >> 24);
-                    bool is_rgb_color_ready = true;
-
-                    tmp = (red / FADING_Factor) + 1;
-                    if ((tmp + red) < this->m_red_max) 
+                    // fade rgb
+                    uint16_t tmp = (this->m_fading_progress_rgb / FADING_Factor) + 1;
+                    if (this->m_fading_progress_rgb + tmp < FADING_Max)
                     {
-                        red += tmp;
+                        this->m_fading_progress_rgb += tmp;
+                        this->m_day_color.red = (this->m_red_max * this->m_fading_progress_rgb) / FADING_Max;
+                        this->m_day_color.green = (this->m_green_max * this->m_fading_progress_rgb) / FADING_Max;
+                        this->m_day_color.blue = (this->m_blue_max * this->m_fading_progress_rgb) / FADING_Max;
                     }
                     else
                     {
-                        red = this->m_red_max;
+                        this->m_fading_progress_rgb = FADING_Max;
+                        this->m_day_color.red = this->m_red_max;
+                        this->m_day_color.green = this->m_green_max;
+                        this->m_day_color.blue = this->m_blue_max;
                     }
 
-                    tmp = (green / FADING_Factor) + 1;
-                    if ((tmp + green) < this->m_green_max) 
+                    // fade white
+                    if (this->m_day_color.red > ((this->m_day_brightness_rgb * 2) / 5))
                     {
-                        green += tmp;
-                    }
-                    else
-                    {
-                        green = this->m_green_max;
-                    }
-
-                    tmp = (blue / FADING_Factor) + 1;
-                    if ((tmp + blue) < this->m_blue_max) 
-                    {
-                        blue += tmp;
-                    }
-                    else
-                    {
-                        blue = this->m_blue_max;
-                    }
-
-                    if (red > ((this->m_red_max * 2) / 5))
-                    {
-                        tmp = (white / FADING_Factor) + 1;
-                        if (tmp < white) {
-                            white -= tmp;
+                        tmp = (this->m_day_color.white / FADING_Factor) + 1;
+                        if (this->m_day_color.white > tmp) 
+                        {
+                            this->m_day_color.white -= tmp;
                         }
-                        else {
-                            white = 0;
-                        }                
+                        else 
+                        {
+                            this->m_day_color.white = 0;
+                        }
                     }
-
-                    this->m_day_color = Adafruit_NeoPixel::Color(red, green, blue, white);
-                    this->m_light_hdl_p->SetColor(this->m_day_color);
+                    this->m_light_hdl_p->SetColor(this->m_day_color.color);
                     is_update_needed = true;
                 }
                 break;   
@@ -351,10 +321,10 @@ bool LightScene_Sun::CalculateAndShow_Sunlight()
     {
         // calculate pixel color ----------------------------------------------
         hypothenuse = sqrt(pow(this->m_sun_height, 2) + pow(STRIPE_PixelDistanceMM * cnt, 2));
-        asin_alpha = (255 * this->m_sun_height) / hypothenuse;
-        brightness = asin_alpha / 255;
+        asin_alpha = (Parameter::BRIGHTNESS_Max * this->m_sun_height) / hypothenuse;
+        brightness = asin_alpha / Parameter::BRIGHTNESS_Max;
 
-        red = 255 * brightness;
+        red = Parameter::BRIGHTNESS_Max * brightness;
         if (red > this->m_red_max) {
             red = this->m_red_max;
         }
@@ -400,13 +370,15 @@ bool LightScene_Sun::CalculateAndShow_Sunlight()
 //*****************************************************************************
 void LightScene_Sun::Update_DayParameter()
 {
-    uint32_t day_brightness = this->m_datastore_p->GetParameter(Parameter::Id::SceneDay_Brightness);
-    
-    this->m_day_brightness_white = (uint8_t)day_brightness;
-    this->m_day_brightness_rgb = (uint8_t)((day_brightness * 5) / 3);
-    this->m_red_max = (uint8_t)((RED_Max * day_brightness) / 255);
-    this->m_green_max = (uint8_t)((GREEN_Max * day_brightness) / 255);
-    this->m_blue_max = (uint8_t)((BLUE_Max * day_brightness ) / 255);
+    this->m_day_brightness_white = (uint8_t)this->m_datastore_p->GetParameter(Parameter::Id::SceneDay_Brightness);
+    this->m_day_brightness_rgb = ((this->m_day_brightness_white * 5) / 3);
+    if (this->m_day_brightness_rgb > Parameter::BRIGHTNESS_Max) 
+    {
+        this->m_day_brightness_rgb = Parameter::BRIGHTNESS_Max;
+    }
+    this->m_red_max = (uint8_t)((RED_Max * this->m_day_brightness_rgb) / Parameter::BRIGHTNESS_Max);
+    this->m_green_max = (uint8_t)((GREEN_Max * this->m_day_brightness_rgb) / Parameter::BRIGHTNESS_Max);
+    this->m_blue_max = (uint8_t)((BLUE_Max * this->m_day_brightness_rgb ) / Parameter::BRIGHTNESS_Max);
     this->m_night_brightness = this->m_datastore_p->GetParameter(Parameter::Id::SceneNight_Brightness);
 }
 
