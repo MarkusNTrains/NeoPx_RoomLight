@@ -14,10 +14,10 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original
   source code
 
-  Created 04.07.2023 14:02:19 by MarkusNTrains
+  Created 04.07.2023 15:53:38 by MarkusNTrains
 ================================================================================
 $HeadURL: file:///C:/SwProjects/_Intern/Arduino/RoomLight_DaylightSimulation/src/Datastore/Parameter.h $
-$Id: 04.07.2023 14:02:19 automatic gen. $
+$Id: 04.07.2023 15:53:38 automatic gen. $
 *******************************************************************************/
 
 /*

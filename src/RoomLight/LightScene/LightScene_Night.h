@@ -30,6 +30,7 @@ $Id:  $
 class LightScene_Night : public LightScene
 {
     public:
+        const static uint8_t BRIGHTNESS_Min = 1;
         const static uint8_t BRIGHTNESS_Default = 4;
         const static uint8_t BRIGHTNESS_Max = 15;
         const static uint32_t COLOR = LightHdl::COLOR_BLUE;
