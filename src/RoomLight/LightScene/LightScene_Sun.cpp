@@ -251,7 +251,7 @@ bool LightScene_Sun::Sunset_Task()
                     }
 
                     // fade white
-                    if (this->m_day_color.red > ((this->m_day_brightness_rgb * 2) / 5))
+                    if (this->m_day_color.red > ((this->m_day_brightness_rgb * 3) / 5))
                     {
                         tmp = (this->m_day_color.white / FADING_Factor) + 1;
                         if (this->m_day_color.white > tmp) 
