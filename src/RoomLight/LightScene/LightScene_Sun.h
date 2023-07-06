@@ -59,13 +59,14 @@ class LightScene_Sun
         const static uint32_t TASK_TmoMs = 80; 
 
         const static uint32_t STRIPE_PixelDistanceMM = 16;  // distance between neo pixels in mm
-        const static uint32_t SUN_MaxHeight = 10000;
+        const static uint32_t SUN_MaxHeight = 1000;
         const static uint8_t FADING_Factor = 5;
         const static uint8_t FADING_Max = Parameter::BRIGHTNESS_Max;
-        const static uint8_t SUNRISE_StartBrightness = LightScene_Night::BRIGHTNESS_Max;
         const static uint8_t RED_Max = 255;
-        const static uint8_t GREEN_Max = 140;
+        const static uint8_t GREEN_Max = 135;
         const static uint8_t BLUE_Max = 32;
+        const static uint8_t TWILIGHT_RedOffsetToBlue = LightScene_Night::BRIGHTNESS_Max;
+        const static uint8_t SUNRISE_StartBrightness = 30 + TWILIGHT_RedOffsetToBlue;
 
         RoomLightHdl* m_scene_hdl_p;
         LightHdl* m_light_hdl_p;

@@ -309,22 +309,27 @@ bool LightScene_Sun::CalculateAndShow_Sunlight()
 {
     uint16_t pixel_idx;
     uint16_t cnt;
-    uint8_t red;
-    uint8_t green;
-    uint8_t blue;
+    uint16_t red;
+    uint16_t green;
+    uint16_t blue;
     float brightness = 0;
     float asin_alpha = 0;
     uint32_t hypothenuse = 0;
     uint32_t color = 0;
+    uint32_t pow_sunHeight = pow(this->m_sun_height, 2);
+    uint32_t brightness_sunHeight = ((uint32_t)Parameter::BRIGHTNESS_Max * this->m_sun_height);
 
     for (cnt = 0; cnt < LedRow::LED_ROW_LENGTH; cnt++)
     {
         // calculate pixel color ----------------------------------------------
-        hypothenuse = sqrt(pow(this->m_sun_height, 2) + pow(STRIPE_PixelDistanceMM * cnt, 2));
-        asin_alpha = (Parameter::BRIGHTNESS_Max * this->m_sun_height) / hypothenuse;
-        brightness = asin_alpha / Parameter::BRIGHTNESS_Max;
+        hypothenuse = sqrt(pow_sunHeight + pow(STRIPE_PixelDistanceMM * cnt, 2));
+        asin_alpha = brightness_sunHeight / hypothenuse;
+        brightness = asin_alpha / (float)Parameter::BRIGHTNESS_Max;
 
         red = Parameter::BRIGHTNESS_Max * brightness;
+        if (this->m_twilight_brightness > TWILIGHT_RedOffsetToBlue) {
+            red += (this->m_twilight_brightness - TWILIGHT_RedOffsetToBlue);
+        }
         if (red > this->m_red_max) {
             red = this->m_red_max;
         }
@@ -334,8 +339,9 @@ bool LightScene_Sun::CalculateAndShow_Sunlight()
             green = this->m_green_max;
         }
 
-        blue = (green * this->m_sun_height) / (SUN_MaxHeight * 2);
-        blue = (cnt * (this->m_day_brightness_white / (LedRow::LED_ROW_LENGTH / 2))) + blue;
+        if (this->m_sun_height > 0) {
+            blue = (cnt * (this->m_day_brightness_rgb / (LedRow::LED_ROW_LENGTH / 2))) + blue;
+        }
         blue = (blue * brightness) + this->m_twilight_brightness;
         if (blue > this->m_blue_max) {
             blue = this->m_blue_max;
