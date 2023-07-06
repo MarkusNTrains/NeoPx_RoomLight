@@ -335,6 +335,9 @@ bool LightScene_Sun::CalculateAndShow_Sunlight()
         }
 
         green = asin_alpha * brightness;
+        if (this->m_twilight_brightness > TWILIGHT_GreenOffsetToBlue) {
+            green += (this->m_twilight_brightness - TWILIGHT_GreenOffsetToBlue);
+        }
         if (green > this->m_green_max) {
             green = this->m_green_max;
         }

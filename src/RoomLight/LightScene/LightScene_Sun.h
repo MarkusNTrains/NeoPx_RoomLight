@@ -67,6 +67,7 @@ class LightScene_Sun
         const static uint8_t BLUE_Max = 32;
         const static uint8_t TWILIGHT_RedOffsetToBlue = LightScene_Night::BRIGHTNESS_Max;
         const static uint8_t SUNRISE_StartBrightness = 30 + TWILIGHT_RedOffsetToBlue;
+        const static uint8_t TWILIGHT_GreenOffsetToBlue = SUNRISE_StartBrightness - 5;
 
         RoomLightHdl* m_scene_hdl_p;
         LightHdl* m_light_hdl_p;
