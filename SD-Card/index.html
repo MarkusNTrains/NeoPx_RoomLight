@@ -929,25 +929,22 @@
 		{
             var warmwhite_slider = document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_WarmWhite_Slider");
             var color = parseInt(warmwhite_slider.value);
+            var coldwhite_slider = document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColdWhite_Slider");                
 
             document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_WarmWhite_Value").innerHTML = color;
+            document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColdWhite_Value").innerHTML = coldwhite_slider.value;
+            color += parseInt(coldwhite_slider.value);
+            if (color > 255) { color = 255; }
             colorStr = ('000000' + ((color << 16) | (color << 8) | color).toString(16)).slice(-6);
             document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
 
             if (s_active_light_source == LIGHT_SOURCE.RoomLight)
             {
-                SendDataToServerWhenConnected("&" + XML_RREQUEST.SetColor + "=" + (warmwhite_slider.value << 24));			
+                color = (warmwhite_slider.value << 24) | (coldwhite_slider.value << 16) | (coldwhite_slider.value << 8) | (coldwhite_slider.value);
+                SendDataToServerWhenConnected("&" + XML_RREQUEST.SetColor + "=" + color);			
             }
             else
             {
-                var coldwhite_slider = document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColdWhite_Slider");                
-                document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColdWhite_Value").innerHTML = coldwhite_slider.value;
-
-                color += parseInt(coldwhite_slider.value);
-                if (color > 255) { color = 255; }
-                colorStr = ('000000' + ((color << 16) | (color << 8) | color).toString(16)).slice(-6);
-                document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
-                
                 var white = warmwhite_slider.value
                 white |= (coldwhite_slider.value << 8);
                 SendDataToServerWhenConnected("&" + XML_RREQUEST.SetWhite + "=" + white);			
@@ -1117,9 +1114,14 @@
                     <input type="range" min="0" max="255" value="0" class="slider" id="RoomLight_ColorBlue_Slider" oninput="ColorRGBSingleSliderChanged()" style="background-image: linear-gradient(90deg, black, blue)">
                 </div>
                 <div class="slidecontainer">
-                    <label for="RoomLight_WarmWhite_Value">Weiss</label>
+                    <label for="RoomLight_WarmWhite_Value">Warm Weiss</label>
                     <label id="RoomLight_WarmWhite_Value" class="user_value"></label>
-                    <input type="range" min="0" max="255" value="0" class="slider" id="RoomLight_WarmWhite_Slider" oninput="ColorWhiteSliderChanged()" style="background-image: linear-gradient(90deg, black, white)">
+                    <input type="range" min="0" max="255" value="0" class="slider" id="RoomLight_WarmWhite_Slider" oninput="ColorWhiteSliderChanged()" style="background-image: linear-gradient(90deg, black, rgb(255, 234, 76))">
+                </div>
+                <div class="slidecontainer">
+                    <label for="RoomLight_ColdWhite_Value">Kalt Weiss</label>
+                    <label id="RoomLight_ColdWhite_Value" class="user_value"></label>
+                    <input type="range" min="0" max="255" value="0" class="slider" id="RoomLight_ColdWhite_Slider" oninput="ColorWhiteSliderChanged()" style="background-image: linear-gradient(90deg, black, white)">
                 </div>
             </div>
         </div>

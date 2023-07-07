@@ -75,8 +75,8 @@ uint32_t LightHdl::GetLedColor(uint16_t row, uint16_t column)
 //*****************************************************************************
 void LightHdl::SetLedColor(uint16_t row, uint16_t column, uint32_t color)
 {
-    //this->m_led_matrix->SetPixel(row, column, color);
-    this->m_led_matrix->SetPixelArea(column, column, row, row, color);
+    this->m_led_matrix->SetPixel(row, column, color);
+    //this->m_led_matrix->SetPixelArea(column, column, row, row, color);
 }
 
 
@@ -126,9 +126,11 @@ void LightHdl::SetLedArea_DoNotChangeBlackLED(uint16_t xs, uint16_t xe, uint16_t
     {
         for (column = xs; column <= xe; column++)
         {
-            if (this->GetLedColor(row, column) != LightHdl::COLOR_BLACK)
+            //if (this->GetLedColor(row, column) != LightHdl::COLOR_BLACK)
+            if (this->m_led_matrix->GetPixelColor(row, column) != LightHdl::COLOR_BLACK)
             {
-                this->SetLedColor(row, column, this->m_color);
+                //this->SetLedColor(row, column, this->m_color);
+                this->m_led_matrix->SetPixel(row, column, this->m_color);
             }
         }
     }
