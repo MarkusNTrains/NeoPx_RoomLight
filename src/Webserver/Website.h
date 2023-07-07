@@ -1,6 +1,6 @@
 /*##############################################################################
 
-  THIS IS GENERATED CODE (use C:\SwProjects\_Intern\Arduino\RoomLight_DaylightSimulation\Script\htmlToC_saveFlash.py.ods)
+  THIS IS GENERATED CODE (use C:\_my\Arduino\RoomLight_DaylightSimulation\Script\htmlToC_saveFlash.py.ods)
     ==> DO NOT EDIT MANUALLY !!!
 
 ##############################################################################*/

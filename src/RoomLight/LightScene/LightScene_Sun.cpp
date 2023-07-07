@@ -142,7 +142,7 @@ bool LightScene_Sun::Sunrise_Task()
                     }
 
                     // fade rgb
-                    if (this->m_day_color.white > ((this->m_day_brightness_white * 3) / 5))
+                    if (this->m_day_color.white > ((this->m_day_brightness_white * 2) / 5))
                     {
                         tmp = (this->m_fading_progress_rgb / FADING_Factor) + 1;
                         if (this->m_fading_progress_rgb > tmp)
@@ -251,7 +251,7 @@ bool LightScene_Sun::Sunset_Task()
                     }
 
                     // fade white
-                    if (this->m_day_color.red > ((this->m_day_brightness_rgb * 3) / 5))
+                    if (this->m_day_color.red > ((this->m_day_brightness_rgb * 2) / 5))
                     {
                         tmp = (this->m_day_color.white / FADING_Factor) + 1;
                         if (this->m_day_color.white > tmp) 
