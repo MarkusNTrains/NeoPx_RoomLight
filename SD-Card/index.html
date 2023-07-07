@@ -450,6 +450,8 @@
                                         var led_nof_row = parseInt(this.responseXML.getElementsByTagName('nof_row')[0].childNodes[0].nodeValue);
                                         var led_nof_px = parseInt(this.responseXML.getElementsByTagName('nof_leds')[0].childNodes[0].nodeValue);
 
+                                        document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColdWhite_Slider").value = 0;
+                                        document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColdWhite_Value").innerHTML = 0;
 
                                         //--- update user setting columen and row slider --------------------------------
                                         //<!--<div style="transform: rotate(270deg);">-->
@@ -556,11 +558,13 @@
 								if ((re != undefined) && (re != null) && (re.length > 0))
 								{
 									color = parseInt(re[0].childNodes[0].nodeValue);
+                                    var white = (color >> 24) & 0xFF;
+                                    var red = (color >> 16) & 0xFF;
+                                    var green = (color >> 8) & 0xFF;
+                                    var blue = color & 0xFF;
+
                                     if (color > 0xFFFFFF)
                                     {
-                                        var white = (color >> 24) & 0xFF;
-                                        document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_WarmWhite_Slider").value = white;
-                                        document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_WarmWhite_Value").innerHTML = white;
                                         colorStr = ('000000' + ((white << 16) | (white << 8) | white).toString(16)).slice(-6);
                             			document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
                                     }
@@ -599,10 +603,18 @@
                                         document.querySelector(':root').style.setProperty('--SliderThumbColor', '#' + colorStr);
                                     }
 
+                                    if (s_active_light_source == LIGHT_SOURCE.RoomLight)
+                                    {
+                                        document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_WarmWhite_Slider").value = white;
+                                        document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_WarmWhite_Value").innerHTML = white;
+                                        if ((red != blue) || (red != green))
+                                        {
+                                            document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColdWhite_Slider").value = 0;
+                                            document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColdWhite_Value").innerHTML = 0;
+                                        }
+                                    }
+
                                     // set rgb single slider
-                                    var red = (color >> 16) & 0xFF;
-                                    var green = (color >> 8) & 0xFF;
-                                    var blue = color & 0xFF;
                                     document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorRed_Value").innerHTML = red;
                                     document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorGreen_Value").innerHTML = green;
                                     document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorBlue_Value").innerHTML = blue;
@@ -698,14 +710,11 @@
             document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorGreen_Value").innerHTML = ("loading...");
             document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColorBlue_Value").innerHTML = ("loading...");
             document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_WarmWhite_Value").innerHTML = ("loading...");
+            document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColdWhite_Value").innerHTML = ("loading...");
             if (s_active_light_source == LIGHT_SOURCE.RoomLight) 
             {
                 document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_AreaColumn_Value").innerHTML = ("loading...");
                 document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_AreaRow_Value").innerHTML = ("loading...");
-            }
-            else if (s_active_light_source == LIGHT_SOURCE.ShadowStation)
-            {
-                document.getElementById(LIGHTSOURCE_Prefix[s_active_light_source] + "_ColdWhite_Value").innerHTML = ("loading...");
             }
 
             document.getElementById("footer_version").innerHTML = ("v" + GLOBAL_WebserverVersion_Major + "." + GLOBAL_WebserverVersion_Minor);
