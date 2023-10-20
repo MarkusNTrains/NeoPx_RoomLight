@@ -37,7 +37,7 @@ class LightScene_MoBa : public LightScene
         void Exit();
 
     private:
-        const static uint32_t TASK_TmoMs = 1000;
+        const static uint32_t TASK_TmoMs = 1000ul;
 
         bool TaskHdl();
 };

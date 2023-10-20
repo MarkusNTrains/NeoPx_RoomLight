@@ -37,7 +37,7 @@ class LightScene_Disco : public LightScene
         void Exit();
 
     private:
-        const static uint32_t TASK_TmoMs = 100;
+        const static uint32_t TASK_TmoMs = 100ul;
 
         bool TaskHdl();
 };

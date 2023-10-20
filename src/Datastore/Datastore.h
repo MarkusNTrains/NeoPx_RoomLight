@@ -41,8 +41,8 @@ class Datastore
 
     private:
         //--- EEPROM ---
-        const static uint32_t EEPROM_WriteLockAfterParameterChangeTmoMs = 10000;
-        const static uint32_t EEPROM_WriteLockAfterEepromWriteTmoMs = 60000;
+        const static uint32_t EEPROM_WriteLockAfterParameterChangeTmoMs = 10000ul;
+        const static uint32_t EEPROM_WriteLockAfterEepromWriteTmoMs = 60000ul;
 
         //--- Memeber Variable ---
         Parameter* m_parameter_p;

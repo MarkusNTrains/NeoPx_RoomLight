@@ -76,9 +76,9 @@ class Parameter
         const static uint8_t BRIGHTNESS_Min = 0;
         const static uint8_t BRIGHTNESS_Max = 255;
 
-        const static uint32_t COLOR_Default = 0xFF000000;
-        const static uint32_t COLOR_Min = 0;
-        const static uint32_t COLOR_Max = 0xFFFFFFFF;
+        const static uint32_t COLOR_Default = 0xFF000000ul;
+        const static uint32_t COLOR_Min = 0ul;
+        const static uint32_t COLOR_Max = 0xFFFFFFFFul;
 
         const static uint16_t BUFFER_Size = 40;
 

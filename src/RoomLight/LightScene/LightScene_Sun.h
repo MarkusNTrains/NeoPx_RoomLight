@@ -56,10 +56,10 @@ class LightScene_Sun
             Unknown,
         };
 
-        const static uint32_t TASK_TmoMs = 80; 
+        const static uint32_t TASK_TmoMs = 80ul; 
 
-        const static uint32_t STRIPE_PixelDistanceMM = 16;  // distance between neo pixels in mm
-        const static uint32_t SUN_MaxHeight = 5000;
+        const static uint32_t STRIPE_PixelDistanceMM = 16ul;  // distance between neo pixels in mm
+        const static uint32_t SUN_MaxHeight = 5000ul;
         const static uint8_t FADING_Factor = 5;
         const static uint8_t FADING_Max = Parameter::BRIGHTNESS_Max;
         const static uint8_t RED_Max = 255;

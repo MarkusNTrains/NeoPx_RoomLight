@@ -64,7 +64,7 @@ class SimpleLedStripHdl : public LightSource
     protected:
 
     private:
-        const static uint32_t TASK_TmoMs = 2000;
+        const static uint32_t TASK_TmoMs = 2000ul;
 
         SceneID m_scene_id;
 
