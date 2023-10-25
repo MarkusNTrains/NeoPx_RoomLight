@@ -39,7 +39,7 @@ static LightSourceHdl* s_lightSourceHdl_p;
 static WebServer* s_webServer_p;
 
 #if (IS_DEBUG_MODE == ON)
-const static uint32_t MAIN_PrintFreeMemoryTmoMs = 2000;
+const static uint32_t MAIN_PrintFreeMemoryTmoMs = 2000ul;
 static uint32_t s_main_printFreeMemoryTimestampMs = 0;
 #endif
 

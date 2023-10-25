@@ -37,7 +37,7 @@ class LightScene_Rainbow : public LightScene
         void Exit();
 
     private:
-        const static uint32_t TASK_TmoMs = 200;
+        const static uint32_t TASK_TmoMs = 200ul;
         
         uint16_t m_firstPixelHue;
 

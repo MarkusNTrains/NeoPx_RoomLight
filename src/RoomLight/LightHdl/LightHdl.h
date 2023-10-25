@@ -28,11 +28,11 @@ $Id:  $
 class LightHdl
 {
     public:
-        const static uint32_t COLOR_BLUE = 0x000000FF;
-        const static uint32_t COLOR_GREEN = 0x0000FF00;
-        const static uint32_t COLOR_RED = 0x00FF0000;
-        const static uint32_t COLOR_WHITE = 0xFF000000;
-        const static uint32_t COLOR_BLACK = 0;
+        const static uint32_t COLOR_BLUE = 0x000000FFul;
+        const static uint32_t COLOR_GREEN = 0x0000FF00ul;
+        const static uint32_t COLOR_RED = 0x00FF0000ul;
+        const static uint32_t COLOR_WHITE = 0xFF000000ul;
+        const static uint32_t COLOR_BLACK = 0ul;
 
         LightHdl();
         ~LightHdl();

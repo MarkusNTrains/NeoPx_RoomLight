@@ -126,7 +126,13 @@ uint32_t LedRow::GetPixelColor(uint16_t idx)
 //*****************************************************************************
 void LedRow::SetPixel(uint16_t idx, uint32_t color)
 {
-    this->m_led_strip_p->setPixelColor(this->GetLedIdxOfLut(idx), color);
+    uint16_t nof_px_to_fill = 1;
+    uint16_t start_idx = this->GetLedIdxOfLut(idx);
+    if ((idx + 1) < LedRow::LED_ROW_LENGTH)
+    {
+        nof_px_to_fill = this->GetLedIdxOfLut(idx + 1) - start_idx;
+    }
+    this->m_led_strip_p->fill(color, start_idx, nof_px_to_fill);
 }
 
 

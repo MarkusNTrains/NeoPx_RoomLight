@@ -41,7 +41,7 @@ class LightScene_UserSetting : public LightScene
         void SetLedArea(LedArea* area);
 
     private:
-        const static uint32_t TASK_TmoMs = 1000;
+        const static uint32_t TASK_TmoMs = 1000ul;
 
         Datastore* m_datastore_p;
         LightHdl* m_light_hdl_p;
