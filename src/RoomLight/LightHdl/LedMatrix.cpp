@@ -61,6 +61,13 @@ LedMatrix::LedMatrix()
     this->m_led_row[4] = new LedRow(m_led_strip[4], 4);
     this->m_led_row[5] = new LedRow(m_led_strip[5], 5);
 
+#elif (ROOM_LIGHT == ROOM_LIGHT_Ide)
+    // set led strip map to led row --> it is possible to splite one strip into more than one row
+    this->m_led_row[0] = new LedRow(m_led_strip[0], 0);
+    this->m_led_row[1] = new LedRow(m_led_strip[1], 1);
+    this->m_led_row[2] = new LedRow(m_led_strip[2], 2);
+    this->m_led_row[3] = new LedRow(m_led_strip[3], 3);
+
 #else // ROOM_LIGHT_TestBoard
     // set led strip map to led row --> it is possible to splite one strip into more than one row
     this->m_led_row[0] = new LedRow(m_led_strip[0], 0);

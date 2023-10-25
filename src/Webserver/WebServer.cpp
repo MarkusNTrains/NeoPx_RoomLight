@@ -46,25 +46,39 @@ $Id:  $
 WebServer::WebServer(LightSourceHdl* light_source_hdl)
 {
     //int pin;
-#ifdef __AVR__
+/*#ifdef __AVR__
     byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x49 }; // MAC address from Ethernet shield sticker under board    
 #else
     byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; // MAC address from Ethernet shield sticker under board    
-#endif
+#endif*/
 
 #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
+    byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x49 }; // MAC address from Ethernet shield sticker under board    
+
     // IP config MarkusNTrains
     IPAddress ip(192, 168, 0, 4);    // IP address, may need to change depending on network
     IPAddress myDns(192, 168, 0, 254);
     IPAddress gateway(192, 168, 0, 254);  // how to find gateway: open cmd --> type ipconfig
     IPAddress subnet(255, 255, 255, 0);
 #elif (ROOM_LIGHT == ROOM_LIGHT_Altenglienicke)
+    byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x49 }; // MAC address from Ethernet shield sticker under board    
+
     // IP config Altenglienicke
     IPAddress ip(192, 168, 30, 55);    // IP address, may need to change depending on network
     IPAddress myDns(192, 168, 30, 1);
     IPAddress gateway(192, 168, 30, 1);  // how to find gateway: open cmd --> type ipconfig
     IPAddress subnet(255, 255, 255, 0);
+#elif (ROOM_LIGHT == ROOM_LIGHT_Ide)
+    byte mac[] = { 0xA8, 0x61, 0x0A, 0xAE, 0xE2, 0xB6 }; // MAC address from Ethernet shield sticker under board    
+
+    // IP config Ide
+    IPAddress ip(192, 168, 0, 4);    // IP address, may need to change depending on network
+    IPAddress myDns(192, 168, 0, 1);
+    IPAddress gateway(192, 168, 0, 1);  // how to find gateway: open cmd --> type ipconfig
+    IPAddress subnet(255, 255, 255, 0);
 #else // ROOM_LIGHT_TestBoard
+    byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x49 }; // MAC address from Ethernet shield sticker under board    
+
     // IP config test board
     IPAddress ip(192, 168, 1, 88);    // IP address, may need to change depending on network
     IPAddress myDns(192, 168, 1, 2);
@@ -78,8 +92,8 @@ WebServer::WebServer(LightSourceHdl* light_source_hdl)
 
 #ifdef __AVR__
     // disable Ethernet chip slave select
-    pinMode(10, OUTPUT);
-    digitalWrite(10, HIGH);
+    pinMode(ETHERNETSHIELD_SlaveSelect_Pin, OUTPUT);
+    digitalWrite(ETHERNETSHIELD_SlaveSelect_Pin, HIGH);
 #else
     // set chip select pin
     Ethernet.init(5);
