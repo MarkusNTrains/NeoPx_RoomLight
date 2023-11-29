@@ -59,8 +59,8 @@ const uint16_t LED_MATRIX_LUT[LedRow::LED_ROW_NOF][LedRow::LED_ROW_LENGTH] PROGM
 
 #elif (ROOM_LIGHT == ROOM_LIGHT_Sennholz)
 const uint16_t LED_MATRIX_LUT[LedRow::LED_ROW_NOF][LedRow::LED_ROW_LENGTH] PROGMEM = {  // PROGMEM -> store data in flash
-    { 0,	17,	18,	19,	20,	21,	22,	23,	24,	25,	26,	27,	28,	29,	30,	31,	32,	33,	34,	35,	36,	37,	38,	39,	40,	41,	42,	43,	44,	45,	62},
-    { 0,	0,	1,	2,	3,	4,	5,	6,	7,	8,	9,	10,	11,	12,	13,	14,	15,	16,	17,	18,	19,	20,	21,	22,	23,	24,	25,	26,	27,	28,	28}
+    { 0,	17,	18,	19,	20,	21,	22,	23,	24,	25,	26,	27,	28,	29,	30,	31,	32,	33,	34,	35,	36,	37,	38,	39,	40,	41,	42,	43,	44,	45,	46, 62},
+    { 0,	0,	1,	2,	3,	4,	5,	6,	7,	8,	9,	10,	11,	12,	13,	14,	15,	16,	17,	18,	19,	20,	21,	22,	23,	24,	25,	26,	27,	28,	28, 28}
 };
 
 #else // ROOM_LIGHT_TestBoard

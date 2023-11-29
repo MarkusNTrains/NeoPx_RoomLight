@@ -203,7 +203,7 @@ typedef struct
 //--- Room Light ------------------------------------------
     // LED Matrix defines -----------------------------
     #define ROOM_LIGHT_NofRows  2
-    #define ROOM_LIGHT_RowNofPx 31
+    #define ROOM_LIGHT_RowNofPx 32
 
     // LED Strips define ------------------------------
     #define ROOM_LIGHT_NofLedStrips 2
@@ -211,7 +211,7 @@ typedef struct
     #define ROOM_LIGHT_LedStrip1_Pin 22
     #define ROOM_LIGHT_LedStrip2_Pin 24
 
-    #define ROOM_LIGHT_LedStrip1_NofLed (17+29+17)
+    #define ROOM_LIGHT_LedStrip1_NofLed 63
     #define ROOM_LIGHT_LedStrip2_NofLed 29
 
     const ledStrip_t ROOM_LIGHT_LedStripList[ROOM_LIGHT_NofLedStrips] = {
