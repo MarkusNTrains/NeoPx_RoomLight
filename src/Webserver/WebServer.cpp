@@ -76,6 +76,14 @@ WebServer::WebServer(LightSourceHdl* light_source_hdl)
     IPAddress myDns(192, 168, 0, 1);
     IPAddress gateway(192, 168, 0, 1);  // how to find gateway: open cmd --> type ipconfig
     IPAddress subnet(255, 255, 255, 0);
+#elif (ROOM_LIGHT == ROOM_LIGHT_Sennholz)
+    byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x49 }; // MAC address from Ethernet shield sticker under board    
+
+    // IP config MarkusNTrains
+    IPAddress ip(192, 168, 0, 4);    // IP address, may need to change depending on network
+    IPAddress myDns(192, 168, 0, 254);
+    IPAddress gateway(192, 168, 0, 254);  // how to find gateway: open cmd --> type ipconfig
+    IPAddress subnet(255, 255, 255, 0);
 #else // ROOM_LIGHT_TestBoard
     byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x49 }; // MAC address from Ethernet shield sticker under board    
 

@@ -69,7 +69,8 @@ typedef struct
 #define ROOM_LIGHT_Altenglienicke   1
 #define ROOM_LIGHT_TestBoard        2
 #define ROOM_LIGHT_Ide              3
-#define ROOM_LIGHT ROOM_LIGHT_Ide
+#define ROOM_LIGHT_Sennholz         4
+#define ROOM_LIGHT ROOM_LIGHT_Sennholz
 
 
 #define ETHERNETSHIELD_SlaveSelect_Pin 4
@@ -184,6 +185,38 @@ typedef struct
         { ROOM_LIGHT_LedStrip2_Pin, ROOM_LIGHT_LedStrip2_NofLed},
         { ROOM_LIGHT_LedStrip3_Pin, ROOM_LIGHT_LedStrip3_NofLed},
         { ROOM_LIGHT_LedStrip4_Pin, ROOM_LIGHT_LedStrip4_NofLed},
+    };
+
+//--- Shadow Station ---------------------------------------
+    // LED Strips define ------------------------------
+    #define SBF_LEDRed_Pin       23
+    #define SBF_LEDGreen_Pin     25
+    #define SBF_LEDBlue_Pin      27
+    #define SBF_LEDWarmWhite_Pin 29
+    #define SBF_LEDColdWhite_Pin 31
+
+#elif (ROOM_LIGHT == ROOM_LIGHT_Sennholz)
+//--- Enable LightSource ---------------------------------- 
+    #define LIGHT_SOURCE_EnableMap ((0x1 << LightSourceHdl::Source::RoomLight))
+    
+
+//--- Room Light ------------------------------------------
+    // LED Matrix defines -----------------------------
+    #define ROOM_LIGHT_NofRows  2
+    #define ROOM_LIGHT_RowNofPx 31
+
+    // LED Strips define ------------------------------
+    #define ROOM_LIGHT_NofLedStrips 2
+
+    #define ROOM_LIGHT_LedStrip1_Pin 22
+    #define ROOM_LIGHT_LedStrip2_Pin 24
+
+    #define ROOM_LIGHT_LedStrip1_NofLed (17+29+17)
+    #define ROOM_LIGHT_LedStrip2_NofLed 29
+
+    const ledStrip_t ROOM_LIGHT_LedStripList[ROOM_LIGHT_NofLedStrips] = {
+        { ROOM_LIGHT_LedStrip1_Pin, ROOM_LIGHT_LedStrip1_NofLed},
+        { ROOM_LIGHT_LedStrip2_Pin, ROOM_LIGHT_LedStrip2_NofLed},
     };
 
 //--- Shadow Station ---------------------------------------
