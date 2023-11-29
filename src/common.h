@@ -70,7 +70,7 @@ typedef struct
 #define ROOM_LIGHT_TestBoard        2
 #define ROOM_LIGHT_Ide              3
 #define ROOM_LIGHT_Sennholz         4
-#define ROOM_LIGHT ROOM_LIGHT_Sennholz
+#define ROOM_LIGHT ROOM_LIGHT_MarkusNTrains
 
 
 #define ETHERNETSHIELD_SlaveSelect_Pin 4

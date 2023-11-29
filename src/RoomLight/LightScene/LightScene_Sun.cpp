@@ -110,7 +110,7 @@ bool LightScene_Sun::Sunrise_Task()
                 }
                 else if (this->m_sun_height < SUN_MaxHeight)
                 {
-                    this->m_sun_height += (this->m_sun_height / 10) + 1;
+                    this->m_sun_height += (this->m_sun_height / 20) + 1;
                     this->m_sun_pos = this->m_sun_pos % LedRow::LED_ROW_LENGTH;
                 }
                 else
@@ -275,7 +275,7 @@ bool LightScene_Sun::Sunset_Task()
 
                 if (this->m_sun_height > 0)
                 {
-                    this->m_sun_height -= (this->m_sun_height / 10) + 1;
+                    this->m_sun_height -= (this->m_sun_height / 20) + 1;
                     this->m_sun_pos = this->m_sun_pos % LedRow::LED_ROW_LENGTH;
                 }
                 else if (this->m_twilight_brightness > this->m_night_brightness)
