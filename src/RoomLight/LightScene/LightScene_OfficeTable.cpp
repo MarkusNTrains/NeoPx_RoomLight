@@ -74,7 +74,7 @@ void LightScene_OfficeTable::Exit()
 bool LightScene_OfficeTable::TaskHdl()
 {
   #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
-    this->m_light_hdl_p->SetLedArea(0, 160, 0, (LedRow::LED_ROW_NOF - 2));  
+    this->m_light_hdl_p->SetLedArea(0, 160, 1, (LedRow::LED_ROW_NOF - 2));  
     this->m_light_hdl_p->SetLedArea(0, 25, (LedRow::LED_ROW_NOF - 1), (LedRow::LED_ROW_NOF - 1));  
     this->m_light_hdl_p->SetLedArea(125, 160, (LedRow::LED_ROW_NOF - 1), (LedRow::LED_ROW_NOF - 1));  
   #elif (ROOM_LIGHT == ROOM_LIGHT_Altenglienicke)

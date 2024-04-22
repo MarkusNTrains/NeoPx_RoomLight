@@ -14,7 +14,7 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original
   source code
 
-  Created 07. July 2023 by MarkusNTrains
+  Created 22. April 2024 by MarkusNTrains
 ================================================================================
 $HeadURL:  $
 $Id:  $
@@ -360,7 +360,7 @@ const char line318[] PROGMEM = "<script type=\"text/javascript\" charset=\"utf-8
 const char line319[] PROGMEM = "//--- const ------------------------------------------------------";
 const char line320[] PROGMEM = "//--- Firmware version";
 const char line321[] PROGMEM = "const GLOBAL_WebserverVersion_Major = 1;";
-const char line322[] PROGMEM = "const GLOBAL_WebserverVersion_Minor = 7;";
+const char line322[] PROGMEM = "const GLOBAL_WebserverVersion_Minor = 8;";
 const char line323[] PROGMEM = "";
 const char line324[] PROGMEM = "";
 const char line325[] PROGMEM = "const LIGHT_SOURCE =";
@@ -1263,7 +1263,7 @@ const char line1221[] PROGMEM = "<footer>";
 const char line1222[] PROGMEM = "<div>";
 const char line1223[] PROGMEM = "<hr>";
 const char line1224[] PROGMEM = "<div id=\"footer_version\" style=\"float:left\">vX.Y</div>";
-const char line1225[] PROGMEM = "&nbsp;&nbsp;|&nbsp;&nbsp;07. July 2023 &nbsp; &copy; MarkusNTrains";
+const char line1225[] PROGMEM = "&nbsp;&nbsp;|&nbsp;&nbsp;22. April 2024 &nbsp; &copy; MarkusNTrains";
 const char line1226[] PROGMEM = "<a href='mailto:markusntrains@gmx.ch'>E-Mail</a>";
 const char line1227[] PROGMEM = "</div>";
 const char line1228[] PROGMEM = "</footer>";

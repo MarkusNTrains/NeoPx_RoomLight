@@ -40,7 +40,7 @@ typedef struct
 // DO NOT CHANGE
 //--- version -------------------------------------------------------------
 #define SW_VERSION_Major 1
-#define SW_VERSION_Minor 7
+#define SW_VERSION_Minor 8
 
 
 //--- switch --------------------------------------------------------------
@@ -51,7 +51,7 @@ typedef struct
 
 
 //--- debug setting -------------------------------------------------------
-#define IS_DEBUG_MODE ON  // can be ON or OFF
+#define IS_DEBUG_MODE OFF  // can be ON or OFF
 
 
 //--- save data permanent -------------------------------------------------
@@ -82,43 +82,47 @@ typedef struct
 
 //--- Room Light ------------------------------------------
     // LED Matrix defines -----------------------------
-    #define ROOM_LIGHT_NofRows  4
+    #define ROOM_LIGHT_NofRows  5
     #define ROOM_LIGHT_RowNofPx 285
     
     // LED Strips define ------------------------------
-    #define ROOM_LIGHT_NofLedStrips 4
+    #define ROOM_LIGHT_NofLedStrips 5
 
 #ifdef __AVR__
     #define ROOM_LIGHT_LedStrip1_Pin 26
     #define ROOM_LIGHT_LedStrip2_Pin 28 
     #define ROOM_LIGHT_LedStrip3_Pin 24
-    #define ROOM_LIGHT_LedStrip4_Pin 22
+    #define ROOM_LIGHT_LedStrip4_Pin 30
+    #define ROOM_LIGHT_LedStrip5_Pin 22
 #else
     #define ROOM_LIGHT_LedStrip1_Pin 0
     #define ROOM_LIGHT_LedStrip2_Pin 1 
     #define ROOM_LIGHT_LedStrip3_Pin 2
     #define ROOM_LIGHT_LedStrip4_Pin 3
+    #define ROOM_LIGHT_LedStrip5_Pin 4
 #endif
 
     #define ROOM_LIGHT_LedStrip1_NofLed 300
     #define ROOM_LIGHT_LedStrip2_NofLed 285
     #define ROOM_LIGHT_LedStrip3_NofLed 285
-    #define ROOM_LIGHT_LedStrip4_NofLed 285
+    #define ROOM_LIGHT_LedStrip4_NofLed 184
+    #define ROOM_LIGHT_LedStrip5_NofLed 285
 
     const ledStrip_t ROOM_LIGHT_LedStripList[ROOM_LIGHT_NofLedStrips] = {
         { ROOM_LIGHT_LedStrip1_Pin, ROOM_LIGHT_LedStrip1_NofLed},
         { ROOM_LIGHT_LedStrip2_Pin, ROOM_LIGHT_LedStrip2_NofLed},
         { ROOM_LIGHT_LedStrip3_Pin, ROOM_LIGHT_LedStrip3_NofLed},
         { ROOM_LIGHT_LedStrip4_Pin, ROOM_LIGHT_LedStrip4_NofLed},
+        { ROOM_LIGHT_LedStrip5_Pin, ROOM_LIGHT_LedStrip5_NofLed},
     };
 
 //--- Shadow Station ---------------------------------------
     // LED Strips define ------------------------------
-    #define SBF_LEDRed_Pin       5
-    #define SBF_LEDGreen_Pin     4
-    #define SBF_LEDBlue_Pin      6
-    #define SBF_LEDWarmWhite_Pin 3
-    #define SBF_LEDColdWhite_Pin 2
+    #define SBF_LEDRed_Pin       25
+    #define SBF_LEDGreen_Pin     27
+    #define SBF_LEDBlue_Pin      23
+    #define SBF_LEDWarmWhite_Pin 29
+    #define SBF_LEDColdWhite_Pin 31
 
 
 #elif (ROOM_LIGHT == ROOM_LIGHT_Altenglienicke)
