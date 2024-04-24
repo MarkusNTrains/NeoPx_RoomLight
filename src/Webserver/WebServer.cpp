@@ -45,13 +45,6 @@ $Id:  $
 //*****************************************************************************
 WebServer::WebServer(LightSourceHdl* light_source_hdl)
 {
-    //int pin;
-/*#ifdef __AVR__
-    byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x49 }; // MAC address from Ethernet shield sticker under board    
-#else
-    byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; // MAC address from Ethernet shield sticker under board    
-#endif*/
-
 #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
     byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x49 }; // MAC address from Ethernet shield sticker under board    
 
@@ -85,7 +78,11 @@ WebServer::WebServer(LightSourceHdl* light_source_hdl)
     IPAddress gateway(192, 168, 0, 254);  // how to find gateway: open cmd --> type ipconfig
     IPAddress subnet(255, 255, 255, 0);
 #else // ROOM_LIGHT_TestBoard
+  #ifdef __AVR__
     byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x49 }; // MAC address from Ethernet shield sticker under board    
+  #else
+    byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; // MAC address from Ethernet shield sticker under board    
+  #endif
 
     // IP config test board
     IPAddress ip(192, 168, 1, 88);    // IP address, may need to change depending on network
@@ -104,7 +101,7 @@ WebServer::WebServer(LightSourceHdl* light_source_hdl)
     digitalWrite(ETHERNETSHIELD_SlaveSelect_Pin, HIGH);
 #else
     // set chip select pin
-    Ethernet.init(5);
+    Ethernet.init(ETHERNETSHIELD_SlaveSelect_Pin);
 #endif
     
     // initialize SD card
@@ -136,7 +133,11 @@ WebServer::WebServer(LightSourceHdl* light_source_hdl)
   #endif
 #endif
     
+#ifdef __AVR__
     Ethernet.begin(mac, ip, myDns, gateway, subnet); // initialize Ethernet device
+#else
+    Ethernet.begin(mac, ip); // initialize Ethernet device
+#endif
 
     // start the server
     m_server->begin();           // start to listen for clients
