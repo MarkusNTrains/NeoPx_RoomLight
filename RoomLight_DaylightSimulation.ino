@@ -56,6 +56,10 @@ uint16_t GetAvailableMemory();
 //*****************************************************************************
 void setup()
 {
+    pinMode(ROOM_LIGHT_LedStrip4_Pin, OUTPUT);
+    digitalWrite(ROOM_LIGHT_LedStrip4_Pin, LOW);
+
+
 #if (IS_DEBUG_MODE == ON)
     Serial.begin(115200);       // for debugging
     while (!Serial) {

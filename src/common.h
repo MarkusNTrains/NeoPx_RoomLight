@@ -82,11 +82,11 @@ typedef struct
 
 //--- Room Light ------------------------------------------
     // LED Matrix defines -----------------------------
-    #define ROOM_LIGHT_NofRows  5
+    #define ROOM_LIGHT_NofRows  4
     #define ROOM_LIGHT_RowNofPx 285
     
     // LED Strips define ------------------------------
-    #define ROOM_LIGHT_NofLedStrips 5
+    #define ROOM_LIGHT_NofLedStrips 4
 
 #ifdef __AVR__
     #define ROOM_LIGHT_LedStrip1_Pin 26
@@ -112,7 +112,7 @@ typedef struct
         { ROOM_LIGHT_LedStrip1_Pin, ROOM_LIGHT_LedStrip1_NofLed},
         { ROOM_LIGHT_LedStrip2_Pin, ROOM_LIGHT_LedStrip2_NofLed},
         { ROOM_LIGHT_LedStrip3_Pin, ROOM_LIGHT_LedStrip3_NofLed},
-        { ROOM_LIGHT_LedStrip4_Pin, ROOM_LIGHT_LedStrip4_NofLed},
+        //{ ROOM_LIGHT_LedStrip4_Pin, ROOM_LIGHT_LedStrip4_NofLed},
         { ROOM_LIGHT_LedStrip5_Pin, ROOM_LIGHT_LedStrip5_NofLed},
     };
 
