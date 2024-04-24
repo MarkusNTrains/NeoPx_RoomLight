@@ -51,7 +51,7 @@ typedef struct
 
 
 //--- debug setting -------------------------------------------------------
-#define IS_DEBUG_MODE OFF  // can be ON or OFF
+#define IS_DEBUG_MODE ON  // can be ON or OFF
 
 
 //--- save data permanent -------------------------------------------------
@@ -70,10 +70,15 @@ typedef struct
 #define ROOM_LIGHT_TestBoard        2
 #define ROOM_LIGHT_Ide              3
 #define ROOM_LIGHT_Sennholz         4
-#define ROOM_LIGHT ROOM_LIGHT_MarkusNTrains
+#define ROOM_LIGHT ROOM_LIGHT_TestBoard
 
 
-#define ETHERNETSHIELD_SlaveSelect_Pin 4
+#ifdef __AVR__
+    #define ETHERNETSHIELD_SlaveSelect_Pin 4
+#else
+    #define ETHERNETSHIELD_SlaveSelect_Pin 5
+#endif
+
 
 #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
 //--- Enable LightSource ---------------------------------- 
@@ -247,7 +252,7 @@ typedef struct
 #ifdef __AVR__
     #define ROOM_LIGHT_LedStrip1_Pin 22
 #else
-    #define ROOM_LIGHT_LedStrip1_Pin 2
+    #define ROOM_LIGHT_LedStrip1_Pin 0
 #endif
 
     #define ROOM_LIGHT_LedStrip1_NofLed ROOM_LIGHT_RowNofPx

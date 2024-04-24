@@ -50,7 +50,7 @@ LightSourceHdl::LightSourceHdl()
     {
         if (LIGHT_SOURCE_EnableMap & (0x1 << id))
         {
-            this->m_active_source = id;
+            this->m_active_source = (Source)id;
             break;
         }
     }
