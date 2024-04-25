@@ -51,7 +51,7 @@ typedef struct
 
 
 //--- debug setting -------------------------------------------------------
-#define IS_DEBUG_MODE ON  // can be ON or OFF
+#define IS_DEBUG_MODE OFF  // can be ON or OFF
 
 
 //--- save data permanent -------------------------------------------------
@@ -70,7 +70,8 @@ typedef struct
 #define ROOM_LIGHT_TestBoard        2
 #define ROOM_LIGHT_Ide              3
 #define ROOM_LIGHT_Sennholz         4
-#define ROOM_LIGHT ROOM_LIGHT_TestBoard
+
+#define ROOM_LIGHT ROOM_LIGHT_MarkusNTrains
 
 
 #ifdef __AVR__
@@ -87,25 +88,25 @@ typedef struct
 
 //--- Room Light ------------------------------------------
     // LED Matrix defines -----------------------------
-    #define ROOM_LIGHT_NofRows  4
+    #define ROOM_LIGHT_NofRows  5
     #define ROOM_LIGHT_RowNofPx 285
     
     // LED Strips define ------------------------------
-    #define ROOM_LIGHT_NofLedStrips 4
+    #define ROOM_LIGHT_NofLedStrips 5
 
-#ifdef __AVR__
+  #ifdef __AVR__
     #define ROOM_LIGHT_LedStrip1_Pin 26
     #define ROOM_LIGHT_LedStrip2_Pin 28 
     #define ROOM_LIGHT_LedStrip3_Pin 24
     #define ROOM_LIGHT_LedStrip4_Pin 30
     #define ROOM_LIGHT_LedStrip5_Pin 22
-#else
+  #else
     #define ROOM_LIGHT_LedStrip1_Pin 0
     #define ROOM_LIGHT_LedStrip2_Pin 1 
     #define ROOM_LIGHT_LedStrip3_Pin 2
     #define ROOM_LIGHT_LedStrip4_Pin 3
     #define ROOM_LIGHT_LedStrip5_Pin 4
-#endif
+  #endif
 
     #define ROOM_LIGHT_LedStrip1_NofLed 300
     #define ROOM_LIGHT_LedStrip2_NofLed 285
@@ -117,17 +118,25 @@ typedef struct
         { ROOM_LIGHT_LedStrip1_Pin, ROOM_LIGHT_LedStrip1_NofLed},
         { ROOM_LIGHT_LedStrip2_Pin, ROOM_LIGHT_LedStrip2_NofLed},
         { ROOM_LIGHT_LedStrip3_Pin, ROOM_LIGHT_LedStrip3_NofLed},
-        //{ ROOM_LIGHT_LedStrip4_Pin, ROOM_LIGHT_LedStrip4_NofLed},
+        { ROOM_LIGHT_LedStrip4_Pin, ROOM_LIGHT_LedStrip4_NofLed},
         { ROOM_LIGHT_LedStrip5_Pin, ROOM_LIGHT_LedStrip5_NofLed},
     };
 
 //--- Shadow Station ---------------------------------------
     // LED Strips define ------------------------------
+  #ifdef __AVR__
     #define SBF_LEDRed_Pin       25
     #define SBF_LEDGreen_Pin     27
     #define SBF_LEDBlue_Pin      23
     #define SBF_LEDWarmWhite_Pin 29
     #define SBF_LEDColdWhite_Pin 31
+  #else
+    #define SBF_LEDRed_Pin       A0
+    #define SBF_LEDGreen_Pin     A1
+    #define SBF_LEDBlue_Pin      A2
+    #define SBF_LEDWarmWhite_Pin A3
+    #define SBF_LEDColdWhite_Pin A4
+  #endif
 
 
 #elif (ROOM_LIGHT == ROOM_LIGHT_Altenglienicke)
@@ -165,6 +174,22 @@ typedef struct
         { ROOM_LIGHT_LedStrip5_Pin, ROOM_LIGHT_LedStrip5_NofLed},
         { ROOM_LIGHT_LedStrip6_Pin, ROOM_LIGHT_LedStrip6_NofLed},
     };
+
+//--- Shadow Station ---------------------------------------
+    // LED Strips define ------------------------------
+  #ifdef __AVR__
+    #define SBF_LEDRed_Pin       25
+    #define SBF_LEDGreen_Pin     27
+    #define SBF_LEDBlue_Pin      23
+    #define SBF_LEDWarmWhite_Pin 29
+    #define SBF_LEDColdWhite_Pin 31
+  #else
+    #define SBF_LEDRed_Pin       A0
+    #define SBF_LEDGreen_Pin     A1
+    #define SBF_LEDBlue_Pin      A2
+    #define SBF_LEDWarmWhite_Pin A3
+    #define SBF_LEDColdWhite_Pin A4
+  #endif
 
 #elif (ROOM_LIGHT == ROOM_LIGHT_Ide)
 //--- Enable LightSource ---------------------------------- 
@@ -249,11 +274,11 @@ typedef struct
     // LED Strips define ------------------------------
     #define ROOM_LIGHT_NofLedStrips 1
 
-#ifdef __AVR__
+  #ifdef __AVR__
     #define ROOM_LIGHT_LedStrip1_Pin 22
-#else
+  #else
     #define ROOM_LIGHT_LedStrip1_Pin 0
-#endif
+  #endif
 
     #define ROOM_LIGHT_LedStrip1_NofLed ROOM_LIGHT_RowNofPx
 
@@ -264,11 +289,19 @@ typedef struct
 
 //--- Shadow Station ---------------------------------------
     // LED Strips define ------------------------------
-    #define SBF_LEDRed_Pin       5
-    #define SBF_LEDGreen_Pin     4
-    #define SBF_LEDBlue_Pin      6
-    #define SBF_LEDWarmWhite_Pin 3
-    #define SBF_LEDColdWhite_Pin 2
+  #ifdef __AVR__
+    #define SBF_LEDRed_Pin       25
+    #define SBF_LEDGreen_Pin     27
+    #define SBF_LEDBlue_Pin      23
+    #define SBF_LEDWarmWhite_Pin 29
+    #define SBF_LEDColdWhite_Pin 31
+  #else
+    #define SBF_LEDRed_Pin       A0
+    #define SBF_LEDGreen_Pin     A1
+    #define SBF_LEDBlue_Pin      A2
+    #define SBF_LEDWarmWhite_Pin A3
+    #define SBF_LEDColdWhite_Pin A4
+  #endif
 #endif
 
 

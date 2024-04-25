@@ -54,6 +54,10 @@ Datastore::Datastore()
     //--- calculate page size and nof pages -------------------------------
     this->m_eeprom_pageSize = Parameter::BUFFER_Size;
     this->m_eeprom_nofPages = EEPROM.length() / this->m_eeprom_pageSize;
+  #if (IS_DEBUG_MODE == ON)
+    Serial.print(F("EEPROM Length: "));
+    Serial.println(EEPROM.length());
+  #endif
 
 
     //--- find valid page in EEPROM ---------------------------------------

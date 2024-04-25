@@ -46,10 +46,14 @@ $Id:  $
 WebServer::WebServer(LightSourceHdl* light_source_hdl)
 {
 #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
+  #ifdef __AVR__
     byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x49 }; // MAC address from Ethernet shield sticker under board    
+  #else
+    byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; // MAC address from Ethernet shield sticker under board    
+  #endif
 
     // IP config MarkusNTrains
-    IPAddress ip(192, 168, 0, 4);    // IP address, may need to change depending on network
+    IPAddress ip(192, 168, 0, 5);    // IP address, may need to change depending on network
     IPAddress myDns(192, 168, 0, 254);
     IPAddress gateway(192, 168, 0, 254);  // how to find gateway: open cmd --> type ipconfig
     IPAddress subnet(255, 255, 255, 0);
