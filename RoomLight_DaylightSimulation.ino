@@ -22,6 +22,8 @@ $Id:  $
 
 #ifdef __AVR__
   #include <avr/wdt.h>
+#else
+  //#include <Watchdog.h>
 #endif
 
 
@@ -56,15 +58,10 @@ uint16_t GetAvailableMemory();
 //*****************************************************************************
 void setup()
 {
-    pinMode(ROOM_LIGHT_LedStrip4_Pin, OUTPUT);
-    digitalWrite(ROOM_LIGHT_LedStrip4_Pin, LOW);
-
-
 #if (IS_DEBUG_MODE == ON)
     Serial.begin(115200);       // for debugging
-    while (!Serial) {
-        ; // wait for serial port to connect. Needed for native USB port only
-    }
+    while (!Serial) { } // wait for serial port to connect. Needed for native USB port only
+
     Serial.println(F("\n\n************************************"));
     Serial.println(F("Start Room Light"));
     Serial.print(F("Free Memory: "));
@@ -77,6 +74,8 @@ void setup()
 
 #ifdef __AVR__
     wdt_enable(WDTO_8S);
+#else
+    //watchdog.enable(Watchdog::TIMEOUT_1S);
 #endif
 
 #if (IS_DEBUG_MODE == ON)
@@ -112,11 +111,11 @@ void loop()
 }
 
 
-#if (IS_DEBUG_MODE == ON)
 //*****************************************************************************
 // description:
 //   GetAvailableMemory
 //*****************************************************************************
+#if (IS_DEBUG_MODE == ON)
 uint16_t GetAvailableMemory() 
 {
     // Use 1024 with ATmega168
