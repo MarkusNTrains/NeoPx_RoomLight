@@ -86,17 +86,25 @@ WebServer::WebServer(LightSourceHdl* light_source_hdl)
     Serial.println(F("SUCCESS - Found index.htm file."));
   #endif
 #endif
-    
+
+#if (IS_DEBUG_MODE == ON)
+    Serial.println(F("Initializing Ethernet..."));
+#endif
+
 #ifdef __AVR__
     Ethernet.begin(mac, ip, myDns, gateway, subnet); // initialize Ethernet device
 #else
     Ethernet.begin(mac); // initialize Ethernet device
 #endif
 
+#if (IS_DEBUG_MODE == ON)
+    Serial.println(F("Initializing Ethernet ... done"));
+    this->PrintHardwareInfo();
+#endif
+
     // start the server
     m_server->begin();           // start to listen for clients
 
-    this->PrintHardwareInfo();
 #if (IS_DEBUG_MODE == ON)
     Serial.print(F("server is at "));
     Serial.println(Ethernet.localIP());     
@@ -527,6 +535,13 @@ void WebServer::PrintHardwareInfo()
 
   #else
     // Check for Ethernet hardware present
+    if (Ethernet.hardwareStatus() == EthernetNoHardware) {
+        Serial.println("Ethernet shield was not found.  Sorry, can't run without hardware. :(");
+        while (true) {
+        delay(1); // do nothing, no point running without Ethernet hardware
+        }
+    }
+
     if (Ethernet.hardwareStatus() == EthernetNoHardware) 
     {
         Serial.println(F("Ethernet shield was not found.  Sorry, can't run without hardware. :("));
@@ -535,14 +550,36 @@ void WebServer::PrintHardwareInfo()
             delay(1); // do nothing, no point running without Ethernet hardware
         }
     }
-    else if (Ethernet.linkStatus() == LinkOFF) 
+    else if (Ethernet.hardwareStatus() == EthernetW5100) 
+    {
+        Serial.println(F("W5100 Ethernet controller detected."));
+    }
+    else if (Ethernet.hardwareStatus() == EthernetW5200) 
+    {
+        Serial.println(F("W5200 Ethernet controller detected."));
+    }
+    else if (Ethernet.hardwareStatus() == EthernetW5500) 
+    {
+        Serial.println(F("W5500 Ethernet controller detected."));
+    }    
+    else
+    {
+        Serial.println(F("Ethernet: Unknown hardware failure"));
+    }
+
+    if (Ethernet.linkStatus() == LinkOFF) 
     {
         Serial.println(F("Ethernet cable is not connected."));
     }
-    else 
+    else if (Ethernet.linkStatus() == LinkON) 
     {
         Serial.println(F("Ethernet is running"));
     }
+    else
+    {
+        Serial.println(F("Link status detection is only available with W5200 and W5500"));
+    }
+
   #endif
 
 #endif

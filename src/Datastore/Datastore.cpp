@@ -19,6 +19,7 @@ $Id:  $
 #ifdef __AVR__
     #include <EEPROM.h>
 #else
+    #define EEPROM_EMULATION_SIZE 8192
     // install library FlashStorage v1.0.0 or higher
     #include <FlashAsEEPROM.h>
 #endif
@@ -55,6 +56,8 @@ Datastore::Datastore()
     this->m_eeprom_pageSize = Parameter::BUFFER_Size;
     this->m_eeprom_nofPages = EEPROM.length() / this->m_eeprom_pageSize;
   #if (IS_DEBUG_MODE == ON)
+    Serial.print(F("EEPROM_EMULATION_SIZE: "));
+    Serial.println(EEPROM_EMULATION_SIZE);
     Serial.print(F("EEPROM Length: "));
     Serial.println(EEPROM.length());
   #endif
@@ -235,6 +238,7 @@ void Datastore::SetParameter(Parameter::Id id, uint32_t value)
 }
 
 
+#if (DATASTORE_SaveDataOnEEPROM == ON)
 //*****************************************************************************
 // description:
 //   Write all parameter to next EEPROM page
@@ -343,5 +347,4 @@ void Datastore::EEPROM_WriteParameter(Parameter::Id id, uint16_t page_start_addr
     uint32_t value = this->m_parameter_p->GetValue(id);
     this->EEPROM_WriteParameter(id, page_start_addr, value);
 }
-
-
+#endif

@@ -119,7 +119,7 @@ const uint16_t LED_MATRIX_LUT[ROOM_LIGHT_NofRows][ROOM_LIGHT_RowNofPx] PROGMEM =
     IPAddress gateway(192, 168, 1, 2);  // how to find gateway: open cmd --> type ipconfig
     IPAddress subnet(255, 255, 255, 0);
   #else
-    byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED }; // MAC address from Ethernet shield sticker under board    
+    byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xEC }; // MAC address from Ethernet shield sticker under board    
   #endif
 
 #endif    

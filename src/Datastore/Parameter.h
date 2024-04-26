@@ -14,10 +14,10 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original
   source code
 
-  Created 04.07.2023 15:53:38 by MarkusNTrains
+  Created 26.04.2024 22:04:31 by MarkusNTrains
 ================================================================================
-$HeadURL: file:///C:/SwProjects/_Intern/Arduino/RoomLight_DaylightSimulation/src/Datastore/Parameter.h $
-$Id: 04.07.2023 15:53:38 automatic gen. $
+$HeadURL: file:///C:/SwProjects/Arduino/RoomLight_DaylightSimulation/src/Datastore/Parameter.h $
+$Id: 26.04.2024 22:04:31 automatic gen. $
 *******************************************************************************/
 
 /*
@@ -64,6 +64,7 @@ class Parameter
             Sbf_Brightness,
             Sbf_Color,
             Sbf_White,
+            Reserved,
             Nof,
             Unknown
         };
@@ -80,7 +81,7 @@ class Parameter
         const static uint32_t COLOR_Min = 0ul;
         const static uint32_t COLOR_Max = 0xFFFFFFFFul;
 
-        const static uint16_t BUFFER_Size = 40;
+        const static uint16_t BUFFER_Size = 64;
 
         Parameter();
         ~Parameter();

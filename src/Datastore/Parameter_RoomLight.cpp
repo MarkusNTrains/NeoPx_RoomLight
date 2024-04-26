@@ -14,10 +14,10 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original
   source code
 
-  Created 04.07.2023 15:53:38 by MarkusNTrains
+  Created 26.04.2024 22:04:31 by MarkusNTrains
 ================================================================================
-$HeadURL: file:///C:/SwProjects/_Intern/Arduino/RoomLight_DaylightSimulation/src/Datastore/Parameter_RoomLight.cpp $
-$Id: 04.07.2023 15:53:38 automatic gen. $
+$HeadURL: file:///C:/SwProjects/Arduino/RoomLight_DaylightSimulation/src/Datastore/Parameter_RoomLight.cpp $
+$Id: 26.04.2024 22:04:31 automatic gen. $
 *******************************************************************************/
 
 /*
@@ -203,6 +203,13 @@ const parameter_t PARAM_TABLE[Parameter::Id::Nof] PROGMEM = {
         .max = 0xFFFF,
         .addr = 38,
         .width = 2,
+    },
+    [Parameter::Id::Reserved] = {
+        .default_value = 0,
+        .min = 0,
+        .max = 0,
+        .addr = 40,
+        .width = 24,
     },
 };
 

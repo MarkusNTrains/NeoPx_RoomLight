@@ -23,7 +23,7 @@ $Id:  $
 #ifdef __AVR__
   #include <avr/wdt.h>
 #else
-  //#include <Watchdog.h>
+  #include <Sodaq_wdt.h>
 #endif
 
 
@@ -69,14 +69,16 @@ void setup()
     delay(50);
  #endif
     
-    s_lightSourceHdl_p = new LightSourceHdl();
-    s_webServer_p = new WebServer(s_lightSourceHdl_p);
-
 #ifdef __AVR__
     wdt_enable(WDTO_8S);
 #else
-    //watchdog.enable(Watchdog::TIMEOUT_1S);
+    sodaq_wdt_enable(WDT_PERIOD_2X);
 #endif
+
+
+    s_lightSourceHdl_p = new LightSourceHdl();
+    s_webServer_p = new WebServer(s_lightSourceHdl_p);
+
 
 #if (IS_DEBUG_MODE == ON)
     s_main_printFreeMemoryTimestampMs = millis();
@@ -97,16 +99,18 @@ void loop()
 
 #ifdef __AVR__
     wdt_reset();
+#else
+    sodaq_wdt_reset();
 #endif
 
 
 #if (IS_DEBUG_MODE == ON)
-    if (millis() - s_main_printFreeMemoryTimestampMs > MAIN_PrintFreeMemoryTmoMs)
+    /*if (millis() - s_main_printFreeMemoryTimestampMs > MAIN_PrintFreeMemoryTmoMs)
     {
         s_main_printFreeMemoryTimestampMs = millis();
         Serial.print(F("Free Memory: "));
         Serial.println(GetAvailableMemory());
-    }
+    }*/
 #endif
 }
 

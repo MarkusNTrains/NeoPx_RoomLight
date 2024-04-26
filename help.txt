@@ -1,0 +1,9 @@
+Arduino lässt sich nicht mehr porgrammieren
+1. 2x reset tast hintereinander drücken --> Arduino geht in Bootloader mode
+2. Arduino ist nun auf einem anderen Comport verfügbar
+3. Comport auswählen und programmieren
+
+
+
+LED Strip flackert abe einem gewissen Punkt
+Die Löstellen der letzen guten LED nachlöten --> dann sollte das flackern verschwinden

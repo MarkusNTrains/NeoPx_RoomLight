@@ -71,7 +71,7 @@ typedef struct
 #define ROOM_LIGHT_Ide              3
 #define ROOM_LIGHT_Sennholz         4
 
-#define ROOM_LIGHT ROOM_LIGHT_MarkusNTrains
+#define ROOM_LIGHT ROOM_LIGHT_TestBoard
 
 
 #ifdef __AVR__
@@ -101,11 +101,11 @@ typedef struct
     #define ROOM_LIGHT_LedStrip4_Pin 30
     #define ROOM_LIGHT_LedStrip5_Pin 22
   #else
-    #define ROOM_LIGHT_LedStrip1_Pin 15
-    #define ROOM_LIGHT_LedStrip2_Pin 16
-    #define ROOM_LIGHT_LedStrip3_Pin 17
-    #define ROOM_LIGHT_LedStrip4_Pin 18
-    #define ROOM_LIGHT_LedStrip5_Pin 19
+    #define ROOM_LIGHT_LedStrip1_Pin 17
+    #define ROOM_LIGHT_LedStrip2_Pin 18
+    #define ROOM_LIGHT_LedStrip3_Pin 16
+    #define ROOM_LIGHT_LedStrip4_Pin 19
+    #define ROOM_LIGHT_LedStrip5_Pin 15
   #endif
 
     #define ROOM_LIGHT_LedStrip1_NofLed 300
@@ -131,11 +131,11 @@ typedef struct
     #define SBF_LEDWarmWhite_Pin 29
     #define SBF_LEDColdWhite_Pin 31
   #else
-    #define SBF_LEDRed_Pin       0
-    #define SBF_LEDGreen_Pin     1
-    #define SBF_LEDBlue_Pin      2
-    #define SBF_LEDWarmWhite_Pin 3
-    #define SBF_LEDColdWhite_Pin 4
+    #define SBF_LEDRed_Pin       3
+    #define SBF_LEDGreen_Pin     2
+    #define SBF_LEDBlue_Pin      4
+    #define SBF_LEDWarmWhite_Pin 1
+    #define SBF_LEDColdWhite_Pin 0
   #endif
 
 
@@ -277,7 +277,7 @@ typedef struct
   #ifdef __AVR__
     #define ROOM_LIGHT_LedStrip1_Pin 22
   #else
-    #define ROOM_LIGHT_LedStrip1_Pin 0
+    #define ROOM_LIGHT_LedStrip1_Pin A0
   #endif
 
     #define ROOM_LIGHT_LedStrip1_NofLed ROOM_LIGHT_RowNofPx
@@ -296,11 +296,11 @@ typedef struct
     #define SBF_LEDWarmWhite_Pin 29
     #define SBF_LEDColdWhite_Pin 31
   #else
-    #define SBF_LEDRed_Pin       A0
-    #define SBF_LEDGreen_Pin     A1
-    #define SBF_LEDBlue_Pin      A2
-    #define SBF_LEDWarmWhite_Pin A3
-    #define SBF_LEDColdWhite_Pin A4
+    #define SBF_LEDRed_Pin       3
+    #define SBF_LEDGreen_Pin     2
+    #define SBF_LEDBlue_Pin      4
+    #define SBF_LEDWarmWhite_Pin 1
+    #define SBF_LEDColdWhite_Pin 0
   #endif
 #endif
 
