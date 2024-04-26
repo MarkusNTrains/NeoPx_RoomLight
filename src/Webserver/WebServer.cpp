@@ -98,7 +98,7 @@ WebServer::WebServer(LightSourceHdl* light_source_hdl)
 #endif
 
 #if (IS_DEBUG_MODE == ON)
-    Serial.println(F("Initializing Ethernet ... done"));
+    Serial.println(F("Initializing Ethernet... done"));
     this->PrintHardwareInfo();
 #endif
 
@@ -106,7 +106,7 @@ WebServer::WebServer(LightSourceHdl* light_source_hdl)
     m_server->begin();           // start to listen for clients
 
 #if (IS_DEBUG_MODE == ON)
-    Serial.print(F("server is at "));
+    Serial.print(F("Server is at "));
     Serial.println(Ethernet.localIP());     
 #endif
 }
