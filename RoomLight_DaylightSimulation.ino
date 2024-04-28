@@ -68,18 +68,19 @@ void setup()
     Serial.println(GetAvailableMemory());
     delay(50);
  #endif
-    
-    s_lightSourceHdl_p = new LightSourceHdl();
-    s_webServer_p = new WebServer(s_lightSourceHdl_p);
 
+    //--- enable watchdog ---
 #ifdef __AVR__
     wdt_enable(WDTO_8S);
 #else
     sodaq_wdt_enable(WDT_PERIOD_8X);
 #endif
 
+    //--- init objects ---
+    s_lightSourceHdl_p = new LightSourceHdl();
+    s_webServer_p = new WebServer(s_lightSourceHdl_p);
 
-
+    //--- print memory usage ---
 #if (IS_DEBUG_MODE == ON)
     s_main_printFreeMemoryTimestampMs = millis();
     Serial.print(F("Free Memory: "));

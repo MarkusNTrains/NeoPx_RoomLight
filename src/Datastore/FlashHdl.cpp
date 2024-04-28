@@ -28,7 +28,7 @@ $Id:  $
 // description:
 //   constructor
 //*****************************************************************************
-LightScene_Day::LightScene_Day()
+FlashHdl::FlashHdl()
 {
     // find active block
     
@@ -39,7 +39,7 @@ LightScene_Day::LightScene_Day()
 // description:
 //   destructor
 //*****************************************************************************
-LightScene_Day::~LightScene_Day()
+FlashHdl::~FlashHdl()
 {
 }
 

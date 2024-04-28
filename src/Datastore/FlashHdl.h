@@ -18,12 +18,12 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // include
-
+#include "../common.h"
 
 
 //----------------------------------------------------------------------------
 // const
-const uint8_t FLASH_BLOCK[1024];
+const uint8_t FLASH_BLOCK[1024] = {0xFF};
 
 
 //----------------------------------------------------------------------------
@@ -35,7 +35,7 @@ class FlashHdl
         ~FlashHdl();
 
     private:
-        ParameterBlock* m_param_block_p;
+        //ParameterBlock* m_param_block_p;
         uint16_t m_active_block;
         uint16_t m_nof_blocks;
 
