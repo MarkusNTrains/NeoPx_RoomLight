@@ -19,29 +19,80 @@ $Id:  $
 //----------------------------------------------------------------------------
 // include
 #include "../common.h"
-
-
-//----------------------------------------------------------------------------
-// const
-const uint8_t FLASH_BLOCK[1024] = {0xFF};
+#include "Flash.h"
+#include "Parameter.h"
 
 
 //----------------------------------------------------------------------------
 // class
+class FlashBlock
+{
+    public:
+        FlashBlock(uint32_t start_addr, uint32_t page_addr, uint32_t row_addr)
+        {
+            this->start_address = start_addr;
+            this->page_address = page_addr;
+            this->row_address = row_addr;
+        }
+        ~FlashBlock() {}
+
+        uint32_t GetStartAddress() { return start_address; }
+        uint32_t GetPageAddress() { return page_address; }
+        uint32_t GetRowAddress() { return row_address; }
+
+    private:
+        uint32_t start_address;
+        uint32_t page_address;
+        uint32_t row_address;
+};
+
+
+class FlashBlockData
+{
+    public:
+        const static uint32_t BLOCK_HEADER_SIZE = 4;
+        const static uint32_t BLOCK_DATA_SIZE = (((Parameter::BUFFER_Size + BLOCK_HEADER_SIZE + 3) / 4) * 4) - BLOCK_HEADER_SIZE;  // must be a multiple of 4
+
+        uint16_t valid_pattern;  // when change enhance BLOCK_HEADER_SIZE
+        uint16_t block_cnt;      // when change enhance BLOCK_HEADER_SIZE
+        uint8_t data[BLOCK_DATA_SIZE];
+};
+
+
+
 class FlashHdl
 {
     public:
+        enum Error
+        {
+            Successfull = 0,
+            DataToLarge,
+            OffsetOutOfBoundaries,
+            Nof,
+        };
+
+        const static uint32_t NOF_BLOCKS = 64;
+        const static uint32_t FLASH_STORE_SIZE = (NOF_BLOCKS * sizeof(FlashBlockData));
+        const static uint32_t FLASH_RESERVED_SIZE = (FLASH_STORE_SIZE + (2 * Flash::ROW_SIZE));
+
+
         FlashHdl();
         ~FlashHdl();
 
-    private:
-        //ParameterBlock* m_param_block_p;
-        uint16_t m_active_block;
-        uint16_t m_nof_blocks;
+        Error ReadBlock(uint8_t* data, uint32_t size, uint32_t offset);
+        Error WriteToNextBlock(uint8_t* data, uint32_t size, uint32_t offset);
 
-        void FindNewestBlock();
-        void ReadBlock();
-        void WriteToNextBlock();
+    private:
+        uint16_t m_active_block_idx;
+        uint16_t m_active_block_write_cnt;
+        FlashBlock* m_block_a[NOF_BLOCKS];
+
+        bool FindNewestBlock();
 };
+
+
+const static uint8_t FLASH_WritableArea[FlashHdl::FLASH_RESERVED_SIZE] = { 0xFF };
+const static uint32_t FLASH_StartAddress = ((((((uint32_t)&FLASH_WritableArea) - 1) / Flash::ROW_SIZE) * Flash::ROW_SIZE) + Flash::ROW_SIZE);
+
 
 #endif // _FLASH_HDL_H

@@ -23,6 +23,7 @@ $Id:  $
 #ifdef __AVR__
   #include <avr/wdt.h>
 #else
+  // install Sodaq_wdt library by GabrielNotman version v1.0.2 or higher
   #include <Sodaq_wdt.h>
 #endif
 

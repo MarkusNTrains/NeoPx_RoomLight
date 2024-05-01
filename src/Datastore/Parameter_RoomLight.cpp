@@ -14,10 +14,10 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original
   source code
 
-  Created 26.04.2024 22:04:31 by MarkusNTrains
+  Created 29.04.2024 16:58:46 by MarkusNTrains
 ================================================================================
-$HeadURL: file:///C:/SwProjects/Arduino/RoomLight_DaylightSimulation/src/Datastore/Parameter_RoomLight.cpp $
-$Id: 26.04.2024 22:04:31 automatic gen. $
+$HeadURL: file:///C:/SwProjects/_Intern/Arduino/RoomLight_DaylightSimulation/src/Datastore/Parameter_RoomLight.cpp $
+$Id: 29.04.2024 16:58:46 automatic gen. $
 *******************************************************************************/
 
 /*
@@ -50,166 +50,152 @@ Defines the Parameter of RoomLight device and their properties.
 //------------------------------------------------------------------------------
 // const parameter
 const parameter_t PARAM_TABLE[Parameter::Id::Nof] PROGMEM = {
-    [Parameter::Id::ParameterSet_Validity] = {
-        .default_value = (uint32_t)Parameter::PARAMETERSET_Invalid,
-        .min = 0,
-        .max = 0xFFFF,
-        .addr = 0,
-        .width = 2,
-    },
     [Parameter::Id::SceneID] = {
         .default_value = (uint32_t)RoomLightHdl::SceneID::OfficeTable,
         .min = 0,
         .max = ((uint32_t)RoomLightHdl::SceneID::Nof - 1) ,
-        .addr = 2,
+        .addr = 0,
         .width = 1,
     },
     [Parameter::Id::SceneDay_Brightness] = {
         .default_value = LightScene_Day::BRIGHTNESS_Default ,
         .min = LightScene_Day::BRIGHTNESS_Min,
         .max = Parameter::BRIGHTNESS_Max ,
-        .addr = 3,
+        .addr = 1,
         .width = 1,
     },
     [Parameter::Id::SceneDisco_Brightness] = {
         .default_value = Parameter::BRIGHTNESS_Default ,
         .min = Parameter::BRIGHTNESS_Min ,
         .max = Parameter::BRIGHTNESS_Max ,
-        .addr = 4,
+        .addr = 2,
         .width = 1,
     },
     [Parameter::Id::SceneMoBa_Brightness] = {
         .default_value = Parameter::BRIGHTNESS_Default ,
         .min = Parameter::BRIGHTNESS_Min ,
         .max = Parameter::BRIGHTNESS_Max ,
-        .addr = 5,
+        .addr = 3,
         .width = 1,
     },
     [Parameter::Id::SceneMoBa_Color] = {
         .default_value = Parameter::COLOR_Default,
         .min = Parameter::COLOR_Min,
         .max = Parameter::COLOR_Max,
-        .addr = 6,
+        .addr = 4,
         .width = 4,
     },
     [Parameter::Id::SceneLightOn_Brightness] = {
         .default_value = Parameter::BRIGHTNESS_Default ,
         .min = Parameter::BRIGHTNESS_Min ,
         .max = Parameter::BRIGHTNESS_Max ,
-        .addr = 10,
+        .addr = 8,
         .width = 1,
     },
     [Parameter::Id::SceneLightOn_Color] = {
         .default_value = Parameter::COLOR_Default,
         .min = Parameter::COLOR_Min,
         .max = Parameter::COLOR_Max,
-        .addr = 11,
+        .addr = 9,
         .width = 4,
     },
     [Parameter::Id::SceneNight_Brightness] = {
         .default_value = LightScene_Night::BRIGHTNESS_Default ,
         .min = LightScene_Night::BRIGHTNESS_Min,
         .max = LightScene_Night::BRIGHTNESS_Max,
-        .addr = 15,
+        .addr = 13,
         .width = 1,
     },
     [Parameter::Id::SceneOfficeTable_Brightness] = {
         .default_value = Parameter::BRIGHTNESS_Default ,
         .min = Parameter::BRIGHTNESS_Min ,
         .max = Parameter::BRIGHTNESS_Max ,
-        .addr = 16,
+        .addr = 14,
         .width = 1,
     },
     [Parameter::Id::SceneOfficeTable_Color] = {
         .default_value = Parameter::COLOR_Default,
         .min = Parameter::COLOR_Min,
         .max = Parameter::COLOR_Max,
-        .addr = 17,
+        .addr = 15,
         .width = 4,
     },
     [Parameter::Id::SceneRainbow_Brightness] = {
         .default_value = Parameter::BRIGHTNESS_Default ,
         .min = Parameter::BRIGHTNESS_Min ,
         .max = Parameter::BRIGHTNESS_Max ,
-        .addr = 21,
+        .addr = 19,
         .width = 1,
     },
     [Parameter::Id::SceneUserSetting_Brightness] = {
         .default_value = Parameter::BRIGHTNESS_Default ,
         .min = Parameter::BRIGHTNESS_Min ,
         .max = Parameter::BRIGHTNESS_Max ,
-        .addr = 22,
+        .addr = 20,
         .width = 1,
     },
     [Parameter::Id::SceneUserSetting_Color] = {
         .default_value = Parameter::COLOR_Default,
         .min = Parameter::COLOR_Min,
         .max = Parameter::COLOR_Max,
-        .addr = 23,
+        .addr = 21,
         .width = 4,
     },
     [Parameter::Id::SceneUserSetting_Xs] = {
         .default_value = 0,
         .min = 0,
         .max = (ROOM_LIGHT_RowNofPx - 1) ,
-        .addr = 27,
+        .addr = 25,
         .width = 2,
     },
     [Parameter::Id::SceneUserSetting_Xe] = {
         .default_value = (ROOM_LIGHT_RowNofPx - 1) ,
         .min = 0,
         .max = (ROOM_LIGHT_RowNofPx - 1) ,
-        .addr = 29,
+        .addr = 27,
         .width = 2,
     },
     [Parameter::Id::SceneUserSetting_Ys] = {
         .default_value = 0,
         .min = 0,
         .max = (ROOM_LIGHT_NofRows - 1) ,
-        .addr = 31,
+        .addr = 29,
         .width = 1,
     },
     [Parameter::Id::SceneUserSetting_Ye] = {
         .default_value = (ROOM_LIGHT_NofRows - 1) ,
         .min = 0,
         .max = (ROOM_LIGHT_NofRows - 1) ,
-        .addr = 32,
+        .addr = 30,
         .width = 1,
     },
     [Parameter::Id::Sbf_SceneID] = {
         .default_value = (uint32_t)SimpleLedStripHdl::SceneID::Off,
         .min = 0,
         .max = ((uint32_t)SimpleLedStripHdl::SceneID::Nof - 1) ,
-        .addr = 33,
+        .addr = 31,
         .width = 1,
     },
     [Parameter::Id::Sbf_Brightness] = {
         .default_value = 100,
         .min = 0,
         .max = Parameter::BRIGHTNESS_Max ,
-        .addr = 34,
+        .addr = 32,
         .width = 1,
     },
     [Parameter::Id::Sbf_Color] = {
         .default_value = 0,
         .min = 0,
         .max = 0xFFFFFF,
-        .addr = 35,
+        .addr = 33,
         .width = 3,
     },
     [Parameter::Id::Sbf_White] = {
         .default_value = 0,
         .min = 0,
         .max = 0xFFFF,
-        .addr = 38,
+        .addr = 36,
         .width = 2,
-    },
-    [Parameter::Id::Reserved] = {
-        .default_value = 0,
-        .min = 0,
-        .max = 0,
-        .addr = 40,
-        .width = 24,
     },
 };
 

@@ -16,18 +16,17 @@ $Id:  $
 //-----------------------------------------------------------------------------
 // includes
 #include "Datastore.h"
+#include "FlashHdl.h"
 #ifdef __AVR__
     #include <EEPROM.h>
 #else
-    #define EEPROM_EMULATION_SIZE 8192
-    // install library FlashStorage v1.0.0 or higher
-    #include <FlashAsEEPROM.h>
 #endif
 
 
 
 //-----------------------------------------------------------------------------
 // const
+#define EEPROM_BlockHeaderSize 2
 
 
 //*****************************************************************************
@@ -50,17 +49,12 @@ Datastore::Datastore()
     this->m_parameter_p = new Parameter();
     bool valid_page_found = false;
 
+    FlashHdl flash_hdl = FlashHdl();
 
 #if (DATASTORE_SaveDataOnEEPROM == ON)    
     //--- calculate page size and nof pages -------------------------------
-    this->m_eeprom_pageSize = Parameter::BUFFER_Size;
+    this->m_eeprom_pageSize = Parameter::BUFFER_Size + EEPROM_BlockHeaderSize;
     this->m_eeprom_nofPages = EEPROM.length() / this->m_eeprom_pageSize;
-  #if (IS_DEBUG_MODE == ON)
-    Serial.print(F("EEPROM_EMULATION_SIZE: "));
-    Serial.println(EEPROM_EMULATION_SIZE);
-    Serial.print(F("EEPROM Length: "));
-    Serial.println(EEPROM.length());
-  #endif
 
 
     //--- find valid page in EEPROM ---------------------------------------
@@ -186,7 +180,6 @@ void Datastore::FactoryReset()
 
     // reset all parameter
     this->m_parameter_p->ResetAll();
-    this->m_parameter_p->SetValue(Parameter::Id::ParameterSet_Validity, Parameter::PARAMETERSET_Valid);
     this->m_eeprom_active_page = 0;
 #if (DATASTORE_SaveDataOnEEPROM == ON)
     this->EEPROM_WritePage();
