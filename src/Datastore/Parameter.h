@@ -90,6 +90,9 @@ class Parameter
         bool SetValue(Id id, uint32_t value);
         uint16_t GetAddr(Id id);
         uint8_t GetWidth(Id id);
+    
+    protected:
+        uint8_t* GetBufferPtr();
 
     private:
         uint8_t m_buffer[BUFFER_Size];

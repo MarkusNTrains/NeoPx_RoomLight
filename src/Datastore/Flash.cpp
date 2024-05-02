@@ -159,7 +159,7 @@ void Flash::Erase(const volatile uint32_t flash_addr)
     }
 
   #if (IS_DEBUG_MODE == ON)
-    Serial.print(F("Erase flash at address: "));
+    Serial.print(F("*** Erase flash at address: "));
     Serial.println(flash_addr, HEX);
   #endif
 
@@ -182,4 +182,15 @@ void Flash::Erase(const volatile uint32_t flash_addr)
 void Flash::Read(const volatile uint32_t flash_addr, void *data, uint32_t size)
 {
     memcpy(data, (const void *)flash_addr, size);
+        
+    Serial.print(F("Read "));
+    Serial.print(size);
+    Serial.print(F(" bytes at: "));
+    Serial.println(flash_addr, HEX);
+    for (int cnt = 0; cnt < size; cnt++)
+    {
+        Serial.print(" ");
+        Serial.print(((uint8_t*)data)[cnt], HEX);
+    }
+    Serial.println(" ");
 }

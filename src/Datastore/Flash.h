@@ -27,6 +27,7 @@ $Id:  $
 class Flash
 {
     public:
+        const static uint8_t CELL_ERASED_VALUE = 0xFF;
         const static uint32_t PAGE_SIZE = FLASH_PAGE_SIZE;
     #if defined(__SAMD51__)
         #define NOF_PAGES (NVMCTRL->PARAM.bit.NVMP)
@@ -42,9 +43,9 @@ class Flash
         static void WritePage(const volatile uint32_t flash_addr, const void *data, uint32_t size);
         static void Erase(const volatile uint32_t flash_addr, uint32_t size);
         static void Read(const volatile uint32_t flash_addr, void *data, uint32_t size);
+        static void Erase(const volatile uint32_t flash_addr);
 
     private:
-        static void Erase(const volatile uint32_t flash_addr);
 };
 
 

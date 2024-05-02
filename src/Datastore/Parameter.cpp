@@ -210,3 +210,11 @@ uint8_t Parameter::GetWidth(Id id)
 }
 
 
+//*****************************************************************************
+// description:
+//   GetBufferPtr
+//*****************************************************************************
+uint8_t* Parameter::GetBufferPtr()
+{
+    return this->m_buffer;
+}

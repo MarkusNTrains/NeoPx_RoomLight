@@ -26,7 +26,7 @@ $Id:  $
 
 //----------------------------------------------------------------------------
 // class
-class Datastore
+class Datastore : private Parameter
 {
 	public:
         Datastore();

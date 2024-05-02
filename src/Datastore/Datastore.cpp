@@ -50,6 +50,7 @@ Datastore::Datastore()
     bool valid_page_found = false;
 
     FlashHdl flash_hdl = FlashHdl();
+    flash_hdl.WriteToNextBlock(this->GetBufferPtr(), Parameter::BUFFER_Size);
 
 #if (DATASTORE_SaveDataOnEEPROM == ON)    
     //--- calculate page size and nof pages -------------------------------

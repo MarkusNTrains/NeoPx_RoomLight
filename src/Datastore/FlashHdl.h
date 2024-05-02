@@ -52,12 +52,12 @@ class FlashBlockData
     public:
         const static uint32_t BLOCK_HEADER_SIZE = 4;
         const static uint32_t BLOCK_DATA_SIZE = (((Parameter::BUFFER_Size + BLOCK_HEADER_SIZE + 3) / 4) * 4) - BLOCK_HEADER_SIZE;  // must be a multiple of 4
+        const static uint16_t VALID_PATTERN = 0x55AA;
 
         uint16_t valid_pattern;  // when change enhance BLOCK_HEADER_SIZE
         uint16_t block_cnt;      // when change enhance BLOCK_HEADER_SIZE
         uint8_t data[BLOCK_DATA_SIZE];
 };
-
 
 
 class FlashHdl
@@ -68,10 +68,12 @@ class FlashHdl
             Successfull = 0,
             DataToLarge,
             OffsetOutOfBoundaries,
+            WriteVerifyFailed,
+            NoValidBlock,
             Nof,
         };
 
-        const static uint32_t NOF_BLOCKS = 64;
+        const static uint32_t NOF_BLOCKS = 10;
         const static uint32_t FLASH_STORE_SIZE = (NOF_BLOCKS * sizeof(FlashBlockData));
         const static uint32_t FLASH_RESERVED_SIZE = (FLASH_STORE_SIZE + (2 * Flash::ROW_SIZE));
 
@@ -80,14 +82,17 @@ class FlashHdl
         ~FlashHdl();
 
         Error ReadBlock(uint8_t* data, uint32_t size, uint32_t offset);
-        Error WriteToNextBlock(uint8_t* data, uint32_t size, uint32_t offset);
+        Error WriteToNextBlock(uint8_t* data, uint32_t size);
 
     private:
         uint16_t m_active_block_idx;
-        uint16_t m_active_block_write_cnt;
+        uint16_t m_write_cnt;
+        uint32_t m_last_row_addr;
         FlashBlock* m_block_a[NOF_BLOCKS];
 
         bool FindNewestBlock();
+        void EraseWholeWritableFlash();
+        void EraseRow(uint32_t row_addr);
 };
 
 
