@@ -61,26 +61,31 @@ void setup()
 {
 #if (IS_DEBUG_MODE == ON)
     Serial.begin(115200);       // for debugging
-    while (!Serial) { } // wait for serial port to connect. Needed for native USB port only
+    uint32_t find_serial_timestamp_ms = millis();
+    while (!Serial) 
+    { 
+        // wait for serial port to connect. Needed for native USB port only
+        if (millis() - find_serial_timestamp_ms > 10000)
+        {
+            // exit loop if serial connection did not work
+            break;
+        }
+    }
 
     Serial.println(F("\n\n************************************"));
     Serial.println(F("Start Room Light"));
     Serial.print(F("Free Memory: "));
     Serial.println(GetAvailableMemory());
-
-    uint32_t cpuFreq = SystemCoreClock;
-    Serial.print("CPU-Frequenz: ");
-    Serial.print(cpuFreq);
-    Serial.println(" Hz");
-
-    delay(50);
+    //delay(50);
  #endif
 
     //--- enable watchdog ---
 #ifdef __AVR__
     wdt_enable(WDTO_8S);
+    uint32_t cpuFreq = F_CPU;
 #else
     sodaq_wdt_enable(WDT_PERIOD_8X);
+    uint32_t cpuFreq = SystemCoreClock;
 #endif
 
     //--- init objects ---
@@ -89,6 +94,10 @@ void setup()
 
     //--- print memory usage ---
 #if (IS_DEBUG_MODE == ON)
+    Serial.print("CPU-Frequenz: ");
+    Serial.print(cpuFreq);
+    Serial.println(" Hz");
+
     s_main_printFreeMemoryTimestampMs = millis();
     Serial.print(F("Free Memory: "));
     Serial.println(GetAvailableMemory());

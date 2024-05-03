@@ -74,7 +74,7 @@ RoomLightHdl::RoomLightHdl(Datastore* datastore_p) : LightSource(datastore_p)
 
 
     // show last lightscene
-#if ((DATASTORE_SaveLightScene == ON) && (DATASTORE_SaveDataOnEEPROM == ON))
+#if ((DATASTORE_SaveLightScene == ON) && (DATASTORE_SaveDataPermanent == ON))
     this->ChangeScene((uint8_t)(this->m_datastore_p->GetParameter(Parameter::Id::SceneID)));
 #else
   #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
@@ -265,7 +265,7 @@ void RoomLightHdl::ChangeScene(uint8_t scene_id)
     this->m_led_strip_updated_needed = true;
 
     // save light scene if needed
-#if ((DATASTORE_SaveLightScene == ON) && (DATASTORE_SaveDataOnEEPROM == ON))
+#if ((DATASTORE_SaveLightScene == ON) && (DATASTORE_SaveDataPermanent == ON))
     if (save_light_scene == true)
     {
         this->m_datastore_p->SetParameter(Parameter::Id::SceneID, (uint8_t)scene_id);

@@ -23,7 +23,7 @@ $Id:  $
 #include "../common.h"
 
 #ifdef __AVR__
-  #include <EEPROM.h>
+  #include "EepromHdl.h"
 #else
   #include "FlashHdl.h"
 #endif
@@ -47,21 +47,20 @@ class Datastore
         void SetParameter(Parameter::Id id, uint32_t value);
 
     private:
-        //--- EEPROM ---
-        const static uint32_t EEPROM_WriteLockAfterParameterChangeTmoMs = 10000ul;
-        const static uint32_t EEPROM_WriteLockAfterEepromWriteTmoMs = 10000ul;
+        //--- Store Permanent ---
+        const static uint32_t STORE_WriteLockAfterParameterChangeTmoMs = 10000ul;
+        const static uint32_t STORE_WriteLockAfterStoreTmoMs = 10000ul;
 
         //--- Memeber Variable ---
-    #ifndef __AVR__
+    #ifdef __AVR__
+        EepromHdl m_eepromHdl;
+    #else
         FlashHdl m_flashHdl;
     #endif
         Parameter* m_parameter_p;
-        uint32_t m_last_parameter_changed_timestamp_ms;
-        uint32_t m_eeprom_last_update_timestamp_ms;
-        uint16_t m_eeprom_pageSize;
-        uint16_t m_eeprom_nofPages;
-        uint16_t m_eeprom_active_page;
-        bool m_is_eeprom_update_needed;
+        uint32_t m_parameter_changed_timestamp_ms;
+        uint32_t m_save_timestamp_ms;
+        bool m_did_parameter_change;
 
         //--- Member Function ---
         void EEPROM_WriteToNextPage();

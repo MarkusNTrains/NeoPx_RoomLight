@@ -56,8 +56,8 @@ typedef struct
 
 
 //--- save data permanent -------------------------------------------------
-#define DATASTORE_SaveDataOnEEPROM OFF   // if ON then lightscene, color, brightness and led area are saved permanent on EEPROM
-#define DATASTORE_SaveLightScene   OFF   // if ON then lightscene is saved permanent on EEPROM
+#define DATASTORE_SaveDataPermanent ON   // if ON then lightscene, color, brightness and led area are saved permanent on EEPROM
+#define DATASTORE_SaveLightScene    ON   // if ON then lightscene is saved permanent on EEPROM
 
 
 //--- hardware setting ----------------------------------------------------
@@ -71,7 +71,7 @@ typedef struct
 #define ROOM_LIGHT_Ide              3
 #define ROOM_LIGHT_Sennholz         4
 
-#define ROOM_LIGHT ROOM_LIGHT_TestBoard
+#define ROOM_LIGHT ROOM_LIGHT_MarkusNTrains
 
 
 #ifdef __AVR__

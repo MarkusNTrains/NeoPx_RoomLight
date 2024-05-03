@@ -39,9 +39,8 @@ $Id:  $
 //*****************************************************************************
 LightSourceHdl::LightSourceHdl()
 {
-    this->m_datastore_p = new Datastore();
-    this->m_room_light_hdl_p = new RoomLightHdl(this->m_datastore_p);
-    this->m_shadow_station_ligth_hdl_p = new SimpleLedStripHdl(this->m_datastore_p, 
+    this->m_room_light_hdl_p = new RoomLightHdl(&this->m_datastore);
+    this->m_shadow_station_ligth_hdl_p = new SimpleLedStripHdl(&this->m_datastore, 
             Parameter::Id::Sbf_SceneID, Parameter::Id::Sbf_Brightness, Parameter::Id::Sbf_Color, Parameter::Id::Sbf_White,
             SBF_LEDRed_Pin, SBF_LEDGreen_Pin, SBF_LEDBlue_Pin, SBF_LEDWarmWhite_Pin, SBF_LEDColdWhite_Pin);
     this->m_active_light_source_p = this->m_room_light_hdl_p;
@@ -63,7 +62,6 @@ LightSourceHdl::LightSourceHdl()
 //*****************************************************************************
 LightSourceHdl::~LightSourceHdl()
 {
-    delete this->m_datastore_p;
     delete this->m_room_light_hdl_p;
     delete this->m_shadow_station_ligth_hdl_p;
 }
@@ -76,7 +74,7 @@ LightSourceHdl::~LightSourceHdl()
 void LightSourceHdl::Tasks()
 {
     //--- run datsatore task ----------------------
-    this->m_datastore_p->Task();
+    this->m_datastore.Task();
 
     //--- handle room light -----------------------
     this->m_room_light_hdl_p->Task();

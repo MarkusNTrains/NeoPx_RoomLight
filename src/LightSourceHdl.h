@@ -71,7 +71,7 @@ class LightSourceHdl
 
     private:
         Source m_active_source;
-        Datastore* m_datastore_p;
+        Datastore m_datastore;
         LightSource* m_active_light_source_p;
         RoomLightHdl* m_room_light_hdl_p;
         SimpleLedStripHdl* m_shadow_station_ligth_hdl_p;

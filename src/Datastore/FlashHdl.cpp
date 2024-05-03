@@ -37,21 +37,21 @@ FlashHdl::FlashHdl()
     this->m_last_row_addr = 0;
 
   #if (IS_DEBUG_MODE == ON)
-    /*Serial.print(F("ROW_SIZE: "));
-    Serial.println(Flash::ROW_SIZE);
+    Serial.print(F("Parameter::BUFFER_Size: "));
+    Serial.println(Parameter::BUFFER_Size);
 
     Serial.print(F("BLOCK_DATA_SIZE: "));
-    Serial.println(FlashBlockData::BLOCK_DATA_SIZE);
+    Serial.println(StoreBlockData::BLOCK_DATA_SIZE);
 
-    Serial.print(F("FlashBlockData size: "));
-    Serial.println(sizeof(FlashBlockData));
+    Serial.print(F("StoreBlockData size: "));
+    Serial.println(sizeof(StoreBlockData));
 
     Serial.print(F("FLASH_STORE_SIZE: "));
     Serial.println(FLASH_STORE_SIZE);
     Serial.print(F("Flash Start Address: "));
     Serial.println((uint32_t)&(FLASH_WritableArea[0]), HEX);
     Serial.print(F("Flash End Address: "));
-    Serial.println((uint32_t)&(FLASH_WritableArea[FLASH_RESERVED_SIZE - 1]), HEX);*/
+    Serial.println((uint32_t)&(FLASH_WritableArea[FLASH_RESERVED_SIZE - 1]), HEX);
   #endif
 
     // init flash
@@ -61,23 +61,25 @@ FlashHdl::FlashHdl()
     this->m_last_row_addr = FLASH_StartAddress;
 
   #if (IS_DEBUG_MODE == ON)
-    Serial.println(F("start | page | row"));
+    Serial.println(F("id | start | page | row"));
   #endif
 
     for (uint32_t idx = 0; idx < NOF_BLOCKS; idx++)
     {
       #if (IS_DEBUG_MODE == ON)
+        Serial.print(idx);
+        Serial.print(F(" "));
         Serial.print(start_addr, HEX);
-        Serial.print(" ");
+        Serial.print(F(" "));
         Serial.print(page_addr, HEX);
-        Serial.print(" ");
+        Serial.print(F(" "));
         Serial.println(row_addr, HEX);
       #endif
 
         this->m_last_row_addr = row_addr;
-        this->m_block_a[idx] = new FlashBlock(start_addr, page_addr, row_addr);
+        this->m_block_a[idx] = new StoreBlockInfo(start_addr, page_addr, row_addr);
 
-        start_addr += sizeof(FlashBlockData);
+        start_addr += sizeof(StoreBlockData);
         page_addr = start_addr - (start_addr % Flash::PAGE_SIZE);
         row_addr = start_addr - (start_addr % Flash::ROW_SIZE);
     }
@@ -98,6 +100,10 @@ FlashHdl::FlashHdl()
 //*****************************************************************************
 FlashHdl::~FlashHdl()
 {
+    for (uint32_t idx = 0; idx < NOF_BLOCKS; idx++)
+    {
+        delete this->m_block_a[idx];
+    }
 }
 
 
@@ -113,17 +119,17 @@ FlashHdl::Error FlashHdl::ReadBlock(uint8_t* data, uint32_t size, uint32_t offse
     {
         err = NoValidBlock;
     }
-    else if (offset >= FlashBlockData::BLOCK_DATA_SIZE)
+    else if (offset >= StoreBlockData::BLOCK_DATA_SIZE)
     {
         err = OffsetOutOfBoundaries;
     }
-    else if ((size > FlashBlockData::BLOCK_DATA_SIZE) | ((size + offset) > FlashBlockData::BLOCK_DATA_SIZE))
+    else if ((size > StoreBlockData::BLOCK_DATA_SIZE) | ((size + offset) > StoreBlockData::BLOCK_DATA_SIZE))
     {
         err = DataToLarge;
     }
     else
     {
-        Flash::Read(this->m_block_a[this->m_active_block_idx]->GetStartAddress() + FlashBlockData::BLOCK_HEADER_SIZE + offset, data, size);
+        Flash::Read(this->m_block_a[this->m_active_block_idx]->GetStartAddress() + StoreBlockData::BLOCK_HEADER_SIZE + offset, data, size);
     }
 
     return err;
@@ -155,7 +161,7 @@ FlashHdl::Error FlashHdl::WriteToNextBlock(uint8_t* data, uint32_t size)
     Serial.println(" ");*/
   #endif
 
-    if ((size > FlashBlockData::BLOCK_DATA_SIZE) | (size > FlashBlockData::BLOCK_DATA_SIZE))
+    if ((size > StoreBlockData::BLOCK_DATA_SIZE) | (size > StoreBlockData::BLOCK_DATA_SIZE))
     {
         err = DataToLarge;
     }
@@ -163,11 +169,11 @@ FlashHdl::Error FlashHdl::WriteToNextBlock(uint8_t* data, uint32_t size)
     {
         //--------------------------------------------------------------
         // check if something did change
-        uint8_t rd_block_data[sizeof(FlashBlockData)];
+        uint8_t rd_block_data[sizeof(StoreBlockData)];
         if (this->m_active_block_idx < NOF_BLOCKS)
         {
-            FlashBlockData* rd_block_data_p = (FlashBlockData*)rd_block_data;
-            Flash::Read(this->m_block_a[this->m_active_block_idx]->GetStartAddress(), rd_block_data, sizeof(FlashBlockData));
+            StoreBlockData* rd_block_data_p = (StoreBlockData*)rd_block_data;
+            Flash::Read(this->m_block_a[this->m_active_block_idx]->GetStartAddress(), rd_block_data, sizeof(StoreBlockData));
             if (memcmp(rd_block_data_p->data, data, size) == 0)
             {
               #if (IS_DEBUG_MODE == ON)
@@ -197,12 +203,12 @@ FlashHdl::Error FlashHdl::WriteToNextBlock(uint8_t* data, uint32_t size)
         else
         {
             //check if row needs to be erased
-            Flash::Read(this->m_block_a[this->m_active_block_idx]->GetStartAddress(), rd_block_data, sizeof(FlashBlockData));
+            Flash::Read(this->m_block_a[this->m_active_block_idx]->GetStartAddress(), rd_block_data, sizeof(StoreBlockData));
 
             bool is_erase_needed = false;
             uint32_t row_addr = this->m_block_a[this->m_active_block_idx]->GetRowAddress();
             uint32_t data_addr = this->m_block_a[this->m_active_block_idx]->GetStartAddress();
-            for (idx = 0; idx < (size + FlashBlockData::BLOCK_HEADER_SIZE); idx++)
+            for (idx = 0; idx < (size + StoreBlockData::BLOCK_HEADER_SIZE); idx++)
             {
                 if (rd_block_data[idx] != Flash::CELL_ERASED_VALUE)
                 {
@@ -235,18 +241,18 @@ FlashHdl::Error FlashHdl::WriteToNextBlock(uint8_t* data, uint32_t size)
         uint32_t end_idx = start_idx;
         uint8_t rd_page_data[Flash::PAGE_SIZE];
         uint8_t wr_page_data[Flash::PAGE_SIZE];
-        uint8_t wr_data[FlashBlockData::BLOCK_HEADER_SIZE + FlashBlockData::BLOCK_DATA_SIZE];
-        FlashBlockData* wr_data_p = (FlashBlockData*)wr_data;
-        wr_data_p->valid_pattern = FlashBlockData::VALID_PATTERN;
+        uint8_t wr_data[StoreBlockData::BLOCK_HEADER_SIZE + StoreBlockData::BLOCK_DATA_SIZE];
+        StoreBlockData* wr_data_p = (StoreBlockData*)wr_data;
+        wr_data_p->valid_pattern = StoreBlockData::VALID_PATTERN;
         wr_data_p->block_cnt = this->m_write_cnt;
         memcpy(wr_data_p->data, data, size);
 
-        while (wr_idx < (size + FlashBlockData::BLOCK_HEADER_SIZE))
+        while (wr_idx < (size + StoreBlockData::BLOCK_HEADER_SIZE))
         {
             //--- prepare write data ---
             Flash::Read(page_addr, &wr_page_data, Flash::PAGE_SIZE);
 
-            end_idx = start_idx + ((size + FlashBlockData::BLOCK_HEADER_SIZE) - wr_idx);
+            end_idx = start_idx + ((size + StoreBlockData::BLOCK_HEADER_SIZE) - wr_idx);
             if (end_idx > Flash::PAGE_SIZE)
             {
                 end_idx = Flash::PAGE_SIZE;
@@ -296,14 +302,14 @@ bool FlashHdl::FindNewestBlock()
 {
     uint32_t idx = 0;
     uint16_t block_cnt = 0;
-    FlashBlockData block;
+    StoreBlockData block;
     bool is_valid_block_found = false;
 
     for (idx = 0; idx < NOF_BLOCKS; idx++)
     {
-        Flash::Read(this->m_block_a[idx]->GetStartAddress(), (void*)&block, sizeof(FlashBlockData));
+        Flash::Read(this->m_block_a[idx]->GetStartAddress(), (void*)&block, sizeof(StoreBlockData));
 
-        if (block.valid_pattern == FlashBlockData::VALID_PATTERN)
+        if (block.valid_pattern == StoreBlockData::VALID_PATTERN)
         {
             is_valid_block_found = true;
             if (block.block_cnt > this->m_write_cnt)
