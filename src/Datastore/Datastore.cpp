@@ -16,11 +16,6 @@ $Id:  $
 //-----------------------------------------------------------------------------
 // includes
 #include "Datastore.h"
-#include "FlashHdl.h"
-#ifdef __AVR__
-    #include <EEPROM.h>
-#else
-#endif
 
 
 
@@ -36,7 +31,7 @@ $Id:  $
 Datastore::Datastore()
 {
   #if (IS_DEBUG_MODE == ON)
-    Serial.println(F("Datastor Init"));
+    Serial.println(F("Datastore Init"));
   #endif
 
     //--- init member parameter -------------------------------------------
@@ -49,10 +44,9 @@ Datastore::Datastore()
     this->m_parameter_p = new Parameter();
     bool valid_page_found = false;
 
-    FlashHdl flash_hdl = FlashHdl();
-    flash_hdl.WriteToNextBlock(this->GetBufferPtr(), Parameter::BUFFER_Size);
 
-#if (DATASTORE_SaveDataOnEEPROM == ON)    
+#if (DATASTORE_SaveDataOnEEPROM == ON)
+  #ifdef __AVR__
     //--- calculate page size and nof pages -------------------------------
     this->m_eeprom_pageSize = Parameter::BUFFER_Size + EEPROM_BlockHeaderSize;
     this->m_eeprom_nofPages = EEPROM.length() / this->m_eeprom_pageSize;
@@ -85,6 +79,29 @@ Datastore::Datastore()
             break;  // skip for loop
         }
     }
+  #else
+    //--- find read stored parameters ---
+    FlashHdl::Error err = this->m_flashHdl.ReadBlock(this->m_parameter_p->GetBufferPtr(), Parameter::BUFFER_Size, 0);
+    switch (err)
+    {
+        case FlashHdl::Error::Successfull:
+            valid_page_found = true;
+            break;
+
+        case FlashHdl::Error::NoValidBlock:
+
+        case FlashHdl::Error::DataToLarge:
+        case FlashHdl::Error::OffsetOutOfBoundaries:
+        case FlashHdl::Error::WriteVerifyFailed:
+        case FlashHdl::Error::DataDidNotChangeNoWriteDone:
+        default:
+          #if (IS_DEBUG_MODE == ON)
+            Serial.print(F("Read Failure: "));
+            Serial.println(err);
+          #endif
+            break;
+    }
+  #endif
 #endif
     
     //--- check if factory reset is needed
@@ -106,6 +123,7 @@ Datastore::Datastore()
 //*****************************************************************************
 Datastore::~Datastore()
 {
+    delete this->m_parameter_p;
 }
 
 
@@ -123,6 +141,7 @@ void Datastore::Task()
             if (millis() - this->m_last_parameter_changed_timestamp_ms > EEPROM_WriteLockAfterParameterChangeTmoMs)
             {
                 this->m_is_eeprom_update_needed = false;
+            #ifdef __AVR__
 
                 uint16_t page_start_addr = this->m_eeprom_active_page * this->m_eeprom_pageSize;
                 bool is_eeprom_write_needed = false;
@@ -154,6 +173,10 @@ void Datastore::Task()
                     Serial.println(F("EEPROM write not needed"));
         #endif
                 }
+            #else
+                this->m_eeprom_last_update_timestamp_ms = millis();
+                this->m_flashHdl.WriteToNextBlock(this->m_parameter_p->GetBufferPtr(), Parameter::BUFFER_Size);
+            #endif
             }
         }
     }
@@ -172,18 +195,24 @@ void Datastore::FactoryReset()
 #endif
 
 #if (DATASTORE_SaveDataOnEEPROM == ON)    
+  #ifdef __AVR__
     // clear EEPROM
     for (uint16_t addr = 0; addr < EEPROM.length(); addr++)
     {
         EEPROM.write(addr, 0xFF);
     }
+  #endif
 #endif
 
     // reset all parameter
     this->m_parameter_p->ResetAll();
     this->m_eeprom_active_page = 0;
 #if (DATASTORE_SaveDataOnEEPROM == ON)
+  #ifdef __AVR__
     this->EEPROM_WritePage();
+  #else
+    this->m_flashHdl.WriteToNextBlock(this->m_parameter_p->GetBufferPtr(), Parameter::BUFFER_Size);  
+  #endif
 #endif
 }
 
@@ -232,6 +261,7 @@ void Datastore::SetParameter(Parameter::Id id, uint32_t value)
 }
 
 
+#ifdef __AVR__
 #if (DATASTORE_SaveDataOnEEPROM == ON)
 //*****************************************************************************
 // description:
@@ -341,4 +371,5 @@ void Datastore::EEPROM_WriteParameter(Parameter::Id id, uint16_t page_start_addr
     uint32_t value = this->m_parameter_p->GetValue(id);
     this->EEPROM_WriteParameter(id, page_start_addr, value);
 }
+#endif
 #endif

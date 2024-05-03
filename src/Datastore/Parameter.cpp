@@ -169,6 +169,7 @@ bool Parameter::SetValue(Id id, uint32_t value)
             default:
                 break;
         }
+        
         return true;
     }
 

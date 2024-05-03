@@ -317,7 +317,7 @@ void WebServer::HandleRequest(char* http_request)
         
 #if (IS_DEBUG_MODE == ON)
         Serial.print(F("Color: "));
-        Serial.println(param);
+        Serial.println(param, HEX);
 #endif
     }
     
@@ -331,7 +331,7 @@ void WebServer::HandleRequest(char* http_request)
         
 #if (IS_DEBUG_MODE == ON)
         Serial.print(F("White: "));
-        Serial.println(param);
+        Serial.println(param, HEX);
 #endif
     }
     

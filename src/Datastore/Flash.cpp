@@ -183,6 +183,7 @@ void Flash::Read(const volatile uint32_t flash_addr, void *data, uint32_t size)
 {
     memcpy(data, (const void *)flash_addr, size);
         
+  #if (IS_DEBUG_MODE == ON)
     Serial.print(F("Read "));
     Serial.print(size);
     Serial.print(F(" bytes at: "));
@@ -193,4 +194,5 @@ void Flash::Read(const volatile uint32_t flash_addr, void *data, uint32_t size)
         Serial.print(((uint8_t*)data)[cnt], HEX);
     }
     Serial.println(" ");
+  #endif
 }

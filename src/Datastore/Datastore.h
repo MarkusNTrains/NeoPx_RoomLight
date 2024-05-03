@@ -22,11 +22,18 @@ $Id:  $
 #include "Parameter.h"
 #include "../common.h"
 
+#ifdef __AVR__
+  #include <EEPROM.h>
+#else
+  #include "FlashHdl.h"
+#endif
+
+
 
 
 //----------------------------------------------------------------------------
 // class
-class Datastore : private Parameter
+class Datastore
 {
 	public:
         Datastore();
@@ -42,9 +49,12 @@ class Datastore : private Parameter
     private:
         //--- EEPROM ---
         const static uint32_t EEPROM_WriteLockAfterParameterChangeTmoMs = 10000ul;
-        const static uint32_t EEPROM_WriteLockAfterEepromWriteTmoMs = 60000ul;
+        const static uint32_t EEPROM_WriteLockAfterEepromWriteTmoMs = 10000ul;
 
         //--- Memeber Variable ---
+    #ifndef __AVR__
+        FlashHdl m_flashHdl;
+    #endif
         Parameter* m_parameter_p;
         uint32_t m_last_parameter_changed_timestamp_ms;
         uint32_t m_eeprom_last_update_timestamp_ms;

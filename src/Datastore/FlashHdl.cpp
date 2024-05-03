@@ -35,7 +35,7 @@ FlashHdl::FlashHdl()
     this->m_last_row_addr = 0;
 
   #if (IS_DEBUG_MODE == ON)
-    Serial.print(F("ROW_SIZE: "));
+    /*Serial.print(F("ROW_SIZE: "));
     Serial.println(Flash::ROW_SIZE);
 
     Serial.print(F("BLOCK_DATA_SIZE: "));
@@ -49,7 +49,7 @@ FlashHdl::FlashHdl()
     Serial.print(F("Flash Start Address: "));
     Serial.println((uint32_t)&(FLASH_WritableArea[0]), HEX);
     Serial.print(F("Flash End Address: "));
-    Serial.println((uint32_t)&(FLASH_WritableArea[FLASH_RESERVED_SIZE - 1]), HEX);
+    Serial.println((uint32_t)&(FLASH_WritableArea[FLASH_RESERVED_SIZE - 1]), HEX);*/
   #endif
 
     // init flash
@@ -58,9 +58,10 @@ FlashHdl::FlashHdl()
     uint32_t row_addr = FLASH_StartAddress;
     this->m_last_row_addr = FLASH_StartAddress;
 
-    #if (IS_DEBUG_MODE == ON)
+  #if (IS_DEBUG_MODE == ON)
     Serial.println(F("start | page | row"));
-    #endif
+  #endif
+
     for (uint32_t idx = 0; idx < NOF_BLOCKS; idx++)
     {
       #if (IS_DEBUG_MODE == ON)
@@ -70,6 +71,7 @@ FlashHdl::FlashHdl()
         Serial.print(" ");
         Serial.println(row_addr, HEX);
       #endif
+      
         this->m_last_row_addr = row_addr;
         this->m_block_a[idx] = new FlashBlock(start_addr, page_addr, row_addr);
 
@@ -81,7 +83,9 @@ FlashHdl::FlashHdl()
     // find active block
     if (FindNewestBlock() == false)
     {
+      #if (IS_DEBUG_MODE == ON)
         Serial.println(F("No valid block found!"));
+      #endif
     }
 }
 
@@ -117,7 +121,7 @@ FlashHdl::Error FlashHdl::ReadBlock(uint8_t* data, uint32_t size, uint32_t offse
     }
     else
     {
-        Flash::Read(this->m_block_a[this->m_active_block_idx]->GetStartAddress() + offset, data, size);
+        Flash::Read(this->m_block_a[this->m_active_block_idx]->GetStartAddress() + FlashBlockData::BLOCK_HEADER_SIZE + offset, data, size);
     }
 
     return err;
@@ -136,10 +140,18 @@ FlashHdl::Error FlashHdl::WriteToNextBlock(uint8_t* data, uint32_t size)
     Error err = Successfull;
     uint32_t idx = 0;
 
+  #if (IS_DEBUG_MODE == ON)
     Serial.println(F(" "));
     Serial.println(F("*****  START WRITE  *******"));
-    Serial.print(F("Length of write: "));
-    Serial.println(size);
+
+    /*Serial.println(F("Data to write"));
+    for (int cnt = 0; cnt < size; cnt++)
+    {
+        Serial.print(" ");
+        Serial.print(data[cnt], HEX);
+    }
+    Serial.println(" ");*/
+  #endif
 
     if ((size > FlashBlockData::BLOCK_DATA_SIZE) | (size > FlashBlockData::BLOCK_DATA_SIZE))
     {
@@ -148,14 +160,28 @@ FlashHdl::Error FlashHdl::WriteToNextBlock(uint8_t* data, uint32_t size)
     else
     {
         //--------------------------------------------------------------
+        // check if something did change
+        uint8_t rd_block_data[sizeof(FlashBlockData)];
+        if (this->m_active_block_idx < NOF_BLOCKS)
+        {
+            FlashBlockData* rd_block_data_p = (FlashBlockData*)rd_block_data;
+            Flash::Read(this->m_block_a[this->m_active_block_idx]->GetStartAddress(), rd_block_data, sizeof(FlashBlockData));
+            if (memcmp(rd_block_data_p->data, data, size) == 0)
+            {
+              #if (IS_DEBUG_MODE == ON)
+                Serial.println(F("No change in data --> Write not needed"));
+              #endif
+                return DataDidNotChangeNoWriteDone;
+            }
+        }
+
+        //--------------------------------------------------------------
         // increment active block idx
         this->m_active_block_idx++;
         if (this->m_active_block_idx >= NOF_BLOCKS)
         {
             this->m_active_block_idx = 0;
         }
-        Serial.print(F("m_active_block_idx: "));
-        Serial.println(this->m_active_block_idx);
 
         //--------------------------------------------------------------
         // increment write cnt and check if a row needs to be reseted
@@ -169,13 +195,12 @@ FlashHdl::Error FlashHdl::WriteToNextBlock(uint8_t* data, uint32_t size)
         else
         {
             //check if row needs to be erased
-            uint8_t rd_block_data[sizeof(FlashBlockData)];
             Flash::Read(this->m_block_a[this->m_active_block_idx]->GetStartAddress(), rd_block_data, sizeof(FlashBlockData));
 
             bool is_erase_needed = false;
             uint32_t row_addr = this->m_block_a[this->m_active_block_idx]->GetRowAddress();
             uint32_t data_addr = this->m_block_a[this->m_active_block_idx]->GetStartAddress();
-            for (idx = 0; idx < size; idx++)
+            for (idx = 0; idx < (size + FlashBlockData::BLOCK_HEADER_SIZE); idx++)
             {
                 if (rd_block_data[idx] != Flash::CELL_ERASED_VALUE)
                 {
@@ -188,8 +213,6 @@ FlashHdl::Error FlashHdl::WriteToNextBlock(uint8_t* data, uint32_t size)
                     if (is_erase_needed == true)
                     {
                         is_erase_needed = false;
-                        Serial.print(F("Erase Row at address: "));
-                        Serial.println(row_addr, HEX);
                         Flash::Erase(row_addr);
                     }
                     row_addr += Flash::ROW_SIZE;
@@ -198,13 +221,9 @@ FlashHdl::Error FlashHdl::WriteToNextBlock(uint8_t* data, uint32_t size)
 
             if (is_erase_needed == true)
             {
-                Serial.print(F("Erase Row at address: "));
-                Serial.println(row_addr, HEX);
                 Flash::Erase(row_addr);
             }
         }
-        Serial.print(F("m_write_cnt: "));
-        Serial.println(this->m_write_cnt);
 
         //--------------------------------------------------------------
         // write block
@@ -220,13 +239,12 @@ FlashHdl::Error FlashHdl::WriteToNextBlock(uint8_t* data, uint32_t size)
         wr_data_p->block_cnt = this->m_write_cnt;
         memcpy(wr_data_p->data, data, size);
 
-        while (wr_idx < size)
+        while (wr_idx < (size + FlashBlockData::BLOCK_HEADER_SIZE))
         {
             //--- prepare write data ---
-            Serial.println(F("//--- prepare write data ------------------"));
             Flash::Read(page_addr, &wr_page_data, Flash::PAGE_SIZE);
 
-            end_idx = start_idx + (size - wr_idx);
+            end_idx = start_idx + ((size + FlashBlockData::BLOCK_HEADER_SIZE) - wr_idx);
             if (end_idx > Flash::PAGE_SIZE)
             {
                 end_idx = Flash::PAGE_SIZE;
@@ -239,8 +257,6 @@ FlashHdl::Error FlashHdl::WriteToNextBlock(uint8_t* data, uint32_t size)
             }
 
             //--- write page ---
-            Serial.print(F("Write Page at address: "));
-            Serial.println(page_addr, HEX);
             Flash::WritePage(page_addr, wr_page_data, Flash::PAGE_SIZE);
 
             //--- verify page ---
@@ -248,11 +264,15 @@ FlashHdl::Error FlashHdl::WriteToNextBlock(uint8_t* data, uint32_t size)
             if (memcmp(wr_page_data, rd_page_data, Flash::PAGE_SIZE) != 0)
             {
                 err = WriteVerifyFailed;
+              #if (IS_DEBUG_MODE == ON)
                 Serial.println(F("Verify failed"));
+              #endif
             }
             else
             {
+              #if (IS_DEBUG_MODE == ON)
                 Serial.println(F("Verify successfull"));
+              #endif
             }
 
             start_idx = 0;
@@ -286,8 +306,10 @@ bool FlashHdl::FindNewestBlock()
             is_valid_block_found = true;
             if (block.block_cnt > this->m_write_cnt)
             {
+              #if (IS_DEBUG_MODE == ON)
                 Serial.print(F("Newest block is: "));
                 Serial.println(block.block_cnt, HEX);
+              #endif
                 this->m_active_block_idx = idx;
                 this->m_write_cnt = block.block_cnt;
             }

@@ -14,10 +14,10 @@ Project   RoomLight
   please share with the comunity or at least with the author of the original
   source code
 
-  Created 29.04.2024 16:58:46 by MarkusNTrains
+  Created 03.05.2024 08:27:02 by MarkusNTrains
 ================================================================================
-$HeadURL: file:///C:/SwProjects/_Intern/Arduino/RoomLight_DaylightSimulation/src/Datastore/Parameter.h $
-$Id: 29.04.2024 16:58:46 automatic gen. $
+$HeadURL: file:///C:/SwProjects/Arduino/RoomLight_DaylightSimulation/src/Datastore/Parameter.h $
+$Id: 03.05.2024 08:27:02 automatic gen. $
 *******************************************************************************/
 
 /*
@@ -90,8 +90,6 @@ class Parameter
         bool SetValue(Id id, uint32_t value);
         uint16_t GetAddr(Id id);
         uint8_t GetWidth(Id id);
-    
-    protected:
         uint8_t* GetBufferPtr();
 
     private:

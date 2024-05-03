@@ -74,7 +74,7 @@ void setup()
 #ifdef __AVR__
     wdt_enable(WDTO_8S);
 #else
-    //sodaq_wdt_enable(WDT_PERIOD_8X);
+    sodaq_wdt_enable(WDT_PERIOD_8X);
 #endif
 
     //--- init objects ---
@@ -110,8 +110,8 @@ void loop()
     if (millis() - s_main_printFreeMemoryTimestampMs > MAIN_PrintFreeMemoryTmoMs)
     {
         s_main_printFreeMemoryTimestampMs = millis();
-        Serial.print(F("Free Memory: "));
-        Serial.println(GetAvailableMemory());
+        //Serial.print(F("Free Memory: "));
+        //Serial.println(GetAvailableMemory());
     }
 #endif
 }

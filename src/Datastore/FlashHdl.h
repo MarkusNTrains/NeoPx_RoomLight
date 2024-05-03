@@ -70,6 +70,7 @@ class FlashHdl
             OffsetOutOfBoundaries,
             WriteVerifyFailed,
             NoValidBlock,
+            DataDidNotChangeNoWriteDone,
             Nof,
         };
 
