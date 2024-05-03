@@ -13,6 +13,8 @@ $Id:  $
 *******************************************************************************/
 
 
+#ifndef __AVR__
+
 //-----------------------------------------------------------------------------
 // includes
 #include "FlashHdl.h"
@@ -71,7 +73,7 @@ FlashHdl::FlashHdl()
         Serial.print(" ");
         Serial.println(row_addr, HEX);
       #endif
-      
+
         this->m_last_row_addr = row_addr;
         this->m_block_a[idx] = new FlashBlock(start_addr, page_addr, row_addr);
 
@@ -292,7 +294,7 @@ FlashHdl::Error FlashHdl::WriteToNextBlock(uint8_t* data, uint32_t size)
 //*****************************************************************************
 bool FlashHdl::FindNewestBlock()
 {
-    uint8_t idx = 0;
+    uint32_t idx = 0;
     uint16_t block_cnt = 0;
     FlashBlockData block;
     bool is_valid_block_found = false;
@@ -371,3 +373,6 @@ void FlashHdl::EraseRow(uint32_t row_addr)
         Flash::Erase(row_addr);
     }
 }
+
+
+#endif //__AVR__

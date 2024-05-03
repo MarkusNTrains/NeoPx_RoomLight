@@ -114,9 +114,13 @@ const uint16_t LED_MATRIX_LUT[ROOM_LIGHT_NofRows][ROOM_LIGHT_RowNofPx] PROGMEM =
 #else // ROOM_LIGHT_TestBoard
   #ifdef __AVR__
     byte mac[] = { 0x10, 0x0D, 0x7F, 0xBF, 0xCA, 0x49 }; // MAC address from Ethernet shield sticker under board    
-    IPAddress ip(192, 168, 1, 88);    // IP address, may need to change depending on network
-    IPAddress myDns(192, 168, 1, 2);
-    IPAddress gateway(192, 168, 1, 2);  // how to find gateway: open cmd --> type ipconfig
+//    IPAddress ip(192, 168, 1, 88);    // IP address, may need to change depending on network
+//    IPAddress myDns(192, 168, 1, 2);
+//    IPAddress gateway(192, 168, 1, 2);  // how to find gateway: open cmd --> type ipconfig
+//    IPAddress subnet(255, 255, 255, 0);
+    IPAddress ip(192, 168, 0, 7);    // IP address, may need to change depending on network
+    IPAddress myDns(192, 168, 0, 254);
+    IPAddress gateway(192, 168, 0, 254);  // how to find gateway: open cmd --> type ipconfig
     IPAddress subnet(255, 255, 255, 0);
   #else
     byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xEC }; // MAC address from Ethernet shield sticker under board    

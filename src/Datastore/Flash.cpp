@@ -13,6 +13,8 @@ $Id:  $
 *******************************************************************************/
 
 
+#ifndef __AVR__
+
 //-----------------------------------------------------------------------------
 // includes
 #include "Flash.h"
@@ -196,3 +198,6 @@ void Flash::Read(const volatile uint32_t flash_addr, void *data, uint32_t size)
     Serial.println(" ");
   #endif
 }
+
+
+#endif

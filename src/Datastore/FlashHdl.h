@@ -12,6 +12,7 @@ $HeadURL:  $
 $Id:  $
 *******************************************************************************/
 
+#ifndef __AVR__
 #ifndef _FLASH_HDL_H
 #define _FLASH_HDL_H
 
@@ -74,7 +75,7 @@ class FlashHdl
             Nof,
         };
 
-        const static uint32_t NOF_BLOCKS = 10;
+        const static uint32_t NOF_BLOCKS = 256;
         const static uint32_t FLASH_STORE_SIZE = (NOF_BLOCKS * sizeof(FlashBlockData));
         const static uint32_t FLASH_RESERVED_SIZE = (FLASH_STORE_SIZE + (2 * Flash::ROW_SIZE));
 
@@ -102,3 +103,4 @@ const static uint32_t FLASH_StartAddress = ((((((uint32_t)&FLASH_WritableArea) -
 
 
 #endif // _FLASH_HDL_H
+#endif // __AVR__

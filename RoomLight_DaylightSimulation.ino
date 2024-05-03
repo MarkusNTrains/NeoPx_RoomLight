@@ -67,6 +67,12 @@ void setup()
     Serial.println(F("Start Room Light"));
     Serial.print(F("Free Memory: "));
     Serial.println(GetAvailableMemory());
+
+    uint32_t cpuFreq = SystemCoreClock;
+    Serial.print("CPU-Frequenz: ");
+    Serial.print(cpuFreq);
+    Serial.println(" Hz");
+
     delay(50);
  #endif
 

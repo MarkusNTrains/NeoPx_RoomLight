@@ -12,6 +12,7 @@ $HeadURL:  $
 $Id:  $
 *******************************************************************************/
 
+#ifndef __AVR__
 #ifndef _FLASH_H
 #define _FLASH_H
 
@@ -51,3 +52,4 @@ class Flash
 
 
 #endif // _FLASH_H
+#endif
