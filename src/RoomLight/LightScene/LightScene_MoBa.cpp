@@ -75,9 +75,9 @@ bool LightScene_MoBa::TaskHdl()
 {
   #if (ROOM_LIGHT == ROOM_LIGHT_MarkusNTrains)
     this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, 0);  
-    this->m_light_hdl_p->SetLedArea(0, 30, 1, 2);  
-    this->m_light_hdl_p->SetLedArea(LedRow::LED_ROW_LENGTH - 30, LedRow::LED_ROW_LENGTH, 1, 2);  
-    this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 3, 3);  
+    this->m_light_hdl_p->SetLedArea(0, 30, 1, 3);  
+    this->m_light_hdl_p->SetLedArea(LedRow::LED_ROW_LENGTH - 30, LedRow::LED_ROW_LENGTH, 1, 3);  
+    this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 4, 4);  
   #elif (ROOM_LIGHT == ROOM_LIGHT_Altenglienicke)
     this->m_light_hdl_p->SetLedArea(0, LedRow::LED_ROW_LENGTH, 0, (LedRow::LED_ROW_NOF - 1));  
   #else
