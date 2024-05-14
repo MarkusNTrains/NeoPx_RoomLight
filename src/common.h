@@ -65,13 +65,16 @@ typedef struct
 // and enhance the following files:
 //  - LED_MATRIX_LUT in file common.cpp
 //  - ip, myDns, gatway, subnet in file common.cpp
-#define ROOM_LIGHT_MarkusNTrains    0
-#define ROOM_LIGHT_Altenglienicke   1
-#define ROOM_LIGHT_TestBoard        2
-#define ROOM_LIGHT_Ide              3
-#define ROOM_LIGHT_Sennholz         4
+typedef enum 
+{
+    ROOM_LIGHT_TestBoard = 0,
+    ROOM_LIGHT_MarkusNTrains,
+    ROOM_LIGHT_Altenglienicke,
+    ROOM_LIGHT_Ide,
+    ROOM_LIGHT_Sennholz
+} roomLight_type_t;
 
-#define ROOM_LIGHT ROOM_LIGHT_MarkusNTrains
+#define ROOM_LIGHT ROOM_LIGHT_TestBoard
 
 
 #ifdef __AVR__
